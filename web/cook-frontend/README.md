@@ -1,9 +1,13 @@
-Update npm to latest version:
+**Update npm to latest version:**
 sudo npm install npm@latest -g
 
-Update Node to latest version:
+**Update Node to latest version:**
 sudo n stable
 
+## MAKE SURE THESE ARE RAN BEFORE TRYING TO RUN LOCALLY:
+`cd cook-frontend`
+`yarn`
+**This installs dependencies**
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
