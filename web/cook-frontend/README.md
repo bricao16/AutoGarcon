@@ -5,8 +5,11 @@ sudo npm install npm@latest -g
 sudo n stable
 
 ## MAKE SURE THESE ARE RAN BEFORE TRYING TO RUN LOCALLY:
+
 `cd cook-frontend`
+
 `yarn`
+
 **This installs dependencies**
 
 
