@@ -1,2 +1,2 @@
 //Procfile
-web: node server.js
+web: yarn --cwd ./web/cook-frontend/ start
