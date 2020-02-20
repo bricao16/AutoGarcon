@@ -1,0 +1,24 @@
+Describes the hierarchy of components.
+
+     App
+      |
+   -------
+  |       |
+Header  Orders
+           |
+         ---------------
+         |       |     |
+        Order  Order  ...
+
+
+
+App:
+
+Header:
+
+Orders:
+- Holds all orders in state
+- Loops through orders and renders an <Order/> for each
+- This is where we could call the API to get orders
+
+Order:
