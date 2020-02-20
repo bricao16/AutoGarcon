@@ -3,6 +3,7 @@ package com.example.login;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 //testing cause android studio sucks
+//Testing because I am very cool
 public class MainActivity extends AppCompatActivity {
 
     @Override
