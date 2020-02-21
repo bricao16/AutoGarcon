@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "871644071697",
+    "firebase_url": "https://autogarcon-38046.firebaseio.com",
+    "project_id": "autogarcon-38046",
+    "storage_bucket": "autogarcon-38046.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871644071697:android:d7cab61d222206174f2eb0",
+        "android_client_info": {
+          "package_name": "com.example.login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "871644071697-dsbfsgdo0pmnoi6a5jukugr4707je799.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF7aiOybbPhm-ntzKl5kGM44T0BKKeDts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "871644071697-dsbfsgdo0pmnoi6a5jukugr4707je799.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
