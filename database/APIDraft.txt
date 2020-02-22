@@ -2,8 +2,62 @@ Resources:
 -Users
 -Restaurants
   +Menu
+  
 -Orders
 
 
-/users?id={user_id}
+/users/
+-Description
+-POST Request
+-Response
+  + user_id
 
+/users?id={user_id}/
+-Description: Used to retrieve user information
+-GET Request
+-Response
+  +
+  +
+
+/restaurants/
+-Description: Retrieve all data about restaurants
+-GET Request
+-Response:
+  + JSON
+    -restaurant_name
+    -image
+   
+/restaurant/{restaurant_id}/
+-Description: Getting the customization details of a particular restaurant
+-GET Request
+-Response
+  + JSON
+    -Primary color
+    -Category   
+
+/restaurant/{restaurant_id}/menu
+-Description: Getting the menu
+-GET Request
+-Response
+  +JSON
+    -Food item
+      -food_name
+      -thumbnail
+      -price
+      
+/restaurant/orders/
+-Description: Send an order
+-POST Request
+-Response
+  +order_id
+  
+/restaurant/orders/
+-Description: Retrieve latest orders
+-GET Request
+-Response
+  +JSON
+    -Order
+      -items[]
+      -price
+    
+    
