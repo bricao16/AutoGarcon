@@ -1,11 +1,10 @@
-package com.example.login;
+package com.example.auto_garcon;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,7 +42,7 @@ public class Login extends AppCompatActivity {
                 FirebaseUser user = authentication.getCurrentUser();
                 if(user!= null){
                     Toast.makeText(Login.this, "Welcome", Toast.LENGTH_SHORT).show();
-                    Intent intent  = new Intent(Login.this, MainActivity.class);
+                    Intent intent  = new Intent(Login.this, Home.class);
                     startActivity(intent);
 
                 }
@@ -78,8 +77,8 @@ public class Login extends AppCompatActivity {
                                 Toast.makeText(Login.this, "Login Error Please Try again!", Toast.LENGTH_SHORT);
                             }
                             else {
-                                Intent toMain = new Intent(Login.this, MainActivity.class);
-                                startActivity(toMain);
+                                Intent toHome = new Intent(Login.this, Home.class);
+                                startActivity(toHome);
                             }
                         }
                     });
@@ -93,7 +92,7 @@ public class Login extends AppCompatActivity {
         textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent signUp = new Intent(Login.this,MainActivity.class);
+                Intent signUp = new Intent(Login.this, Register.class);
                 startActivity(signUp);
             }
         });

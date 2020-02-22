@@ -3,7 +3,7 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.example.login"
         minSdkVersion 28
@@ -29,4 +29,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
+    implementation 'com.google.android.material:material:1.1.0'
 }
