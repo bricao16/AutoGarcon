@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "871644071697",
-    "firebase_url": "https://autogarcon-38046.firebaseio.com",
-    "project_id": "autogarcon-38046",
-    "storage_bucket": "autogarcon-38046.appspot.com"
+    "project_number": "201452318011",
+    "firebase_url": "https://autogarcon-1f85b.firebaseio.com",
+    "project_id": "autogarcon-1f85b",
+    "storage_bucket": "autogarcon-1f85b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:871644071697:android:d7cab61d222206174f2eb0",
+        "mobilesdk_app_id": "1:201452318011:android:b24fa5b2993ff4ef6e5b1e",
         "android_client_info": {
-          "package_name": "com.example.login"
+          "package_name": "com.example.auto_garcon"
         }
       },
       "oauth_client": [
         {
-          "client_id": "871644071697-dsbfsgdo0pmnoi6a5jukugr4707je799.apps.googleusercontent.com",
+          "client_id": "201452318011-even5al5aqdujpjdpumombtk4cmdnuh3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBF7aiOybbPhm-ntzKl5kGM44T0BKKeDts"
+          "current_key": "AIzaSyBjcU1CypyBaFmn3cgg8CFDr3Kaylp0iII"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "871644071697-dsbfsgdo0pmnoi6a5jukugr4707je799.apps.googleusercontent.com",
+              "client_id": "201452318011-even5al5aqdujpjdpumombtk4cmdnuh3.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
