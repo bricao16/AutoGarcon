@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "201452318011",
-    "firebase_url": "https://autogarcon-1f85b.firebaseio.com",
-    "project_id": "autogarcon-1f85b",
-    "storage_bucket": "autogarcon-1f85b.appspot.com"
+    "project_number": "779890494522",
+    "firebase_url": "https://autogarcon-7416d.firebaseio.com",
+    "project_id": "autogarcon-7416d",
+    "storage_bucket": "autogarcon-7416d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:201452318011:android:b24fa5b2993ff4ef6e5b1e",
+        "mobilesdk_app_id": "1:779890494522:android:7cfe76d1e299a1b28bf903",
         "android_client_info": {
-          "package_name": "com.example.auto_garcon"
+          "package_name": "com.example.login"
         }
       },
       "oauth_client": [
         {
-          "client_id": "201452318011-even5al5aqdujpjdpumombtk4cmdnuh3.apps.googleusercontent.com",
+          "client_id": "779890494522-ro4pfrv2aullll9ffavlihgbnt08796l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.login",
+            "certificate_hash": "897c10f12679ad181b3abbc97e1296762cfd0133"
+          }
+        },
+        {
+          "client_id": "779890494522-a09q5b6ri14l9a49hvomej4doo4v91ia.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBjcU1CypyBaFmn3cgg8CFDr3Kaylp0iII"
+          "current_key": "AIzaSyBeXy0fP0iU9LhW6JqJZ3y7hoy-4Xlni1c"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "201452318011-even5al5aqdujpjdpumombtk4cmdnuh3.apps.googleusercontent.com",
+              "client_id": "779890494522-a09q5b6ri14l9a49hvomej4doo4v91ia.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,22 +36,28 @@ public class Register extends AppCompatActivity {
         buttonSignUp = findViewById(R.id.signUp);
         textViewSignIn = findViewById(R.id.loginLink);
 
+        if(authentication.getCurrentUser()!= null){
+            startActivity(new Intent(Register.this, Home.class));
+            finish();
+
+        }
+
         buttonSignUp.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 String email=emailId.getText().toString();
-                String passwd = password.getText().toString();
-                if(email.isEmpty()){
+                String passwd = password.getText().toString().trim();
+                if(TextUtils.isEmpty(email)){
                     emailId.setError("Please enter email id");
                     emailId.requestFocus();
                 }
-                else if (passwd.isEmpty()){
+                else if (TextUtils.isEmpty(passwd)){
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
-                else if(email.isEmpty() && passwd.isEmpty()){
-                    Toast.makeText(Register.this,"Feilds are Empty!", Toast.LENGTH_SHORT).show();
+                if(passwd.length()<6){
+                    password.setError("Password Must be Greater than 6 Characters");
                 }
-                else if (!(email.isEmpty() && passwd.isEmpty())){
+                else if (!(TextUtils.isEmpty(email) && !TextUtils.isEmpty(passwd))){
                     authentication.createUserWithEmailAndPassword(email,passwd).addOnCompleteListener(Register.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
