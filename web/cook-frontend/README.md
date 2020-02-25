@@ -13,6 +13,14 @@ sudo n stable
 **This installs dependencies**
 
 
+## PUSHING THIS REPO TO HEROKU
+
+`heroku git:remote -a autogarcon2`
+
+`cd ./{root of repo}`
+
+```git push heroku `git subtree split --prefix web/cook-frontend master`:master --force```
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
