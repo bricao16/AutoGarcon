@@ -23,9 +23,14 @@ GET /restaurants
 -Description: Retrieve data about all restaurants
 -Response: JSON object
 
-GET /restaurants
+GET /restaurants?alexa_id={alexa_id}
+-Description: Retrieve the restaurant ID from unique Alexa
+-Response: restaurant_id
+
+POST /restaurants
 -Description: Add a new restaurant to AutoGarcon
 -Response: restaurant_id
+
 
 GET /restaurant/{restaurant_id}
 -Description: Getting the customization details of a particular restaurant
@@ -34,6 +39,11 @@ GET /restaurant/{restaurant_id}
 PUT /restaurant/{restaurant_id}?attr=value[&attr=value]
 -Description: Update a list of attributes for a restaurant
 -Response: 200
+
+POST /restaurant/{restaurant_id}?alexa_id={alexa_id}&table_num={table_num}
+-Description: Register an alexa to a restaurant
+-Response: JSON object
+
 
 GET /restaurant/{restaurant_id}/food
 -Description: Getting the list of food of a given restaurant
