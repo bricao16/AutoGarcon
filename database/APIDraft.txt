@@ -1,63 +1,55 @@
-Resources:
--Users
--Restaurants
-  +Menu
-  
--Orders
+POST /users
+-Description: Creating an account with AutoGarcon
+-Response: user_id
+
+GET /users/{user_id}/favorites
+-Description: Retrieve the favorite restaurants of a user
+
+POST /users/{user_id}/favorites?restaurantid=restaurant_id
+-Description: Adding a restaurant to the user's favorites
+-Response: 200
+
+DELETE /users/{user_id}/favorites?restaurantid=restaurant_id
+-Description: Remove a restaurant from a user's favorites
+-Response: 200
+
+GET /users/{user_id}/pastorders
+-Description: Retrieve the past orders
+-Response: JSON object
 
 
-/users/
--Description
--POST Request
--Response
-  + user_id
 
-/users?id={user_id}/
--Description: Used to retrieve user information
--GET Request
--Response
-  +
-  +
+GET /restaurants
+-Description: Retrieve data about all restaurants
+-Response: JSON object
 
-/restaurants/
--Description: Retrieve all data about restaurants
--GET Request
--Response:
-  + JSON
-    -restaurant_name
-    -image
-   
-/restaurant/{restaurant_id}/
+GET /restaurants
+-Description: Add a new restaurant to AutoGarcon
+-Response: restaurant_id
+
+GET /restaurant/{restaurant_id}
 -Description: Getting the customization details of a particular restaurant
--GET Request
--Response
-  + JSON
-    -Primary color
-    -Category   
+-Response: JSON object
 
-/restaurant/{restaurant_id}/menu
--Description: Getting the menu
--GET Request
--Response
-  +JSON
-    -Food item
-      -food_name
-      -thumbnail
-      -price
-      
-/restaurant/orders/
--Description: Send an order
--POST Request
--Response
-  +order_id
-  
-/restaurant/orders/
--Description: Retrieve latest orders
--GET Request
--Response
-  +JSON
-    -Order
-      -items[]
-      -price
-    
-    
+PUT /restaurant/{restaurant_id}?attr=value[&attr=value]
+-Description: Update a list of attributes for a restaurant
+-Response: 200
+
+GET /restaurant/{restaurant_id}/food
+-Description: Getting the list of food of a given restaurant
+-Response: JSON object
+     
+GET /restaurant/{restaurant_id}/beverages
+-Description: Getting the list of beverages of a given restaurant
+-Response: JSON object
+     
+GET /restaurant/{restaurant_id}/orders
+-Description: Retrieve the unfinished orders
+-Response: JSON object
+
+POST /restaurant/{restaurant_id}/orders
+-Description: Create a new order
+-Response: order_id
+
+PUT /restaurant/{restaurant_id}/orders/{order_id}
+-Description: Update the status of a order
