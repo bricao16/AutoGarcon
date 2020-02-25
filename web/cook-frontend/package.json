@@ -2,9 +2,6 @@
   "name": "cook-frontend",
   "version": "3.0.0",
   "description": "How to use create-react-app with a custom Node API on Heroku",
-  "engines": {
-    "node": "10.x"
-  },
   "scripts": {
     "start": "node server",
     "build": "cd react-ui/ && npm install && npm run build"
