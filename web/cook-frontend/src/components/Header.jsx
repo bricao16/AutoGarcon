@@ -1,5 +1,5 @@
 import React from "react";
-import logoImage from "../assets/logo.png"
+// import logoImage from "../assets/logo.png"
 
 function Header() {
     // This could be put in a CSS file
@@ -14,7 +14,7 @@ function Header() {
 
     return (
         <header style={style}>
-            <img src={logoImage} width="auto" height="35px" alt="waiter" />
+            <img width="auto" height="35px" alt="waiter" />
             <p style={{margin: 0, marginLeft: "10px"}}>Auto-Garcon</p>
         </header>
     );
