@@ -23,6 +23,10 @@ sudo n stable
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Bootstrap documentation
+
+https://react-bootstrap.netlify.com/components/alerts/
+
 ## Available Scripts
 
 In the project directory, you can run:
