@@ -21,27 +21,9 @@
         <activity android:name=".ShoppingCart" />
         <activity android:name=".Account" />
         <activity android:name=".Settings" />
-        <activity android:name=".RestaurantPage">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".Register">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".Login">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".RestaurantPage"/>
+        <activity android:name=".Register"/>
+        <activity android:name=".Login"/>
         <activity android:name=".Home" />
 
         <meta-data
