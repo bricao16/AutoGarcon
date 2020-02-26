@@ -25,7 +25,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Bootstrap documentation
 
+Official docs:
+
 https://react-bootstrap.netlify.com/components/alerts/
+
+Unofficial Spacing docs:
+
+https://mdbootstrap.com/docs/react/utilities/spacing/
 
 ## Available Scripts
 
