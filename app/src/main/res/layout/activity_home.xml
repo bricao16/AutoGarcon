@@ -9,15 +9,19 @@
     android:id="@+id/home_main"
     tools:context=".Home">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/xml_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/nav_header_background" />
+            android:layout_width="470dp"
+            android:layout_height="56dp"
+            android:background="@color/nav_header_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="56dp"
+            tools:layout_conversion_absoluteWidth="411dp" />
 
         <Button
             android:id="@+id/home_button"
@@ -25,12 +29,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="70dp"
-            android:layout_toStartOf="@+id/order_history_button"
+            android:layout_marginEnd="291dp"
             android:onClick="goHome"
             android:text="@string/home"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="48dp"
+            tools:layout_conversion_absoluteWidth="88dp" />
 
         <Button
             android:id="@+id/order_history_button"
@@ -38,35 +45,117 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_toStartOf="@id/cart_button"
+            android:layout_marginEnd="112dp"
             android:onClick="goOrderHistory"
             android:text="@string/order_history"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="48dp"
+            tools:layout_conversion_absoluteWidth="108dp" />
 
         <Button
             android:id="@+id/cart_button"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="25dp"
             android:onClick="goShoppingCart"
             android:text="@string/cart"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="48dp"
+            tools:layout_conversion_absoluteWidth="60dp" />
 
-        <Button
-            android:id="@+id/log_out"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="150dp"
-            android:layout_marginTop="300dp"
-            android:text="home"
-            android:textSize="24sp" />
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="400dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="62dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    </RelativeLayout>
+        <SearchView
+            android:layout_width="400dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="68dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <HorizontalScrollView
+            android:layout_width="443dp"
+            android:layout_height="219dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="130dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/imageButton5"
+                    android:layout_width="201dp"
+                    android:layout_height="215dp"
+                    app:srcCompat="@mipmap/ic_launcher_round" />
+
+                <ImageButton
+                    android:id="@+id/imageButton4"
+                    android:layout_width="201dp"
+                    android:layout_height="215dp"
+                    app:srcCompat="@mipmap/ic_launcher_round" />
+
+                <ImageButton
+                    android:id="@+id/imageButton8"
+                    android:layout_width="201dp"
+                    android:layout_height="215dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@mipmap/ic_launcher_round" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <HorizontalScrollView
+            android:layout_width="407dp"
+            android:layout_height="215dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="156dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/imageButton6"
+                    android:layout_width="201dp"
+                    android:layout_height="215dp"
+                    app:srcCompat="@mipmap/ic_launcher_round" />
+
+                <ImageButton
+                    android:id="@+id/imageButton7"
+                    android:layout_width="201dp"
+                    android:layout_height="215dp"
+                    app:srcCompat="@mipmap/ic_launcher_round" />
+
+                <ImageButton
+                    android:id="@+id/imageButton9"
+                    android:layout_width="201dp"
+                    android:layout_height="215dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@mipmap/ic_launcher_round" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:layout_width="match_parent"
@@ -75,6 +164,18 @@
         app:menu="@menu/nav_menu"
         app:headerLayout="@layout/nav_header"
         android:layout_gravity="start"
-        android:background="@color/white"/>
+        android:background="@color/white">
+
+
+    </com.google.android.material.navigation.NavigationView>
+
+    <Button
+        android:id="@+id/log_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="700dp"
+        android:text="home"
+        android:textSize="1sp" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
