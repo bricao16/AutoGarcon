@@ -1,0 +1,5 @@
+main_menu
+  dish_name     VARCHAR(50)
+  restaurant    VARCHAR(50)
+  picture       BLOB  
+  instock       BOOLEAN
