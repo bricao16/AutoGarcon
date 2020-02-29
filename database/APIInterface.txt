@@ -4,6 +4,28 @@ POST /users
 
 GET /users/{user_id}/favorites
 -Description: Retrieve the favorite restaurants of a user
+-Response:
+{"favorites": 
+     "favorites_count": 2,
+     "restaurants": [
+          {
+               "restaurant_id": 360,
+               "restaurant_name": "DB Grill",
+               "location": "123 Sesame St",
+               "image": "path/db.jpg"
+               "font": "Times New Roman",
+               "color": "Teal"
+          },
+          {
+               "restaurant_id": 720,
+               "restaurant_name": "Alexa Diner",
+               "location": "920 Wall St",
+               "image": "path/alexa.jpg",
+               "font": "BaskerVille",
+               "color": "Blood Orange"
+          }
+     ]          
+}
 
 POST /users/{user_id}/favorites?restaurantid=restaurant_id
 -Description: Adding a restaurant to the user's favorites
@@ -15,13 +37,47 @@ DELETE /users/{user_id}/favorites?restaurantid=restaurant_id
 
 GET /users/{user_id}/pastorders
 -Description: Retrieve the past orders
--Response: JSON object
+-Response: 
+{"previous": 
+     "restauarnt": "DB Grill",
+     "previous_count": 1,
+     "orders": [
+          {
+               "order_num": 1010241,
+               "price": 32.41
+               "foods":[
+               ],
+               
+               "drinks":[
+               ]
+          }
+     ]          
+}
 
 
 
 GET /restaurants
 -Description: Retrieve data about all restaurants
--Response: JSON object
+-Response:
+{
+     "restaurants": [
+          {
+               "restaurant_id": 360,
+               "restaurant_name": "DB Grill",
+               "location": "123 Sesame St",
+               "image": "path/db.jpg"
+               "font": "Times New Roman",
+               "color": "Teal"
+          },
+          {
+               "restaurant_id": 720,
+               "restaurant_name": "Alexa Diner",
+               "location": "920 Wall St",
+               "image": "path/alexa.jpg",
+               "font": "BaskerVille",
+               "color": "Blood Orange"
+          }
+}
 
 GET /restaurants?alexa_id={alexa_id}
 -Description: Retrieve the restaurant ID from unique Alexa
