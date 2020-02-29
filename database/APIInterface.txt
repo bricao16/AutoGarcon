@@ -2,6 +2,13 @@ POST /users
 -Description: Creating an account with AutoGarcon
 -Response: user_id
 
+app.GET(/users/..., (req,res)){
+     creditals, other info... = req
+          
+     query = "SELECT"..//Look at prepared statements
+     res = db.all(query);
+}
+
 GET /users/{user_id}/favorites
 -Description: Retrieve the favorite restaurants of a user
 -Response:
