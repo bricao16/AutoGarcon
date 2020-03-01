@@ -2,30 +2,74 @@ import React from 'react';
 import './App.css';
 import Header from "./components/Header"
 import Orders from "./components/Orders"
+import Button from 'react-bootstrap/Button'
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+  } from "react-router-dom";
 
 function App() {
-    return (
-        <div className="App">
-            {/*
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>src/App.js</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-            </header>
-            */}
+ return (
+    <Router>
+      <div>
             <Header/>
-            <Orders/>
-        </div>
-    );
+
+            <Link to="/">
+            <Button variant="link">Home</Button>
+                
+            </Link>
+       
+            <Link to="/cook"> 
+            <Button variant="link">Cooks</Button>
+            </Link>
+ 
+            <Link to="/manager"> 
+            <Button variant="link">Manager</Button>
+            </Link>
+
+       
+        <hr />
+
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/cook">
+            <Cook />
+          </Route>
+          <Route path="/manager">
+            <Manager />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
+  );
 }
 
 export default App;
+
+function Home() {
+    return (
+      <div>
+        <h2>Home Page</h2>
+      </div>
+    );
+  }
+
+function Cook() {
+    return (
+      <div>
+            <Orders/>
+      </div>
+    );
+  }
+
+  function Manager() {
+    return (
+      <div>
+            <Orders/>
+      </div>
+    );
+  }
