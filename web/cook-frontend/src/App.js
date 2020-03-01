@@ -2,6 +2,8 @@ import React from 'react';
 import './App.css';
 import Header from "./components/Header"
 import Orders from "./components/Orders"
+import MHeader from "./components/MHeader"
+import MTasks from "./components/MTasks"
 import Button from 'react-bootstrap/Button'
 import {
     BrowserRouter as Router,
@@ -69,7 +71,7 @@ function Cook() {
   function Manager() {
     return (
       <div>
-            <Orders/>
+            <MTasks/>
       </div>
     );
   }
