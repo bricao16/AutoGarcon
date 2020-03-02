@@ -27,8 +27,9 @@
         <activity android:name=".Home" />
 
         <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts"/>
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3180674783074402~6809677430"
+            />
 
     </application>
 
