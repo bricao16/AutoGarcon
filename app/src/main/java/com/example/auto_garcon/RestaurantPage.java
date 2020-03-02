@@ -15,6 +15,8 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +27,8 @@ public class RestaurantPage extends AppCompatActivity implements NavigationView.
     private ExpandableListView listView;
     private ExpandableListAdapter listAdapter;
     private List<String> listDataHeader;
+    FirebaseFirestore dbStore;
+    DocumentReference docRef;
     private HashMap<String, List<String>> listHash;
 
     DrawerLayout drawerLayout;
@@ -36,7 +40,7 @@ public class RestaurantPage extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_page);
-
+        docRef = dbStore.collection("Menu").document("Items");
         drawerLayout = findViewById(R.id.restaurant_main);
         toolbar = findViewById(R.id.xml_toolbar);
         navigationView = findViewById(R.id.navigationView);
@@ -103,6 +107,9 @@ public class RestaurantPage extends AppCompatActivity implements NavigationView.
         listDataHeader.add("HI2");
 
         List<String> HI = new ArrayList<>();
+        //json dynamic add
+        //second adapter class
+
         HI.add("HI.a");
 
         List<String> HI1 = new ArrayList<>();
