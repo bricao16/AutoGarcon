@@ -70,7 +70,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_conversion_absoluteHeight="48dp"
             tools:layout_conversion_absoluteWidth="60dp" />
-
+<!---
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
             android:layout_width="400dp"
@@ -79,7 +79,7 @@
             android:layout_marginBottom="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
+!-->
         <SearchView
             android:layout_width="400dp"
             android:layout_height="40dp"
