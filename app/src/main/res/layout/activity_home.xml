@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:openDrawer="end"
@@ -72,6 +73,8 @@
             tools:layout_conversion_absoluteWidth="60dp" />
 
         <com.google.android.gms.ads.AdView
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
             android:id="@+id/adView"
             android:layout_width="400dp"
             android:layout_height="64dp"
@@ -81,6 +84,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <SearchView
+            android:id="@+id/searchView"
             android:layout_width="400dp"
             android:layout_height="40dp"
             android:layout_marginStart="5dp"
@@ -89,6 +93,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
             android:layout_width="443dp"
             android:layout_height="219dp"
             android:layout_marginStart="5dp"
@@ -122,6 +127,7 @@
         </HorizontalScrollView>
 
         <HorizontalScrollView
+            android:id="@+id/horizontalScrollView2"
             android:layout_width="407dp"
             android:layout_height="215dp"
             android:layout_marginStart="5dp"

@@ -61,9 +61,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         });
 
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
         ShakeDetector shakeDetector = new ShakeDetector(this);
-
         shakeDetector.start(sensorManager);
     }
 
