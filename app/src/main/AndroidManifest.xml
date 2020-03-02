@@ -11,7 +11,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Menu"></activity>
         <activity android:name=".LoadingScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +22,13 @@
         <activity android:name=".ShoppingCart" />
         <activity android:name=".Account" />
         <activity android:name=".Settings" />
-        <activity android:name=".RestaurantPage" />
+        <activity android:name=".RestaurantPage" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
         <activity android:name=".Register" />
         <activity android:name=".Login" />
         <activity android:name=".Home" />
