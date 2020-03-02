@@ -40,6 +40,7 @@ public class RestaurantPage extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_page);
+        dbStore=FirebaseFirestore.getInstance();
         docRef = dbStore.collection("Menu").document("Items");
         drawerLayout = findViewById(R.id.restaurant_main);
         toolbar = findViewById(R.id.xml_toolbar);
