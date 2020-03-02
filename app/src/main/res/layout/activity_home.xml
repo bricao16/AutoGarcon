@@ -89,8 +89,8 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <HorizontalScrollView
-            android:layout_width="443dp"
-            android:layout_height="219dp"
+            android:layout_width="407dp"
+            android:layout_height="215dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="130dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -169,13 +169,13 @@
 
     </com.google.android.material.navigation.NavigationView>
 
-    <Button
+    <!--<Button
         android:id="@+id/log_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
         android:layout_marginTop="700dp"
         android:text="home"
-        android:textSize="1sp" />
+        android:textSize="10sp" />-->
 
 </androidx.drawerlayout.widget.DrawerLayout>
