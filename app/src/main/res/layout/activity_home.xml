@@ -76,7 +76,7 @@
             android:layout_width="400dp"
             android:layout_height="64dp"
             android:layout_marginStart="5dp"
-            android:layout_marginBottom="62dp"
+            android:layout_marginBottom="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -92,7 +92,7 @@
             android:layout_width="443dp"
             android:layout_height="219dp"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="130dp"
+            android:layout_marginTop="120dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -103,19 +103,19 @@
                 <ImageButton
                     android:id="@+id/imageButton5"
                     android:layout_width="201dp"
-                    android:layout_height="215dp"
+                    android:layout_height="200dp"
                     app:srcCompat="@mipmap/ic_launcher_round" />
 
                 <ImageButton
                     android:id="@+id/imageButton4"
                     android:layout_width="201dp"
-                    android:layout_height="215dp"
+                    android:layout_height="200dp"
                     app:srcCompat="@mipmap/ic_launcher_round" />
 
                 <ImageButton
                     android:id="@+id/imageButton8"
                     android:layout_width="201dp"
-                    android:layout_height="215dp"
+                    android:layout_height="200dp"
                     android:layout_weight="1"
                     app:srcCompat="@mipmap/ic_launcher_round" />
             </LinearLayout>
@@ -125,7 +125,7 @@
             android:layout_width="407dp"
             android:layout_height="215dp"
             android:layout_marginStart="5dp"
-            android:layout_marginBottom="156dp"
+            android:layout_marginBottom="100dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -136,23 +136,33 @@
                 <ImageButton
                     android:id="@+id/imageButton6"
                     android:layout_width="201dp"
-                    android:layout_height="215dp"
+                    android:layout_height="200dp"
                     app:srcCompat="@mipmap/ic_launcher_round" />
 
                 <ImageButton
                     android:id="@+id/imageButton7"
                     android:layout_width="201dp"
-                    android:layout_height="215dp"
+                    android:layout_height="200dp"
                     app:srcCompat="@mipmap/ic_launcher_round" />
 
                 <ImageButton
                     android:id="@+id/imageButton9"
                     android:layout_width="201dp"
-                    android:layout_height="215dp"
+                    android:layout_height="200dp"
                     android:layout_weight="1"
                     app:srcCompat="@mipmap/ic_launcher_round" />
             </LinearLayout>
         </HorizontalScrollView>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="409dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
