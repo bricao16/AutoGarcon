@@ -10,11 +10,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class RestaurantPage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ExpandableListView listView;
+    private ExpandableListAdapter listAdapter;
+    private List<String> listDataHeader;
+    private HashMap<String, List<String>> listHash;
 
     DrawerLayout drawerLayout;
     Toolbar toolbar;
@@ -37,6 +48,13 @@ public class RestaurantPage extends AppCompatActivity implements NavigationView.
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        listView = findViewById(R.id.menu_list);
+        initData();
+        listAdapter = new ExpandableMenuAdapater(this, listDataHeader, listHash);
+        listView.setAdapter(listAdapter);
+
     }
 
     @Override
@@ -74,5 +92,27 @@ public class RestaurantPage extends AppCompatActivity implements NavigationView.
     public void goShoppingCart(View view){
         Intent shopping_cart = new Intent(getBaseContext(),   ShoppingCart.class);
         startActivity(shopping_cart);
+    }
+
+    private void initData() {
+        listDataHeader = new ArrayList<>();
+        listHash = new HashMap<>();
+
+        listDataHeader.add("HI");
+        listDataHeader.add("HI1");
+        listDataHeader.add("HI2");
+
+        List<String> HI = new ArrayList<>();
+        HI.add("HI.a");
+
+        List<String> HI1 = new ArrayList<>();
+        HI1.add("HI1.a");
+
+        List<String> HI2 = new ArrayList<>();
+        HI2.add("HI2.a");
+
+        listHash.put(listDataHeader.get(0), HI);
+        listHash.put(listDataHeader.get(1), HI1);
+        listHash.put(listDataHeader.get(2), HI2);
     }
 }
