@@ -68,9 +68,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         // Create a new user with a first and last name
         Map<String, Object> user = new HashMap<>();
-        user.put("user_name", "Ada");
-        user.put("user_id", "Lovelace");
-
         // Add a new document with a generated ID
         db.collection("users")
                 .add(user)
