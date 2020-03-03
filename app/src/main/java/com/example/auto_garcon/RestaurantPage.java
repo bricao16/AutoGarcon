@@ -14,21 +14,32 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RestaurantPage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ExpandableListView listView;
     private ExpandableListAdapter listAdapter;
     private List<String> listDataHeader;
-    FirebaseFirestore dbStore;
-    DocumentReference docRef;
+    private FirebaseFirestore dbStore;
+    private CollectionReference docRef;
+    private List<String> HI;
+    private List<String> HI2;
+    private List<String> HI3;
     private HashMap<String, List<String>> listHash;
 
     DrawerLayout drawerLayout;
@@ -41,7 +52,7 @@ public class RestaurantPage extends AppCompatActivity implements NavigationView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_page);
         dbStore=FirebaseFirestore.getInstance();
-        docRef = dbStore.collection("Menu").document("Items");
+        docRef = dbStore.collection("Menu");
         drawerLayout = findViewById(R.id.restaurant_main);
         toolbar = findViewById(R.id.xml_toolbar);
         navigationView = findViewById(R.id.navigationView);
@@ -100,27 +111,54 @@ public class RestaurantPage extends AppCompatActivity implements NavigationView.
     }
 
     private void initData() {
+
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
 
-        listDataHeader.add("HI");
-        listDataHeader.add("HI1");
-        listDataHeader.add("HI2");
+        listDataHeader.add("Beverages");
+        listDataHeader.add("app");
+        listDataHeader.add("Entrees");
 
-        List<String> HI = new ArrayList<>();
+        HI = new ArrayList<>();
+        HI2 = new ArrayList<>();
+        HI3 = new ArrayList<>();
         //json dynamic add
         //second adapter class
+        CollectionReference itemsRef = dbStore.collection("Menu");
 
-        HI.add("HI.a");
+         itemsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+             @Override
+             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-        List<String> HI1 = new ArrayList<>();
-        HI1.add("HI1.a");
+                 for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+                    Map<String,Object> map = documentSnapshot.getData();
+                    for(Map.Entry<String,Object> entry : map.entrySet()) {
 
-        List<String> HI2 = new ArrayList<>();
-        HI2.add("HI2.a");
+                        if (entry.getKey().equals("app")) {
+                            for (String item : (ArrayList<String>) entry.getValue()) {
+                                HI.add(item);
+                            }
+                        }
+                        if (entry.getKey().equals("Beverages")) {
+                            for (String item : (ArrayList<String>) entry.getValue()) {
+                                HI2.add(item);
+                            }
+                        }
+                        if (entry.getKey().equals("entres")) {
+                            for (String item : (ArrayList<String>) entry.getValue()) {
+                                HI3.add(item);
+                            }
+                        }
+                    }
+                 }
+             }
+         });
+
+       // HI.add("HI.a");
+
 
         listHash.put(listDataHeader.get(0), HI);
-        listHash.put(listDataHeader.get(1), HI1);
-        listHash.put(listDataHeader.get(2), HI2);
+        listHash.put(listDataHeader.get(1), HI2);
+        listHash.put(listDataHeader.get(2), HI3);
     }
 }
