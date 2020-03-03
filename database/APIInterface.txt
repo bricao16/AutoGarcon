@@ -8,8 +8,8 @@ POST /users
 GET /users/{user_id}/favorites
 -Description: Retrieve the favorite restaurants of a user
 -Response:
-{"favorites": 
-     [
+{
+     "favorites": [
           {
                "restaurant_id": 360,
                "restaurant_name": "DB Grill",
@@ -40,18 +40,15 @@ DELETE /users/{user_id}/favorites?restaurant_id={restaurant_id}
 GET /users/{user_id}/pastorders?restaurant_id={restaurant_id}
 -Description: Retrieve the past orders
 -Response: 
-{"previous": 
-     "restauarnt": "DB Grill",
-     "previous_count": 1,
-     "orders": [
+{
+     "previous": [
           {
                "order_num": 1010241,
                "price": 32.41
-               "foods":[
-               ],
-               
-               "drinks":[
-               ]
+          },
+          {
+               "order_num": 1010052,
+               "price": 51.12
           }
      ]          
 }
