@@ -12,7 +12,7 @@ dishes
   availability                      BOOLEAN
   
 drinks
-  dish_name         KEY             VARCHAR(50)
+  drink_name        KEY             VARCHAR(50)
   restaurant_id     FOREIGN KEY     VARCHAR(50)
   price                             DOUBLE(10,2) // XX,XXX,XXX.XX
   calorie                           INT          
@@ -50,9 +50,14 @@ orders
   order_num         KEY             INT
   restaurant_id                     INT   
   table_num                         INT
-  item                              VARCHAR(50)
-  status                            VARCHAR(10)
-  instruction                       VARCHAR(50
+  status                            VARCHAR(10)// Complete, In Progress, Cancelled,
+  order_date                        TIMESTAMP// "YYYY-MM-DD HH:MM:SS"
+
+orderdetail
+  order_num         KEY             INT
+  item_name                         VARCHAR(50)
+  price                             DOUBLE(10,2)
+  quantity                          INT
 
 alexas
   alexa_id          KEY             INT
