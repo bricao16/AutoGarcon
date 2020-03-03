@@ -1,5 +1,5 @@
-dishes
-  dish_name         KEY             VARCHAR(50)
+foods
+  food_name         KEY             VARCHAR(50)
   restaurant_id     FOREIGN KEY     INT
   price                             DOUBLE(10,2) // XX,XXX,XXX.XX
   tax                               DOUBLE(7,6)  // 1.XXXXXX
