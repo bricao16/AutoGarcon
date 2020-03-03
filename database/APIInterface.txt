@@ -1,56 +1,20 @@
 POST /users
 -Description: Creating an account with AutoGarcon
--Response: user_id
-
-app.get('/users/', (req,res)) => {
-     let query = "SELECT * FROM users";
-     let parameters = [];
-     let first = true;
-     
-     //Handler for id
-     if(req.query.id) {
-          //Put list of ids into array
-          let ids = req.quesry.id.split(",");
-          if (first) {
-               first = false;
-               query = query + "WHERE (username = ?";
-               parameters.push(ids[0];
-               for (let j = 1; j < ids.length; j++) {
-                    query = query + "OR username = ?";
-                    parameters.push(ids[j];
-               } //for
-               query = query + ")";
-          } else {
-               query = query + " AND (username = ?";
-               parameters.push(ids[0]);
-               for(let j = 1; j < ids.length; j++) {
-                    query = query + " OR username = ?";
-                    parameters.push(ids[j]);
-               } //for
-               query = query + ")";
-          } // else
-     } //if(req.query.id)
-           
-     
-     
-     
-     creditals, other info... = req
-          
-     query = "SELECT"..//Look at prepared statements
-     res = db.all(query);
-} //app.get
+-Response:
+{
+     "user_id": 12
+}
 
 GET /users/{user_id}/favorites
 -Description: Retrieve the favorite restaurants of a user
 -Response:
-{"favorites": 
-     "favorites_count": 2,
-     "restaurants": [
+{
+     "favorites": [
           {
                "restaurant_id": 360,
                "restaurant_name": "DB Grill",
                "location": "123 Sesame St",
-               "image": "path/db.jpg"
+               "logo": "path/db.jpg"
                "font": "Times New Roman",
                "color": "Teal"
           },
@@ -58,36 +22,33 @@ GET /users/{user_id}/favorites
                "restaurant_id": 720,
                "restaurant_name": "Alexa Diner",
                "location": "920 Wall St",
-               "image": "path/alexa.jpg",
+               "logo": "path/alexa.jpg",
                "font": "BaskerVille",
                "color": "Blood Orange"
           }
      ]          
 }
 
-POST /users/{user_id}/favorites?restaurantid=restaurant_id
+POST /users/{user_id}/favorites?restaurant_id={restaurant_id}
 -Description: Adding a restaurant to the user's favorites
 -Response: 200
 
-DELETE /users/{user_id}/favorites?restaurantid=restaurant_id
+DELETE /users/{user_id}/favorites?restaurant_id={restaurant_id}
 -Description: Remove a restaurant from a user's favorites
 -Response: 200
 
-GET /users/{user_id}/pastorders
+GET /users/{user_id}/pastorders?restaurant_id={restaurant_id}
 -Description: Retrieve the past orders
 -Response: 
-{"previous": 
-     "restauarnt": "DB Grill",
-     "previous_count": 1,
-     "orders": [
+{
+     "previous": [
           {
                "order_num": 1010241,
                "price": 32.41
-               "foods":[
-               ],
-               
-               "drinks":[
-               ]
+          },
+          {
+               "order_num": 1010052,
+               "price": 51.12
           }
      ]          
 }
@@ -117,43 +78,106 @@ GET /restaurants
           }
 }
 
-GET /restaurants?alexa_id={alexa_id}
--Description: Retrieve the restaurant ID from unique Alexa
--Response: restaurant_id
-
 POST /restaurants
 -Description: Add a new restaurant to AutoGarcon
 -Response: restaurant_id
 
-
-GET /restaurant/{restaurant_id}
--Description: Getting the customization details of a particular restaurant
--Response: JSON object
-
-PUT /restaurant/{restaurant_id}?attr=value[&attr=value]
--Description: Update a list of attributes for a restaurant
--Response: 200
+GET /restaurants?alexa_id={alexa_id}
+-Description: Retrieve the restaurant ID for unique Alexa
+-Response:
+{
+     "restaurant_id": 142
+}
 
 POST /restaurant/{restaurant_id}?alexa_id={alexa_id}&table_num={table_num}
 -Description: Register an alexa to a restaurant
--Response: JSON object
+-Response: 200
 
+PUT /restaurant/{restaurant_id}?attr=value[&attr=value]
+-Description: Modify the information about the restaurant
+-Response: 200
 
-GET /restaurant/{restaurant_id}/food
+GET /restaurant/{restaurant_id}/foods
 -Description: Getting the list of food of a given restaurant
--Response: JSON object
+-Response:
+{
+     "foods": [
+          {
+               "food_name": "3 Almonds",
+               "restaurant_id": 504,
+               "price": 5932.43,
+               "tax": 1.42,
+               "inputs": "Buffalo",
+               "category": "Entree",
+               "breakfast": true,
+               "lunch": false,
+               "dinner": false,
+               "thumbnail": "image src",
+               "availability": false
+          },
+          {
+               "dish_name": "Rueben Sandwich",
+               "restaurant_id": 502,
+               "price": 2.31,
+               "tax": 1.02,
+               "inputs": "",
+               "category": "Appetizer",
+               "breakfast": false,
+               "lunch": true,
+               "dinner": true,
+               "thumbnail": "image src",
+               "availability": true
+          }          
+     ]
+}
+          
      
-GET /restaurant/{restaurant_id}/beverages
+GET /restaurant/{restaurant_id}/drinks
 -Description: Getting the list of beverages of a given restaurant
--Response: JSON object
-     
-GET /restaurant/{restaurant_id}/orders
+-Response:
+{
+     "drinks": [
+          {
+               "drink_name": "Scotch",
+               "restaurant_id": "OrderUp",
+               "price": 0.00,
+               "calorie": 100,
+               "refill": true
+          },
+          {
+               "drink_name": "Student Tears",
+               "restaurant_id": "CompSci Cafe",
+               "price": 4.00,
+               "calorie": 0,
+               "refill": false
+          }
+
+     ]
+}
+
+GET /restaurant/{restaurant_id}/orders?status={In Progress}
 -Description: Retrieve the unfinished orders
--Response: JSON object
+-Response:
+{
+     "orders": [
+          {
+               "order_num": 102,
+               "restaurant_id": 504,
+               "table_num": 5,
+               "status": "In Progress"
+               "order_date": '2018-03-03 13:29:50'
+          }
+     ]
+}
+
 
 POST /restaurant/{restaurant_id}/orders
 -Description: Create a new order
--Response: order_id
+-Response:
+{
+     "order_id": 420
+}
 
-PUT /restaurant/{restaurant_id}/orders/{order_id}
+PUT /restaurant/{restaurant_id}/orders?order_num={order_num}&status={status}
 -Description: Update the status of a order
+-Response: 200

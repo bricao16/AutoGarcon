@@ -1,5 +1,68 @@
-main_menu
-  dish_name     VARCHAR(50)
-  restaurant    VARCHAR(50)
-  picture       BLOB  
-  instock       BOOLEAN
+foods
+  food_name         KEY             VARCHAR(50)
+  restaurant_id     FOREIGN KEY     INT
+  price                             DOUBLE(10,2) // XX,XXX,XXX.XX
+  tax                               DOUBLE(7,6)  // 1.XXXXXX
+  inputs                            VARCHAR(50)
+  category                          VARCHAR(50)
+  breakfast                         BOOL
+  lunch                             BOOL
+  dinner                            BOOL
+  thumbnail                         BLOB  
+  availability                      BOOLEAN
+  
+drinks
+  drink_name        KEY             VARCHAR(50)
+  restaurant_id     FOREIGN KEY     VARCHAR(50)
+  price                             DOUBLE(10,2) // XX,XXX,XXX.XX
+  calorie                           INT          
+  refill                            BOOL
+
+restaurants
+  restaurant_id     KEY             INT
+  restaurant_name                   VARCHAR(50)
+  restaurant_addr                   VARCHAR(50)
+  logo                              BLOB
+  font                              VARCHAR(50)
+  color                             VARCHAR(50)
+  
+managers
+  name              KEY             VARCHAR(50)
+  contact_num       KEY             INT
+  type                              VARCHAR(50)
+  restaurant_id                     INT
+
+users
+  username          KEY             VARCHAR(50)
+  first_name                        VARCHAR(50)
+  last_name                         VARCHAR(50)
+  password                          VARCHAR(50)
+  
+favorites
+  username          KEY             VARCHAR(50)
+  restaurant_id                     INT
+
+pastorders
+  username          KEY             VARCHAR(50)
+  order_num         KEY             INT
+
+orders
+  order_num         KEY             INT
+  restaurant_id                     INT   
+  table_num                         INT
+  status                            VARCHAR(10)// Complete, In Progress, Cancelled,
+  order_date                        TIMESTAMP// "YYYY-MM-DD HH:MM:SS"
+
+orderdetail
+  order_num         KEY             INT
+  item_name                         VARCHAR(50)
+  price                             DOUBLE(10,2)
+  quantity                          INT
+
+alexas
+  alexa_id          KEY             INT
+  restaurant_id                     VARCHAR(50)
+  table_num                         INT
+  
+
+  
