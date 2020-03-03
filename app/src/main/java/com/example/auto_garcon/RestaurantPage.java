@@ -7,13 +7,21 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -25,6 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,11 +74,74 @@ public class RestaurantPage extends AppCompatActivity implements NavigationView.
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-
         listView = findViewById(R.id.menu_list);
         initData();
         listAdapter = new ExpandableMenuAdapater(this, listDataHeader, listHash);
         listView.setAdapter(listAdapter);
+
+
+
+
+     /*   SwipeMenuListView listView2 = findViewById(R.id.list_view);
+        ArrayList<String> list = new ArrayList<>();
+        list.add("HI");
+
+        ArrayAdapter adapter = new ArrayAdapter(RestaurantPage.this, android.R.layout.simple_list_item_1, list);
+        listView2.setAdapter(adapter);
+
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+                // create "open" item
+                SwipeMenuItem openItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
+                        0xCE)));
+                // set item width
+                openItem.setWidth(170);
+                // set item title
+                openItem.setTitle("Open");
+                // set item title fontsize
+                openItem.setTitleSize(18);
+                // set item title font color
+                openItem.setTitleColor(Color.WHITE);
+                // add to menu
+                menu.addMenuItem(openItem);
+
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                        0x3F, 0x25)));
+                // set item width
+                deleteItem.setWidth(170);
+                // set a icon
+                deleteItem.setIcon(R.drawable.ic_shopping_cart);
+                // add to menu
+                menu.addMenuItem(deleteItem);
+            }
+        };
+
+        listView2.setMenuCreator(creator);
+
+        listView2.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                switch (index) {
+                    case 0:
+                        // open
+                        break;
+                    case 1:
+                        // delete
+                        break;
+                }
+                // false : close the menu; true : not close the menu
+                return false;
+            }
+        });*/
 
     }
 
@@ -111,7 +183,6 @@ public class RestaurantPage extends AppCompatActivity implements NavigationView.
     }
 
     private void initData() {
-
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
 
@@ -153,8 +224,6 @@ public class RestaurantPage extends AppCompatActivity implements NavigationView.
                  }
              }
          });
-
-       // HI.add("HI.a");
 
 
         listHash.put(listDataHeader.get(0), HI);
