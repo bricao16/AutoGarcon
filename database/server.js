@@ -56,8 +56,6 @@ app.get('/menu', (req, res) =>
             res.status(500).send('Error: could not retrieve data from database');
         }   //if
         else {
-            console.log(rows);
-            
         	//Build JSON object:
         	let response = {};
 
