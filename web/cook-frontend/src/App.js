@@ -7,7 +7,7 @@ import MTasks from "./components/MTasks"
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
+import Login from "./components/Login"
 import {
     BrowserRouter as Router,
     Switch,
@@ -45,7 +45,7 @@ function App() {
                     <Manager />
                   </Route>
                 </Switch>
-                <footer style={footerStyle}>Powered By Auto Garcon</footer>
+                <footer style={footerStyle}>Powered by Auto Garcon</footer>
               </div>
             </Col>
 
@@ -61,7 +61,7 @@ export default App;
 function Home() {
   return (
     <div>
-      <h2>Home Page</h2>
+        <Login/>
     </div>
   );
 }
