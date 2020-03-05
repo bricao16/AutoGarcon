@@ -1,68 +1,70 @@
-foods
-  food_name         KEY             VARCHAR(50)
+menu
+  item_id           KEY             INT
   restaurant_id     FOREIGN KEY     INT
+  item_name                         VARCHAR(50)  
+  calorie_num                       INT
+  category                          VARCHAR(50) // Alcohol, Appetizer, Dessert, Drink, Entree, Food, Refillable Drink
+  image                             BLOB  
+  instock                           BOOLEAN
   price                             DOUBLE(10,2) // XX,XXX,XXX.XX
-  tax                               DOUBLE(7,6)  // 1.XXXXXX
-  inputs                            VARCHAR(50)
-  category                          VARCHAR(50)
-  breakfast                         BOOL
-  lunch                             BOOL
-  dinner                            BOOL
-  thumbnail                         BLOB  
-  availability                      BOOLEAN
-  
-drinks
-  drink_name        KEY             VARCHAR(50)
-  restaurant_id     FOREIGN KEY     VARCHAR(50)
-  price                             DOUBLE(10,2) // XX,XXX,XXX.XX
-  calorie                           INT          
-  refill                            BOOL
 
+availability
+  item_id           FOREIGN KEY         
+  time_name         FPREIGN KEY
+  
+times
+  time_name         KEY             VARCHAR(50) // Breakfast, Dinner, Lunch, Overnight
+  restaurant_id     FOREIGN KEY     INT
+  start                             INT
+  end                               INT
+  
 restaurants
   restaurant_id     KEY             INT
   restaurant_name                   VARCHAR(50)
   restaurant_addr                   VARCHAR(50)
   logo                              BLOB
   font                              VARCHAR(50)
-  color                             VARCHAR(50)
+  color_scheme                      VARCHAR(50)
   
-managers
-  name              KEY             VARCHAR(50)
-  contact_num       KEY             INT
-  type                              VARCHAR(50)
-  restaurant_id                     INT
-
-users
-  username          KEY             VARCHAR(50)
+staff
+  staff_id          KEY             INT
+  restaurant_id     FOREIGN KEY     INT
+  position                          VARCHAR(50) // Cook, Manager
+  password                          VARCHAR(50)
+  salt                              VARCHAR(50)
+  email                             VARCHAR(50)
+  
+customers
+  customer_id       KEY             INT
   first_name                        VARCHAR(50)
   last_name                         VARCHAR(50)
   password                          VARCHAR(50)
+  salt                              VARCHAR(50)
+  email                             VARCHAR(50)
   
 favorites
   username          KEY             VARCHAR(50)
-  restaurant_id                     INT
-
-pastorders
-  username          KEY             VARCHAR(50)
-  order_num         KEY             INT
+  restaurant_id     KEY             INT
 
 orders
   order_num         KEY             INT
-  restaurant_id                     INT   
+  restaurant_id     FOREIGN KEY     INT
+  customer_id           FOREIGN KEY     INT
+  order_status                      VARCHAR(10) // Cancelled, Complete, In Progress, Pending 
+  order_date                        TIMESTAMP // "YYYY-MM-DD HH:MM:SS"
   table_num                         INT
-  status                            VARCHAR(10)// Complete, In Progress, Cancelled,
-  order_date                        TIMESTAMP// "YYYY-MM-DD HH:MM:SS"
 
-orderdetail
+orderdetails
   order_num         KEY             INT
-  item_name                         VARCHAR(50)
-  price                             DOUBLE(10,2)
+  item_id           FOREIGN KEY     INT
   quantity                          INT
 
 alexas
   alexa_id          KEY             INT
-  restaurant_id                     VARCHAR(50)
+  restaurant_id     FOREIGN KEY     INT
   table_num                         INT
-  
 
-  
+services
+  restaurant_id     FOREIGN KEY     INT
+  table_num         FOREIGN KEY     INT
+  service_status                    VARCHAR(50) // Bill, Help, Good

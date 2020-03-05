@@ -14,21 +14,24 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var js2xmlparser = require('js2xmlparser');
 var mysql = require('mysql');
+var dotenv = require('dotenv');
 
 var app = express();
-var port = process.argv[2];
 
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}));
+dotenv.config();
 
+//Create db connection
 var db = mysql.createConnection({
-    host        : 'tutorial-db-instance.cn7vqdli9xnw.us-east-1.rds.amazonaws.com',
-    port        : '3306',
-    user        : '',
-    password    : ''
-});
+    host        : process.env.DB_HOST,
+    port        : process.env.DB_PORT,
+    user        : process.env.DB_USER,
+    password    : process.env.DB_PASS
+}); //createConnection
 
+//Connect to db
 db.connect((err) => {
     if (err) {
         throw err;
@@ -53,8 +56,6 @@ app.get('/menu', (req, res) =>
             res.status(500).send('Error: could not retrieve data from database');
         }   //if
         else {
-            console.log(rows);
-            
         	//Build JSON object:
         	let response = {};
 
