@@ -84,18 +84,18 @@ function Home() {
     <div>
 
             <div style={homeStyle}>
-              <h2> Welcome to Auto Garcon </h2>
+              <h2> Welcome to Auto-Garcon </h2>
               <br/>
               <ul style={{'list-style':'none'}}>
                 <li><Link to='/login_manager'> 
                   <button type="button"  style = {buttonStyle}>
-                      Manager
+                      Manager Portal
                   </button>
                 </Link></li>
                 <br/>
                 <li><Link to='/login_cook'>
                   <button type="button" style = {buttonStyle}>
-                      Cook
+                      Cook Portal
                   </button>
                 </Link></li>
               </ul>
@@ -153,7 +153,8 @@ var homeStyle = {
 };
 var buttonStyle = {
   'width': '30vw',
-  'fontWeight': '300',
+  'fontWeight': 'bold',
+  'fontSize': '150%',
   'border': 'solid 3px',
   'color': '#a8a7a',
   'background-color': 'rgba(11, 101, 138,.75)',
