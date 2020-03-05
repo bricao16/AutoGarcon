@@ -15,8 +15,8 @@ availability
 times
   time_name         KEY             VARCHAR(50) // Breakfast, Dinner, Lunch, Overnight, All Day
   restaurant_id     FOREIGN KEY     INT
-  start                             INT
-  end                               INT
+  start                             TIME
+  end                               TIME
   
 restaurants
   restaurant_id     KEY             INT
@@ -26,6 +26,8 @@ restaurants
   font                              VARCHAR(50)
   color_scheme                      VARCHAR(50)
   phone_num                         INT
+  opening_time                      TIME
+  closing_time                      TIME
   
 staff
   staff_id          KEY             VARCHAR(50)
