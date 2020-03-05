@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import headerStyle from './components/Header';
 import Nav from 'react-bootstrap/Nav';
 import Header from "./components/Header"
 import Orders from "./components/Orders"
@@ -16,6 +15,19 @@ import {
     Link,
     Route
   } from "react-router-dom";
+  
+var req  = new XMLHttpRequest();
+
+var menu;
+
+req.open("GET", "http://50.19.176.137:8000/menu", true);
+req.send();
+
+req.onload = function(){
+	//console.log(JSON.parse(req.response));
+	menu = JSON.parse(req.response);
+	console.log(menu);
+}
 
 function App() {
   return (
@@ -68,21 +80,25 @@ export default App;
 
 function Home() {
   return (
-    <div style={homeStyle}>
-      <h2> Welcome to Auto Garcon </h2>
-      <br/>
-      <div style={{'list-style':'none'}}>
-        <li><Link to='/login_manager'> 
-          <button type="button"  style = {buttonStyle}>
-              Manager
-          </button>
-        </Link></li>
+    <div>
+
+      <div style={homeStyle}>
+        <h2> Welcome to Auto-Garcon </h2>
         <br/>
-        <li><Link to='/login_cook'>
-          <button type="button" style = {buttonStyle}>
-              Cook
-          </button>
-        </Link></li>
+        <ul style={{'list-style':'none'}}>
+          <li><Link to='/login_manager'> 
+            <button type="button"  style = {buttonStyle}>
+                Manager Portal
+            </button>
+          </Link></li>
+          <br/>
+          <li><Link to='/login_cook'>
+            <button type="button" style = {buttonStyle}>
+                Cook Portal
+            </button>
+          </Link></li>
+        </ul>
+
       </div>
 
     </div>
@@ -135,7 +151,8 @@ var homeStyle = {
 };
 var buttonStyle = {
   'width': '30vw',
-  'fontWeight': '300',
+  'fontWeight': 'bold',
+  'fontSize': '150%',
   'border': 'solid 3px',
   'color': '#a8a7a',
   'background-color': 'rgba(11, 101, 138,.75)',
