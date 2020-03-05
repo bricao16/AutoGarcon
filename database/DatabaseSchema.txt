@@ -13,7 +13,7 @@ availability
   time_name         FPREIGN KEY
   
 times
-  time_name         KEY             VARCHAR(50) // Breakfast, Dinner, Lunch, Overnight
+  time_name         KEY             VARCHAR(50) // Breakfast, Dinner, Lunch, Overnight, All Day
   restaurant_id     FOREIGN KEY     INT
   start                             INT
   end                               INT
@@ -25,17 +25,19 @@ restaurants
   logo                              BLOB
   font                              VARCHAR(50)
   color_scheme                      VARCHAR(50)
+  phone_num                         INT
   
 staff
-  staff_id          KEY             INT
+  staff_id          KEY             VARCHAR(50)
   restaurant_id     FOREIGN KEY     INT
+  name                              VARCHAR(50)
   position                          VARCHAR(50) // Cook, Manager
   password                          VARCHAR(50)
   salt                              VARCHAR(50)
   email                             VARCHAR(50)
   
 customers
-  customer_id       KEY             INT
+  customer_id       KEY             VARCHAR(50)
   first_name                        VARCHAR(50)
   last_name                         VARCHAR(50)
   password                          VARCHAR(50)
