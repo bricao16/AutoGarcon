@@ -17,7 +17,6 @@ import {
     Route
   } from "react-router-dom";
   
-var fs = require('fs');  
 var req  = new XMLHttpRequest();
 
 var menu;
