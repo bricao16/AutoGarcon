@@ -6,6 +6,7 @@ class Header extends React.Component {
     render () {
         // This could be put in a CSS file
         const style = {
+            backgroundColor: '#ffffff',
             display: "flex",
             fontSize: "2em",
             padding: "5px 0 5px 10px",

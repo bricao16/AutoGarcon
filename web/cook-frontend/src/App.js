@@ -9,7 +9,6 @@ import CLogin from "./components/CLogin";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Login from "./components/Login"
 import {
     BrowserRouter as Router,
     Switch,
@@ -69,28 +68,22 @@ export default App;
 
 function Home() {
   return (
-    <div>
-
-            <div style={homeStyle}>
-              <h2> Welcome to Auto Garcon </h2>
-              <br/>
-              <ul style={{'list-style':'none'}}>
-                <li><Link to='/login_manager'> 
-                  <button type="button"  style = {buttonStyle}>
-                      Manager
-                  </button>
-                </Link></li>
-                <br/>
-                <li><Link to='/login_cook'>
-                  <button type="button" style = {buttonStyle}>
-                      Cook
-                  </button>
-                </Link></li>
-              </ul>
-
-              <hr />
-
-            </div>
+    <div style={homeStyle}>
+      <h2> Welcome to Auto Garcon </h2>
+      <br/>
+      <div style={{'list-style':'none'}}>
+        <li><Link to='/login_manager'> 
+          <button type="button"  style = {buttonStyle}>
+              Manager
+          </button>
+        </Link></li>
+        <br/>
+        <li><Link to='/login_cook'>
+          <button type="button" style = {buttonStyle}>
+              Cook
+          </button>
+        </Link></li>
+      </div>
 
     </div>
   );
@@ -131,12 +124,9 @@ var footerStyle = {
   'text-align': 'right'
 }
 var homeStyle = {
-  'height' : '100vh',
   'fontWeight': '300',
-  'width' : '80vw',
   'text-align' : 'center',
   'list-style': 'none',
-  'background-color': '#ffffff',
   'text-size': '50pt'
 };
 var buttonStyle = {
@@ -147,5 +137,4 @@ var buttonStyle = {
   'background-color': 'rgba(11, 101, 138,.75)',
   'border-color' : 'rgba(11, 101, 138)',
   'height' : '7vh'
-  
 }
