@@ -4,7 +4,8 @@ import Nav from 'react-bootstrap/Nav';
 import Header from "./components/Header"
 import Orders from "./components/Orders"
 import MTasks from "./components/MTasks"
-import HomePage from "./components/Home"
+import MLogin from "./components/MLogin";
+import CLogin from "./components/CLogin";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -12,6 +13,7 @@ import Login from "./components/Login"
 import {
     BrowserRouter as Router,
     Switch,
+    Link,
     Route
   } from "react-router-dom";
 
@@ -45,6 +47,12 @@ function App() {
                   <Route path="/manager">
                     <Manager />
                   </Route>
+                  <Route path="/login_manager">
+                    <MLogin/>
+                  </Route>
+                  <Route path="/login_cook">
+                    <CLogin/>
+                  </Route>
                 </Switch>
                 <footer style={footerStyle}>Powered by Auto Garcon</footer>
               </div>
@@ -62,7 +70,28 @@ export default App;
 function Home() {
   return (
     <div>
-        <HomePage/>
+
+            <div style={homeStyle}>
+              <h2> Welcome to Auto Garcon </h2>
+              <br/>
+              <ul style={{'list-style':'none'}}>
+                <li><Link to='/login_manager'> 
+                  <button type="button"  style = {buttonStyle}>
+                      Manager
+                  </button>
+                </Link></li>
+                <br/>
+                <li><Link to='/login_cook'>
+                  <button type="button" style = {buttonStyle}>
+                      Cook
+                  </button>
+                </Link></li>
+              </ul>
+
+              <hr />
+
+            </div>
+
     </div>
   );
 }
@@ -100,4 +129,23 @@ var footerStyle = {
   'padding-bottom': '5px',
   'padding-right': '12px',
   'text-align': 'right'
+}
+var homeStyle = {
+  'height' : '100vh',
+  'fontWeight': '300',
+  'width' : '80vw',
+  'text-align' : 'center',
+  'list-style': 'none',
+  'background-color': '#ffffff',
+  'text-size': '50pt'
+};
+var buttonStyle = {
+  'width': '30vw',
+  'fontWeight': '300',
+  'border': 'solid 3px',
+  'color': '#a8a7a',
+  'background-color': 'rgba(11, 101, 138,.75)',
+  'border-color' : 'rgba(11, 101, 138)',
+  'height' : '7vh'
+  
 }
