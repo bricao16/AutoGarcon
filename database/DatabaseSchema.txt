@@ -13,7 +13,7 @@ availability
   time_name         FPREIGN KEY
   
 times
-  time_name         KEY             VARCHAR(50) // Breakfast, Dinner, Lunch, Overnight
+  time_name         KEY             VARCHAR(50) // Breakfast, Dinner, Lunch, Overnight, All Day
   restaurant_id     FOREIGN KEY     INT
   start                             INT
   end                               INT
@@ -30,6 +30,7 @@ restaurants
 staff
   staff_id          KEY             INT
   restaurant_id     FOREIGN KEY     INT
+  name                              VARCHAR(50)
   position                          VARCHAR(50) // Cook, Manager
   password                          VARCHAR(50)
   salt                              VARCHAR(50)
