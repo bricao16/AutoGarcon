@@ -25,6 +25,7 @@ restaurants
   logo                              BLOB
   font                              VARCHAR(50)
   color_scheme                      VARCHAR(50)
+  phone_num                         INT
   
 staff
   staff_id          KEY             INT
