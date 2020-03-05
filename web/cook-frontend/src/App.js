@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Header from "./components/Header"
 import Orders from "./components/Orders"
 import MTasks from "./components/MTasks"
+import HomePage from "./components/Home"
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -61,7 +62,7 @@ export default App;
 function Home() {
   return (
     <div>
-      <h2>Home Page</h2>
+      <HomePage/>
     </div>
   );
 }
