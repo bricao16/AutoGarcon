@@ -16,6 +16,20 @@ import {
     Link,
     Route
   } from "react-router-dom";
+  
+var fs = require('fs');  
+var req  = new XMLHttpRequest();
+
+var menu;
+
+req.open("GET", "http://50.19.176.137:8000/menu", true);
+req.send();
+
+req.onload = function(){
+	//console.log(JSON.parse(req.response));
+	menu = JSON.parse(req.response);
+	console.log(menu);
+}
 
 function App() {
  return (
@@ -57,7 +71,6 @@ function App() {
                 <footer style={footerStyle}>Powered by Auto Garcon</footer>
               </div>
             </Col>
-
           </Row>
         </Container>
       </div>
@@ -113,7 +126,7 @@ function Manager() {
 }
 
 var backgroundStyle = {
-  'background-color': '#f1f1f1'
+  'background-color': '#ffffff'
 }
 
 var sectionStyle = {
