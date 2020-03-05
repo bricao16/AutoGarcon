@@ -28,7 +28,7 @@ restaurants
   phone_num                         INT
   
 staff
-  staff_id          KEY             INT
+  staff_id          KEY             VARCHAR(50)
   restaurant_id     FOREIGN KEY     INT
   name                              VARCHAR(50)
   position                          VARCHAR(50) // Cook, Manager
