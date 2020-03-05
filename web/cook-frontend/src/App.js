@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import headerStyle from './components/Header';
 import Nav from 'react-bootstrap/Nav';
 import Header from "./components/Header"
 import Orders from "./components/Orders"
@@ -17,12 +18,12 @@ import {
   } from "react-router-dom";
 
 function App() {
- return (
+  return (
     <Router>
       <Header/>
       <div style={backgroundStyle}>
-        <Container fluid>
-          <Row>
+        <Container>
+          <Row style={{'min-height': '85vh'}}>
             <Col sm={4} className="pt-3 px-3" style={navColStyle}>
               <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
                 <Nav.Link href="/">Home</Nav.Link>
@@ -53,13 +54,12 @@ function App() {
                     <CLogin/>
                   </Route>
                 </Switch>
-                <footer style={footerStyle}>Powered by Auto Garcon</footer>
               </div>
             </Col>
-
           </Row>
         </Container>
       </div>
+      <footer style={footerStyle}>Powered by Auto Garcon</footer>
     </Router>      
   );
 }
@@ -106,7 +106,9 @@ function Manager() {
 }
 
 var backgroundStyle = {
-  'background-color': '#f1f1f1'
+  'background-color': '#f1f1f1',
+  'flex-grow': '1',
+  'height': '100%'
 }
 
 var sectionStyle = {
@@ -119,8 +121,10 @@ var navColStyle = {
 }
 
 var footerStyle = {
+  'background-color': '#f1f1f1',
   'padding-bottom': '5px',
   'padding-right': '12px',
+  'padding-top': '12px',
   'text-align': 'right'
 }
 var homeStyle = {
