@@ -37,7 +37,7 @@ staff
   email                             VARCHAR(50)
   
 customers
-  customer_id       KEY             INT
+  customer_id       KEY             VARCHAR(50)
   first_name                        VARCHAR(50)
   last_name                         VARCHAR(50)
   password                          VARCHAR(50)
