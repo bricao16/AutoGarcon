@@ -62,7 +62,7 @@ export default App;
 function Home() {
   return (
     <div>
-        <Login/>
+        <HomePage/>
     </div>
   );
 }
