@@ -60,12 +60,9 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
-
         /*DB STUFF*/
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         // Create a new user with a first and last name
         Map<String, Object> user = new HashMap<>();
         // Add a new document with a generated ID
@@ -84,6 +81,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                     }
                 });
 
+        //get data
         db.collection("users")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
