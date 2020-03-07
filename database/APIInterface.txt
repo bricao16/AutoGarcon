@@ -1,11 +1,19 @@
-POST /users
+PUT /customers
 -Description: Creating an account with AutoGarcon
 -Response:
 {
      "user_id": 12
 }
 
-GET /users/{user_id}/favorites
+POST /customers/{customer_id}/login
+-Description: A customer logging in
+-Response:
+{
+     "session_id": 48201,
+     "restaurant_id": 124
+}
+
+GET /customers/{customer_id}/favorites
 -Description: Retrieve the favorite restaurants of a user
 -Response:
 {
@@ -14,6 +22,9 @@ GET /users/{user_id}/favorites
                "restaurant_id": 360,
                "restaurant_name": "DB Grill",
                "location": "123 Sesame St",
+               "opening_time": "08:00:00",
+               "closing_time": "22:00:00",
+               "phone_number": 6513248592,
                "logo": "path/db.jpg"
                "font": "Times New Roman",
                "color": "Teal"
@@ -22,6 +33,9 @@ GET /users/{user_id}/favorites
                "restaurant_id": 720,
                "restaurant_name": "Alexa Diner",
                "location": "920 Wall St",
+               "opening_time": "11:00:00",
+               "closing_time": "23:00:00",
+               "phone_number": 6124878467,
                "logo": "path/alexa.jpg",
                "font": "BaskerVille",
                "color": "Blood Orange"
@@ -29,31 +43,33 @@ GET /users/{user_id}/favorites
      ]          
 }
 
-POST /users/{user_id}/favorites?restaurant_id={restaurant_id}
+POST /customers/{customer_id}/favorites?restaurant_id={restaurant_id}
 -Description: Adding a restaurant to the user's favorites
 -Response: 200
 
-DELETE /users/{user_id}/favorites?restaurant_id={restaurant_id}
+DELETE /customers/{customer_id}/favorites?restaurant_id={restaurant_id}
 -Description: Remove a restaurant from a user's favorites
 -Response: 200
 
-GET /users/{user_id}/pastorders?restaurant_id={restaurant_id}
--Description: Retrieve the past orders
--Response: 
+
+PUT /staff
+-Description: Creating a staff account for AutoGarcon
+-Response:
 {
-     "previous": [
-          {
-               "order_num": 1010241,
-               "price": 32.41
-          },
-          {
-               "order_num": 1010052,
-               "price": 51.12
-          }
-     ]          
+     "staff_id": "MarSue",
+     "name": "Mary Sue",
+     "contact_num": 9210921929,
+     "email": "mary.sue@yahoo.com"
 }
 
-
+POST /staff/{staff_id}/login
+-Description: Retrieving data from a staff account
+-Response:
+{
+     "session_id": 43153,
+     "restaurant_id": 124,
+     "name": "Mary Sue"
+}
 
 GET /restaurants
 -Description: Retrieve data about all restaurants
