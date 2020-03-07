@@ -10,8 +10,7 @@ POST /customers/{customer_id}/login
 -Response:
 {
      "session_id": 48201,
-     "first_name": Aaron,
-     "last_name": Boy
+     "restaurant_id": 124
 }
 
 GET /customers/{customer_id}/favorites
