@@ -52,21 +52,6 @@ DELETE /customers/{customer_id}/favorites?restaurant_id={restaurant_id}
 -Description: Remove a restaurant from a user's favorites
 -Response: 200
 
-GET /customers/{customer_id}/pastorders?restaurant_id={restaurant_id}
--Description: Retrieve the past orders
--Response: 
-{
-     "previous": [
-          {
-               "order_num": 1010241,
-               "price": 32.41
-          },
-          {
-               "order_num": 1010052,
-               "price": 51.12
-          }
-     ]          
-}
 
 PUT /staff
 -Description: Creating a staff account for AutoGarcon
