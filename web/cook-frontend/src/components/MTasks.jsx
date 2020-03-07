@@ -4,6 +4,15 @@ import Container from 'react-bootstrap/Container';
 import Menu from './Menu';
 import Stats from './MStats';
 import Hours from './MHours';
+import Header from './Header';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Nav from 'react-bootstrap/Nav';
+import {
+    Switch,
+    Route
+  } from "react-router-dom";
+
 class MTasks extends React.Component{
 
     constructor(props) {
@@ -13,18 +22,9 @@ class MTasks extends React.Component{
                 {type: "Breakfast", items: [{item: "Toast"}, {item: "Eggs"}, {item: "Bacon"}]},
                 {type: "Lunch",items: [{item: "Hamburger"}, {item: "Fries"}, {item: "Salad"}]},
                 {type: "Dinner",items: [{item: "Pasta"}, {item: "Chicken"}, {item: "Sandwich"}]}
-            ],
-            hours: [
-                {type: "Weekday", items: [{open: "7:00 am", close: "10:00 pm"}]}
-            ],
-            statistics: [
-                {type: "Highest Selling Breakfast", items: [{quantity: 50, title: "Eggs"}]},
-                {type: "Highest Selling Lunch", items: [{quantity: 75, title: "Fries"}]},
-                {type: "Highest Selling Dinner", items: [{quantity: 150, title: "Pasta"}]}
-                ]
+            ]
         };
     }
-
     renderMenu(){
         return this.state.menu.map((item, key) =>
             <Menu key={key} id={key} menuItem={item}/> 
@@ -41,28 +41,65 @@ class MTasks extends React.Component{
             <Hours key={key} id={key} hoursType={item}/>
         );
     }
+    renderHeader(){
+        return <Header/>;
+    }
 
     render() {
         return (
+            <Container>
+              {this.renderHeader()}
+              <div style={backgroundStyle}>
+                <Container fluid>
+                  <Row>
+                    <Col sm={4} className="pt-3 px-3" style={navColStyle}>
+                      <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
+                        <Nav.Link href="/manager" onClick={this.renderMenu}>Menu</Nav.Link>
+                        <Nav.Link href="/hours">Hours</Nav.Link>
+                        <Nav.Link href="/statistics">Statistics</Nav.Link>
+                        <Nav.Link eventKey="disabled" disabled>
+                          Analytics
+                        </Nav.Link>
+                      </Nav>
+                    </Col>
 
-            <Container fluid>
-                <div style={managerStyle}>
-                    {this.renderMenu()}
-                    {this.renderStats()}
-                    {this.renderHours()}
-                </div>
-            </Container>
-        )
+                        <Col className="pt-3 px-3">
+                        <Container fluid>
+                            <Switch>
+                              <Route exact path="/manager">
+                                <Menu />
+                              </Route>
+                              <Route path="/hours">
+                                <Hours />
+                              </Route>
+                              <Route path="/statistics">
+                                <Stats />
+                              </Route>
+                            </Switch>
+                        </Container>
+
+                    </Col>
+                </Row>
+            </Container> 
+        </div>
+    </Container>
+    );
     }
 }
 
-const managerStyle = {
-    display: "flex",
-    fontSize: "1.2em",
-    justifyContent: "space-between",
-    margin: "30px",
-    marginTop: "0",
-    flexWrap: "wrap"
-};
+var backgroundStyle = {
+  'background-color': '#f1f1f1'
+}
+
+var sectionStyle = {
+  'background-color': '#ffffff',
+  'height': '100%'
+}
+
+var navColStyle = {
+  'max-width': '200px',
+  'a.link':'black'
+}
+
 
 export default MTasks;

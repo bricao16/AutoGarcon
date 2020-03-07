@@ -1,38 +1,54 @@
 import React from "react";
+//import Order from "./Order";
+import Container from 'react-bootstrap/Container';
+import HoursProp from './HoursProp';
 import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
 
-function Menu(props) {
-    return (
-        <Col sm={4} className="p-3">
 
-            <Card className="text-center">
-                <Card.Header style={cardHeaderStyle}>Hours</Card.Header>
-                <Card.Body>
-                   { <Card.Title>{props.hoursType.type}</Card.Title>}
-                    
-                    {
-                    props.hoursType.items.map((item, key) => (
-                        <div style={itemStyle}>
-                            <p style={{margin: "0", padding: "0.8em"}}>open: {item.open}</p>
-                            <p style={{margin: "0", padding: "0.8em"}}>close: {item.close}</p>
-                        </div>
-                    ))
-                }
-                </Card.Body>
-            </Card>
-        </Col>
-    )
+class MHours extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            hours: [
+                {type: "Weekday", items: [{open: "7:00 am", close: "10:00 pm"}]}
+            ],
+        };
+    }
+    renderHours(){
+        return this.state.hours.map((item, key) =>
+            <HoursProp key={key} id={key} hoursType={item}/>
+        );
+    }
+    render() {
+        return (
+            <Container>
+              <div style={backgroundStyle}>
+             <Container fluid>
+                <Col className="pt-3 px-3">
+                        <Container fluid>
+                            <div style={managerStyle}>
+                                {this.renderHours()}
+                            </div>
+                        </Container>
+                    </Col>
+            </Container> 
+        </div>
+    </Container>
+        );
+    }
 }
 
-const itemStyle = {
+const managerStyle = {
     display: "flex",
-    borderBottom: "grey solid 1px",
+    fontSize: "1.2em",
+    justifyContent: "space-between",
+    margin: "30px",
+    marginTop: "0",
+    flexWrap: "wrap"
 };
+var backgroundStyle = {
+  'background-color': '#f1f1f1'
+}
 
-var cardHeaderStyle = {
-    'background-color': '#0b658a',
-    'color': '#ffffff'
-};
-
-export default Menu;
+export default MHours;

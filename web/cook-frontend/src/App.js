@@ -1,7 +1,5 @@
 import React from 'react';
 import './App.css';
-import Nav from 'react-bootstrap/Nav';
-import Header from "./components/Header"
 import Orders from "./components/Orders"
 import MTasks from "./components/MTasks"
 import MLogin from "./components/MLogin";
@@ -9,7 +7,6 @@ import CLogin from "./components/CLogin";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Login from "./components/Login"
 import {
     BrowserRouter as Router,
     Switch,
@@ -20,11 +17,11 @@ import {
 function App() {
  return (
     <Router>
-      <Header/>
+      {/*<Header/>*/}
       <div style={backgroundStyle}>
         <Container fluid>
           <Row>
-            <Col sm={4} className="pt-3 px-3" style={navColStyle}>
+           {/*<Col sm={4} className="pt-3 px-3" style={navColStyle}>
               <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
                 <Nav.Link href="/">Home</Nav.Link>
                 <Nav.Link href="/cook">Cook</Nav.Link>
@@ -33,7 +30,7 @@ function App() {
                   Analytics
                 </Nav.Link>
               </Nav>
-            </Col>
+            </Col>*/}
 
             <Col className="pt-3 px-3">
               <div className="rounded" style={sectionStyle}>
@@ -53,6 +50,14 @@ function App() {
                   <Route path="/login_cook">
                     <CLogin/>
                   </Route>
+                  <Route path="/statistics">
+                    <MTasks/>
+                  </Route>
+                  <Route path="/menu" 
+                        render={(props) => <MTasks {...props} content={"menu"}/>} />
+           
+                  <Route path="/hours" 
+                  render={(props) => <MTasks {...props} content={"hours"}/>} />
                 </Switch>
                 <footer style={footerStyle}>Powered by Auto Garcon</footer>
               </div>
@@ -119,10 +124,6 @@ var backgroundStyle = {
 var sectionStyle = {
   'background-color': '#ffffff',
   'height': '100%'
-}
-
-var navColStyle = {
-  'max-width': '200px'
 }
 
 var footerStyle = {
