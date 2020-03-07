@@ -1,5 +1,6 @@
 import React from "react";
 import Order from "./Order";
+import Container from 'react-bootstrap/Container';
 
 class Orders extends React.Component{
 
@@ -25,9 +26,11 @@ class Orders extends React.Component{
     render() {
         return (
             // <Order order={{table: 1}} />
-            <div style={ordersStyle}>
-                {this.renderOrders()}
-            </div>
+            <Container fluid>
+                <div style={ordersStyle}>
+                    {this.renderOrders()}
+                </div>
+            </Container>
         )
     }
 }

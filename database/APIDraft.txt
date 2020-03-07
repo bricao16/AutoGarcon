@@ -1,9 +1,0 @@
-Resources:
--Users
--Restaurants
-  +Menu
--Orders
-
-
-/users?id={user_id}
-
