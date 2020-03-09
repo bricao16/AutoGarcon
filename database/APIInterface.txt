@@ -1,69 +1,101 @@
+---------------------
 PUT /customers
+---------------------
 -Description: Creating an account with AutoGarcon
--Response:
+-Parameters:
 {
-     "user_id": 12
+     "customer_id": "UnixOverLinux",
+     "first_name": "John",
+     "last_name": "Winter",
+     "password": "Snow follows Winter",
+     "email": "winteriscoming@aol.com"
 }
+-Response: 200
 
+---------------------
 POST /customers/{customer_id}/login
+---------------------
 -Description: A customer logging in
+-Parameters:
+{
+     "customer_id": "BroadwayBuff",
+     "password": "LalaLand"
+}
 -Response:
 {
      "session_id": 48201,
      "restaurant_id": 124
 }
 
+---------------------
 GET /customers/{customer_id}/favorites
+---------------------
 -Description: Retrieve the favorite restaurants of a user
 -Response:
 {
-     "favorites": [
+     "favorites":
+     [
           {
                "restaurant_id": 360,
                "restaurant_name": "DB Grill",
-               "location": "123 Sesame St",
-               "opening_time": "08:00:00",
-               "closing_time": "22:00:00",
-               "phone_number": 6513248592,
-               "logo": "path/db.jpg"
+               "restaurant_addr": "123 Sesame St, Rice, MN",
+               "logo": dbgrilllogo.png,
                "font": "Times New Roman",
-               "color": "Teal"
+               "color_scheme": "Teal"
+               "phone_num": 6513248592,
+               "opening_time": "08:00:00",
+               "closing_time": "22:00:00"
+
           },
           {
                "restaurant_id": 720,
                "restaurant_name": "Alexa Diner",
-               "location": "920 Wall St",
-               "opening_time": "11:00:00",
-               "closing_time": "23:00:00",
-               "phone_number": 6124878467,
-               "logo": "path/alexa.jpg",
+               "location": "920 Wall St, Albany, NY",
+               "logo": amazon.png,
                "font": "BaskerVille",
-               "color": "Blood Orange"
+               "color_scheme": "Blood Orange",
+               "phone_num": 6124878467,
+               "opening_time": "11:00:00",
+               "closing_time": "23:00:00"
           }
      ]          
 }
 
+---------------------
 POST /customers/{customer_id}/favorites?restaurant_id={restaurant_id}
+---------------------
 -Description: Adding a restaurant to the user's favorites
 -Response: 200
 
+---------------------
 DELETE /customers/{customer_id}/favorites?restaurant_id={restaurant_id}
+---------------------
 -Description: Remove a restaurant from a user's favorites
 -Response: 200
 
-
+---------------------
 PUT /staff
+---------------------
 -Description: Creating a staff account for AutoGarcon
--Response:
+-Parameters:
 {
      "staff_id": "MarSue",
      "name": "Mary Sue",
      "contact_num": 9210921929,
-     "email": "mary.sue@yahoo.com"
+     "email": "mary.sue@yahoo.com",
+     "position": "Manager"
 }
+-Response: 200
 
+---------------------
 POST /staff/{staff_id}/login
+---------------------
 -Description: Retrieving data from a staff account
+-Parameter
+{
+     "customer_id": "BroadwayBuff",
+     "password": "LalaLand"
+}
 -Response:
 {
      "session_id": 43153,
@@ -71,11 +103,14 @@ POST /staff/{staff_id}/login
      "name": "Mary Sue"
 }
 
+---------------------
 GET /restaurants
+---------------------
 -Description: Retrieve data about all restaurants
 -Response:
 {
-     "restaurants": [
+     "restaurants":
+     [
           {
                "restaurant_id": 360,
                "restaurant_name": "DB Grill",
@@ -94,84 +129,59 @@ GET /restaurants
           }
 }
 
-POST /restaurants
+---------------------
+PUT /restaurants
+---------------------
 -Description: Add a new restaurant to AutoGarcon
+-Parameter:
+{
+     "restaurant"
+}
 -Response: restaurant_id
 
-GET /restaurants?alexa_id={alexa_id}
--Description: Retrieve the restaurant ID for unique Alexa
+---------------------
+GET /restaurant/{restaurant_id}
+---------------------
+-Description: Retrieve general information about a restaurant
 -Response:
 {
-     "restaurant_id": 142
-}
-
-POST /restaurant/{restaurant_id}?alexa_id={alexa_id}&table_num={table_num}
--Description: Register an alexa to a restaurant
--Response: 200
-
-PUT /restaurant/{restaurant_id}?attr=value[&attr=value]
--Description: Modify the information about the restaurant
--Response: 200
-
-GET /restaurant/{restaurant_id}/foods
--Description: Getting the list of food of a given restaurant
--Response:
-{
-     "foods": [
+     "restaurant":
+      {
+          "restaurant_name": "Sawin's Eatery",
+          "restaurant_addr": "439 Sunside Ave. E, Corona, CA",
+          "logo": logo.png,
+          "font": "Arial",
+          "color_scheme": "Aquatica",
+          "phone_num": 5334321520,
+          "opening_time": 00:00:00,
+          "closing_time": 23:59:59,
+      },
+     "menu": [
           {
-               "food_name": "3 Almonds",
-               "restaurant_id": 504,
-               "price": 5932.43,
-               "tax": 1.42,
-               "inputs": "Buffalo",
-               "category": "Entree",
-               "breakfast": true,
-               "lunch": false,
-               "dinner": false,
-               "thumbnail": "image src",
-               "availability": false
+               "item_name": "3 Almonds",
+               "price": 1200.00,
+               "image": finestfood.png,
+               "category": "Entree"
           },
           {
-               "dish_name": "Rueben Sandwich",
-               "restaurant_id": 502,
-               "price": 2.31,
-               "tax": 1.02,
-               "inputs": "",
-               "category": "Appetizer",
-               "breakfast": false,
-               "lunch": true,
-               "dinner": true,
-               "thumbnail": "image src",
-               "availability": true
-          }          
-     ]
-}
-          
-     
-GET /restaurant/{restaurant_id}/drinks
--Description: Getting the list of beverages of a given restaurant
--Response:
-{
-     "drinks": [
-          {
-               "drink_name": "Scotch",
-               "restaurant_id": "OrderUp",
-               "price": 0.00,
-               "calorie": 100,
-               "refill": true
-          },
-          {
-               "drink_name": "Student Tears",
-               "restaurant_id": "CompSci Cafe",
-               "price": 4.00,
-               "calorie": 0,
-               "refill": false
+               "item_name": "Lagavulin 16 years Scotch",
+               "price": 0.05,
+               "image": upsell.png,
+               "category": "Alcohol"
           }
 
      ]
 }
 
+---------------------
+POST /restaurant/{restaurant_id}?attr=value[&attr=value]
+---------------------
+-Description: Modify the information of a specific restaurant
+-Response: 200
+          
+---------------------
 GET /restaurant/{restaurant_id}/orders?status={In Progress}
+---------------------
 -Description: Retrieve the unfinished orders
 -Response:
 {
@@ -180,20 +190,93 @@ GET /restaurant/{restaurant_id}/orders?status={In Progress}
                "order_num": 102,
                "restaurant_id": 504,
                "table_num": 5,
-               "status": "In Progress"
-               "order_date": '2018-03-03 13:29:50'
+               "status": "In Progress",
+               "order_date": '2018-03-03 13:29:50',
+               "items":
+               [
+                    {
+                         "item_name": "Chicago Dog",
+                         "quantity": 7
+                    }
+               ]
           }
      ]
 }
 
-
-POST /restaurant/{restaurant_id}/orders
--Description: Create a new order
--Response:
-{
-     "order_id": 420
-}
-
-PUT /restaurant/{restaurant_id}/orders?order_num={order_num}&status={status}
+---------------------
+POST /restaurant/{restaurant_id}/orders/{order_num}/?status={status}
+---------------------
 -Description: Update the status of a order
 -Response: 200
+
+---------------------
+PUT /restaurant/{restaurant_id}/orders
+---------------------
+-Description: Add a new order submitted by the Android App. Automatically sets the order_status to "In Progress"
+-Parameter:
+{
+     "customer_id": "Billy Joel",
+     "order_date": 2020-08-20 20:20:20,
+     "table_num": 20
+}
+-Response:
+{
+     "order_num": 420
+}
+
+---------------------
+GET /restaurant/{restaurant_id}/services
+---------------------
+-Description: Retrieve the service status of all the tables in the restaurant
+-Response:
+{
+     "services":
+     [
+          {
+               "table_num": 1,
+               "service_status": "Good"
+          },
+          {
+               "table_num": 2,
+               "service_status": "Bill" 
+          }
+     ]
+}
+
+---------------------
+POST /restaurant/{restaurant_id}/services
+---------------------
+-Description: Update the status at a table
+-Parameter:
+{
+     "table_num": 7,
+     "service_status": "Help"
+}
+-Response: 200
+
+---------------------
+GET /restaurants?alexa_id={alexa_id}
+---------------------
+-Description: Retrieve the restaurant ID for unique Alexa as well as any pending order that was made using the Alexa
+-Response:
+{
+     "restaurant_id": 142,
+     "order_num": 520
+}
+
+---------------------
+PUT /restaurant/{restaurant_id}?alexa_id={alexa_id}&table_num={table_num}
+---------------------
+-Description: Register an alexa to a restaurant
+-Response: 200
+
+---------------------
+PUT /restaurant/{restaurant_id}/orders
+---------------------
+-Description: Create an order via the Alexa
+-Response: 200
+
+---------------------
+GET /restaurant/{restaurant_id}/orders/{order_num}
+-Description: Getting the order details of a specific order
+-Response
