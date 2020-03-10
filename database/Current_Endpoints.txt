@@ -1,5 +1,5 @@
 Current Endpoints
-/menu/:id
+GET /menu/:id
 	Returns menu information for restaurant with restaurant_id = id
 	Output:
 	{
@@ -19,7 +19,7 @@ Current Endpoints
 		}
 	}
 
-/restaurant/:id
+GET /restaurant/:id
 	Returns restaurant information and menu information for restaurant with restaurant_id = id
 	Output:
 	{
@@ -49,7 +49,7 @@ Current Endpoints
 		}
 	}
 
-/alexa/:id
+GET /alexa/:id
 	Returns information associated with the alexa with alexa_id = id
 	Output:
 	{
@@ -60,7 +60,7 @@ Current Endpoints
 		}
 	}
 
-/favorites/:id
+GET /favorites/:id
 	Returns information about a users favorite restaurants
 	Output:
 	{
@@ -71,7 +71,7 @@ Current Endpoints
 		}
 	}
 
-/customers/login
+POST /customers/login
 	Logs a customer in and returns a signed JWT and customer information
 	Output:
 	{
@@ -88,7 +88,7 @@ Current Endpoints
 		}
 	}
 
-/staff/login
+POST /staff/login
 	Logs a customer in and returns a signed JWT and customer information
 	Output:
 	{
@@ -108,7 +108,7 @@ Current Endpoints
 		}
 	}
 
-/verify
+POST /verify
 	Verifies a JWT Token
 	Output:
 	{
