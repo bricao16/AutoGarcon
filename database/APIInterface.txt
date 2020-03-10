@@ -135,10 +135,6 @@ GET /restaurants
 PUT /restaurants
 ---------------------
 -Description: Add a new restaurant to AutoGarcon
--Parameter:
-{
-     "restaurant"
-}
 -Response: restaurant_id
 
 ---------------------
@@ -174,6 +170,12 @@ GET /restaurant/{restaurant_id}
 
      ]
 }
+
+---------------------
+DELETE /restaurant/{restaurant_id}
+---------------------
+-Description: Delete a restaurant from the database
+-Response: 200
 
 ---------------------
 POST /restaurant/{restaurant_id}?attr=value[&attr=value]
