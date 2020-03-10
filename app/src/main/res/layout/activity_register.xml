@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
+    android:background="@color/white"
     tools:context=".Login">
 
     <EditText
@@ -16,8 +16,8 @@
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:hint="@string/email"
-        android:padding="10dp"
         android:inputType="textEmailAddress"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lastName" />
@@ -31,8 +31,8 @@
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:hint="@string/password"
-        android:padding="10dp"
         android:inputType="textPassword"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
@@ -91,8 +91,8 @@
         android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="FirstName"
-        android:padding="10dp"
         android:inputType="textPersonName"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subTitle" />
@@ -122,8 +122,8 @@
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:hint="LastName"
-        android:padding="10dp"
         android:inputType="textPersonName"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/firstName" />
