@@ -4,9 +4,12 @@ import Orders from "./components/Orders"
 import MTasks from "./components/MTasks"
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
+import SignUp from "./components/SignUp";
+
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+
 import {
     BrowserRouter as Router,
     Switch,
@@ -45,6 +48,9 @@ function App() {
                   </Route>
                   <Route path="/manager">
                     <Manager />
+                  </Route>
+                  <Route path="/sign_up">
+                    <SignUp />
                   </Route>
                   <Route path="/login_manager">
                     <MLogin/>
