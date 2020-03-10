@@ -1,5 +1,5 @@
 import React from "react";
-import logoImage from "../assets/logo.png";
+import logoImage from "../assets/AutoGarconLogo.png";
 import AccountDropdown from "./AccountDropdown";
 
 class Header extends React.Component {
