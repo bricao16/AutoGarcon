@@ -11,6 +11,7 @@ menu
 availability
   item_id           FOREIGN KEY         
   time_name         FPREIGN KEY
+  NOTE: May need to add rest_id  to  get  unique value from times table since restaurant_id and time_name are keys
   
 times
   time_name         KEY             VARCHAR(50) // Breakfast, Dinner, Lunch, Overnight, All Day
