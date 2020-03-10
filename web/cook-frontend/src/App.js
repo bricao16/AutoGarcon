@@ -6,6 +6,8 @@ import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
 
+import logoImage from "./assets/AutoGarcon.png";
+
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -36,7 +38,7 @@ function App() {
       {/* <Header/> */}
       <div style={backgroundStyle}>
         <Container>
-          <Row style={{'min-height': '90vh'}}>
+          <Row style={{'minHeight': '90vh'}}>
             <Col className="pt-3 px-3">
               <div className="rounded" style={sectionStyle}>
                 <Switch>
@@ -72,7 +74,10 @@ function App() {
           </Row>
         </Container>
       </div>
-      <footer style={footerStyle}>Powered by Auto Garcon</footer>
+      <footer style={footerStyle}>
+        Powered by  
+        <img src={logoImage} width="auto" height="100vh" alt="waiter" />
+      </footer>
     </Router>      
   );
 }
@@ -86,15 +91,15 @@ function Home() {
       <div style={homeStyle}>
         <h2> Welcome to Auto-Garcon </h2>
         <br/>
-        <div style={{'list-style':'none'}}>
+        <div style={{'liststyle':'none'}}>
           <li><Link to='/login_manager'> 
-            <button type="button" class="btn btn-info btn-lg">
+            <button type="button" className="btn btn-info btn-lg">
                 Manager Portal
             </button>
           </Link></li>
           <br/>
           <li><Link to='/login_cook'>
-            <button type="button" class="btn btn-info btn-lg">
+            <button type="button" className="btn btn-info btn-lg">
                 Cook Portal
             </button>
           </Link></li>
@@ -123,26 +128,26 @@ function Manager() {
 }
 
 var backgroundStyle = {
-  'background-color': '#f1f1f1',
-  'flex-grow': '1',
+  'backgroundColor': '#f1f1f1',
+  'flexGrow': '1',
   'height': '100%'
 }
 
 var sectionStyle = {
-  'background-color': '#ffffff',
+  'backgroundColor': '#ffffff',
   'height': '100%'
 }
 
 var footerStyle = {
-  'background-color': '#f1f1f1',
-  'padding-bottom': '5px',
-  'padding-right': '12px',
-  'padding-top': '12px',
-  'text-align': 'right'
+  'backgroundColor': '#f1f1f1',
+  'paddingBottom': '5px',
+  'paddingRight': '12px',
+  'paddingTop': '12px',
+  'textAlign': 'right'
 }
 var homeStyle = {
   'fontWeight': '300',
-  'text-align' : 'center',
-  'list-style': 'none',
-  'text-size': '50pt'
+  'textAlign' : 'center',
+  'listStyleType': 'none',
+  'textSize': '50pt'
 };
