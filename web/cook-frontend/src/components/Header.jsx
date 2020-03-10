@@ -3,15 +3,23 @@ import logoImage from "../assets/logo.png";
 import AccountDropdown from "./AccountDropdown";
 
 class Header extends React.Component {
-    render () {
-        return (
-            <header style={headerStyle}>
-                <img src={logoImage} width="auto" height="35px" alt="waiter" />
-                <p style={headerTitleStyle}>Auto-Garcon</p>
-                <AccountDropdown className="px-3"></AccountDropdown>
-            </header>
-        );
-    }
+
+  constructor(props) {
+    super(props);
+    this.props = props;
+    //For future when we have logged in state
+    //this.props.loggedIn = true;
+  }
+
+  render () {
+      return (
+          <header style={headerStyle}>
+              <img src={logoImage} width="auto" height="35px" alt="waiter" />
+              <p style={headerTitleStyle}>Auto-Garcon</p>
+              {/* this.props.loggedIn */ true && <AccountDropdown className="px-3"></AccountDropdown>}
+          </header>
+      );
+  }
 }
 
 export default Header;

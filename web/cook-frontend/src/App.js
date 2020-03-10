@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import Orders from "./components/Orders"
-import MTasks from "./components/MTasks"
+import Orders from "./components/Orders";
+import MTasks from "./components/MTasks";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
@@ -33,10 +33,10 @@ req.onload = function(){
 function App() {
   return (
     <Router>
-      {/*<Header/>*/}
+      {/* <Header/> */}
       <div style={backgroundStyle}>
-        <Container fluid>
-          <Row>
+        <Container>
+          <Row style={{'min-height': '90vh'}}>
             <Col className="pt-3 px-3">
               <div className="rounded" style={sectionStyle}>
                 <Switch>

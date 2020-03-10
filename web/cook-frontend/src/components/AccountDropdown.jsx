@@ -12,7 +12,7 @@ class AccountDropdown extends React.Component {
     return (
       <Dropdown alignRight className={this.props.className}>
         <Dropdown.Toggle variant="light" id="dropdown-basic">
-          Joey
+          Sign in
         </Dropdown.Toggle>
       
         <Dropdown.Menu>
