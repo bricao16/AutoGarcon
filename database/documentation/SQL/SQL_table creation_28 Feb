@@ -2,19 +2,15 @@ Date: 28 Feb
 
 SQL Text:
 use test_schema;
-create table main_menu(
-dish_Name VARCHAR(50),
-restaurant VARCHAR(50),
-calories int,
-price float,
-tax float,
-customer VARCHAR(50),
-category VARCHAR(50),
-breakfast VARCHAR(3),
-lunch VARCHAR(3),
-dinner VARCHAR(3),
-picture VARCHAR(3),
-in_stock BOOLEAN
+create table menu(
+item_id INT,
+restaurant_id VARCHAR(50),
+item_name VARCHAR(50),
+calorie_num INT,
+category VARCHAR(50)
+image BLOB,
+in_stock BOOLEAN,
+price FLOAT
 );
 
 SELECT *
