@@ -15,5 +15,6 @@
     <string name="old_account">Already Have an Account? \nLog in here</string>
     <string name="new_account">"Don't Have an Account? \nSign up here"</string>
     <string name="placeholder_account_name">"Account Name"</string>
+    <string name="order_history_item">"Previous Ordered Item"</string>
 
 </resources>
