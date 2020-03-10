@@ -16,3 +16,6 @@ Folders:
     -SQL_table creation_28 Feb
     -SQL_table modifications_3Mar
   -readme
+
+Notes:
+-Sample Tables: https://docs.google.com/spreadsheets/d/1j1Wm9OV97Zx57H-bgJQSSP131dGa5u4MpY_m55ZCU44/edit?usp=sharing
