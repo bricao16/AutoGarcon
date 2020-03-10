@@ -19,19 +19,6 @@ Current Endpoints
 		}
 	}
 
-/users
-	Returns all user information except password and salt
-	Output:
-	{
-		0:
-		{
-			user_id,
-			first_name,
-			last_name,
-			email
-		}
-	}
-
 /restaurant/:id
 	Returns restaurant information and menu information for restaurant with restaurant_id = id
 	Output:
