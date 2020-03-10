@@ -9,6 +9,7 @@
     tools:context="com.example.auto_garcon.LoadingScreen">
 
     <EditText
+        android:id="@+id/editText5"
         android:layout_width="213dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -24,14 +25,14 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="257dp"
-        android:layout_height="450dp"
+        android:layout_width="260dp"
+        android:layout_height="165dp"
         android:layout_marginEnd="70dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/editText5"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.939"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.185"
+        app:layout_constraintVertical_bias="0.731"
         app:srcCompat="@drawable/logo" />
 </androidx.constraintlayout.widget.ConstraintLayout>
