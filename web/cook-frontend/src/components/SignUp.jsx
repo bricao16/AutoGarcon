@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: '#102644',
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -96,14 +96,14 @@ export default function SignUp() {
             type="submit"
             fullWidth
             variant="contained"
-            color="primary"
+            style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
             className={classes.submit}
           >
             Sign Up
           </Button>
           <Grid container>
             <Grid item>
-              <Link href="/ " variant="body2">
+              <Link href="/ " variant="body2"  style={{color: '#0B658A'}} >
                 Already have an account? Sign in
               </Link>
             </Grid>
