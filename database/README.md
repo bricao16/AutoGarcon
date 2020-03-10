@@ -1,12 +1,9 @@
 Last Updated:2020-03-10 14:11:00
 
-Group: Database
+Group: Database  
 
-
-Files:
-
--APIInterface.txt: Planned endpoints, still in development
-
+Files:  
+-APIInterface.txt: Planned endpoints, still in development  
 -Auto_Garcon_Style_Guide.pdf
 
 -Current_Endpoints.txt: Live endpoints
@@ -24,9 +21,9 @@ Folders:
 
   +SQL
   
-    ..-SQL_table creation_28 Feb
+    -SQL_table creation_28 Feb
     
-    ..-SQL_table modifications_3Mar
+    -SQL_table modifications_3Mar
   
   -readme
 
