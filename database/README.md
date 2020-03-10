@@ -24,9 +24,9 @@ Folders:
 
   +SQL
   
-    -SQL_table creation_28 Feb
+    ..-SQL_table creation_28 Feb
     
-    -SQL_table modifications_3Mar
+    ..-SQL_table modifications_3Mar
   
   -readme
 
