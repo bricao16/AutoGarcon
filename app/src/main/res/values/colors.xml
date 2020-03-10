@@ -7,6 +7,8 @@
     <color name="toolbar">#0066ff</color>
     <color name="nav_header_background">#1F242B</color>
     <color name="white">#FFFFFF</color>
-    <color name="background_color">#FFFFFF</color>
+    <color name="DarkBlue">#102644</color>
+    <color name="LightBlue">#0B658A</color>
+    <color name="Grey">#A8A7A4</color>
 
 </resources>

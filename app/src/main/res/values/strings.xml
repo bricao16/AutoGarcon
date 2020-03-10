@@ -14,6 +14,6 @@
     <string name="cart">Cart</string>
     <string name="old_account">Already Have an Account? \nLog in here</string>
     <string name="new_account">"Don't Have an Account? \nSign up here"</string>
-    <string name="placeholder_account_name">this will be acc name</string>
+    <string name="placeholder_account_name">"Account Name"</string>
 
 </resources>
