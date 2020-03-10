@@ -2,10 +2,8 @@ Date 3 March
 
 SQL Text:
 DELETE FROM sample.main_menu_test2
-WHERE dish_name like 'Dish Name' AND restaurant like 'Restaurant' AND calories=0 AND price=0 AND tax=0 AND customer like 'Customer Inputs' AND category like 'Category'
-AND breakfast like 'Breakfast' AND lunch like 'Lunch' AND dinner like 'Dinner' AND in_stock like 'In Stock?';
+WHERE item_name like 'Item Name' AND restaurant like 'Restaurant' AND calorie_num=0 AND price=0 AND category like 'Category' AND in_stock like 'In Stock?';
 
-Summary: Had to clean up the directly imported csv file. Emma is workin to modify the csvs so they are easier to input and less manipulation
-is needed once the data is inputted.
+Summary: Clean up for import. Updated schema. Have sample tables that can be downloaded and imported as CSV files.
 
 Notes: Not too bad trying to fix some of the csv file issues. MySQL makes table management relatively easy. 
