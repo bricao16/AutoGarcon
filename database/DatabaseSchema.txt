@@ -5,7 +5,7 @@ menu
   calorie_num                       INT
   category                          VARCHAR(50) // Alcohol, Appetizer, Dessert, Drink, Entree, Food, Refillable Drink
   image                             BLOB  
-  instock                           BOOLEAN
+  in_stock                           BOOLEAN
   price                             DOUBLE(10,2) // XX,XXX,XXX.XX
 
 availability
