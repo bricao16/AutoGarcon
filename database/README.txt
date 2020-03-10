@@ -6,6 +6,8 @@ Files:
 -Auto_Garcon_Style_Guide.pdf
 -Current_Endpoints.txt: Live endpoints
 -DatabaseSchema.txt: Schema and variable types of attributes
+-README.txt
+-package.json: required packages to run server.js
 -server.js: API created by Tucker
 
 Folders:
