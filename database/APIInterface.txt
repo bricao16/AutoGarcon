@@ -84,7 +84,7 @@ POST /staff/login
 -Description: Retrieving data from a staff account
 -Parameter
 {
-     "customer_id": "BroadwayBuff",
+     "username": "BroadwayBuff",
      "password": "LalaLand"
 }
 -Response:
