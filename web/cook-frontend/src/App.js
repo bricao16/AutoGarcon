@@ -35,7 +35,6 @@ req.onload = function(){
 function App() {
   return (
     <Router>
-      {/* <Header/> */}
       <div style={backgroundStyle}>
         <Container>
           <Row style={{'minHeight': '90vh'}}>
@@ -89,7 +88,10 @@ function Home() {
     <div>
 
       <div style={homeStyle}>
-        <h2> Welcome to Auto-Garcon </h2>
+        <h2> Welcome to 
+        <img src={logoImage} width="auto" height="200vw" alt="waiter" />
+         </h2>
+
         <br/>
         <div style={{'liststyle':'none'}}>
           <li><Link to='/login_manager'> 

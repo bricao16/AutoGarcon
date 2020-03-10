@@ -47,7 +47,7 @@ const managerStyle = {
     flexWrap: "wrap"
 };
 var backgroundStyle = {
-  'background-color': '#f1f1f1'
+  'backgroundColor': '#f1f1f1'
 }
 
 export default MStats;

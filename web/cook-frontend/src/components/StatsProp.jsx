@@ -31,7 +31,7 @@ const itemStyle = {
 };
 
 var cardHeaderStyle = {
-    'background-color': '#0b658a',
+    'backgroundColor': '#0b658a',
     'color': '#ffffff'
 };
 

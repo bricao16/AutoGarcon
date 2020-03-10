@@ -59,8 +59,8 @@ const itemStyle = {
 };
 
 var cardHeaderStyle = {
-  'background-color': '#0b658a',
-  'color': '#ffffff'
+  backgroundColor: '#0b658a',
+  color: '#ffffff'
 }
 
 export default Order;

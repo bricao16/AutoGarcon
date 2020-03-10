@@ -88,16 +88,16 @@ class MTasks extends React.Component{
 }
 
 var backgroundStyle = {
-  'background-color': '#f1f1f1'
+  'backgroundColor': '#f1f1f1'
 }
 
 var sectionStyle = {
-  'background-color': '#ffffff',
+  'backgroundColor': '#ffffff',
   'height': '100%'
 }
 
 var navColStyle = {
-  'max-width': '200px',
+  'maxWidth': '200px',
   'a.link':'black'
 }
 

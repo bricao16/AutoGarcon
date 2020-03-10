@@ -26,7 +26,7 @@ export default Header;
 
 var headerTitleStyle = {
     'margin': '0',
-    'margin-left': '10px',
+    'marginLeft': '10px',
     'flex': '1'
 }
 
