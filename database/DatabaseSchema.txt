@@ -47,7 +47,7 @@ customers
   email                             VARCHAR(50)
   
 favorites
-  username          KEY             VARCHAR(50)
+  customer_id          KEY             VARCHAR(50)
   restaurant_id     KEY             INT
 
 orders
