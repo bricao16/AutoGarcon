@@ -1,20 +1,20 @@
 Date: 28 Feb
 
 SQL Text:
-use test_schema;
-create table menu(
-item_id INT,
-restaurant_id VARCHAR(50),
-item_name VARCHAR(50),
-calorie_num INT,
-category VARCHAR(50)
-image BLOB,
-in_stock BOOLEAN,
-price FLOAT
-);
+   use  test_schema;
+create  table menu(
+          item_id INT,
+          restaurant_id VARCHAR(50),
+          item_name VARCHAR(50),
+          calorie_num INT,
+          category VARCHAR(50)
+          image BLOB,
+          in_stock BOOLEAN,
+          price FLOAT
+        );
 
 SELECT *
-FROM sample.main_menu_test2;
+  FROM sample.main_menu_test2;
 
 Summary: Used two different methods to create table. Used SQL statements to create a table initially and imported data from the CSV file.
 This method allows for more customization and insurance that all the columns are correctly formatted before the data is inputted. Importing
