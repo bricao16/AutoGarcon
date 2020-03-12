@@ -56,8 +56,8 @@ favorites
 orders
   order_num         KEY             INT
   restaurant_id     FOREIGN KEY     INT
-  customer_id       FOREIGN KEY     INT
-  order_status                      VARCHAR(10) // Cancelled, Complete, In Progress, Pending 
+  customer_id       FOREIGN KEY     VARCHAR(50)
+  order_status                      VARCHAR(50) // Cancelled, Complete, In Progress, Pending 
   order_date                        TIMESTAMP // "YYYY-MM-DD HH:MM:SS"
   table_num                         INT
 
