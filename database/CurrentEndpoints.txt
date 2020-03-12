@@ -73,6 +73,8 @@ GET /favorites/:id
 
 POST /customers/login
 	Logs a customer in and returns a signed JWT and customer information
+	Parameters: In the BODY of the request send in the following where the values in {} are replaced
+		username={user}&password={password}
 	Output:
 	{
 		token:
