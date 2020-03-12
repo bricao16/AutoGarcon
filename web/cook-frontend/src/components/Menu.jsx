@@ -2,25 +2,69 @@ import React from "react";
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import MenuProp from './MenuProp';
+/*
+  This component is used to get the menu information
+  from the database for the appropriate resturant. 
+  
+  componentDidMount() connects to the database and puts
+  the information in out state.
+
+  render() checks if the database was properly loaded
+  then it will map the returned menu to a 2d array
+
+  renderMenu() will create the call the MenuProp for each 
+  item making a Card for each to display.
+*/
 class Menu extends React.Component{
 
     constructor(props) {
         super(props);
         this.state = {
-            menu: [
-                {type: "Breakfast", items: [{item: "Toast"}, {item: "Eggs"}, {item: "Bacon"}]},
-                {type: "Lunch",items: [{item: "Hamburger"}, {item: "Fries"}, {item: "Salad"}]},
-                {type: "Dinner",items: [{item: "Pasta"}, {item: "Chicken"}, {item: "Sandwich"}]}
-            ]
+                error: null,
+                isLoaded: false,
+                menuJSON: [],
+                menu:[]
         };
     }
+
+    componentDidMount() {
+    fetch("http://50.19.176.137:8000/menu/123")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            menuJSON: result
+          });
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
+  }
     renderMenu(){
-        return this.state.menu.map((item, key) =>
-            <MenuProp key={key} id={key} menuType={item}/>
-        );
+      return this.state.menu.map((item, key) =>
+          <MenuProp key={key} id={key} menu={item}/>
+      );
     }
     render() {
-        return (
+        const { error, isLoaded,menuJSON, menu } = this.state;
+        
+        if (error) {
+          return <div>Error: {error.message}</div>;
+        } 
+        else if (!isLoaded) {
+          return <div>Loading...</div>;
+        } 
+        else {
+          //map the menu json to an array
+          Object.keys(this.state.menuJSON).forEach(function(key) {
+              menu.push([key ,menuJSON[key]]);
+            });
+            return (
             <Container>
               <div style={backgroundStyle}>
              <Container fluid>
@@ -37,6 +81,8 @@ class Menu extends React.Component{
         );
     }
 }
+}
+
 
 const managerStyle = {
     display: "flex",

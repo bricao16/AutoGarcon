@@ -23,14 +23,14 @@ var req  = new XMLHttpRequest();
 
 var menu;
 
-req.open("GET", "http://50.19.176.137:8000/menu", true);
+/*req.open("GET", "http://50.19.176.137:8000/menu", true);
 req.send();
 
 req.onload = function(){
 	//console.log(JSON.parse(req.response));
 	menu = JSON.parse(req.response);
 	console.log(menu);
-}
+}*/
 
 function App() {
   return (
@@ -130,7 +130,7 @@ function Manager() {
 }
 
 var backgroundStyle = {
-  'backgroundColor': '#f1f1f1',
+  'backgroundColor': '#ffffff',
   'flexGrow': '1',
   'height': '100%'
 }
@@ -141,7 +141,7 @@ var sectionStyle = {
 }
 
 var footerStyle = {
-  'backgroundColor': '#f1f1f1',
+  'backgroundColor': '#ffffff',
   'paddingBottom': '5px',
   'paddingRight': '12px',
   'paddingTop': '12px',

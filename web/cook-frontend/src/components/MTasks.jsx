@@ -18,11 +18,6 @@ class MTasks extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            menu: [
-                {type: "Breakfast", items: [{item: "Toast"}, {item: "Eggs"}, {item: "Bacon"}]},
-                {type: "Lunch",items: [{item: "Hamburger"}, {item: "Fries"}, {item: "Salad"}]},
-                {type: "Dinner",items: [{item: "Pasta"}, {item: "Chicken"}, {item: "Sandwich"}]}
-            ]
         };
     }
     renderMenu(){
@@ -62,33 +57,31 @@ class MTasks extends React.Component{
                         </Nav.Link>
                       </Nav>
                     </Col>
-
-                        <Col className="pt-3 px-3">
-                        <Container fluid>
-                            <Switch>
-                              <Route exact path="/manager">
-                                <Menu />
-                              </Route>
-                              <Route path="/hours">
-                                <Hours />
-                              </Route>
-                              <Route path="/statistics">
-                                <Stats />
-                              </Route>
-                            </Switch>
-                        </Container>
-
+                    <Col className="pt-3 px-3">
+                      <Container fluid>
+                          <Switch>
+                            <Route exact path="/manager">
+                              <Menu />
+                            </Route>
+                            <Route path="/hours">
+                              <Hours />
+                            </Route>
+                            <Route path="/statistics">
+                              <Stats />
+                            </Route>
+                          </Switch>
+                      </Container>
                     </Col>
-                </Row>
-            </Container> 
-        </div>
-    </Container>
-    );
-    }
-}
+                  </Row>
+                </Container> 
+              </div>
+            </Container>
+          );
+        }
+      }
 
 var backgroundStyle = {
-  'backgroundColor': '#f1f1f1'
+  'backgroundColor': '#ffffff'
 }
 
 var sectionStyle = {
