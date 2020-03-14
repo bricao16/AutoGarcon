@@ -112,6 +112,7 @@ POST /staff/login
 
 POST /verify
 	Verifies a JWT Token
+	Token is in a header called Authorization. Format: Authorization: Bearer <token>
 	Output:
 	{
 		'message': 'Test Passed'
