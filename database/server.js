@@ -150,7 +150,7 @@ app.get('/alexa/:id', (req, res) => {
 
 //GET request handler for favorites
 app.get('/favorites/:id', (req, res) => {
-    let query = "SELECT * FROM sample.favorites natural join sample.restaurants WHERE username = ?";
+    let query = "SELECT * FROM sample.favorites natural join sample.restaurants WHERE customer_id = ?";
 
     db.query(query, req.params.id, (err, rows) => {
         if (err) {
