@@ -33,6 +33,7 @@ public class Login extends AppCompatActivity {
    private TextView textViewSignUp;
    private Account currentAccount;
    private AccountManager accountManager;
+   public Prefrence pref;
    // FirebaseAuth authentication;
    // private FirebaseAuth.AuthStateListener authenticateListener;
 
@@ -41,11 +42,24 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // this is how we identify an existing user when they've already logged in
+        pref = new Prefrence(this);
+
+
+        if(pref.getLoginStatus()){//send them to the homepage if their already logged in
+
+            //Todo: check if there token is still valid
+            Intent intent  = new Intent(Login.this, Home.class);
+            startActivity(intent);
+        }
+
         //  authentication = FirebaseAuth.getInstance();
         emailId = findViewById(R.id.email);
         password = findViewById(R.id.password);
         buttonSignIn = findViewById(R.id.signUp);
         textViewSignUp = findViewById(R.id.loginLink);
+
+
 
        /* authenticateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -81,6 +95,12 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this,"Feilds are Empty!", Toast.LENGTH_SHORT).show();
                 }
                 else if (!(email.isEmpty() && passwd.isEmpty())) {
+
+                    //some request to server goes here
+
+
+                    pref.writeName("SomeName");
+                    pref.changeLogStatus(true);
 
 
                     /*authentication.signInWithEmailAndPassword(email,passwd).addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
@@ -118,6 +138,7 @@ public class Login extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+
 
             }
         }, new Response.ErrorListener() {

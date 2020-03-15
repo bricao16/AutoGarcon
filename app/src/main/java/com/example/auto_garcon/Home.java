@@ -42,6 +42,8 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     Button logOut;
     FirebaseAuth authentication;
     private  FirebaseAuth.AuthStateListener authStateListener;
+    public Prefrence pref;
+
 
     @Override
     //do any quriy here, firebase.......
@@ -49,6 +51,14 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
+        pref = new Prefrence(this);
+
+        if(!pref.getLoginStatus()){
+            pref.changeLogStatus(false);
+            Intent signIn = new Intent(Home.this, Login.class);
+            startActivity(signIn);
+        }
         drawerLayout = findViewById(R.id.home_main);
         toolbar = findViewById(R.id.xml_toolbar);
         navigationView = findViewById(R.id.navigationView);
