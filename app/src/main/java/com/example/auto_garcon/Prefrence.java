@@ -39,5 +39,14 @@ public class Prefrence {
         // returns the user logged in at the moment else returns the string user
         return  sharedPreferences.getString(context.getString(R.string.pref_user_name),"User");
     }
+    public String getAuth(){
 
+        return sharedPreferences.getString(context.getString(R.string.pref_auth_token),"Token");
+    }
+    public  void setAuthToken(String authToken){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString(context.getString(R.string.pref_auth_token),authToken);
+        editor.commit();
+    }
 }
