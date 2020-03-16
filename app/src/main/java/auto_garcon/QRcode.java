@@ -1,9 +1,8 @@
 
 
-package com.example.auto_garcon;
+package auto_garcon;
 
-        import android.os.Bundle;
-
+import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class QRcode extends AppCompatActivity {

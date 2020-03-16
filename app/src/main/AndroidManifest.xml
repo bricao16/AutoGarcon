@@ -10,28 +10,30 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".LoadingScreen">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name="auto_garcon.LoadingScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".OrderHistory" />
-        <activity android:name=".ShoppingCart" />
-        <activity android:name=".Account" />
-        <activity android:name=".Settings" />
-        <activity android:name=".RestaurantPage" >
+        <activity android:name="auto_garcon.OrderHistory" />
+        <activity android:name="auto_garcon.ShoppingCart" />
+        <activity android:name="auto_garcon.Account" />
+        <activity android:name="auto_garcon.Settings" />
+        <activity android:name="auto_garcon.Menu" >
+
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
         </activity>
-        <activity android:name=".Register" />
-        <activity android:name=".Login" />
-        <activity android:name=".Home" />
+        <activity android:name="auto_garcon.Register" />
+        <activity android:name="auto_garcon.Login" />
+        <activity android:name="auto_garcon.Home" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

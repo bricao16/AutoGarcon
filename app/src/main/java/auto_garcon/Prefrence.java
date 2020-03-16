@@ -1,7 +1,9 @@
-package com.example.auto_garcon;
+package auto_garcon;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.example.auto_garcon.R;
 
 public class Prefrence {
     private SharedPreferences sharedPreferences;

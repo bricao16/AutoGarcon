@@ -1,4 +1,4 @@
-package com.example.auto_garcon;
+package auto_garcon;
 
 import android.content.Context;
 import com.android.volley.Request;

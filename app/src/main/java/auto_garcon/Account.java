@@ -1,4 +1,4 @@
-package com.example.auto_garcon;
+package auto_garcon;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -12,9 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
 
-public class Settings extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Account extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawerLayout;
     Toolbar toolbar;
@@ -24,9 +25,9 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_account);
 
-        drawerLayout = findViewById(R.id.settings_main);
+        drawerLayout = findViewById(R.id.account_main);
         toolbar = findViewById(R.id.xml_toolbar);
         navigationView = findViewById(R.id.navigationView);
         setSupportActionBar(toolbar);
@@ -43,17 +44,17 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Toast.makeText(Settings.this, "Account Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Account.this, "Account Selected", Toast.LENGTH_SHORT).show();
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
                 break;
             case R.id.settings:
-                Toast.makeText(Settings.this, "Settings Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Account.this, "Settings Selected", Toast.LENGTH_SHORT).show();
                 Intent settings = new Intent(getBaseContext(),   Settings.class);
                 startActivity(settings);
                 break;
             case R.id.log_out:
-                Toast.makeText(Settings.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Account.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
                 Intent login = new Intent(getBaseContext(),   Login.class);
                 startActivity(login);
                 break;

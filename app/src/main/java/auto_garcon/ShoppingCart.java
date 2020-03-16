@@ -1,4 +1,4 @@
-package com.example.auto_garcon;
+package auto_garcon;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
 
 public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
