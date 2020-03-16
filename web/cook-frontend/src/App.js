@@ -115,17 +115,13 @@ function Home() {
 
 function Cook() {
   return (
-    <div>
       <Orders/>
-    </div>
   );
 }
 
 function Manager() {
   return (
-    <div>
       <MTasks/>
-    </div>
   );
 }
 

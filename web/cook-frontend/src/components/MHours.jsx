@@ -1,9 +1,12 @@
 import React from "react";
-//import Order from "./Order";
 import Container from 'react-bootstrap/Container';
-import HoursProp from './HoursProp';
+import HoursProp from './hoursProp';
 import Col from 'react-bootstrap/Col';
-
+/* This component is used to render the 
+resturant hours for the manager view.
+the hours are held in a state array called
+hours and passed to the HoursProp where the 
+data is placed on cards. */
 
 class MHours extends React.Component{
 
@@ -40,12 +43,12 @@ class MHours extends React.Component{
 }
 
 const managerStyle = {
-    display: "flex",
-    fontSize: "1.2em",
-    justifyContent: "space-between",
-    margin: "30px",
-    marginTop: "0",
-    flexWrap: "wrap"
+    'display': 'flex',
+    'fontSize': '1.2em',
+    'justifyContent': 'space-between',
+    'margin': '30px',
+    'marginTop': '0;',
+    'flexWrap': 'wrap'
 };
 var backgroundStyle = {
   'backgroundColor': '#f1f1f1'

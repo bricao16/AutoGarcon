@@ -1,7 +1,10 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
-import StatsProp from './StatsProp';
+import StatsProp from './statsProp';
+/*this is the stats component for the manager
+view. The stats are stored in state and rendered 
+onto cards in by statsProp */
 class MStats extends React.Component{
 
     constructor(props) {
@@ -39,14 +42,14 @@ class MStats extends React.Component{
 }
 
 const managerStyle = {
-    display: "flex",
-    fontSize: "1.2em",
-    justifyContent: "space-between",
-    margin: "30px",
-    marginTop: "0",
-    flexWrap: "wrap"
+    'display': 'flex',
+    'fontSize': '1.2em',
+    'justifyContent': 'space-between',
+    'margin': '30px',
+    'marginTop': '0',
+    'flexWrap': 'wrap'
 };
-var backgroundStyle = {
+const backgroundStyle = {
   'backgroundColor': '#f1f1f1'
 }
 

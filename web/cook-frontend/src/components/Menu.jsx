@@ -1,6 +1,7 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
 import MenuProp from './MenuProp';
 /*
   This component is used to get the menu information
@@ -23,7 +24,8 @@ class Menu extends React.Component {
       error: null,
       isLoaded: false,
       menuJSON: [],
-      menu:[]
+      menu:[],
+      categories: []
     };
   }
 
@@ -46,17 +48,24 @@ class Menu extends React.Component {
       }
     )
   }
-  
-  /* Aggregate all the menu items into one object */
-  renderMenu(){
-    return this.state.menu.map((item, key) =>
-      <MenuProp key={key} id={key} menu={item}/>
+
+  /* Aggregate all the menu categories into one object and call the prop to display is clicked */
+  renderMenuCategories(){
+    return this.state.categories.map((item, key) =>
+        <Col sm={4} className="p-3">
+          <Card className="text-center" >
+           <div onClick={() => renderMenu(item)}>                     
+              <Card.Header style={cardHeaderStyle}>{item}</Card.Header>
+            </div>
+          </Card>
+      </Col>  
     );
   }
 
+
   // Default render method
   render() {
-    const { error, isLoaded, menuJSON, menu } = this.state;
+    const { error, isLoaded, menuJSON, menu, categories } = this.state;
     
     if (error) {
       return <div>Error: {error.message}</div>;
@@ -70,7 +79,14 @@ class Menu extends React.Component {
       //map the menu json to an array
       Object.keys(this.state.menuJSON).forEach(function(key) {
         menu.push([key ,menuJSON[key]]);
+
       });
+      //create a list of all unique categories of food/drink
+    for (const [index, value] of menu.entries()) {
+        if(categories.indexOf(value[1].category)==-1){
+          categories.push(value[1].category)
+        }
+    }
 
       return (
         <Container>
@@ -79,7 +95,7 @@ class Menu extends React.Component {
               <Col className="pt-3 px-3">
                 <Container fluid>
                   <div style={managerStyle}>
-                    {this.renderMenu()}
+                      {this.renderMenuCategories()}
                   </div>
                 </Container>
               </Col>
@@ -91,19 +107,33 @@ class Menu extends React.Component {
   }
 
 }
-
+//render the menu by the cateogry that was clicked
+function renderMenu(category)
+{
+  console.log(category)
+  return <MenuProp menu={category}/>
+} 
 
 const managerStyle = {
   'display': "flex",
-  'font-size': "1.2em",
-  'justify-content': "space-between",
+  'fontSize': "1.2em",
+  'justifyContent': "space-between",
   'margin': "30px",
-  'margin-top': "0",
-  'flex-wrap': "wrap"
+  'marginTop': "0",
+  'flexWrap': "wrap"
 };
 
 const backgroundStyle = {
-  'background-color': '#f1f1f1'
+  'backgroundColor': '#f1f1f1'
+};
+const itemStyle = {
+    'display': 'flex',
+    'borderBottom': 'white solid 1px'
+};
+
+const cardHeaderStyle = {
+    'backgroundColor': '#0b658a',
+    'color': '#ffffff'
 };
 
 export default Menu;

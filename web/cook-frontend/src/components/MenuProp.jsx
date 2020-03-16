@@ -12,6 +12,7 @@ import Card from 'react-bootstrap/Card';
 
 */
 function MenuProp(props) {
+
     return (
         <Col sm={4} className="p-3">
 
@@ -38,11 +39,11 @@ function getStockState(in_stock){
     }
 }
 const itemStyle = {
-    display: "flex",
-    borderBottom: "white solid 1px",
+    'display': 'flex',
+    'borderBottom': 'white solid 1px'
 };
 
-var cardHeaderStyle = {
+const cardHeaderStyle = {
     'backgroundColor': '#0b658a',
     'color': '#ffffff'
 };
