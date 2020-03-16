@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/shopping_cart_main"
-    tools:context=".ShoppingCart">
+    tools:context="auto_garcon.ShoppingCart">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,4 +45,4 @@
             android:textStyle="bold"
             />
     </LinearLayout>
-</RelativeLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

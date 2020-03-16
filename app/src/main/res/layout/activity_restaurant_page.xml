@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="end"
     android:id="@+id/restaurant_main"
-    tools:context=".RestaurantPage">
+    tools:context="auto_garcon.Menu">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -74,12 +74,7 @@
         android:layout_marginTop="65dp"
         android:id="@+id/menu_list">
 
-
-
     </ExpandableListView>
-
-
-
 </androidx.drawerlayout.widget.DrawerLayout>
 
 

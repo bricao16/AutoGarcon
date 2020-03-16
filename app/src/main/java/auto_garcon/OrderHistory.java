@@ -1,4 +1,4 @@
-package com.example.auto_garcon;
+package auto_garcon;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -12,9 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
 
-public class Account extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class OrderHistory extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawerLayout;
     Toolbar toolbar;
@@ -24,14 +25,13 @@ public class Account extends AppCompatActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account);
+        setContentView(R.layout.activity_order_history);
 
-        drawerLayout = findViewById(R.id.account_main);
+        drawerLayout = findViewById(R.id.order_history_main);
         toolbar = findViewById(R.id.xml_toolbar);
         navigationView = findViewById(R.id.navigationView);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         drawerLayout.addDrawerListener(toggle);
@@ -43,17 +43,17 @@ public class Account extends AppCompatActivity implements NavigationView.OnNavig
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Toast.makeText(Account.this, "Account Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OrderHistory.this, "Account Selected", Toast.LENGTH_SHORT).show();
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
                 break;
             case R.id.settings:
-                Toast.makeText(Account.this, "Settings Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OrderHistory.this, "Settings Selected", Toast.LENGTH_SHORT).show();
                 Intent settings = new Intent(getBaseContext(),   Settings.class);
                 startActivity(settings);
                 break;
             case R.id.log_out:
-                Toast.makeText(Account.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OrderHistory.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
                 Intent login = new Intent(getBaseContext(),   Login.class);
                 startActivity(login);
                 break;

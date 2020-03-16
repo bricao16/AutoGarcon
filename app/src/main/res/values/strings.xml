@@ -22,5 +22,9 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="order_history_item">"Previous Ordered Item"</string>
+    <string name="pref_file">com.example.preference_file</string>
+    <string name ="pref_login_status">com.example_preference_login_status</string>
+    <string name="pref_user_name">com.example_preference_user_name</string>
+    <string name ="pref_auth_token">com.example_preference_pref_auth_token</string>
 
 </resources>

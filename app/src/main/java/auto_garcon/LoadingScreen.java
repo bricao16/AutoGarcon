@@ -1,10 +1,12 @@
-package com.example.auto_garcon;
+package auto_garcon;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import com.example.auto_garcon.R;
 
 public class LoadingScreen extends AppCompatActivity {
     private static int LOADING_SCREEN = 3000;

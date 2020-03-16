@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="end"
     android:id="@+id/order_history_main"
-    tools:context=".OrderHistory">
+    tools:context="auto_garcon.OrderHistory">
 
 
     <com.google.android.material.navigation.NavigationView

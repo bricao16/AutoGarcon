@@ -1,4 +1,4 @@
-package com.example.auto_garcon;
+package auto_garcon;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
 
 public class Settings extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,7 +32,6 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         navigationView = findViewById(R.id.navigationView);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         drawerLayout.addDrawerListener(toggle);

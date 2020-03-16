@@ -1,9 +1,8 @@
-package com.example.auto_garcon;
+package auto_garcon;
 
 import android.content.Intent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,16 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.seismic.ShakeDetector;
 
 import java.util.HashMap;
@@ -40,8 +31,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
     Button logOut;
-    FirebaseAuth authentication;
-    private  FirebaseAuth.AuthStateListener authStateListener;
+    public Prefrence pref;
 
     @Override
     //do any quriy here, firebase.......
@@ -49,12 +39,17 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        pref = new Prefrence(this);
+        if(!pref.getLoginStatus()){
+            pref.changeLogStatus(false);
+            Intent signIn = new Intent(Home.this, Login.class);
+            startActivity(signIn);
+        }
         drawerLayout = findViewById(R.id.home_main);
         toolbar = findViewById(R.id.xml_toolbar);
         navigationView = findViewById(R.id.navigationView);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         drawerLayout.addDrawerListener(toggle);
@@ -62,46 +57,14 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         navigationView.setNavigationItemSelectedListener(this);
         /*DB STUFF*/
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Create a new user with a first and last name
         Map<String, Object> user = new HashMap<>();
         // Add a new document with a generated ID
-        db.collection("users")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
-
-        //get data
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
 
         /*DB STUFF*/
         logOut = findViewById(R.id.log_out);
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
                 Intent signIn = new Intent(Home.this, Login.class);
                 startActivity(signIn);
 
