@@ -10,112 +10,6 @@
     tools:context=".OrderHistory">
 
 
-        <ScrollView
-            android:id="@+id/scrollView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/xml_toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/nav_header_background" />
-
-                    <Button
-                        android:id="@+id/home_button"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="70dp"
-                        android:layout_toStartOf="@+id/order_history_button"
-                        android:onClick="goHome"
-                        android:text="@string/home"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                    <Button
-                        android:id="@+id/order_history_button"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_toStartOf="@id/cart_button"
-                        android:onClick="goOrderHistory"
-                        android:text="@string/order_history"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                    <Button
-                        android:id="@+id/cart_button"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="10dp"
-                        android:onClick="goShoppingCart"
-                        android:text="@string/cart"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                </RelativeLayout>
-
-                <Button
-                    android:id="@+id/button4"
-                    android:layout_width="411dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginEnd="2dp"
-                    android:text="@string/order_history_item" />
-
-                <Button
-                    android:id="@+id/button5"
-                    android:layout_width="411dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="4dp"
-                    android:text="@string/order_history_item" />
-                <Button
-                    android:id="@+id/button6"
-                    android:layout_width="411dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="4dp"
-                    android:text="@string/order_history_item" />
-                <Button
-                    android:id="@+id/button7"
-                    android:layout_width="411dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="4dp"
-                    android:text="@string/order_history_item" />
-                <Button
-                    android:id="@+id/button8"
-                    android:layout_width="411dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="4dp"
-                    android:text="@string/order_history_item" />
-                <Button
-                    android:id="@+id/button9"
-                    android:layout_width="411dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="4dp"
-                    android:text="@string/order_history_item" />
-
-            </LinearLayout>
-        </ScrollView>
-
     <com.google.android.material.navigation.NavigationView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -124,5 +18,116 @@
         app:headerLayout="@layout/nav_header"
         android:layout_gravity="start"
         android:background="@color/white"/>
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/xml_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/nav_header_background" />
+
+                <Button
+                    android:id="@+id/home_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="70dp"
+                    android:layout_toStartOf="@+id/order_history_button"
+                    android:onClick="goHome"
+                    android:text="@string/home"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/order_history_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_toStartOf="@id/cart_button"
+                    android:onClick="goOrderHistory"
+                    android:text="@string/order_history"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/cart_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:onClick="goShoppingCart"
+                    android:text="@string/cart"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="411dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="4dp"
+                android:text="@string/order_history_item" />
+
+            <Button
+                android:id="@+id/button5"
+                android:layout_width="411dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="4dp"
+                android:text="@string/order_history_item" />
+
+            <Button
+                android:id="@+id/button6"
+                android:layout_width="411dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="4dp"
+                android:text="@string/order_history_item" />
+
+            <Button
+                android:id="@+id/button7"
+                android:layout_width="411dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="4dp"
+                android:text="@string/order_history_item" />
+
+            <Button
+                android:id="@+id/button8"
+                android:layout_width="411dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="4dp"
+                android:text="@string/order_history_item" />
+
+            <Button
+                android:id="@+id/button9"
+                android:layout_width="411dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="4dp"
+                android:text="@string/order_history_item" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
