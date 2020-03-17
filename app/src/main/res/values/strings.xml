@@ -26,6 +26,5 @@
     <string name ="pref_login_status">com.example_preference_login_status</string>
     <string name="pref_user_name">com.example_preference_user_name</string>
     <string name ="pref_auth_token">com.example_preference_pref_auth_token</string>
-    <string name="qr_code_description">Please focus on QR code</string>
 
 </resources>

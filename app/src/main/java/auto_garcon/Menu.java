@@ -8,8 +8,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
@@ -79,6 +81,13 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             listView = findViewById(R.id.menu_list);
                             listView.setAdapter(listAdapter);
 
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    Log.d("HI", "SDFSDF");
+                                }
+                            });
+
                             Iterator<String> keys = response.keys();
                             while(keys.hasNext()) {
                                 String key = keys.next();
@@ -95,16 +104,17 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                             itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
                                         }
                                         else if(inner_key.equals("calories")) {
-                                            itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
+                                            itemToBeAdded.setCalories(Integer.parseInt(item.get(inner_key).toString()));
                                         }
                                         else if(inner_key.equals("price")) {
-                                            itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
+                                            itemToBeAdded.setPrice(Double.parseDouble(item.get(inner_key).toString()));
                                         }
                                         else if(inner_key.equals("category")) {
+                                            itemToBeAdded.setCategory(item.get(inner_key).toString());
                                             addToList(key, item.get(inner_key).toString());
                                         }
                                         else if(inner_key.equals("in_stock")) {
-                                            itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
+                                            itemToBeAdded.setAmountInStock(Integer.parseInt(item.get(inner_key).toString()));
                                         }
                                     }
                                 }

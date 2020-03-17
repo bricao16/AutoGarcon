@@ -90,6 +90,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent popup = new Intent(context, Popup.class);
+                context.startActivity(popup);
             }
         });
 
