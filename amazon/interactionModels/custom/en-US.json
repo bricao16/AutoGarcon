@@ -54,10 +54,18 @@
             "get test data",
             "test data"
           ]
+        },
+        {
+          "name": "ClosingTimeIntent",
+          "slots": [],
+          "samples": [
+            "closing time",
+            "What time does it close"
+          ]
         }
       ],
       "types": []
     }
   },
-  "version": "10"
+  "version": "13"
 }
