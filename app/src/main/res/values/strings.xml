@@ -27,5 +27,6 @@
     <string name="pref_user_name">com.example_preference_user_name</string>
     <string name ="pref_auth_token">com.example_preference_pref_auth_token</string>
     <string name="qr_code_description">qr_code_description</string>
+    <string name="add_to_cart">Add to Cart</string>
 
 </resources>

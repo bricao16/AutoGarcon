@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.example.auto_garcon.R;
+
 public class twoButtonPage extends AppCompatActivity {
 
     @Override
