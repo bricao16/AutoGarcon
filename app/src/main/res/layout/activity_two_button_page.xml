@@ -6,4 +6,24 @@
     android:layout_height="match_parent"
     tools:context="auto_garcon.twoButtonPage">
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="108dp"
+        android:layout_height="138dp"
+        android:text="QrCode"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.191"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="110dp"
+        android:layout_height="133dp"
+        android:layout_marginStart="80dp"
+        android:text="FavPage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
