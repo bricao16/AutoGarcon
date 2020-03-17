@@ -9,6 +9,9 @@ import android.view.WindowManager;
 
 import com.example.auto_garcon.R;
 
+/**
+ * Popup
+ */
 public class Popup extends AppCompatActivity {
 
     @Override

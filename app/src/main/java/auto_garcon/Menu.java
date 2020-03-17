@@ -31,6 +31,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Menu
+ * Acitivity to display a restaurants menu
+ */
 public class Menu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ExpandableListView listView;
@@ -68,8 +72,11 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         drink_list = new ArrayList<>();
         alcohol_list = new ArrayList<>();
 
+        //url for restaurant wanted menu
+        //will need to become dynamic instead of the static restaurant 123
         final String url = "http://50.19.176.137:8000/menu/123";
 
+        //Makes a GET request to get menu items
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
