@@ -51,6 +51,8 @@
             android:value="barcode"></meta-data>
         <activity android:name="auto_garcon.QRcode">
             <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
