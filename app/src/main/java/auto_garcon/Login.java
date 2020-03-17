@@ -13,14 +13,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,8 +82,28 @@ public class Login extends AppCompatActivity {
                                 @Override
                                 public void onResponse(String response) {
                                     // response
-                                    Intent home = new Intent(Login.this, Home.class);
-                                    startActivity(home);
+                                    try {
+                                        //creating JSON object from response
+                                        JSONObject obj = new JSONObject(response);
+
+                                        //if no error set auth token and user name in preference class and start new activity
+                                        if(!obj.getBoolean("error")) {
+                                            JSONObject user = obj.getJSONObject("user");
+                                            JSONObject token = obj.getJSONObject("token");
+
+                                            pref.writeName(user.getString("user_id"));
+                                            pref.setAuthToken(token.getString("token"));
+                                            pref.changeLogStatus(true);
+
+                                            Intent home = new Intent(Login.this, Home.class);
+                                            startActivity(home);
+                                        }
+                                        else {
+                                            Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             },
                             new Response.ErrorListener() {
@@ -107,9 +127,6 @@ public class Login extends AppCompatActivity {
                     };
 
                     VolleySingleton.getInstance(Login.this).addToRequestQueue(postRequest);
-
-                    pref.writeName("SomeName");
-                    pref.changeLogStatus(true);
                 }
                 else{
                     Toast.makeText(Login.this, "Error Occurred", Toast.LENGTH_SHORT);
