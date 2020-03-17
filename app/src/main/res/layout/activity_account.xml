@@ -46,16 +46,16 @@
 
         <Button
             android:id="@+id/cart_button"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
+            android:onClick="goShoppingCart"
             android:text="@string/cart"
             android:textColor="@color/white"
-            android:textSize="14sp"
-            style="?android:attr/borderlessButtonStyle"
-            android:onClick="goShoppingCart"/>
+            android:textSize="14sp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

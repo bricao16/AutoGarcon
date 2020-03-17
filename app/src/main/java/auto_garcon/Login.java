@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +26,15 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Login
+ * This page is initially loaded after the Loading page, but may be reached from the Logout activity or registration activity.
+ * User may enter their username and password to login.
+ * If they login succesfully they go to the Home page
+ * If they do not they recieve an error.
+ * They may also select the do not have an account page which will send the to the registration activity.
+ *
+ */
 public class Login extends AppCompatActivity {
     Context context = this;
     private EditText emailId;
@@ -35,6 +45,11 @@ public class Login extends AppCompatActivity {
     private AccountManager accountManager;
     public Prefrence pref;
 
+    /**
+     * Creates Layout for Login Page
+     * loads activity_login xml page
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,23 +71,38 @@ public class Login extends AppCompatActivity {
         buttonSignIn = findViewById(R.id.signUp);
         textViewSignUp = findViewById(R.id.loginLink);
 
+        /**
+         * Listener for elements
+         * Listens for...
+         *     email
+         *     password
+         *     sign-in
+         *     sign-up
+         */
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String email=emailId.getText().toString().trim();
+                final String email = emailId.getText().toString().trim();
                 final String passwd = password.getText().toString().trim();
+                //Error if email is empty
                 if(email.isEmpty()){
                     emailId.setError("Please enter email id");
                     emailId.requestFocus();
                 }
+                //error if password is empty
                 else if (passwd.isEmpty()){
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
+                //Error if both fields are empty
                 else if(email.isEmpty() && passwd.isEmpty()){
                     Toast.makeText(Login.this,"Fields are Empty!", Toast.LENGTH_SHORT).show();
                 }
+                //If the password and email fields have text entered in them by the user
+                //A Request is made to the server to verify the login.
                 else if (!(email.isEmpty() && passwd.isEmpty())) {
+Log.d("HI", email);
+                    Log.d("HI", passwd);
 
                     //some request to server goes here
                     String url = "http://50.19.176.137:8000/customers/login";
@@ -98,6 +128,7 @@ public class Login extends AppCompatActivity {
                                             Intent home = new Intent(Login.this, Home.class);
                                             startActivity(home);
                                         }
+                                        //Error in auth token
                                         else {
                                             Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
                                         }
@@ -106,6 +137,7 @@ public class Login extends AppCompatActivity {
                                     }
                                 }
                             },
+                            //displays login error on screen.
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
@@ -115,9 +147,12 @@ public class Login extends AppCompatActivity {
                                 }
                             }
                     ) {
+                        /**
+                         * Function to get paramaters from the customer_id and password.
+                         * @return
+                         */
                         @Override
-                        protected Map<String, String> getParams()
-                        {
+                        protected Map<String, String> getParams() {
                             Map<String, String> params = new HashMap<String, String>();
                             params.put("customer_id", email);
                             params.put("password", passwd);
@@ -125,7 +160,7 @@ public class Login extends AppCompatActivity {
                             return params;
                         }
                     };
-
+                    postRequest.setShouldCache(false);
                     VolleySingleton.getInstance(Login.this).addToRequestQueue(postRequest);
                 }
                 else{
@@ -133,7 +168,10 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
-
+/**
+ * If the account creation button is selected then,
+ * activity will move to the registration.
+ */
         textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
