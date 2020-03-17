@@ -15,13 +15,6 @@ import android.widget.Toast;
 import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
 
-/**
- * Account
- * Activity which allows user to change user password.
- * Is not complete.
- * Just has layout for Elements
- *
- */
 public class Account extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawerLayout;
@@ -29,11 +22,6 @@ public class Account extends AppCompatActivity implements NavigationView.OnNavig
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
 
-    /**
-     * Create function
-     * Draws out layout and adds nav bar
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,13 +39,6 @@ public class Account extends AppCompatActivity implements NavigationView.OnNavig
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    /**
-     * Navigation Item selector
-     * Has 3 options: account, settings, and logout.
-     * They are 3 activity listeners which will go to another activity if there text is selected.
-     * @param nav_item
-     * @return
-     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
@@ -80,28 +61,16 @@ public class Account extends AppCompatActivity implements NavigationView.OnNavig
         return false;
     }
 
-    /**
-     * Home Nav bar selector
-     * @param view
-     */
     public void goHome(View view){
         Intent home = new Intent(getBaseContext(),   Home.class);
         startActivity(home);
     }
 
-    /**
-     * Order History nav bar selector
-     * @param view
-     */
     public void goOrderHistory(View view){
         Intent order_history = new Intent(getBaseContext(),   OrderHistory.class);
         startActivity(order_history);
     }
 
-    /**
-     * Shopping cart nav bar selector
-     * @param view
-     */
     public void goShoppingCart(View view){
         Intent shopping_cart = new Intent(getBaseContext(),   ShoppingCart.class);
         startActivity(shopping_cart);

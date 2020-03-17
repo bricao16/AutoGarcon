@@ -5,13 +5,6 @@ import android.content.SharedPreferences;
 
 import com.example.auto_garcon.R;
 
-/**
- * Preferences
- * Used to keep track of user data while in app.
- * Holds login status
- * User name
- * Auth token
- */
 public class Prefrence {
     private SharedPreferences sharedPreferences;
     private Context context;
@@ -19,6 +12,7 @@ public class Prefrence {
 
     public Prefrence(Context context){
         this.context=context;
+
         sharedPreferences= context.getSharedPreferences(context.getString(R.string.pref_file),Context.MODE_PRIVATE);
     }
 
