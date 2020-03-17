@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 
@@ -79,31 +80,31 @@ Log.d("HI", email);
 
                     //some request to server goes here
                     String url = "http://50.19.176.137:8000/customers/login";
-                    StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                            new Response.Listener<String>()
+                    JSONObject obj =new JSONObject();//for the request paramter
+                    try{
+                        obj.put("username",email);
+                        obj.put("password",passwd);
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url,obj,
+                            new Response.Listener<JSONObject>()
                             {
                                 @Override
-                                public void onResponse(String response) {
+                                public void onResponse(JSONObject response) {
+                                   // Log.d("TAG",response);
                                     // response
                                     try {
-                                        //creating JSON object from response
-                                        JSONObject obj = new JSONObject(response);
+                                           JSONObject object = response.getJSONObject("user");
+                                            String token = response.getString("token");
+                                            String username = object.getString("first_name");
+                                        pref.writeName(username);
+                                        pref.setAuthToken(token);
+                                        pref.changeLogStatus(true);
 
-                                        //if no error set auth token and user name in preference class and start new activity
-                                        if(!obj.getBoolean("error")) {
-                                            JSONObject user = obj.getJSONObject("user");
-                                            JSONObject token = obj.getJSONObject("token");
+                                        Intent home = new Intent(Login.this, Home.class);
+                                        startActivity(home);
 
-                                            pref.writeName(user.getString("user_id"));
-                                            pref.setAuthToken(token.getString("token"));
-                                            pref.changeLogStatus(true);
-
-                                            Intent home = new Intent(Login.this, Home.class);
-                                            startActivity(home);
-                                        }
-                                        else {
-                                            Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-                                        }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -114,14 +115,14 @@ Log.d("HI", email);
                                 public void onErrorResponse(VolleyError error) {
                                     // error
                                     error.printStackTrace();
-                                Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG).show();
                                 }
                             }
                     ) {
                         @Override
                         protected Map<String, String> getParams() {
                             Map<String, String> params = new HashMap<String, String>();
-                            params.put("customer_id", email);
+                            params.put("username", email);
                             params.put("password", passwd);
 
                             return params;
