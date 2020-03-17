@@ -1,48 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:paddingBottom="@dimen/activity_vertical_margin"
+android:paddingLeft="@dimen/activity_horizontal_margin"
+android:paddingRight="@dimen/activity_horizontal_margin"
+android:paddingTop="@dimen/activity_vertical_margin"
     android:id="@+id/shopping_cart_main"
-    tools:context="auto_garcon.ShoppingCart">
-
-    <LinearLayout
+    tools:context=".ShoppingCart">
+    <!-- needs to put toolbar here -->
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <!-- This is where lists are generated -->
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:id="@+id/selected_food_list"
+        android:paddingBottom="100dp">
+    </ListView>
 
-        <ListView
-            android:id="@+id/selected_food_list"
-            android:layout_width="401dp"
-            android:layout_height="match_parent"
-            android:paddingBottom="100dp"></ListView>
+</LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_alignParentBottom="true">
+    <!-- This is total price text -->
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:text="Total Due:"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:layout_weight="1"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:textStyle="bold"
+        />
+    <!-- This is actual total price  -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:id="@+id/meal_total"
+        android:layout_weight="1"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textStyle="bold"
+        android:padding="@dimen/activity_horizontal_margin"
+        />
+</LinearLayout>
+</RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Due:"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:id="@+id/meal_total"
-            android:layout_weight="1"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:textStyle="bold"
-            />
-    </LinearLayout>
-</androidx.drawerlayout.widget.DrawerLayout>
+

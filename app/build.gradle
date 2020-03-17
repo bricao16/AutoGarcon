@@ -44,4 +44,13 @@ dependencies {
 
     //frame for account image
     implementation 'de.hdodenhof:circleimageview:3.0.1'
+//<<<<<<< Updated upstream
+//=======
+    implementation 'com.baoyz.swipemenulistview:library:1.3.0'
+
+
+
+
+
+//>>>>>>> Stashed changes
 }
