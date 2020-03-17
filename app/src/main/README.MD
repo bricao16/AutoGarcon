@@ -1,7 +1,7 @@
 <b> File Descriptions </b>
 
 java/auto_garcon
-*folder containg all main java files
+* folder containg all main java files
 
 res
 *folder containg resources
@@ -14,7 +14,7 @@ Includes
 6. values
 
 AndroidManifest.xml
-*contains all the details needed by the android system about the application.
+* contains all the details needed by the android system about the application.
 
 ic_launcher-web.png
-*holding image for main display
+* holding image for main display
