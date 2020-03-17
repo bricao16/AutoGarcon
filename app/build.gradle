@@ -36,6 +36,8 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     //used for access to camera
     implementation 'com.google.android.gms:play-services-vision:19.0.0'
+    implementation 'com.karumi:dexter:5.0.0'
+    implementation 'com.github.nisrulz:qreader:2.1.2'
 
     //shake feature
     implementation 'com.squareup:seismic:1.0.2'

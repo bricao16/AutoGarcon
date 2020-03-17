@@ -9,8 +9,6 @@ import android.widget.Button;
 
 import com.example.auto_garcon.R;
 
-import com.example.auto_garcon.R;
-
 public class twoButtonPage extends AppCompatActivity {
 
     private Button button1;

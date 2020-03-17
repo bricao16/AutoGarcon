@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,7 +60,7 @@ public class Login extends AppCompatActivity {
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String email=emailId.getText().toString().trim();
+                final String email = emailId.getText().toString().trim();
                 final String passwd = password.getText().toString().trim();
                 if(email.isEmpty()){
                     emailId.setError("Please enter email id");
@@ -73,6 +74,8 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this,"Fields are Empty!", Toast.LENGTH_SHORT).show();
                 }
                 else if (!(email.isEmpty() && passwd.isEmpty())) {
+Log.d("HI", email);
+                    Log.d("HI", passwd);
 
                     //some request to server goes here
                     String url = "http://50.19.176.137:8000/customers/login";
@@ -116,8 +119,7 @@ public class Login extends AppCompatActivity {
                             }
                     ) {
                         @Override
-                        protected Map<String, String> getParams()
-                        {
+                        protected Map<String, String> getParams() {
                             Map<String, String> params = new HashMap<String, String>();
                             params.put("customer_id", email);
                             params.put("password", passwd);
@@ -125,7 +127,7 @@ public class Login extends AppCompatActivity {
                             return params;
                         }
                     };
-
+                    postRequest.setShouldCache(false);
                     VolleySingleton.getInstance(Login.this).addToRequestQueue(postRequest);
                 }
                 else{
