@@ -1,13 +1,14 @@
 package auto_garcon;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-
 import com.example.auto_garcon.R;
 
 import java.util.HashMap;
@@ -85,6 +86,14 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
         TextView txtListChild = view.findViewById(R.id.list_item);
         txtListChild.setText(childText);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext()), Popup.class);
+            }
+        });
+
         return view;
     }
 
