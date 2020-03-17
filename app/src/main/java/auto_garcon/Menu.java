@@ -84,14 +84,27 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 String key = keys.next();
                                 if (response.get(key) instanceof JSONObject) {
 
-                                    JSONObject category = response.getJSONObject(key.toString());
+                                    auto_garcon.MenuItem itemToBeAdded = new auto_garcon.MenuItem();
+                                    JSONObject item = response.getJSONObject(key.toString());
 
-                                    Iterator<String> category_keys = category.keys();
-                                    while(category_keys.hasNext()) {
-                                        String inner_key = category_keys.next();
+                                    Iterator<String> inner_keys = item.keys();
+                                    while(inner_keys.hasNext()) {
+                                        String inner_key = inner_keys.next();
 
-                                        if(inner_key.equals("category")) {
-                                            addToList(key, category.get(inner_key).toString());
+                                        if(inner_key.equals("restaurant")) {
+                                            itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
+                                        }
+                                        else if(inner_key.equals("calories")) {
+                                            itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
+                                        }
+                                        else if(inner_key.equals("price")) {
+                                            itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
+                                        }
+                                        else if(inner_key.equals("category")) {
+                                            addToList(key, item.get(inner_key).toString());
+                                        }
+                                        else if(inner_key.equals("in_stock")) {
+                                            itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
                                         }
                                     }
                                 }
@@ -164,16 +177,16 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         listHash.put(listDataHeader.get(3), alcohol_list);
     }
 
-    private void addToList(String key, String value) {
-        if(value.equals("Appetizer")){
+    private void addToList(String key, String category) {
+        if(category.equals("Appetizer")){
             appetizer_list.add(key);
         }
-        else  if(value.equals("Entree")){
+        else  if(category.equals("Entree")){
             entree_list.add(key);
         }
-        else  if(value.equals("Refillable Drink")){
+        else  if(category.equals("Refillable Drink")){
             drink_list.add(key);
-        }else  if(value.equals("Alcohol")){
+        }else  if(category.equals("Alcohol")){
             alcohol_list.add(key);
         }
     }
