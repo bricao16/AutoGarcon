@@ -26,8 +26,6 @@
     <string name="pref_login_status">com.example_preference_login_status</string>
     <string name="pref_user_name">com.example_preference_user_name</string>
     <string name="pref_auth_token">com.example_preference_pref_auth_token</string>
-    <string name="qr_code_description">Please scan QR code</string>
-    <string name="home_page">Favorite Restaurant Page</string>
-    <string name="qr_code_page">Scan New Restaurant</string>
+    <string name="qr_code_description">qr_code_description</string>
 
 </resources>
