@@ -34,7 +34,6 @@
         <activity android:name="auto_garcon.Menu">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -45,10 +44,16 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3180674783074402~6809677430" />
+
         <!-- This is for the Qr code -->
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode"></meta-data>
+        <activity android:name="auto_garcon.QRcode">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
