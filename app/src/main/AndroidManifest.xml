@@ -3,6 +3,12 @@
     package="com.example.auto_garcon">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <!-- We may need this -->
+    <!-- <uses-feature android:name="android.hardware.camera.autofocus"/> -->
+
 
     <application
         android:allowBackup="true"
@@ -39,6 +45,10 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3180674783074402~6809677430" />
+        <!-- This is for the Qr code -->
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode"></meta-data>
     </application>
 
 </manifest>

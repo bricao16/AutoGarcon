@@ -21,9 +21,6 @@ import com.squareup.seismic.ShakeDetector;
 import java.util.HashMap;
 import java.util.Map;
 
-//testing cause android studio sucks
-//Testing because I am very cool
-//test2
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
     DrawerLayout drawerLayout;
