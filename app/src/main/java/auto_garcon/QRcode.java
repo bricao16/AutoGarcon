@@ -25,6 +25,10 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
 
+/**
+ * QR Reader
+ * Activity for user to start ordering at restaurant
+ */
 public class QRcode extends AppCompatActivity {
 
     private TextView txt_result;
@@ -36,15 +40,18 @@ public class QRcode extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qr_code_page);
 
-        //request permission
+        //request permission for camera
     Dexter.withActivity(this)
             .withPermission(Manifest.permission.CAMERA)
             .withListener(new PermissionListener() {
+
+                //if permission for camera is accepted camera is set up.
                 @Override
                 public void onPermissionGranted(PermissionGrantedResponse response) {
                     setupCamera();
                 }
 
+                //if permission is denied for camera sends error message
                 @Override
                 public void onPermissionDenied(PermissionDeniedResponse response) {
                     Toast.makeText(QRcode.this, "You must enable this permission", Toast.LENGTH_SHORT).show();
@@ -57,6 +64,10 @@ public class QRcode extends AppCompatActivity {
             }).check();
     }
 
+    /**
+     * Camera is set up
+     * Can start and stop scanning for QR code.
+     */
     private void setupCamera() {
         txt_result = (TextView) findViewById(R.id.code_info);
         final ToggleButton btn_on_off = (ToggleButton) findViewById(R.id.btn_enable_disable);
@@ -64,10 +75,12 @@ public class QRcode extends AppCompatActivity {
         btn_on_off.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Stops scanning for QR code if button to stop is selected.
                 if(QReader.isCameraRunning()){
                     btn_on_off.setChecked(false);
                     QReader.stop();
                 }
+                //starts scanning for QR code if button to start is selected.
                 else {
                     btn_on_off.setChecked(true);
                     QReader.start();
@@ -79,6 +92,9 @@ public class QRcode extends AppCompatActivity {
         setupQREader();
     }
 
+    /**
+     * Sets up QR reader
+     */
     private void setupQREader() {
         QReader = new QREader.Builder(this, surfaceView, new QRDataListener() {
             @Override
@@ -97,6 +113,9 @@ public class QRcode extends AppCompatActivity {
                 .build();
     }
 
+    /**
+     * If QR scanning resumes
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -122,6 +141,11 @@ public class QRcode extends AppCompatActivity {
                 }).check();
     }
 
+    /**
+     *
+     * If scanning is paused
+     *
+     */
     @Override
     protected void onPause() {
         super.onPause();

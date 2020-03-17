@@ -15,6 +15,12 @@ import android.widget.Toast;
 import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
 
+/**
+ * Settings
+ * This will be where user may customize the app
+ * Example user photo, name, etc..
+ * Incomplete, currently just layout
+ */
 public class Settings extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawerLayout;
@@ -22,6 +28,10 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
 
+    /**
+     * Layout for Settings is loaded here
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +48,13 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
     }
-
+    /**
+     * Navigation Item selector
+     * Has 3 options: account, settings, and logout.
+     * They are 3 activity listeners which will go to another activity if there text is selected.
+     * @param nav_item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){

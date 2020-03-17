@@ -21,6 +21,11 @@ import com.squareup.seismic.ShakeDetector;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Home page
+ * Activity which displays restaurants
+ * Have not finished loading in the restaurants yet
+ */
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
     DrawerLayout drawerLayout;
@@ -30,12 +35,17 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     Button logOut;
     public Prefrence pref;
 
+    /**
+     * Loads the menu/nav bar
+     * Will load the Restaurants from the database here.
+     * @param savedInstanceState
+     */
     @Override
     //do any quriy here, firebase.......
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        //checks to make sure user is logged in.
         pref = new Prefrence(this);
         if(!pref.getLoginStatus()){
             pref.changeLogStatus(false);
@@ -68,16 +78,27 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
             }
         });
 
+        //shake sensor initialization for randomizing restaurant
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector shakeDetector = new ShakeDetector(this);
         shakeDetector.start(sensorManager);
     }
 
+    /**
+     * Unfinished but if phone shakes then will randomize restaurant to view.
+     */
     @Override
     public void hearShake(){
         Toast.makeText(this, "HI", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Navigation Item selector
+     * Has 3 options: account, settings, and logout.
+     * They are 3 activity listeners which will go to another activity if there text is selected.
+     * @param nav_item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){

@@ -38,7 +38,13 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
     }
-
+    /**
+     * Navigation Item selector
+     * Has 3 options: account, settings, and logout.
+     * They are 3 activity listeners which will go to another activity if there text is selected.
+     * @param nav_item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
