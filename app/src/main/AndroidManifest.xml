@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name="auto_garcon.Popup"
+            android:theme="@style/AppTheme.Popup"></activity>
         <activity android:name="auto_garcon.LoadingScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,13 +25,12 @@
         <activity android:name="auto_garcon.ShoppingCart" />
         <activity android:name="auto_garcon.Account" />
         <activity android:name="auto_garcon.Settings" />
-        <activity android:name="auto_garcon.Menu" >
+        <activity android:name="auto_garcon.Menu">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name="auto_garcon.Register" />
         <activity android:name="auto_garcon.Login" />
