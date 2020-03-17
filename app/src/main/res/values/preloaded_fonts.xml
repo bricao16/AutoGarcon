@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/faster_one</item>
+        <item>@font/im_fell_french_canon</item>
+        <item>@font/sanchez</item>
+    </array>
+</resources>

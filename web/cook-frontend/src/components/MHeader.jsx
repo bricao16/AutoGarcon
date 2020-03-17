@@ -1,24 +1,35 @@
 import React from "react";
-import logoImage from "../assets/logo.png"
-
-function MHeader() {
-    // This could be put in a CSS file
-    const style = {
-        display: "flex",
-        fontSize: "2em",
-        borderBottom: "solid grey 2px",
-        padding: "5px 0 5px 10px",
-        alignItems: "center",
-        fontWeight: "300"
-    };
-
+import LogoImage from "../assets/AutoGarconLogo.png";
+import AccountDropdown from "./AccountDropdown";
+/*
+  This prop is used to render the Header for the manager view. The logo of 
+  the company will be rendered at the top of the page along with the name of the company.
+  The person who is logged in will have their name along with a dropdown that will
+  take them to their personal settings.
+*/
+function mHeader(props) {
     return (
-        <header style={style}>
-            <img src={logoImage} width="auto" height="35px" alt="waiter" />
-            <p style={{margin: 0, marginLeft: "10px"}}>Auto-Garcon </p>
-            <p style={{margin: 0, marginLeft: "60vw"}}> <i> Manager View</i></p>
-        </header>
-    );
+    /*render the logo image, name of resturant and name of manager - this is being sent from
+      MTasks component */
+          <header style={headerStyle}>
+              <img src={LogoImage} width="auto" height="35px" alt="waiter" /> {/*{logo}*/}
+              <p style={headerTitleStyle}>Auto-Garcon</p> {/*{name}*/}
+              {/* this.props.loggedIn */ true && <AccountDropdown className="px-3"></AccountDropdown>}
+          </header>
+      );
+}
+export default mHeader;
+
+const headerTitleStyle = {
+    'margin': '0',
+    'marginLeft': '10px',
+    'flex': '1'
 }
 
-export default MHeader;
+const headerStyle = {
+    'backgroundColor': '#ffffff',
+    'display': 'flex',
+    'fontSize': '2em',
+    'alignItems': 'center',
+    'fontWeight': '300'
+};

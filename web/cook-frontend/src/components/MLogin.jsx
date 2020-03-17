@@ -11,7 +11,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
+/*this is the login component for the manager
+view. Asks for the email address, password and logs in if the user and correct password
+exists on the database */
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -36,14 +38,17 @@ export default function SignIn() {
   const classes = useStyles();
 
   return (
+    //top of page
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        {/* Lock icon on top */}
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
+        {/* Manager Sign In Title */}
         <Typography component="h1" variant="h5">
-          Manager Sign in
+          Manager Sign In
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -68,10 +73,12 @@ export default function SignIn() {
             id="password"
             autoComplete="current-password"
           />
+          {/* Remember me check box */}
           <FormControlLabel
             control={<Checkbox value="remember" color ="Primary" />}
             label="Remember me"
           />
+          {/* Submit button */}
           <Button
             type="submit"
             fullWidth
@@ -83,6 +90,7 @@ export default function SignIn() {
           </Button>
           <Grid container>
             <Grid item>
+              {/* Create an account link */}
               <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
                 {"Don't have an account? Sign Up"}
               </Link>

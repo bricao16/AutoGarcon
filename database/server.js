@@ -150,7 +150,7 @@ app.get('/alexa/:id', (req, res) => {
 
 //GET request handler for favorites
 app.get('/favorites/:id', (req, res) => {
-    let query = "SELECT * FROM sample.favorites natural join sample.restaurants WHERE username = ?";
+    let query = "SELECT * FROM sample.favorites natural join sample.restaurants WHERE customer_id = ?";
 
     db.query(query, req.params.id, (err, rows) => {
         if (err) {
@@ -271,6 +271,44 @@ app.post('/verify', verifyToken, (req, res) => {
             res.type('json').send(response);
         }   //else
     });
+}); //app.post
+
+//POST request handler for creating orders
+app.post('/orders', (req, res) => {
+    let query = "SELECT item_id, restaurant_id FROM sample.menu WHERE restaurant_id = ? AND item_id = ?";
+
+    let parameters = [req.body.quantity, req.body.customer_id, req.body.table_num];
+
+    db.query(query, parameters, (err, rows) => {
+        if (err) {
+            res.status(500).send('Error: could not complete request');
+        }   //if
+        else if (rows.length < 1) {
+            res.status(500).send('Error: no item with that item_id’);
+        }   //else if
+        else {
+            //Build order object:
+            let order = {
+                ‘order_num’: rows[0].order_num,
+                'restaurant_id': rows[0].restaurant_id,
+                ‘customer_id’: rows[0].customer_id,
+                ‘order_status’: rows[0].order_status,
+                ‘order_date’: rows[0].order_date,
+                ‘table_num’: rows[0].table_num
+            };  //orders
+	
+	    //Build orderdetails object:
+	    let orderdetails = {
+		‘order_num’: rows[0].order_num,
+		‘item_id’: rows[0].item_id,
+		‘quantity’: rows[0].quantity
+	    }; //orderdetails
+
+                //Send Response:
+                res.type('json').send(response);
+            });
+        }   //else
+    }); //db.query
 }); //app.post
 
 /*

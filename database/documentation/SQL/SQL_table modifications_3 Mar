@@ -1,9 +1,0 @@
-Date 3 March
-
-SQL Text:
-DELETE FROM sample.main_menu_test2
-WHERE item_name like 'Item Name' AND restaurant like 'Restaurant' AND calorie_num=0 AND price=0 AND category like 'Category' AND in_stock like 'In Stock?';
-
-Summary: Clean up for import. Updated schema. Have sample tables that can be downloaded and imported as CSV files.
-
-Notes: Not too bad trying to fix some of the csv file issues. MySQL makes table management relatively easy. 

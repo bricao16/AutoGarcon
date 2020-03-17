@@ -1,11 +1,10 @@
-Last Updated:2020-03-10 14:11:00  
+Last Updated:2020-03-17 11:54:00  
 
 Group: Database  
 
 Files:  
--APIInterface.txt: Planned endpoints, still in development  
--Auto_Garcon_Style_Guide.pdf  
--Current_Endpoints.txt: Live endpoints  
+-APIInterface.txt: Planned endpoints, still in development   
+-CurrentEndpoints.txt: Live endpoints  
 -DatabaseSchema.txt: Schema and variable types of attributes  
 -package.json: required packages to run server.js  
 -server.js: API created by Tucker  
