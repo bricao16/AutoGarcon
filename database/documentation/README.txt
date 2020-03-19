@@ -1,8 +1,12 @@
-Each documentation page should contain:
+Last Updated:2020-03-19 12:20:00
 
-- Date Created
-- Text or SQL code written: Paste the code written or explain the applications used.
-- Summary of changes: Write up what was completed and the actions taken.
-- Notes: Talk about how to improve or possible next steps in the process. 
+Group: Database
+Folder: Documentation
 
-Folders
+Files:
+
+Folders:
++SQL
++DatabaseCreation
+
+Notes: Talk about how to improve or possible next steps in the process. 
