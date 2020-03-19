@@ -1,7 +1,8 @@
 /*
 	REST-API Server
 	Tucker Urbanski
-	Date: 3/2/2020
+	Creation Date: 3/2/2020
+	Last Modification: 3/18/2020
 */
 
 // Built-in Node.js modules
