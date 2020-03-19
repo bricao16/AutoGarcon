@@ -275,7 +275,10 @@ app.post('/verify', verifyToken, (req, res) => {
 
 //POST request handler for creating orders
 app.post('/orders', (req, res) => {
+    //Is this needed?	
     let query = "SELECT item_id, restaurant_id FROM sample.menu WHERE restaurant_id = ? AND item_id = ?";
+    let query = "INSERT INTO orders(order_num, restaurant_id, customer_id, order_status, order_date, table_num)\
+    		VALUES (AUTO_INCREMENT, restaurant_id = ?, customer_id = ?, In Progress, CURRENT_TIMESTAMP, table_num = ?)"
 
     let parameters = [req.body.quantity, req.body.customer_id, req.body.table_num];
 
