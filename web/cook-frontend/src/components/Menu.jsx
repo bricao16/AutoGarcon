@@ -83,7 +83,7 @@ class Menu extends React.Component {
       });
       //create a list of all unique categories of food/drink
     for (const [index, value] of menu.entries()) {
-        if(categories.indexOf(value[1].category)==-1){
+        if(categories.indexOf(value[1].category) === -1){
           categories.push(value[1].category)
         }
     }
@@ -125,10 +125,6 @@ const managerStyle = {
 
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1'
-};
-const itemStyle = {
-    'display': 'flex',
-    'borderBottom': 'white solid 1px'
 };
 
 const cardHeaderStyle = {

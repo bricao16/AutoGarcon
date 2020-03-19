@@ -20,17 +20,19 @@ function MenuProp(props) {
                 <Card.Header style={cardHeaderStyle}>{props.menu[0]}</Card.Header>
                 <Card.Body>
                    { <Card.Title>{props.menu[1].category}</Card.Title>}
-                    <p style={{margin: "0", padding: "0.3em"}}>${props.menu[1].price} </p>
-                    <p style={{margin: "0", padding: "0.3em"}}>Calories: {props.menu[1].calories} </p>
-                    <p style={{margin: "0", padding: "0.3em"}}>{props.menu[1].picture} </p>
-                   <i> <p style={{margin: "0", padding: "0.3em"}}>{getStockState(props.menu[1].in_stock)} </p></i>
+                    <p style={infoStyle}>${props.menu[1].price} </p>
+                    <p style={infoStyle}>Calories: {props.menu[1].calories} </p>
+                    <p style={infoStyle}>{props.menu[1].picture} </p>
+                   <i> <p style={infoStyle}>{getStockState(props.menu[1].in_stock)} </p></i>
                 </Card.Body>
             </Card>
         </Col>
     )
 }
+
+// Determines whether data shows an item in stock or out of stock
 function getStockState(in_stock){
-    if(in_stock ==0)
+    if(in_stock === 0)
     {
         return "Out of Stock";
     }
@@ -38,9 +40,9 @@ function getStockState(in_stock){
         return "In Stock";
     }
 }
-const itemStyle = {
-    'display': 'flex',
-    'borderBottom': 'white solid 1px'
+const infoStyle = {
+    'margin': '0',
+    'padding': '0.3em'
 };
 
 const cardHeaderStyle = {
