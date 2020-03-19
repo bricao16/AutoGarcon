@@ -7,7 +7,7 @@ Files:
 -CurrentEndpoints.txt: Live endpoints  
 -DatabaseSchema.txt: Schema and variable types of attributes  
 -package.json: required packages to run server.js  
--server.js: API created by Tucker  
+-Server.js: API created by Tucker  
 
 Folders:  
 +documentation  
