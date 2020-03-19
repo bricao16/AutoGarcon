@@ -1,7 +1,7 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
-import StatsProp from './statsProp';
+import StatsProp from './StatsProp';
 /*this is the stats component for the manager
 view. The stats are stored in state and rendered 
 onto cards in by statsProp */

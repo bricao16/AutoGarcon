@@ -2,8 +2,8 @@ import React from "react";
 import Container from 'react-bootstrap/Container';
 import Menu from './Menu';
 import Stats from './MStats';
-import Hours from './mHours';
-import mHeader from './mHeader';
+import Hours from './MHours';
+import MHeader from './MHeader';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
@@ -65,7 +65,7 @@ class MTasks extends React.Component{
         });*/}
         return (
             <Container>
-              <mHeader/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
+              <MHeader/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
               <div style={backgroundStyle}>
                 <Container fluid>
                   <Row>
