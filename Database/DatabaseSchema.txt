@@ -49,12 +49,15 @@ restaurants
   restaurant_id     KEY             INT
   restaurant_name                   VARCHAR(50)
   restaurant_addr                   VARCHAR(50)
-  logo                              BLOB
-  font                              VARCHAR(50)
-  color_scheme                      VARCHAR(50)
-  phone_num                         INT
+  phone_number                         INT
   opening_time                      TIME
   closing_time                      TIME
+  font                              VARCHAR(50)
+  logo                              BLOB
+  primary_color                     VARCHAR(50)
+  secondary_color                   VARCHAR(50)
+  tertiary_color                     VARCHAR(50)
+
   
 staff
   staff_id          KEY             VARCHAR(50)
