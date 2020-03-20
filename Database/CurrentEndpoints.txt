@@ -29,7 +29,11 @@ GET /restaurant/:id
 			address,
 			phone_number,
 			opening,
-			closing
+			closing,
+			font,
+			primary_color,
+			secondary_color,
+			tertiary_color
 		}
 		menu:
 		{

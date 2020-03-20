@@ -1,7 +1,8 @@
 /*
 	REST-API Server
 	Tucker Urbanski
-	Date: 3/2/2020
+	Creation Date: 3/2/2020
+	Last Modification: 3/18/2020
 */
 
 // Built-in Node.js modules
@@ -60,15 +61,10 @@ app.get('/menu/:id', (req, res) => {
 
 	    for (let i=0; i<rows.length; i++) {
                 response[rows[i].item_name] =   {
-                    'restaurant': rows[i].restaurant,
-                    'calories': rows[i].calories,
+                    'restaurant': rows[i].restaurant_id,
+                    'calories': rows[i].calorie_num,
                     'price': rows[i].price,
-                    'tax': rows[i].tax,
-                    'options': rows[i].customer,
                     'category': rows[i].category,
-                    'breakfast': rows[i].breakfast,
-                    'lunch': rows[i].lunch,
-                    'dinner': rows[i].dinner,
                     'picture': 'No picture yet',
                     'in_stock': rows[i].in_stock
                 };    //response[i]
@@ -82,7 +78,7 @@ app.get('/menu/:id', (req, res) => {
 
 //GET request handler for restaurant
 app.get('/restaurant/:id', (req, res) => {
-    let query = "SELECT * FROM sample.restaurants NATURAL JOIN sample.main_menu WHERE restaurant_id = ?";
+    let query = "SELECT * FROM sample.restaurants NATURAL JOIN sample.menu WHERE restaurant_id = ?";
 
     db.query(query, req.params.id, (err, rows) => {
         if (err) {
@@ -99,22 +95,53 @@ app.get('/restaurant/:id', (req, res) => {
                 'phone_number': rows[0].phone_number,
                 'opening': rows[0].opening_time,
                 'closing': rows[0].closing_time,
+                'font': rows[0].font,
+                'primary_color': rows[0].primary_color,
+                'secondary_color': rows[0].secondary_color,
+                'tertiary_color': rows[0].tertiary_color
             };
 
             //Add menu to response:
             response['menu'] = {};
             for (let i=0; i<rows.length; i++) {
-                response['menu'][rows[i].dish_name] =   {
+                response['menu'][rows[i].item_name] =   {
                     'calories': rows[i].calories,
                     'price': rows[i].price,
-                    'tax': rows[i].tax,
-                    'options': rows[i].customer,
                     'category': rows[i].category,
-                    'breakfast': rows[i].breakfast,
-                    'lunch': rows[i].lunch,
-                    'dinner': rows[i].dinner,
                     'picture': 'No picture yet',
                     'in_stock': rows[i].in_stock
+                };
+            }   //for
+
+            //Send Response:
+            res.type('json').send(response);
+        }   //else
+    }); //db.query
+}); //app.get
+
+//GET request handler for orders
+app.get('/orders/:id', (req, res) => {
+    let query = 'SELECT * FROM sample.menu natural join sample.orders natural join sample.orderdetails WHERE restaurant_id = ? and order_status like "In Progress" ORDER BY order_num';
+
+    db.query(query, req.params.id, (err, rows) => {
+        if (err) {
+            res.status(500).send('Error: could not retrieve data from database');
+        }   //if
+        else if (rows.length < 1) {
+            res.status(500).send('Nothing was retrieved from database');
+        }   //else if
+        else {
+            //Build JSON object:
+            let response = {};
+
+            //Add list of orders to response:
+            for (let i=0; i<rows.length; i++) {
+                response[i] =   {
+                    'order_num': rows[i].order_num,
+                    'item_name': rows[i].item_name,
+                    'quantity': rows[i].quantity,
+                    'order_date': rows[i].order_date,
+                    'table': rows[i].table_num
                 };
             }   //for
 
@@ -176,7 +203,7 @@ app.get('/favorites/:id', (req, res) => {
 
 //POST request handler for customer login
 app.post('/customers/login', (req, res) => {
-    let query = "SELECT * FROM sample.customers WHERE user_id = ? and password = ?";
+    let query = "SELECT * FROM sample.customers WHERE customer_id = ? and password = ?";
 
     let parameters = [req.body.username, req.body.password];
 
@@ -271,44 +298,6 @@ app.post('/verify', verifyToken, (req, res) => {
             res.type('json').send(response);
         }   //else
     });
-}); //app.post
-
-//POST request handler for creating orders
-app.post('/orders', (req, res) => {
-    let query = "SELECT item_id, restaurant_id FROM sample.menu WHERE restaurant_id = ? AND item_id = ?";
-
-    let parameters = [req.body.quantity, req.body.customer_id, req.body.table_num];
-
-    db.query(query, parameters, (err, rows) => {
-        if (err) {
-            res.status(500).send('Error: could not complete request');
-        }   //if
-        else if (rows.length < 1) {
-            res.status(500).send('Error: no item with that item_id’);
-        }   //else if
-        else {
-            //Build order object:
-            let order = {
-                ‘order_num’: rows[0].order_num,
-                'restaurant_id': rows[0].restaurant_id,
-                ‘customer_id’: rows[0].customer_id,
-                ‘order_status’: rows[0].order_status,
-                ‘order_date’: rows[0].order_date,
-                ‘table_num’: rows[0].table_num
-            };  //orders
-	
-	    //Build orderdetails object:
-	    let orderdetails = {
-		‘order_num’: rows[0].order_num,
-		‘item_id’: rows[0].item_id,
-		‘quantity’: rows[0].quantity
-	    }; //orderdetails
-
-                //Send Response:
-                res.type('json').send(response);
-            });
-        }   //else
-    }); //db.query
 }); //app.post
 
 /*

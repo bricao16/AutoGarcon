@@ -48,7 +48,7 @@ class MTasks extends React.Component{
       )
     }*/
     render() {
-      {/*const { error, isLoaded, menuJSON, menu } = this.state;
+      /* {const { error, isLoaded, menuJSON, menu } = this.state;
       
       if (error) {
         return <div>Error: {error.message}</div>;
@@ -62,7 +62,7 @@ class MTasks extends React.Component{
         //map the menu json to an array
         Object.keys(this.state.resturantJSON).forEach(function(key) {
           resturantInfo.push([key ,resturantJSON[key]]);
-        });*/}
+        });} */
         return (
             <Container>
               <MHeader/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}

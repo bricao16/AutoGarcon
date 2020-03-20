@@ -1,0 +1,82 @@
+Last Updated: 3/19/20
+
+alexas
+  alexa_id          KEY             INT
+  restaurant_id     FOREIGN KEY     INT
+  table_num                         INT
+
+availability
+  item_id           FOREIGN KEY         
+  time_name         FOREIGN KEY
+  NOTE: May need to add rest_id  to  get  unique value from times table since restaurant_id and time_name are keys
+  
+customers
+  customer_id       KEY             VARCHAR(50)
+  first_name                        VARCHAR(50)
+  last_name                         VARCHAR(50)
+  password                          VARCHAR(50)
+  salt                              VARCHAR(50)
+  email                             VARCHAR(50)
+  
+favorites
+  customer_id       KEY             VARCHAR(50)
+  restaurant_id     KEY             INT
+
+menu
+  item_id           KEY             INT
+  restaurant_id     FOREIGN KEY     INT
+  item_name                         VARCHAR(50)  
+  calorie_num                       INT
+  category                          VARCHAR(50) // Alcohol, Appetizer, Dessert, Drink, Entree, Food, Refillable Drink
+  image                             BLOB  
+  in_stock                          BOOLEAN
+  price                             DOUBLE(10,2) // XX,XXX,XXX.XX
+
+orderdetails
+  order_num         KEY             INT
+  item_id           FOREIGN KEY     INT
+  quantity                          INT
+
+orders
+  order_num         KEY             INT
+  restaurant_id     FOREIGN KEY     INT
+  customer_id       FOREIGN KEY     VARCHAR(50)
+  order_status                      VARCHAR(50) // Cancelled, Complete, In Progress, Pending 
+  order_date                        TIMESTAMP // "YYYY-MM-DD HH:MM:SS"
+  table_num                         INT
+
+restaurants
+  restaurant_id     KEY             INT
+  restaurant_name                   VARCHAR(50)
+  restaurant_addr                   VARCHAR(50)
+  phone_number                         INT
+  opening_time                      TIME
+  closing_time                      TIME
+  font                              VARCHAR(50)
+  logo                              BLOB
+  primary_color                     VARCHAR(50)
+  secondary_color                   VARCHAR(50)
+  tertiary_color                     VARCHAR(50)
+
+  
+staff
+  staff_id          KEY             VARCHAR(50)
+  restaurant_id     FOREIGN KEY     INT
+  first_name                        VARCHAR(50)
+  last_name                         VARCHAR(50)
+  position                          VARCHAR(50) // Cook, Manager
+  password                          VARCHAR(50)
+  salt                              VARCHAR(50)
+  contact_num                       BIGINT
+  email                             VARCHAR(50)
+  
+services
+  restaurant_id     FOREIGN KEY     INT
+  table_num         FOREIGN KEY     INT
+  service_status                    VARCHAR(50) // Bill, Help, Good
+
+times
+  time_name         KEY             VARCHAR(50) // Breakfast, Dinner, Lunch, Overnight, All Day
+  restaurant_id     FOREIGN KEY     INT
+  start                             TIME //HH:MM:SS
+  end                               TIME

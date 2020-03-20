@@ -114,7 +114,7 @@ class Menu extends React.Component {
     }
       //create a list of all unique categories of food/drink
     for (const [index, value] of menu.entries()) {
-        if(categories.indexOf(value[1].category)==-1){
+        if(categories.indexOf(value[1].category) === -1){
           categories.push(value[1].category)
         }
     }
