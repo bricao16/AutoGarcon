@@ -1,4 +1,4 @@
-Last Updated:2020-03-17 11:54:00  
+Last Updated:2020-03-20 10:40:00  
 
 Group: Database  
 
@@ -8,6 +8,7 @@ Files:
 -DatabaseSchema.txt: Schema and variable types of attributes  
 -package.json: required packages to run server.js  
 -Server.js: API created by Tucker  
+-Queries: Temporary file for potential queries we will have
 
 Folders:  
 +documentation  
