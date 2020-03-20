@@ -1,0 +1,12 @@
+//Put for orders
+let query = "INSERT INTO orders(order_num, restaurant_id, customer_id, order_status, order_date, table_num)\
+  VALUES (AUTO_INCREMENT, restaurant_id = ?, customer_id = ?, In Progress, CURRENT_TIMESTAMP, table_num = ?)"
+
+let query = "INSERT INTO ordersdetails(order_num, item_id, quantity)\
+  VALUES (order_num, item_id = ?, quantity = ?)"
+
+//Put for staff login
+let query = "INSERT INTO staff(staff_id, restaurant_id, first_name, last_name, position, password, salt, contact_num, email)\
+  VALUES (staff_id = ?, restaurant_id = ?, first_name = ?, last_name = ?, position = ?, password = ?, SALT, contact_num = ?, email = ?)"
+
+//Put for customer login
