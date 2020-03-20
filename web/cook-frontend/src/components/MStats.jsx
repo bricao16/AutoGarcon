@@ -47,7 +47,8 @@ const managerStyle = {
     'justifyContent': 'space-between',
     'margin': '30px',
     'marginTop': '0',
-    'flexWrap': 'wrap'
+    'flexWrap': 'wrap',
+    'fontFamily': 'Kefa'
 };
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1'

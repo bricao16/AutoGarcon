@@ -6,7 +6,7 @@ import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
 
-import logoImage from "./assets/AutoGarcon.png";
+import logoImage from "./assets/AutoGarconLogo.png";
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -74,8 +74,8 @@ function App() {
         </Container>
       </div>
       <footer style={footerStyle}>
-        Powered by  
-        <img src={logoImage} width="auto" height="100vh" alt="waiter" />
+        Powered by Auto Garcon
+        <img src={logoImage} width="auto" height="50vh" alt="waiter" />
       </footer>
     </Router>      
   );
@@ -88,8 +88,8 @@ function Home() {
     <div>
 
       <div style={homeStyle}>
-        <h2> Welcome to 
-        <img src={logoImage} width="auto" height="200vw" alt="waiter" />
+        <h2> Welcome to Auto Garcon 
+        <img src={logoImage} width="auto" height="75vw" alt="waiter" />
          </h2>
 
         <br/>
@@ -141,11 +141,13 @@ var footerStyle = {
   'paddingBottom': '5px',
   'paddingRight': '12px',
   'paddingTop': '12px',
-  'textAlign': 'right'
+  'textAlign': 'right',
+  'fontFamily': 'Kefa'
 }
 var homeStyle = {
   'fontWeight': '300',
   'textAlign' : 'center',
   'listStyleType': 'none',
-  'textSize': '50pt'
+  'textSize': '90pt',
+  'fontFamily': 'Kefa'
 };

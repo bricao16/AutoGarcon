@@ -23,7 +23,8 @@ export default mHeader;
 const headerTitleStyle = {
     'margin': '0',
     'marginLeft': '10px',
-    'flex': '1'
+    'flex': '1',
+    'fontFamily': 'Kefa'
 }
 
 const headerStyle = {
@@ -31,5 +32,6 @@ const headerStyle = {
     'display': 'flex',
     'fontSize': '2em',
     'alignItems': 'center',
-    'fontWeight': '300'
+    'fontWeight': '300',
+    'fontFamily': 'Kefa'
 };

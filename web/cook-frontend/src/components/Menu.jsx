@@ -2,19 +2,24 @@ import React from "react";
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
-import MenuProp from './MenuProp';
+import MenuItem from './MenuItem';
+import NewItem from './newItem';
+
 /*
   This component is used to get the menu information
   from the database for the appropriate resturant. 
   
   componentDidMount() connects to the database and puts
   the information in out state.
-
+  
+  in the state renderCategory is what component we are on.
   render() checks if the database was properly loaded
   then it will map the returned menu to a 2d array
 
   renderMenu() will create the call the MenuProp for each 
   item making a Card for each to display.
+
+
 */
 class Menu extends React.Component {
 
@@ -25,7 +30,9 @@ class Menu extends React.Component {
       isLoaded: false,
       menuJSON: [],
       menu:[],
-      categories: []
+      categories: [],
+      renderCategory: "main",
+      newItem: false
     };
   }
 
@@ -48,24 +55,47 @@ class Menu extends React.Component {
       }
     )
   }
-
-  /* Aggregate all the menu categories into one object and call the prop to display is clicked */
+  //change the category of menu to render
+  changeCategory = (category) => {
+      this.setState({
+        renderCategory: category
+    })
+  }
+  /* Aggregate all the menu categories onto cards and call the change which menu to display is clicked */
   renderMenuCategories(){
     return this.state.categories.map((item, key) =>
-        <Col sm={4} className="p-3">
+        <Col sm={6} className="p-3">
           <Card className="text-center" >
-           <div onClick={() => renderMenu(item)}>                     
+           <div onClick={() => this.changeCategory(item) }>                     
               <Card.Header style={cardHeaderStyle}>{item}</Card.Header>
             </div>
           </Card>
       </Col>  
     );
   }
+  //render the menu prop of the current category 
+  renderMenu(){
+    return this.state.menu.map((item, key) =>
+        <MenuItem menu={item} category={this.state.renderCategory} />
+    );
+  }
+   //toggle between creating a new menu item and not
+  ToggleNewItem= () => {
+      this.setState({
+        newItem: !this.state.newItem
+    })
+  }
+    //generate form for new item
+    NewItemForm(){
+        return <NewItem/>
+    }
 
 
   // Default render method
   render() {
-    const { error, isLoaded, menuJSON, menu, categories } = this.state;
+    //clear the menu each time we load
+    this.state.menu = []
+    const { error, isLoaded, menuJSON, menu,categories,renderCategory, newItem } = this.state;
     
     if (error) {
       return <div>Error: {error.message}</div>;
@@ -77,25 +107,62 @@ class Menu extends React.Component {
 
     else {
       //map the menu json to an array
-      Object.keys(this.state.menuJSON).forEach(function(key) {
-        menu.push([key ,menuJSON[key]]);
+      Object.keys(menuJSON).forEach(function(key) {
+            menu.push([key ,menuJSON[key]]);
 
       });
+    }
       //create a list of all unique categories of food/drink
     for (const [index, value] of menu.entries()) {
         if(categories.indexOf(value[1].category)==-1){
           categories.push(value[1].category)
         }
     }
-
+    //if the render category is main then render all the categories of food/drink of this resturant
+    if(renderCategory == "main" && newItem ==false)
+    {
       return (
+          <Container>
+            <div style={backgroundStyle}>
+              <Container fluid>
+                <Col className="pt-3 px-3">
+                  <Container fluid>
+
+                    <div style={managerStyle}>
+                        {this.renderMenuCategories()}
+                        <Col sm={6} className="p-3"> {/*add a create new category option*/}
+                          <Card className="text-center" >
+                           <div onClick={() => this.ToggleNewItem() }>                     
+                              <i><Card.Header style={cardHeaderStyle, createNewStyle} >Create New</Card.Header></i>
+                            </div>
+                          </Card>
+                        </Col>  
+                    </div>
+                  </Container>
+                </Col>
+              </Container> 
+            </div>
+          </Container>
+      );
+    }
+    else if (renderCategory != "main" && newItem ==false){
+      //render the proper menu based on the current category
+      return ( 
         <Container>
           <div style={backgroundStyle}>
+            <h2 style ={menuHeaderStyle}> {renderCategory} </h2>
             <Container fluid>
               <Col className="pt-3 px-3">
                 <Container fluid>
                   <div style={managerStyle}>
-                      {this.renderMenuCategories()}
+                    {this.renderMenu()}
+                    <Col sm={6} className="p-3"> {/*add a create new item option*/}
+                      <Card className="text-center" >
+                       <div onClick={() => this.ToggleNewItem() }>                     
+                          <i><Card.Header style={cardHeaderStyle, createNewStyle} >Create New</Card.Header></i>
+                        </div>
+                      </Card>
+                    </Col>  
                   </div>
                 </Container>
               </Col>
@@ -103,16 +170,29 @@ class Menu extends React.Component {
           </div>
         </Container>
       );
-    } 
+    }
+    else{
+      //render a form for the new menu item(s)
+      return ( 
+        <Container>
+          <div style={backgroundStyle}>
+            <h2 style ={menuHeaderStyle}> Create New Item </h2>
+            <Container fluid>
+              <Col className="pt-3 px-3">
+                <Container fluid>
+                  <div style={managerStyle}>
+                    {this.NewItemForm()}
+                  </div>
+                </Container>
+              </Col>
+            </Container> 
+          </div>
+        </Container>
+      );
+    }
+  
   }
-
 }
-//render the menu by the cateogry that was clicked
-function renderMenu(category)
-{
-  console.log(category)
-  return <MenuProp menu={category}/>
-} 
 
 const managerStyle = {
   'display': "flex",
@@ -120,20 +200,31 @@ const managerStyle = {
   'justifyContent': "space-between",
   'margin': "30px",
   'marginTop': "0",
-  'flexWrap': "wrap"
-};
+  'flexWrap': "wrap",
+  'fontFamily': 'Kefa'
 
+};
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1'
 };
 const itemStyle = {
     'display': 'flex',
-    'borderBottom': 'white solid 1px'
+    'borderBottom': 'white solid 1px',
+    'fontFamily': 'Kefa'
 };
-
+const createNewStyle = {
+    'opacity' : '.50'
+}
 const cardHeaderStyle = {
     'backgroundColor': '#0b658a',
-    'color': '#ffffff'
+    'color': '#ffffff',
+    'fontFamily': 'Kefa'
 };
+const menuHeaderStyle = {
+    'backgroundColor': '#102644',
+    'color': '#ffffff',
+    'fontFamily': 'Kefa',
+    'textAlign' : 'center'
+}
 
 export default Menu;

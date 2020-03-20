@@ -10,9 +10,9 @@ function Hours(props) {
     return (
         <Col sm={4} className="p-3">
             <Card className="text-center">
-                <Card.Header style={cardHeaderStyle}>Hours</Card.Header>
+                <Card.Header style={cardHeaderStyle}>{props.hoursType.type}</Card.Header>
                 <Card.Body>
-                   <Card.Title>{props.hoursType.type}</Card.Title>
+      
                     {
                     props.hoursType.items.map((item, key) => (
                         <div style={itemStyle}>
@@ -30,11 +30,13 @@ function Hours(props) {
 const itemStyle = {
     'display': 'flex',
     'borderBottom': 'grey solid 1px',
+    'fontFamily': 'Kefa'
 };
 
 const cardHeaderStyle = {
     'backgroundColor': '#0b658a',
-    'color': '#ffffff'
+    'color': '#ffffff',
+    'fontFamily': 'Kefa'
 };
 
 export default Hours;
