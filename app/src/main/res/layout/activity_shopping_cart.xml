@@ -8,7 +8,7 @@ android:paddingLeft="@dimen/activity_horizontal_margin"
 android:paddingRight="@dimen/activity_horizontal_margin"
 android:paddingTop="@dimen/activity_vertical_margin"
     android:id="@+id/shopping_cart_main"
-    tools:context=".ShoppingCart">
+    tools:context="auto_garcon.ShoppingCart">
     <!-- needs to put toolbar here -->
 <LinearLayout
     android:layout_width="match_parent"
