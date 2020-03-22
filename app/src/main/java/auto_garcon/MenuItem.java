@@ -1,9 +1,5 @@
 package auto_garcon;
 
-/**
- * MenuItem
- * Collection of get and set functions for menu items
- */
 public class MenuItem {
     private String nameOfItem;
     private int restaurantID;
@@ -14,15 +10,6 @@ public class MenuItem {
 
     public MenuItem() { }
 
-    /**
-     * initializing food item
-     * @param nameOfItem
-     * @param restaurantID
-     * @param calories
-     * @param price
-     * @param entree
-     * @param amountInStock
-     */
     public MenuItem(String nameOfItem, int restaurantID, int calories, double price, String entree, int amountInStock) {
         this.nameOfItem = nameOfItem;
         this.restaurantID = restaurantID;

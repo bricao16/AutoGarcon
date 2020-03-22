@@ -13,10 +13,6 @@ import com.example.auto_garcon.R;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * ExpandableMenuAdapter
- * Creates Menu for side menu
- */
 public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private Context context;
     private List<String> listDataHeader;

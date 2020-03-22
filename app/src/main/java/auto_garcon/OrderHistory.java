@@ -15,13 +15,6 @@ import android.widget.Toast;
 import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
 
-/**
- * Order History
- *
- * Displays users previous purchases
- * Is not complete
- * Currently just has template.
- */
 public class OrderHistory extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawerLayout;
@@ -29,10 +22,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
 
-    /**
-     * Loads order history layout
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,13 +38,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
     }
-    /**
-     * Navigation Item selector
-     * Has 3 options: account, settings, and logout.
-     * They are 3 activity listeners which will go to another activity if there text is selected.
-     * @param nav_item
-     * @return
-     */
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){

@@ -42,6 +42,8 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
             Intent signIn = new Intent(Home.this, Login.class);
             startActivity(signIn);
         }
+        Toast.makeText(Home.this,pref.getName(),Toast.LENGTH_LONG).show();
+
         drawerLayout = findViewById(R.id.home_main);
         toolbar = findViewById(R.id.xml_toolbar);
         navigationView = findViewById(R.id.navigationView);

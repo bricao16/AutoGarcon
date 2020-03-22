@@ -5,11 +5,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
-/**
- * VolleySingleton
- *
- * Request queue for database - helper
- */
 public class VolleySingleton {
     private static VolleySingleton mInstance;
     private RequestQueue mRequestQueue;
@@ -26,7 +21,7 @@ public class VolleySingleton {
         }
         return mInstance;
     }
-    //gets the get request queue
+
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
@@ -35,7 +30,7 @@ public class VolleySingleton {
         }
         return mRequestQueue;
     }
-    //adds request to queue
+
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
     }
