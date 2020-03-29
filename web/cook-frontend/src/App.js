@@ -6,7 +6,6 @@ import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
 import logoImage from "./assets/AutoGarconLogo.png";
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {BrowserRouter as Router, Switch, Link, Route} from "react-router-dom";
