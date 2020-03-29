@@ -2,7 +2,7 @@ import React from "react";
 import Container from 'react-bootstrap/Container';
 import Menu from './Menu';
 import Stats from './MStats';
-import Hours from './mHours';
+import Hours from './MHours';
 import MHeader from './mHeader';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
