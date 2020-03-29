@@ -130,26 +130,21 @@ class Menu extends React.Component {
       return (
           <Container>
             <div style={backgroundStyle}>
-            <h2 style ={menuHeaderStyle}>
+            <h2 style={mainMenuHeaderStyle}>
               Menu
             </h2>
               <Container fluid>
-                <Col className="pt-3 px-3">
-                  <Container fluid>
-
-                    <div style={managerStyle}>
-                        {this.renderMenuCategories()}
-                        <Col sm={6} className="p-3"> {/*add a create new category option*/}
-                          <Card className="text-center" >
-                           <div onClick={() => this.ToggleNewItem() }>                     
-                              <i><Card.Header style={cardHeaderStyle, createNewStyle} >Create New</Card.Header></i>
-                            </div>
-                          </Card>
-                        </Col>  
-                    </div>
-                  </Container>
-                </Col>
-              </Container> 
+                <div class="d-flex flex-wrap">
+                    {this.renderMenuCategories()}
+                    <Col sm={6} className="p-3"> {/*add a create new category option*/}
+                      <Card className="text-center" >
+                        <div onClick={() => this.ToggleNewItem() }>                     
+                          <Card.Header style={cardHeaderStyle, createNewStyle}>Create New</Card.Header>
+                        </div>
+                      </Card>
+                    </Col>  
+                </div>
+              </Container>
             </div>
           </Container>
       );
@@ -164,20 +159,16 @@ class Menu extends React.Component {
               <div style={menuTextStyle}>{renderCategory}</div>
             </h2>
             <Container fluid>
-              <Col className="pt-3 px-3">
-                <Container fluid>
-                  <div style={managerStyle}>
-                    {this.renderMenu()}
-                    <Col sm={6} className="p-3"> {/*add a create new item option*/}
-                      <Card className="text-center" >
-                       <div onClick={() => this.ToggleNewItem() }>                     
-                          <i><Card.Header style={cardHeaderStyle, createNewStyle} >Create New</Card.Header></i>
-                        </div>
-                      </Card>
-                    </Col>  
-                  </div>
-                </Container>
-              </Col>
+              <div class="d-flex flex-wrap">
+                {this.renderMenu()}                
+              </div>
+              <Col sm={12} className="p-3"> {/*add a create new item option*/}
+                <Card className="text-center" >
+                  <button class="btn btn-link m-2" onClick={() => this.ToggleNewItem() }>                     
+                    Create New
+                  </button>
+                </Card>
+              </Col> 
             </Container> 
           </div>
         </Container>
@@ -217,13 +208,12 @@ const managerStyle = {
   'marginTop': "0",
   'flexWrap': "wrap",
   'fontFamily': 'Kefa'
-
 };
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1'
 };
 const createNewStyle = {
-  'opacity' : '.50'
+  'opacity' : '.9'
 };
 const cardHeaderStyle = {
   'backgroundColor': '#0b658a',
@@ -234,8 +224,17 @@ const menuHeaderStyle = {
   'backgroundColor': '#102644',
   'color': '#ffffff',
   'fontFamily': 'Kefa',
-  'textAlign' : 'center'
+  'textAlign' : 'center',
+  'height':'54px'
 };
+const mainMenuHeaderStyle = {
+  'backgroundColor': '#102644',
+  'color': '#ffffff',
+  'fontFamily': 'Kefa',
+  'textAlign' : 'center',
+  'height':'54px',
+  'padding-top':'8px'
+}
 const categoryHeaderStyle = Object.assign({
   'display': 'flex',
 }, menuHeaderStyle);
