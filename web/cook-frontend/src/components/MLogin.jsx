@@ -34,9 +34,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+class MLogin extends React.Component {
+	
+	constructor(props){
+		super(props);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		
+		this.state = {
+			
+			email: "",
+			thispassword: ""
+		};
+		
+	}
+	handleSubmit(event){
+		
+		event.preventDefault();
+	}
+}
+
 export default function SignIn() {
   const classes = useStyles();
-
+ 
   return (
     //top of page
     <Container component="main" maxWidth="xs">
@@ -52,6 +71,7 @@ export default function SignIn() {
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
+			//value = {this.state.email} /*This is the trouble line */
             variant="outlined"
             margin="normal"
             required
