@@ -1,5 +1,4 @@
 import React from "react";
-import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Pencil from '../assets/pencil.png';
 
@@ -28,22 +27,20 @@ class MenuItem extends React.Component {
         if(this.props.menu[1].category === this.props.category)
         {
            return(
-                <Col sm={6} className="p-3">
-                    <Card className="text-center"> { /* a header is the item name and a clickable edit pencil */}
-                        <Card.Header style={cardHeaderStyle}>{this.props.menu[0]} 
-                            <div onClick={() => this.ToggleNewItem() }>  
-                                <img src={Pencil} style ={imagePencil} alt='Pencil Gray clip art' />
-                            </div>
-                        </Card.Header>
-                        <Card.Body>
-                            <p style={{margin: "0", padding: "0.3em"}}>${this.props.menu[1].price} </p>
-                            <p style={{margin: "0", padding: "0.3em"}}>Calories: {this.props.menu[1].calories} </p>
-                            <p style={{margin: "0", padding: "0.3em"}}>{this.props.menu[1].picture} </p>
-                           <i> <p style={{margin: "0", padding: "0.3em"}}>{this.getStockState(this.props.menu[1].in_stock)} </p></i>
-                           
-                        </Card.Body>
-                    </Card>
-                </Col>
+                <Card className="text-center m-2" style={itemStyle}> { /* a header is the item name and a clickable edit pencil */}
+                    <Card.Header style={cardHeaderStyle}>{this.props.menu[0]} 
+                        <div onClick={() => this.ToggleNewItem() }>  
+                            <img src={Pencil} style ={imagePencil} alt='Pencil Gray clip art' />
+                        </div>
+                    </Card.Header>
+                    <Card.Body>
+                        <p style={{margin: "0", padding: "0.3em"}}>${this.props.menu[1].price} </p>
+                        <p style={{margin: "0", padding: "0.3em"}}>Calories: {this.props.menu[1].calories} </p>
+                        <p style={{margin: "0", padding: "0.3em"}}>{this.props.menu[1].picture} </p>
+                        <i> <p style={{margin: "0", padding: "0.3em"}}>{this.getStockState(this.props.menu[1].in_stock)} </p></i>
+                        
+                    </Card.Body>
+                </Card>
             ) 
         }
         else{
@@ -64,5 +61,8 @@ const cardHeaderStyle = {
     'color': '#ffffff',
     'fontFamily': 'Kefa'
 };
+const itemStyle = {
+    'width':'200px'
+}
 
 export default MenuItem;
