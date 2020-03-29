@@ -1,6 +1,5 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
 import StatsProp from './StatsProp';
 /*this is the stats component for the manager
 view. The stats are stored in state and rendered 
@@ -27,13 +26,9 @@ class MStats extends React.Component{
             <Container>
               <div style={backgroundStyle}>
              <Container fluid>
-                <Col className="pt-3 px-3">
-                        <Container fluid>
-                            <div style={managerStyle}>
-                                {this.renderStats()}
-                            </div>
-                        </Container>
-                    </Col>
+                <div class="d-flex flex-wrap">
+                    {this.renderStats()}
+                </div>
             </Container> 
         </div>
     </Container>
@@ -41,15 +36,6 @@ class MStats extends React.Component{
     }
 }
 
-const managerStyle = {
-    'display': 'flex',
-    'fontSize': '1.2em',
-    'justifyContent': 'space-between',
-    'margin': '30px',
-    'marginTop': '0',
-    'flexWrap': 'wrap',
-    'fontFamily': 'Kefa'
-};
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1'
 }
