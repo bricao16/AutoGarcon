@@ -29,7 +29,7 @@ function App() {
   return (
     <Router>
       <div style={backgroundStyle}>
-        <Container>
+        <div class="px-4">
           <Row style={{'minHeight': '90vh'}}>
             <Col className="pt-3 px-3">
               <div className="rounded" style={sectionStyle}>
@@ -56,15 +56,15 @@ function App() {
                     <MTasks/>
                   </Route>
                   <Route path="/menu" 
-                        render={(props) => <MTasks {...props} content={"menu"}/>} />
+                    render={(props) => <MTasks {...props} content={"menu"}/>} />
            
                   <Route path="/hours" 
-                  render={(props) => <MTasks {...props} content={"hours"}/>} />
+                    render={(props) => <MTasks {...props} content={"hours"}/>} />
                 </Switch>
               </div>
             </Col>
           </Row>
-        </Container>
+        </div>
       </div>
       <footer style={footerStyle}>
         Powered by Auto Garcon

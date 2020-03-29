@@ -70,12 +70,12 @@ class Menu extends React.Component {
   /* Aggregate all the menu categories onto cards and call the change which menu to display is clicked */
   renderMenuCategories(){
     return this.state.categories.map((item, key) =>
-        <Col sm={6} className="p-3">
-          <Card className="text-center" >
-           <div onClick={() => this.changeCategory(item) }>                     
-              <Card.Header style={cardHeaderStyle}>{item}</Card.Header>
-            </div>
-          </Card>
+      <Col sm={6} className="p-3" style={{'min-width':'225px'}}>
+        <Card className="text-center" >
+          <div onClick={() => this.changeCategory(item) }>                     
+            <Card.Header style={cardHeaderStyle}>{item}</Card.Header>
+          </div>
+        </Card>
       </Col>  
     );
   }
