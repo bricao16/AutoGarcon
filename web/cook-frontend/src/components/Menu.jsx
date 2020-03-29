@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import MenuItem from './MenuItem';
-import NewItem from './newItem';
+import NewItem from './NewItem';
 
 /*
   This component is used to get the menu information
@@ -61,15 +61,21 @@ class Menu extends React.Component {
         renderCategory: category
     })
   }
+  //change the newItem state.  Mainly for going back to the main menu page
+  setNewItem = (state) => {
+    this.setState({
+      newItem: state
+  })
+}
   /* Aggregate all the menu categories onto cards and call the change which menu to display is clicked */
   renderMenuCategories(){
     return this.state.categories.map((item, key) =>
-        <Col sm={6} className="p-3">
-          <Card className="text-center" >
-           <div onClick={() => this.changeCategory(item) }>                     
-              <Card.Header style={cardHeaderStyle}>{item}</Card.Header>
-            </div>
-          </Card>
+      <Col sm={6} className="p-3" style={{'min-width':'225px'}}>
+        <Card className="text-center" >
+          <div onClick={() => this.changeCategory(item) }>                     
+            <Card.Header style={cardHeaderStyle}>{item}</Card.Header>
+          </div>
+        </Card>
       </Col>  
     );
   }
@@ -119,53 +125,50 @@ class Menu extends React.Component {
         }
     }
     //if the render category is main then render all the categories of food/drink of this resturant
-    if(renderCategory == "main" && newItem ==false)
+    if(renderCategory === "main" && newItem === false)
     {
       return (
           <Container>
             <div style={backgroundStyle}>
+            <h2 style={mainMenuHeaderStyle}>
+              Menu
+            </h2>
               <Container fluid>
-                <Col className="pt-3 px-3">
-                  <Container fluid>
-
-                    <div style={managerStyle}>
-                        {this.renderMenuCategories()}
-                        <Col sm={6} className="p-3"> {/*add a create new category option*/}
-                          <Card className="text-center" >
-                           <div onClick={() => this.ToggleNewItem() }>                     
-                              <i><Card.Header style={cardHeaderStyle, createNewStyle} >Create New</Card.Header></i>
-                            </div>
-                          </Card>
-                        </Col>  
-                    </div>
-                  </Container>
-                </Col>
-              </Container> 
+                <div class="d-flex flex-wrap">
+                    {this.renderMenuCategories()}
+                    <Col sm={6} className="p-3"> {/*add a create new category option*/}
+                      <Card className="text-center" >
+                        <div onClick={() => this.ToggleNewItem() }>                     
+                          <Card.Header style={cardHeaderStyle, createNewStyle}>Create New</Card.Header>
+                        </div>
+                      </Card>
+                    </Col>  
+                </div>
+              </Container>
             </div>
           </Container>
       );
     }
-    else if (renderCategory != "main" && newItem ==false){
+    else if (renderCategory !== "main" && newItem === false){
       //render the proper menu based on the current category
       return ( 
         <Container>
           <div style={backgroundStyle}>
-            <h2 style ={menuHeaderStyle}> {renderCategory} </h2>
+            <h2 style ={categoryHeaderStyle}>
+              <button type="button" onClick={() => this.changeCategory("main") } class="btn btn-outline-light m-2">Back</button>
+              <div style={menuTextStyle}>{renderCategory}</div>
+            </h2>
             <Container fluid>
-              <Col className="pt-3 px-3">
-                <Container fluid>
-                  <div style={managerStyle}>
-                    {this.renderMenu()}
-                    <Col sm={6} className="p-3"> {/*add a create new item option*/}
-                      <Card className="text-center" >
-                       <div onClick={() => this.ToggleNewItem() }>                     
-                          <i><Card.Header style={cardHeaderStyle, createNewStyle} >Create New</Card.Header></i>
-                        </div>
-                      </Card>
-                    </Col>  
-                  </div>
-                </Container>
-              </Col>
+              <div class="d-flex flex-wrap">
+                {this.renderMenu()}                
+              </div>
+              <Col sm={12} className="p-3"> {/*add a create new item option*/}
+                <Card className="text-center" >
+                  <button class="btn btn-link m-2" onClick={() => this.ToggleNewItem() }>                     
+                    Create New
+                  </button>
+                </Card>
+              </Col> 
             </Container> 
           </div>
         </Container>
@@ -176,7 +179,10 @@ class Menu extends React.Component {
       return ( 
         <Container>
           <div style={backgroundStyle}>
-            <h2 style ={menuHeaderStyle}> Create New Item </h2>
+            <h2 style ={categoryHeaderStyle}>
+              <button type="button" onClick={() => {this.changeCategory("main"); this.setNewItem(false)} } class="btn btn-outline-light m-2">Back</button>
+              <div style={menuTextStyle}>Create New Item</div>
+            </h2>
             <Container fluid>
               <Col className="pt-3 px-3">
                 <Container fluid>
@@ -202,29 +208,40 @@ const managerStyle = {
   'marginTop': "0",
   'flexWrap': "wrap",
   'fontFamily': 'Kefa'
-
 };
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1'
 };
-const itemStyle = {
-    'display': 'flex',
-    'borderBottom': 'white solid 1px',
-    'fontFamily': 'Kefa'
-};
 const createNewStyle = {
-    'opacity' : '.50'
-}
+  'opacity' : '.9'
+};
 const cardHeaderStyle = {
-    'backgroundColor': '#0b658a',
-    'color': '#ffffff',
-    'fontFamily': 'Kefa'
+  'backgroundColor': '#0b658a',
+  'color': '#ffffff',
+  'fontFamily': 'Kefa'
 };
 const menuHeaderStyle = {
-    'backgroundColor': '#102644',
-    'color': '#ffffff',
-    'fontFamily': 'Kefa',
-    'textAlign' : 'center'
+  'backgroundColor': '#102644',
+  'color': '#ffffff',
+  'fontFamily': 'Kefa',
+  'textAlign' : 'center',
+  'height':'54px'
+};
+const mainMenuHeaderStyle = {
+  'backgroundColor': '#102644',
+  'color': '#ffffff',
+  'fontFamily': 'Kefa',
+  'textAlign' : 'center',
+  'height':'54px',
+  'padding-top':'8px'
 }
+const categoryHeaderStyle = Object.assign({
+  'display': 'flex',
+}, menuHeaderStyle);
+const menuTextStyle = {
+  'flex': '1',
+  'padding-right': '69px',
+  'padding-top': '8px'
+};
 
 export default Menu;

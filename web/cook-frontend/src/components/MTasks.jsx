@@ -20,13 +20,13 @@ resturant logo and name. The stats page is the landing
 page */
 class MTasks extends React.Component{
     constructor(props) {
-        super(props);
-        this.state = {
-          error: null,
-          isLoaded: false,
-          resturantJSON: [],
-          resturantInfo:[]
-        };
+      super(props);
+      this.state = {
+        error: null,
+        isLoaded: false,
+        resturantJSON: [],
+        resturantInfo:[]
+      };
     }
     /* Used for connecting to Resturant in database */
     /*componentDidMount() {
@@ -56,48 +56,48 @@ class MTasks extends React.Component{
 
       else if (!isLoaded) {
         return <div>Loading...</div>;
-      } 
+      }
 
       else {
         //map the menu json to an array
         Object.keys(this.state.resturantJSON).forEach(function(key) {
           resturantInfo.push([key ,resturantJSON[key]]);
         });} */
-        return (
-            <Container>
-              <MHeader/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
-              <div style={backgroundStyle}>
-                <Container fluid>
-                  <Row>
-                    <Col sm={4} className="pt-3 px-3" style={navColStyle}>
-                      <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
-                        <Nav.Link href="/manager">Statistics</Nav.Link>
-                        <Nav.Link href="/menu" >Menu</Nav.Link>
-                        <Nav.Link href="/hours">Hours</Nav.Link>
-                      </Nav>
-                    </Col>
-                    <Col className="pt-3 px-3">
-                      <Container fluid>
-                          <Switch>
-                            <Route exact path="/manager">
-                              <Stats/>
-                            </Route>
-                            <Route path="/menu">
-                              <Menu />
-                            </Route>
-                            <Route path="/hours">
-                              <Hours />
-                            </Route>
-                          </Switch>
-                      </Container>
-                    </Col>
-                  </Row>
-                </Container> 
-              </div>
-            </Container>
-          );
-        }
+      return (
+          <Container>
+            <MHeader/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
+            <div style={backgroundStyle}>
+              <Container fluid>
+                <Row>
+                  <Col sm={4} className="pt-3 px-3" style={navColStyle}>
+                    <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
+                      <Nav.Link href="/manager">Statistics</Nav.Link>
+                      <Nav.Link href="/menu" >Menu</Nav.Link>
+                      <Nav.Link href="/hours">Hours</Nav.Link>
+                    </Nav>
+                  </Col>
+                  <Col className="pt-3 px-3">
+                    <Container fluid>
+                        <Switch>
+                          <Route exact path="/manager">
+                            <Stats/>
+                          </Route>
+                          <Route path="/menu">
+                            <Menu />
+                          </Route>
+                          <Route path="/hours">
+                            <Hours />
+                          </Route>
+                        </Switch>
+                    </Container>
+                  </Col>
+                </Row>
+              </Container> 
+            </div>
+          </Container>
+        );
       }
+    }
 
 const backgroundStyle = {
   'backgroundColor': '#ffffff'

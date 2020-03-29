@@ -26,32 +26,20 @@ class MHours extends React.Component{
     render() {
         return (
             <Container>
-              <div style={backgroundStyle}>
-             <Container fluid>
-                <Col className="pt-3 px-3">
-                        <Container fluid>
-                            <div style={managerStyle}>
-                                {this.renderHours()}
-                            </div>
-                        </Container>
-                    </Col>
-            </Container> 
-        </div>
-    </Container>
+                <div style={backgroundStyle}>
+                    <Container fluid>
+                        <div class="d-flex flex-wrap">
+                            {this.renderHours()}
+                        </div>
+                    </Container>
+                </div>
+            </Container>
         );
     }
 }
 
-const managerStyle = {
-    'display': 'flex',
-    'fontSize': '1.2em',
-    'justifyContent': 'space-between',
-    'margin': '30px',
-    'marginTop': '0;',
-    'flexWrap': 'wrap'
-};
-var backgroundStyle = {
-  'backgroundColor': '#f1f1f1'
+const backgroundStyle = {
+  'background-color': '#f1f1f1'
 }
 
 export default MHours;
