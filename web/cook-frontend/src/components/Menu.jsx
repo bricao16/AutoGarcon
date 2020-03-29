@@ -61,6 +61,12 @@ class Menu extends React.Component {
         renderCategory: category
     })
   }
+  //change the newItem state.  Mainly for going back to the main menu page
+  setNewItem = (state) => {
+    this.setState({
+      newItem: state
+  })
+}
   /* Aggregate all the menu categories onto cards and call the change which menu to display is clicked */
   renderMenuCategories(){
     return this.state.categories.map((item, key) =>
@@ -124,6 +130,9 @@ class Menu extends React.Component {
       return (
           <Container>
             <div style={backgroundStyle}>
+            <h2 style ={menuHeaderStyle}>
+              Menu
+            </h2>
               <Container fluid>
                 <Col className="pt-3 px-3">
                   <Container fluid>
@@ -150,7 +159,10 @@ class Menu extends React.Component {
       return ( 
         <Container>
           <div style={backgroundStyle}>
-            <h2 style ={menuHeaderStyle}> {renderCategory} </h2>
+            <h2 style ={categoryHeaderStyle}>
+              <button type="button" onClick={() => this.changeCategory("main") } class="btn btn-outline-light m-2">Back</button>
+              <div style={menuTextStyle}>{renderCategory}</div>
+            </h2>
             <Container fluid>
               <Col className="pt-3 px-3">
                 <Container fluid>
@@ -176,7 +188,10 @@ class Menu extends React.Component {
       return ( 
         <Container>
           <div style={backgroundStyle}>
-            <h2 style ={menuHeaderStyle}> Create New Item </h2>
+            <h2 style ={categoryHeaderStyle}>
+              <button type="button" onClick={() => {this.changeCategory("main"); this.setNewItem(false)} } class="btn btn-outline-light m-2">Back</button>
+              <div style={menuTextStyle}>Create New Item</div>
+            </h2>
             <Container fluid>
               <Col className="pt-3 px-3">
                 <Container fluid>
@@ -208,18 +223,26 @@ const backgroundStyle = {
   'backgroundColor': '#f1f1f1'
 };
 const createNewStyle = {
-    'opacity' : '.50'
-}
+  'opacity' : '.50'
+};
 const cardHeaderStyle = {
-    'backgroundColor': '#0b658a',
-    'color': '#ffffff',
-    'fontFamily': 'Kefa'
+  'backgroundColor': '#0b658a',
+  'color': '#ffffff',
+  'fontFamily': 'Kefa'
 };
 const menuHeaderStyle = {
-    'backgroundColor': '#102644',
-    'color': '#ffffff',
-    'fontFamily': 'Kefa',
-    'textAlign' : 'center'
-}
+  'backgroundColor': '#102644',
+  'color': '#ffffff',
+  'fontFamily': 'Kefa',
+  'textAlign' : 'center'
+};
+const categoryHeaderStyle = Object.assign({
+  'display': 'flex',
+}, menuHeaderStyle);
+const menuTextStyle = {
+  'flex': '1',
+  'padding-right': '69px',
+  'padding-top': '8px'
+};
 
 export default Menu;
