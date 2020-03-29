@@ -2,8 +2,7 @@ import React from "react";
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Pencil from '../assets/pencil.png';
-import Container from 'react-bootstrap/Container';
-import NewItem from './newItem'
+
 /*
     This Prop is used to render the cards of the Manager Menu page.
     The menu is a 2d array with the first array containing only
@@ -16,7 +15,7 @@ import NewItem from './newItem'
 */
 class MenuItem extends React.Component {
     getStockState(in_stock){
-        if(in_stock ==0)
+        if(in_stock === 0)
         {
             return "Out of Stock";
         }
@@ -26,7 +25,7 @@ class MenuItem extends React.Component {
     }
     render(){
         console.log(this.props)
-        if(this.props.menu[1].category == this.props.category)
+        if(this.props.menu[1].category === this.props.category)
         {
            return(
                 <Col sm={6} className="p-3">
@@ -60,11 +59,6 @@ const imagePencil = {
     'height':'2vw',
     'paddingLeft':'1em'
 }
-const itemStyle = {
-    'display': 'flex',
-    'borderBottom': 'white solid 1px',
-    'fontFamily': 'Kefa'
-};
 const cardHeaderStyle = {
     'backgroundColor': '#0b658a',
     'color': '#ffffff',

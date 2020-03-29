@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import MenuItem from './MenuItem';
-import NewItem from './newItem';
+import NewItem from './NewItem';
 
 /*
   This component is used to get the menu information
@@ -119,7 +119,7 @@ class Menu extends React.Component {
         }
     }
     //if the render category is main then render all the categories of food/drink of this resturant
-    if(renderCategory == "main" && newItem ==false)
+    if(renderCategory === "main" && newItem === false)
     {
       return (
           <Container>
@@ -145,7 +145,7 @@ class Menu extends React.Component {
           </Container>
       );
     }
-    else if (renderCategory != "main" && newItem ==false){
+    else if (renderCategory !== "main" && newItem === false){
       //render the proper menu based on the current category
       return ( 
         <Container>
@@ -206,11 +206,6 @@ const managerStyle = {
 };
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1'
-};
-const itemStyle = {
-    'display': 'flex',
-    'borderBottom': 'white solid 1px',
-    'fontFamily': 'Kefa'
 };
 const createNewStyle = {
     'opacity' : '.50'

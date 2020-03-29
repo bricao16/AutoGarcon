@@ -2,6 +2,12 @@ import React from "react";
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 
+/* 
+  This component is to allow the manager to 
+  create a new item. It returns a form object that allows
+  for several options and fields to be submitted.  There
+  are no helper functions
+*/
 function NewItem(props){
     return ( 
         <Container>
@@ -56,20 +62,5 @@ function NewItem(props){
         </Container>
       ); 
 }
-const imagePencil = {
-    'width':'auto',
-    'height':'2vw',
-    'paddingLeft':'1em'
-}
-const itemStyle = {
-    'display': 'flex',
-    'borderBottom': 'white solid 1px',
-    'fontFamily': 'Kefa'
-};
-const cardHeaderStyle = {
-    'backgroundColor': '#0b658a',
-    'color': '#ffffff',
-    'fontFamily': 'Kefa'
-};
 
 export default NewItem;
