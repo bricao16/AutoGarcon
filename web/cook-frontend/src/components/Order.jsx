@@ -1,38 +1,47 @@
 import React from "react";
+import Card from 'react-bootstrap/Card';
 
-function Order(props) {
+class Order extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.props = props;
+  }
+
+  render() {
     return (
-        <div style={orderStyle}>
-            <div style={topStyle}>
-                <p style={{margin: "0", padding: "5px"}}>{props.id}</p>
-            </div>
-            {
-                props.order.items.map((item, key) => (
-                    <div style={itemStyle}>
-                        <p style={{margin: "0", padding: "0.8em"}}>{item.quantity}x</p>
-                        <p style={{margin: "0", padding: "0.8em"}}>{item.title}</p>
-                    </div>
-                ))
-            }
-        </div>
+      <div className="p-3">
+        <Card className="text-center">
+          <Card.Header style={cardHeaderStyle}>Featured</Card.Header>
+            <Card.Body>
+              <Card.Title>Special title treatment</Card.Title>
+                {/* <Card.Text>
+                With supporting text below as a natural lead-in to additional content.
+                </Card.Text> */}
+
+                {this.props.order.items.map((item, key) => (
+                  <div style={itemStyle}>
+                    <p style={{margin: "0", padding: "0.8em"}}>{item.quantity}x</p>
+                    <p style={{margin: "0", padding: "0.8em"}}>{item.title}</p>
+                  </div>
+                ))}
+
+            </Card.Body>
+            <Card.Footer className="text-muted">(Custom footer)</Card.Footer>
+        </Card>
+      </div>
     )
+  }
 }
-
-const orderStyle = {
-    width: "20vw",
-    border: "grey solid 1px",
-    borderRadius: "5px",
-    marginTop: "30px"
-};
-
-const topStyle = {
-    background: "#20639B",
-    color: "white"
-};
 
 const itemStyle = {
     display: "flex",
     borderBottom: "grey solid 1px",
 };
+
+var cardHeaderStyle = {
+  backgroundColor: '#0b658a',
+  color: '#ffffff'
+}
 
 export default Order;

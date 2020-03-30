@@ -1,0 +1,71 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "auto garcon",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": [
+            "cancel"
+          ]
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": [
+            "help"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": [
+            "stop"
+          ]
+        },
+        {
+          "name": "HelloWorldIntent",
+          "slots": [],
+          "samples": [
+            "hello",
+            "how are you",
+            "say hi world",
+            "say hi",
+            "hi",
+            "say hello world",
+            "say hello"
+          ]
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "MenuIntent",
+          "slots": [],
+          "samples": [
+            "what\u0027s on the menu",
+            "Can I hear the menu",
+            "menu"
+          ]
+        },
+        {
+          "name": "TestDataIntent",
+          "slots": [],
+          "samples": [
+            "get test data",
+            "test data"
+          ]
+        },
+        {
+          "name": "ClosingTimeIntent",
+          "slots": [],
+          "samples": [
+            "closing time",
+            "What time does it close"
+          ]
+        }
+      ],
+      "types": []
+    }
+  },
+  "version": "13"
+}

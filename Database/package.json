@@ -1,0 +1,19 @@
+{
+    "name": "RESTful-webserver",
+    "version": "0.0.0",
+    "description": "RESTful Web Server using Node JS",
+    "author": {
+        "name": "Tucker Urbanski",
+        "email": "urba4226@stthomas.edu"
+    },
+    "main": "server.js",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "js2xmlparser": "^4.0.1",
+        "mysql": "^2.18.1",
+        "dotenv": "^8.2.0",
+        "jsonwebtoken": "^8.5.1"
+    }
+}
