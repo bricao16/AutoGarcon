@@ -2,8 +2,11 @@ package com.example.auto_garcon;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,18 +18,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import auto_garcon.InitialPages.Home;
 import auto_garcon.InitialPages.Register;
 import auto_garcon.Singleton.SharedPreference;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Login extends AppCompatActivity {
    private EditText emailId;
    private EditText password;
    private Button buttonSignIn;
    private TextView textViewSignUp;
+   private Account currentAccount;
+   private AccountManager accountManager;
    public SharedPreference pref;
 
     @Override
