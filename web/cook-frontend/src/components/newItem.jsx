@@ -1,7 +1,7 @@
 import React from "react";
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-import '../../node_modules/pretty-checkbox/dist/pretty-checkbox.min.css';
+//import '../../node_modules/pretty-checkbox/dist/pretty-checkbox.min.css';
 /* 
   This component is to allow the manager to 
   create a new item. It returns a form object that allows

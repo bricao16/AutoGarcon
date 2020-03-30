@@ -34,26 +34,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
-/*class MLogin extends React.Component {
-	
-	constructor(props){
-		super(props);
-		this.handleSubmit = this.handleSubmit.bind(this);
-		
-		this.state = {
-			
-			email: "",
-			thispassword: ""
-		};
-		
-	}
-	handleSubmit(event){
-		
-		event.preventDefault();
-	}
-}*/
-
 export default class SignIn extends React.Component {
 	
   constructor(props){
@@ -81,13 +61,13 @@ export default class SignIn extends React.Component {
 	  const requestOptions = {
 		method: 'POST',
 		headers: {
-		  'username': this.state.email,
-		  'password': this.state.passwd
+		  'Content-Type': 'application/x-www-form-urlencoded'
 		},
-		body:{
+		/*body: JSON.stringify({
 		  'username': this.state.email,
 		  'password': this.state.passwd
-		}
+		})*/
+		body: 'username='+this.state.email+'&password='+this.state.passwd
 		  
 	  };
 	  fetch('http://50.19.176.137:8000/staff/login', requestOptions)
@@ -98,11 +78,12 @@ export default class SignIn extends React.Component {
 				const error = (data && data.message) || response.status;
 				return Promise.reject(error);
 			}
-		
-		
+			console.log(data.staff.restaurant_id);
+			
 		
 		})
 		.catch(error =>{
+			
 			
 			console.error("There was an error!", error);
 			
