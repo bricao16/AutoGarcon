@@ -28,6 +28,9 @@ dependencies {
 
     //used for database requests
     implementation 'com.android.volley:volley:1.1.1'
+    //used to convert objects into their json equivelent
+    implementation 'com.google.code.gson:gson:2.8.5'
+
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

@@ -28,5 +28,6 @@
     <string name="pref_auth_token">com.example_preference_pref_auth_token</string>
     <string name="qr_code_description">qr_code_description</string>
     <string name="add_to_cart">Add to Cart</string>
+    <string name ="Shopping_cart">Shopping Cart</string>
 
 </resources>
