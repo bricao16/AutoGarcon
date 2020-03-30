@@ -166,3 +166,5 @@ You have created, connected to, and deleted a MySQL Database Instance with Amazo
 Next Steps
 Now that you have learned to create and connect to a MySQL Database through Amazon RDS, you can progress to the next tutorial where you will learn how to use a MySQL database with a PHP application running on a web server.
 Create a Web Server and an Amazon RDS Database »
+
+Link to tutorial: https://aws.amazon.com/getting-started/tutorials/create-mysql-db/
