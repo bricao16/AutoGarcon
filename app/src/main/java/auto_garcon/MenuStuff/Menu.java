@@ -46,6 +46,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private List<String> listDataHeader;
     private List<auto_garcon.MenuStuff.MenuItem> appetizer_list;
     private List<auto_garcon.MenuStuff.MenuItem> entree_list;
+    private List<auto_garcon.MenuStuff.MenuItem> dessert_list;
     private List<auto_garcon.MenuStuff.MenuItem> drink_list;
     private List<auto_garcon.MenuStuff.MenuItem> alcohol_list;
     private HashMap<String, List<auto_garcon.MenuStuff.MenuItem>> listHash;
@@ -70,6 +71,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         //creating list
         appetizer_list = new ArrayList<>();
         entree_list = new ArrayList<>();
+        dessert_list = new ArrayList<>();
+
         drink_list = new ArrayList<>();
         alcohol_list = new ArrayList<>();
 
@@ -182,13 +185,15 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
         listDataHeader.add("Appetizer");
         listDataHeader.add("Entrees");
+        listDataHeader.add("Dessert");
         listDataHeader.add("Refillable Drink");
         listDataHeader.add("Alcohol");
 
         listHash.put(listDataHeader.get(0), appetizer_list);
         listHash.put(listDataHeader.get(1), entree_list);
-        listHash.put(listDataHeader.get(2), drink_list);
-        listHash.put(listDataHeader.get(3), alcohol_list);
+        listHash.put(listDataHeader.get(2), dessert_list);
+        listHash.put(listDataHeader.get(3), drink_list);
+        listHash.put(listDataHeader.get(4), alcohol_list);
     }
 
     private void addToList(auto_garcon.MenuStuff.MenuItem key, String category) {
@@ -198,6 +203,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 break;
             case "Entree":
                 entree_list.add(key);
+                break;
+            case "Dessert":
+                dessert_list.add(key);
                 break;
             case "Refillable Drink":
                 drink_list.add(key);
