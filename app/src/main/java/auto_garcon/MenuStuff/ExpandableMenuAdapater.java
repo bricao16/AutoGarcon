@@ -8,19 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+
 import com.example.auto_garcon.R;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
-
-import auto_garcon.MenuStuff.Popup;
 
 public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private Context context;
     private List<String> listDataHeader;
-    private HashMap<String, List<String>> listHashMap;
+    private HashMap<String, List<MenuItem>> listHashMap;
 
-    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<String>> listHashMap) {
+    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap) {
         this.context = context;
         this.listDataHeader = listDataHeader;
         this.listHashMap = listHashMap;
@@ -42,7 +42,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     }
 
     @Override
-    public Object getChild(int i, int j) {
+    public MenuItem getChild(int i, int j) {
         return listHashMap.get(listDataHeader.get(i)).get(j);  //i = group item, j = child item
     }
 
@@ -77,8 +77,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int i, int j, boolean b, View view, ViewGroup viewGroup) {
-        final String childText = (String) getChild(i, j);
+    public View getChildView(final int i, final int j, boolean b, View view, ViewGroup viewGroup) {
+        final String childText = (String) getChild(i, j).getNameOfItem();
 
         if(view == null) {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -92,6 +92,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 Intent popup = new Intent(context, Popup.class);
+
+                popup.putExtra("menuItem", (Serializable) getChild(i, j));
                 context.startActivity(popup);
             }
         });

@@ -10,16 +10,13 @@ import android.widget.Button;
 import com.example.auto_garcon.R;
 
 public class twoButtonPage extends AppCompatActivity {
-
-    private Button button1;
-    private Button button2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_two_button_page);
 
-        button1 = findViewById(R.id.button);
-        button2= findViewById(R.id.button2);
+        Button button1 = findViewById(R.id.button);
+        Button button2 = findViewById(R.id.button2);
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override

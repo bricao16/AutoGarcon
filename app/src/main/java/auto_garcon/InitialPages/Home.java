@@ -5,7 +5,6 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,12 +24,6 @@ import auto_garcon.Cart_OrderHistory.ShoppingCart;
 import auto_garcon.Singleton.SharedPreference;
 
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
-    DrawerLayout drawerLayout;
-    Toolbar toolbar;
-    NavigationView navigationView;
-    ActionBarDrawerToggle toggle;
-    Button logOut;
-    public SharedPreference pref;
 
     @Override
     //do any quriy here, firebase.......
@@ -38,24 +31,26 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        pref = new SharedPreference(this);
+        DrawerLayout drawerLayout = findViewById(R.id.home_main);
+        Toolbar toolbar = findViewById(R.id.xml_toolbar);
+        NavigationView navigationView = findViewById(R.id.navigationView);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+
+        SharedPreference pref = new SharedPreference(this);
         if(!pref.getLoginStatus()){
             pref.changeLogStatus(false);
             Intent signIn = new Intent(Home.this, Login.class);
             startActivity(signIn);
         }
-        Toast.makeText(Home.this,pref.getName(),Toast.LENGTH_LONG).show();
 
-        drawerLayout = findViewById(R.id.home_main);
-        toolbar = findViewById(R.id.xml_toolbar);
-        navigationView = findViewById(R.id.navigationView);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+
         //DB STUFF
 
         // Create a new user with a first and last name

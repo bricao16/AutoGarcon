@@ -5,33 +5,22 @@ import java.util.ArrayList;
 import auto_garcon.MenuStuff.MenuItem;
 
 public class ShoppingCartSingleton {
-    private static ShoppingCartSingleton customerCart;
-    private static ArrayList<MenuItem> Items;
+    private  ArrayList<MenuItem> Items;
 
-
-
-    private ShoppingCartSingleton(){
-        Items = new ArrayList<MenuItem>();
-    }
-
-    public static ShoppingCartSingleton getCustomerCart(){
-        if(customerCart == null){
-            customerCart = new ShoppingCartSingleton();
-        }
-
-        return customerCart;
+    public ShoppingCartSingleton(){
+        this.Items = new ArrayList<MenuItem>();
     }
 
     public ArrayList<MenuItem> getCart(){
         return Items;
     }
 
-    public synchronized static void addToCart(MenuItem menuItem){
-        Items.add(menuItem);
+    public void addToCart(MenuItem menuItem){
+        this.Items.add(menuItem);
     }
 
-    public synchronized static void removeFromCart(int i){
-        Items.remove(i);
+    public void removeFromCart(int i){
+        this.Items.remove(i);
     }
 
     public double getCostOfItems(){

@@ -31,7 +31,7 @@ public class Login extends AppCompatActivity {
     private EditText password;
     private Button buttonSignIn;
     private TextView textViewSignUp;
-    public SharedPreference pref;
+    private SharedPreference pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,7 @@ public class Login extends AppCompatActivity {
 
                     //some request to server goes here
                     String url = "http://50.19.176.137:8000/customers/login";
-                    JSONObject obj =new JSONObject();//for the request paramter
+                    JSONObject obj = new JSONObject();//for the request paramter
                     try{
                         obj.put("username",email);
                         obj.put("password",passwd);
@@ -125,7 +125,7 @@ public class Login extends AppCompatActivity {
                     VolleySingleton.getInstance(Login.this).addToRequestQueue(postRequest);
                 }
                 else{
-                    Toast.makeText(Login.this, "Error Occurred", Toast.LENGTH_SHORT);
+                    Toast.makeText(Login.this, "Error Occurred", Toast.LENGTH_SHORT).show();
                 }
             }
         });

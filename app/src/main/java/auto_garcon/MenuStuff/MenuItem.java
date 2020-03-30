@@ -1,16 +1,18 @@
 package auto_garcon.MenuStuff;
 
-public class MenuItem {
-    private String nameOfItem;
-    private int restaurantID;
-    private int calories;
-    private double price;
+import java.io.Serializable;
+
+public class MenuItem implements Serializable {
     private String category;
+    private String nameOfItem;
     private int amountInStock;
+    private int calories;
+    private int restaurantID;
+    private double price;
 
     public MenuItem() { }
 
-    public MenuItem(String nameOfItem, int restaurantID, int calories, double price, String entree, int amountInStock) {
+    public MenuItem(String category, String nameOfItem,  int amountInStock,  int calories, int restaurantID, double price) {
         this.nameOfItem = nameOfItem;
         this.restaurantID = restaurantID;
         this.calories = calories;
@@ -43,7 +45,7 @@ public class MenuItem {
         return this.calories;
     }
 
-    public void setPrice(double Price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

@@ -44,28 +44,25 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private ExpandableListView listView;
     private ExpandableListAdapter listAdapter;
     private List<String> listDataHeader;
-    private List<String> appetizer_list;
-    private List<String> entree_list;
-    private List<String> drink_list;
-    private List<String> alcohol_list;
-    private HashMap<String, List<String>> listHash;
-
-    DrawerLayout drawerLayout;
-    Toolbar toolbar;
-    NavigationView navigationView;
-    ActionBarDrawerToggle toggle;
+    private List<auto_garcon.MenuStuff.MenuItem> appetizer_list;
+    private List<auto_garcon.MenuStuff.MenuItem> entree_list;
+    private List<auto_garcon.MenuStuff.MenuItem> drink_list;
+    private List<auto_garcon.MenuStuff.MenuItem> alcohol_list;
+    private HashMap<String, List<auto_garcon.MenuStuff.MenuItem>> listHash;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_page);
-        drawerLayout = findViewById(R.id.restaurant_main);
-        toolbar = findViewById(R.id.xml_toolbar);
-        navigationView = findViewById(R.id.navigationView);
+
+        DrawerLayout drawerLayout = findViewById(R.id.restaurant_main);
+        Toolbar toolbar = findViewById(R.id.xml_toolbar);
+        NavigationView navigationView = findViewById(R.id.navigationView);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
@@ -88,13 +85,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash);
                             listView = findViewById(R.id.menu_list);
                             listView.setAdapter(listAdapter);
-
-                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                    Log.d("HI", "SDFSDF");
-                                }
-                            });
+                            String whereToSendItem = "";
 
                             Iterator<String> keys = response.keys();
                             while(keys.hasNext()) {
@@ -108,23 +99,28 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                     while(inner_keys.hasNext()) {
                                         String inner_key = inner_keys.next();
 
-                                        if(inner_key.equals("restaurant")) {
-                                            itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
-                                        }
-                                        else if(inner_key.equals("calories")) {
-                                            itemToBeAdded.setCalories(Integer.parseInt(item.get(inner_key).toString()));
-                                        }
-                                        else if(inner_key.equals("price")) {
-                                            itemToBeAdded.setPrice(Double.parseDouble(item.get(inner_key).toString()));
-                                        }
-                                        else if(inner_key.equals("category")) {
-                                            itemToBeAdded.setCategory(item.get(inner_key).toString());
-                                            addToList(key, item.get(inner_key).toString());
-                                        }
-                                        else if(inner_key.equals("in_stock")) {
-                                            itemToBeAdded.setAmountInStock(Integer.parseInt(item.get(inner_key).toString()));
+                                        switch(inner_key){
+                                            case "restaurant":
+                                                itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
+                                                break;
+                                            case "calories":
+                                                itemToBeAdded.setCalories(Integer.parseInt(item.get(inner_key).toString()));
+                                                break;
+                                            case "price":
+                                                itemToBeAdded.setPrice(Double.parseDouble(item.get(inner_key).toString()));
+                                                break;
+                                            case "category":
+                                                itemToBeAdded.setCategory(item.get(inner_key).toString());
+                                                whereToSendItem = item.get(inner_key).toString();
+                                                break;
+                                            case "in_stock":
+                                                itemToBeAdded.setAmountInStock(Integer.parseInt(item.get(inner_key).toString()));
+                                                break;
                                         }
                                     }
+
+                                    itemToBeAdded.setNameOfItem(key);
+                                    addToList(itemToBeAdded, whereToSendItem);
                                 }
                             }
                         } catch (JSONException e) {
@@ -195,17 +191,20 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         listHash.put(listDataHeader.get(3), alcohol_list);
     }
 
-    private void addToList(String key, String category) {
-        if(category.equals("Appetizer")){
-            appetizer_list.add(key);
-        }
-        else  if(category.equals("Entree")){
-            entree_list.add(key);
-        }
-        else  if(category.equals("Refillable Drink")){
-            drink_list.add(key);
-        }else  if(category.equals("Alcohol")){
-            alcohol_list.add(key);
+    private void addToList(auto_garcon.MenuStuff.MenuItem key, String category) {
+        switch(category){
+            case "Appetizer":
+                appetizer_list.add(key);
+                break;
+            case "Entree":
+                entree_list.add(key);
+                break;
+            case "Refillable Drink":
+                drink_list.add(key);
+                break;
+            case "Alcohol":
+                alcohol_list.add(key);
+                break;
         }
     }
 }
