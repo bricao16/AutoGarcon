@@ -11,6 +11,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+/*this is the login component for the manager
+view. Asks for the email address, password and logs in if the user and correct password
+exists on the database */
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -20,10 +23,10 @@ const useStyles = makeStyles(theme => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: '#102644',
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%', 
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -31,21 +34,105 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SignIn() {
-  const classes = useStyles();
 
+/*class MLogin extends React.Component {
+	
+	constructor(props){
+		super(props);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		
+		this.state = {
+			
+			email: "",
+			thispassword: ""
+		};
+		
+	}
+	handleSubmit(event){
+		
+		event.preventDefault();
+	}
+}*/
+
+export default class SignIn extends React.Component {
+	
+  constructor(props){
+	  super(props);
+	  
+	  this.state = {
+	    email: '',
+		passwd:'',
+	  };
+	  
+	  this.handleSubmit = this.handleSubmit.bind(this);
+	  this.handleEmail = this.handleEmail.bind(this);
+	  this.handlePasswd = this.handlePasswd.bind(this);
+  }
+
+  handleSubmit(event){
+	  
+	  event.preventDefault();
+	  
+	  /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
+	  
+	  const requestOptions = {
+		method: 'POST',
+		headers: {
+		  'username':this.state.email,
+		  'password':this.state.passwd
+		}
+		  
+	  };
+	  fetch('http://50.19.176.137:8000/staff/login', requestOptions)
+		.then(async response => {
+			const data = await response.json();
+			
+			if(!response.ok){
+				const error = (data && data.message) || response.status;
+				return Promise.reject(error);
+			}
+		
+		
+		
+		})
+		.catch(error =>{
+			
+			console.error("There was an error!", error);
+			
+		});
+  }
+  
+  handleEmail(event){
+	  this.setState({email: event.target.value});
+  }
+  
+  handlePasswd(event){
+	  this.setState({passwd: event.target.value});
+  }
+
+  requestOptions = {
+
+  };
+
+   
+  render(){
+	  
   return (
+    //top of page
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
+      <div className={useStyles.paper}>
+        {/* Lock icon on top */}
+        <Avatar className={useStyles.avatar}>
           <LockOutlinedIcon />
         </Avatar>
+        {/* Manager Sign In Title */}
         <Typography component="h1" variant="h5">
-          Manager Sign in
+          Manager Sign In
         </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
+        <form className={useStyles.form} noValidate>
+          <TextField onChange = {this.handleEmail}
+			value = {this.state.email} /*This is the trouble line */
             variant="outlined"
             margin="normal"
             required
@@ -56,7 +143,8 @@ export default function SignIn() {
             autoComplete="email"
             autoFocus
           />
-          <TextField
+          <TextField onChange = {this.handlePasswd}
+		    value = {this.state.passwd}
             variant="outlined"
             margin="normal"
             required
@@ -67,27 +155,25 @@ export default function SignIn() {
             id="password"
             autoComplete="current-password"
           />
+          {/* Remember me check box */}
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox value="remember" color ="Primary" />}
             label="Remember me"
           />
-          <Button
+          {/* Submit button */}
+          <Button onClick = {this.handleSubmit}
             type="submit"
             fullWidth
             variant="contained"
-            color="primary"
-            className={classes.submit}
+            style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
+            className={useStyles.submit}
           >
             Sign In
           </Button>
           <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              {/* Create an account link */}
+              <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
@@ -97,4 +183,5 @@ export default function SignIn() {
     
     </Container>
   );
+  }
 }

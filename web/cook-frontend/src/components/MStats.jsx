@@ -1,37 +1,44 @@
 import React from "react";
-import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
+import StatsProp from './StatsProp';
 
-function Menu(props) {
-    return (
-        <Col sm={4} className="p-3">
+/*this is the stats component for the manager
+view. The stats are stored in state and rendered 
+onto cards in by statsProp */
+class MStats extends React.Component{
 
-            <Card className="text-center">
-                <Card.Header style={cardHeaderStyle}>Statistics</Card.Header>
-                <Card.Body>
-                   { <Card.Title>{props.statsType.type}</Card.Title>}
-                    
-                    {
-                    props.statsType.items.map((item, key) => (
-                        <div style={itemStyle}>
-                            <p style={{margin: "0", padding: "0.8em"}}>{item.title}  : {item.quantity}</p>
-                        </div>
-                    ))
-                }
-                </Card.Body>
-            </Card>
-        </Col>
-    )
+    constructor(props) {
+        super(props);
+        this.state = {
+            statistics: [
+                {type: "Highest Selling Breakfast", items: [{quantity: 50, title: "Eggs"}]},
+                {type: "Highest Selling Lunch", items: [{quantity: 75, title: "Fries"}]},
+                {type: "Highest Selling Dinner", items: [{quantity: 150, title: "Pasta"}]}
+                ]
+        };
+    }
+    renderStats(){
+        return this.state.statistics.map((item, key) =>
+            <StatsProp key={key} id={key} statsType={item}/>
+        );
+    }
+    render() {
+        return (
+            <Container>
+              <div style={backgroundStyle}>
+             <Container fluid>
+                <div class="d-flex flex-wrap">
+                    {this.renderStats()}
+                </div>
+            </Container> 
+        </div>
+    </Container>
+        );
+    }
 }
 
-const itemStyle = {
-    display: "flex",
-    borderBottom: "grey solid 1px",
-};
+const backgroundStyle = {
+  'backgroundColor': '#f1f1f1'
+}
 
-var cardHeaderStyle = {
-    'background-color': '#0b658a',
-    'color': '#ffffff'
-};
-
-export default Menu;
+export default MStats;

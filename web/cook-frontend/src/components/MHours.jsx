@@ -1,38 +1,45 @@
 import React from "react";
-import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
+import HoursProp from './HoursProp';
 
-function Menu(props) {
-    return (
-        <Col sm={4} className="p-3">
+/* This component is used to render the 
+resturant hours for the manager view.
+the hours are held in a state array called
+hours and passed to the HoursProp where the 
+data is placed on cards. */
 
-            <Card className="text-center">
-                <Card.Header style={cardHeaderStyle}>Hours</Card.Header>
-                <Card.Body>
-                   { <Card.Title>{props.hoursType.type}</Card.Title>}
-                    
-                    {
-                    props.hoursType.items.map((item, key) => (
-                        <div style={itemStyle}>
-                            <p style={{margin: "0", padding: "0.8em"}}>open: {item.open}</p>
-                            <p style={{margin: "0", padding: "0.8em"}}>close: {item.close}</p>
+class MHours extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            hours: [
+                {type: "Weekday", items: [{open: "7:00 am", close: "10:00 pm"}]}
+            ],
+        };
+    }
+    renderHours(){
+        return this.state.hours.map((item, key) =>
+            <HoursProp key={key} id={key} hoursType={item}/>
+        );
+    }
+    render() {
+        return (
+            <Container>
+                <div style={backgroundStyle}>
+                    <Container fluid>
+                        <div class="d-flex flex-wrap">
+                            {this.renderHours()}
                         </div>
-                    ))
-                }
-                </Card.Body>
-            </Card>
-        </Col>
-    )
+                    </Container>
+                </div>
+            </Container>
+        );
+    }
 }
 
-const itemStyle = {
-    display: "flex",
-    borderBottom: "grey solid 1px",
-};
+const backgroundStyle = {
+  'background-color': '#f1f1f1'
+}
 
-var cardHeaderStyle = {
-    'background-color': '#0b658a',
-    'color': '#ffffff'
-};
-
-export default Menu;
+export default MHours;

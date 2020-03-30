@@ -1,21 +1,16 @@
 import React from 'react';
 import './App.css';
-import Nav from 'react-bootstrap/Nav';
-import Header from "./components/Header"
-import Orders from "./components/Orders"
-import MTasks from "./components/MTasks"
+import Orders from "./components/Orders";
+import MTasks from "./components/MTasks";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
-import Container from 'react-bootstrap/Container';
+import SignUp from "./components/SignUp";
+import logoImage from "./assets/AutoGarconLogo.png";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Link,
-    Route
-  } from "react-router-dom";
-  
+import {BrowserRouter as Router, Switch, Link, Route} from "react-router-dom";
+
+ /*
 var req  = new XMLHttpRequest();
 
 var menu;
@@ -27,26 +22,14 @@ req.onload = function(){
 	//console.log(JSON.parse(req.response));
 	menu = JSON.parse(req.response);
 	console.log(menu);
-}
+}*/
 
 function App() {
   return (
     <Router>
-      <Header/>
       <div style={backgroundStyle}>
-        <Container>
-          <Row style={{'min-height': '85vh'}}>
-            <Col sm={4} className="pt-3 px-3" style={navColStyle}>
-              <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
-                <Nav.Link href="/">Home</Nav.Link>
-                <Nav.Link href="/cook">Cook</Nav.Link>
-                <Nav.Link href="/manager">Manager</Nav.Link>
-                <Nav.Link eventKey="disabled" disabled>
-                  Analytics
-                </Nav.Link>
-              </Nav>
-            </Col>
-
+        <div class="px-4">
+          <Row style={{'minHeight': '90vh'}}>
             <Col className="pt-3 px-3">
               <div className="rounded" style={sectionStyle}>
                 <Switch>
@@ -59,19 +42,33 @@ function App() {
                   <Route path="/manager">
                     <Manager />
                   </Route>
+                  <Route path="/sign_up">
+                    <SignUp />
+                  </Route>
                   <Route path="/login_manager">
                     <MLogin/>
                   </Route>
                   <Route path="/login_cook">
                     <CLogin/>
                   </Route>
+                  <Route path="/statistics">
+                    <MTasks/>
+                  </Route>
+                  <Route path="/menu" 
+                    render={(props) => <MTasks {...props} content={"menu"}/>} />
+           
+                  <Route path="/hours" 
+                    render={(props) => <MTasks {...props} content={"hours"}/>} />
                 </Switch>
               </div>
             </Col>
           </Row>
-        </Container>
+        </div>
       </div>
-      <footer style={footerStyle}>Powered by Auto Garcon</footer>
+      <footer style={footerStyle}>
+        Powered by Auto Garcon
+        <img src={logoImage} width="auto" height="50vh" alt="waiter" />
+      </footer>
     </Router>      
   );
 }
@@ -83,17 +80,20 @@ function Home() {
     <div>
 
       <div style={homeStyle}>
-        <h2> Welcome to Auto-Garcon </h2>
+        <h2> Welcome to Auto Garcon 
+        <img src={logoImage} width="auto" height="75vw" alt="waiter" />
+         </h2>
+
         <br/>
-        <div style={{'list-style':'none'}}>
+        <div style={{'liststyle':'none'}}>
           <li><Link to='/login_manager'> 
-            <button type="button" class="btn btn-info btn-lg">
+            <button type="button" className="btn btn-info btn-lg">
                 Manager Portal
             </button>
           </Link></li>
           <br/>
           <li><Link to='/login_cook'>
-            <button type="button" class="btn btn-info btn-lg">
+            <button type="button" className="btn btn-info btn-lg">
                 Cook Portal
             </button>
           </Link></li>
@@ -107,45 +107,39 @@ function Home() {
 
 function Cook() {
   return (
-    <div>
       <Orders/>
-    </div>
   );
 }
 
 function Manager() {
   return (
-    <div>
       <MTasks/>
-    </div>
   );
 }
 
 var backgroundStyle = {
-  'background-color': '#f1f1f1',
-  'flex-grow': '1',
+  'backgroundColor': '#ffffff',
+  'flexGrow': '1',
   'height': '100%'
 }
 
 var sectionStyle = {
-  'background-color': '#ffffff',
+  'backgroundColor': '#ffffff',
   'height': '100%'
 }
 
-var navColStyle = {
-  'max-width': '200px'
-}
-
 var footerStyle = {
-  'background-color': '#f1f1f1',
-  'padding-bottom': '5px',
-  'padding-right': '12px',
-  'padding-top': '12px',
-  'text-align': 'right'
+  'backgroundColor': '#ffffff',
+  'paddingBottom': '5px',
+  'paddingRight': '12px',
+  'paddingTop': '12px',
+  'textAlign': 'right',
+  'fontFamily': 'Kefa'
 }
 var homeStyle = {
   'fontWeight': '300',
-  'text-align' : 'center',
-  'list-style': 'none',
-  'text-size': '50pt'
+  'textAlign' : 'center',
+  'listStyleType': 'none',
+  'textSize': '90pt',
+  'fontFamily': 'Kefa'
 };
