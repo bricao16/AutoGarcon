@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Menu from './Menu';
 import Stats from './MStats';
 import Hours from './MHours';
-import MHeader from './mHeader';
+import MHeader from './MHeader';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
