@@ -34,7 +34,7 @@ public class Popup extends AppCompatActivity {
         getWindow().setAttributes(params);
     }
 
-    private void addToCart() {
+  /*  private void addToCart() {
         ShoppingCartSingleton.getCustomerCart().addToCart();
-    }
+    }*/
 }
