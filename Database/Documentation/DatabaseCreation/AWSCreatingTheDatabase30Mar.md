@@ -16,6 +16,7 @@ Note: AWS Cloud resources are housed in highly available data center facilities 
 
 rds-2-location
 (click to zoom)
+![image](/Database/Documentation/DocumentationImages/rds-2-location.png)
 b.   In the Create database section, choose Create database.
 
  
@@ -24,6 +25,7 @@ b.   In the Create database section, choose Create database.
 
 rds-3-instances
 (click to zoom)
+![image](/Database/Documentation/DocumentationImages/rds-3-instanes.png)
 c.  You now have options to select your engine.  For this tutorial, click the MySQL icon, choose Only enable options eligible for RDS Free Usage Tier, and then click Next.
 
  
