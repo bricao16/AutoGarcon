@@ -2,6 +2,7 @@ import React from "react";
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import '../../node_modules/pretty-checkbox/dist/pretty-checkbox.min.css';
+import '../App.css';
 /* 
   This component is to allow the manager to 
   create a new item. It returns a form object that allows
@@ -86,13 +87,17 @@ class NewItem extends React.Component {
                         <input type="file" className="form-control-file" id="exampleFormControlFile1">
                         </input>
                       </div>
-                      <div class="pretty p-switch p-fill">
+                      <div className="pretty p-switch p-fill">
                           <input type="checkbox" defaultChecked/>
-                          <div class="state">
-                              <label placeholder = {this.props.prefill.menu[1].in_stock}>Currently in stock</label>
+                          <div className="state">
+                              <label placeholder = {this.props.prefill.menu[1].in_stock}>In stock</label>
                           </div>
                       </div>
-                      <button type="submit" className="btn btn-primary">Submit</button>
+                      <br/>
+                      <div className="row">
+                        <button type="submit" className="btn btn-primary  col m-5" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                        </div>
+                      
                     </form>
                   </div>
                 </Container>
@@ -111,20 +116,24 @@ class NewItem extends React.Component {
                 <Container fluid>
                   <div>
                     <form>
-                      <div className="form-group">
-                        <input className="form-control" type="text" id = "itemName" defaultValue={this.props.prefill.menu[0]}>
-                        </input>
-                       </div>
-                       <div className="form-group">
-                        <input className="form-control" type="text" id = "itemCategory" defaultValue={this.props.prefill.menu[1].category}>
-                        </input>
-                       </div>
-                        <div className="form-group">
-                          <input className="form-control" type="text" id = "itemCalories" defaultValue={this.props.prefill.menu[1].calories}>
+                      <div className="form-group row">
+                        <label className="col ">Name </label>
+                          <input className="form-control col" type="text" id = "itemName" defaultValue={this.props.prefill.menu[0]}>
                           </input>
                        </div>
-                       <div className="form-group">
-                          <div className="input-group mb-2 mr-sm-2">
+                       <div className="form-group row">
+                        <label className="col">Category </label>
+                        <input className="form-control col" type="text" id = "itemCategory" defaultValue={this.props.prefill.menu[1].category}>
+                        </input>
+                       </div>
+                        <div className="form-group row">
+                          <label className="col">Calories</label>
+                          <input className="form-control col" type="text" id = "itemCalories" defaultValue={this.props.prefill.menu[1].calories}>
+                          </input>
+                       </div>
+                       <div className="form-group row">
+                       <label className="col">Price</label>
+                          <div className="col input-group mb-2 mr-sm-2">
                             <div className="input-group-prepend">
                               <div className="input-group-text">$</div>
                             </div>
@@ -144,10 +153,16 @@ class NewItem extends React.Component {
                       <div class="pretty p-switch p-fill">
                           <input type="checkbox" defaultChecked/>
                           <div class="state">
-                              <label placeholder = {this.props.prefill.menu[1].in_stock}>Currently in stock</label>
+                              <label placeholder = {this.props.prefill.menu[1].in_stock}>In stock</label>
                           </div>
                       </div>
-                      <button type="submit" className="btn btn-primary">Submit</button>
+
+                      <div className="row m-2">
+                        <button type="submit" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                      </div>
+                      <div className="float-right m-2">
+                        <button type="delete" className="btn btn-outline-danger">Delete</button>
+                      </div>
                     </form>
                   </div>
                 </Container>
@@ -160,4 +175,5 @@ class NewItem extends React.Component {
   }
 
 }
+
 export default NewItem;
