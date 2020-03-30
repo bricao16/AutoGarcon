@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,24 +25,12 @@ import auto_garcon.Cart_OrderHistory.ShoppingCart;
 import auto_garcon.Singleton.PreferenceSingleton;
 
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
-    private static final String TAG = "MainActivity";
     DrawerLayout drawerLayout;
     Toolbar toolbar;
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
     Button logOut;
     public PreferenceSingleton pref;
-
-
-    //This is where we can get url from database.
-    String[] url = { "https://www.tutorialspoint.com/java/images/java-mini-logo.jpg",  "https://www.tutorialspoint.com/python/images/python-mini.jpg" };
-    //This is where you can get restaurant name from databse.
-    String[] version = {"Android Alpha", "Android Alpha"};
-    //This is where you can get some data you want from database
-    String[] versionNumber = {"1.0", "1.0"};
-    ListView lView;
-
-
 
     @Override
     //do any quriy here, firebase.......
@@ -69,21 +56,13 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        /*DB STUFF*/
+        //DB STUFF
 
         // Create a new user with a first and last name
         //Map<String, Object> user = new HashMap<>();
         // Add a new document with a generated ID
 
-        /*DB STUFF*/
-        logOut = findViewById(R.id.log_out);
-        logOut.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                Intent signIn = new Intent(Home.this, Login.class);
-                startActivity(signIn);
-
-            }
-        });
+        //DB STUFF
 
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector shakeDetector = new ShakeDetector(this);
