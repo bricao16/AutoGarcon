@@ -5,12 +5,12 @@ import android.content.SharedPreferences;
 
 import com.example.auto_garcon.R;
 
-public class PreferenceSingleton {
+public class SharedPreference {
     private SharedPreferences sharedPreferences;
     private Context context;
 
 
-    public PreferenceSingleton(Context context){
+    public SharedPreference(Context context){
         this.context=context;
 
         sharedPreferences= context.getSharedPreferences(context.getString(R.string.pref_file),Context.MODE_PRIVATE);
@@ -19,14 +19,14 @@ public class PreferenceSingleton {
     public void changeLogStatus(boolean status){
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        //editing prefrence file and changing login stauts to either false or true
+        //editing preference file and changing login status to either false or true
         editor.putBoolean(context.getString(R.string.pref_login_status),status);
         //how you save???
         editor.commit();
     }
     public  boolean getLoginStatus(){
 
-        // gets the loginstatus from prefrence file
+        // gets the login status from preference file
         return sharedPreferences.getBoolean(context.getString(R.string.pref_login_status), false);
     }
 

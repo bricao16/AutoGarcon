@@ -23,8 +23,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import auto_garcon.Singleton.PreferenceSingleton;
-import auto_garcon.Singleton.ShoppingCartSingleton;
+import auto_garcon.Singleton.SharedPreference;
 import auto_garcon.Singleton.VolleySingleton;
 
 public class Login extends AppCompatActivity {
@@ -32,17 +31,15 @@ public class Login extends AppCompatActivity {
     private EditText password;
     private Button buttonSignIn;
     private TextView textViewSignUp;
-    public PreferenceSingleton pref;
+    public SharedPreference pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Toast.makeText(Login.this, ShoppingCartSingleton.getCustomerCart().getCart().get(1).getNameOfItem(), Toast.LENGTH_SHORT).show();
-
         // this is how we identify an existing user when they've already logged in
-        pref = new PreferenceSingleton(this);
+        pref = new SharedPreference(this);
 /*
         if(pref.getLoginStatus()){//send them to the homepage if their already logged in
 

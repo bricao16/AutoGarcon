@@ -9,6 +9,8 @@ import android.view.WindowManager;
 
 import com.example.auto_garcon.R;
 
+import auto_garcon.Singleton.ShoppingCartSingleton;
+
 public class Popup extends AppCompatActivity {
 
     @Override
@@ -30,5 +32,9 @@ public class Popup extends AppCompatActivity {
         params.y = -20;
 
         getWindow().setAttributes(params);
+    }
+
+    private void addToCart() {
+        ShoppingCartSingleton.getCustomerCart().addToCart();
     }
 }

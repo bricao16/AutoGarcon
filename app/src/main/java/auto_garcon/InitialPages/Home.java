@@ -22,7 +22,7 @@ import auto_garcon.AccountStuff.Account;
 import auto_garcon.AccountStuff.Settings;
 import auto_garcon.Cart_OrderHistory.OrderHistory;
 import auto_garcon.Cart_OrderHistory.ShoppingCart;
-import auto_garcon.Singleton.PreferenceSingleton;
+import auto_garcon.Singleton.SharedPreference;
 
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
@@ -30,7 +30,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
     Button logOut;
-    public PreferenceSingleton pref;
+    public SharedPreference pref;
 
     @Override
     //do any quriy here, firebase.......
@@ -38,7 +38,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        pref = new PreferenceSingleton(this);
+        pref = new SharedPreference(this);
         if(!pref.getLoginStatus()){
             pref.changeLogStatus(false);
             Intent signIn = new Intent(Home.this, Login.class);
