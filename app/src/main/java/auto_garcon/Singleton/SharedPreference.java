@@ -11,7 +11,7 @@ public class SharedPreference {
     private Context context;
 
     public SharedPreference(Context context){
-        this.context=context;
+        this.context = context;
 
         sharedPreferences = context.getSharedPreferences(context.getString(R.string.pref_file),Context.MODE_PRIVATE);
     }
@@ -25,6 +25,7 @@ public class SharedPreference {
         editor.apply();
     }
 
+    //logs out user
     public void logOut(){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear().apply();
