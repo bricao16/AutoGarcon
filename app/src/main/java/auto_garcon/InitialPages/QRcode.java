@@ -1,9 +1,6 @@
-
-
 package auto_garcon.InitialPages;
 
 import android.Manifest;
-
 import android.os.Bundle;
 
 import android.view.SurfaceView;
@@ -26,7 +23,6 @@ import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
 
 public class QRcode extends AppCompatActivity {
-
     private TextView txt_result;
     private SurfaceView surfaceView;
     private QREader QReader;

@@ -2,12 +2,9 @@ package auto_garcon.InitialPages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.accounts.AccountManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,18 +23,15 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import auto_garcon.AccountStuff.Account;
 import auto_garcon.Singleton.PreferenceSingleton;
+import auto_garcon.Singleton.ShoppingCartSingleton;
 import auto_garcon.Singleton.VolleySingleton;
 
 public class Login extends AppCompatActivity {
-    Context context = this;
     private EditText emailId;
     private EditText password;
     private Button buttonSignIn;
     private TextView textViewSignUp;
-    private Account currentAccount;
-    private AccountManager accountManager;
     public PreferenceSingleton pref;
 
     @Override
@@ -45,9 +39,10 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Toast.makeText(Login.this, ShoppingCartSingleton.getCustomerCart().getCart().get(1).getNameOfItem(), Toast.LENGTH_SHORT).show();
+
         // this is how we identify an existing user when they've already logged in
         pref = new PreferenceSingleton(this);
-
 /*
         if(pref.getLoginStatus()){//send them to the homepage if their already logged in
 
@@ -78,8 +73,6 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this,"Fields are Empty!", Toast.LENGTH_SHORT).show();
                 }
                 else if (!(email.isEmpty() && passwd.isEmpty())) {
-Log.d("HI", email);
-                    Log.d("HI", passwd);
 
                     //some request to server goes here
                     String url = "http://50.19.176.137:8000/customers/login";

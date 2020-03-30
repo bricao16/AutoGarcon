@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
-
     <color name="toolbar">#0066ff</color>
     <color name="nav_header_background">#1F242B</color>
+
+    <color name="colorPrimary">#0B658A</color>
+    <color name="colorPrimaryDark">#102644</color>
+    <color name="colorAccent">#318381</color>
     <color name="white">#FFFFFF</color>
-    <color name="DarkBlue">#102644</color>
-    <color name="LightBlue">#0B658A</color>
-    <color name="Grey">#A8A7A4</color>
-
-
-    <color name="color1">#424549</color>
-    <color name="color2">#7e455e</color>
-    <color name="color3">#796e25</color>
-    <color name="color4">#59717c</color>
+    <color name="gray">#A8A7A4</color>
 
 </resources>

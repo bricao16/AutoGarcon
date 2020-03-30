@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,12 +31,12 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
 
-    TextView mealTotalText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
 
+        drawerLayout = findViewById(R.id.shopping_cart_main);
         toolbar = findViewById(R.id.xml_toolbar);
         navigationView = findViewById(R.id.navigationView);
         setSupportActionBar(toolbar);
@@ -86,7 +85,3 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         startActivity(shopping_cart);
     }
 }
-
-
-
-

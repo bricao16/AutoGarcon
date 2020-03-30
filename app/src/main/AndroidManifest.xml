@@ -16,13 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="auto_garcon.InitialPages.twoButtonPage">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name="auto_garcon.InitialPages.twoButtonPage"></activity>
         <activity
             android:name="auto_garcon.MenuStuff.Popup"
             android:theme="@style/AppTheme.Popup" />

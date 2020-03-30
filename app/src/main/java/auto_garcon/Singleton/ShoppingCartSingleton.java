@@ -8,6 +8,8 @@ public class ShoppingCartSingleton {
     private static ShoppingCartSingleton customerCart;
     private static ArrayList<MenuItem> Items;
 
+
+
     private ShoppingCartSingleton(){
         Items = new ArrayList<MenuItem>();
     }
