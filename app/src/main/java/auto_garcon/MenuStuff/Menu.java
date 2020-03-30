@@ -196,6 +196,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         listHash.put(listDataHeader.get(4), alcohol_list);
     }
 
+    //this will filter the json object from get request and place items in correct category
     private void addToList(auto_garcon.MenuStuff.MenuItem key, String category) {
         switch(category){
             case "Appetizer":
