@@ -1,5 +1,3 @@
-Creating an AWS Relational Database Managed by MySQL
-
 Create and Connect to a MySQL Database
 with Amazon RDS
 
@@ -15,7 +13,9 @@ a. In the top right corner of the Amazon RDS console, select the Region in which
 
 Note: AWS Cloud resources are housed in highly available data center facilities in different areas of the world. Each Region contains multiple distinct locations called Availability Zones. You have the ability to choose which Region to host your Amazon RDS activity in. 
 
+![](AutoGarcon/Database/Documentation/DocumentationImages/rds-1.2e375be7253a9e337bcd7865860af9b0a5bf3034.png)
 rds-2-location
+(click to zoom)
 b.   In the Create database section, choose Create database.
 
  
@@ -23,13 +23,13 @@ b.   In the Create database section, choose Create database.
  
 
 rds-3-instances
-
+(click to zoom)
 c.  You now have options to select your engine.  For this tutorial, click the MySQL icon, choose Only enable options eligible for RDS Free Usage Tier, and then click Next.
 
  
 
 rds-5-selectMySQL
-
+(click to zoom)
 d. You will now configure your DB instance. The list below shows the example settings you can use for this tutorial:
 
 Instance specifications:
@@ -53,7 +53,7 @@ Click Next.
  
 
 rds-6-devtest
-
+(click to zoom)
 e. You are now on the Configure advanced settings page where you can provide additional information that RDS needs to launch your MySQL DB instance. The list below shows settings for our example DB instance.
 Network & Security
 Virtual Private Cloud (VPC): Select Default VPC. For more information about VPC, see Amazon RDS and Amazon Virtual Private Cloud (VPC).
@@ -95,7 +95,7 @@ Clear Enable deletion protection for this tutorial. When this option is enabled,
 Click Create database.
 
 rds-9-form
-
+(click to zoom)
 f. Your DB Instance is now being created.  Click View Your DB Instances.
 
 Note: Depending on the DB instance class and storage allocated, it could take several minutes for the new DB instance to become available.
@@ -105,7 +105,7 @@ The new DB instance appears in the list of DB instances on the RDS console. The 
 Feel free to move on to the next step as you wait for the DB instance to become available.
 
 rds-11-dbcreated
-
+(click to zoom)
 Step 2: Download a SQL Client
 Once the database instance creation is complete and the status changes to available, you can connect to a database on the DB instance using any standard SQL client. In this step, we will download MySQL Workbench, which is a popular SQL client.
 
@@ -114,19 +114,20 @@ a. Go to the Download MySQL Workbench page to download and install MySQL Workben
 Note:  Remember to run MySQL Workbench from the same device from which you created the DB Instance. The security group your database is placed in is configured to allow connection only from the device from which you created the DB instance.
 
 rds-21-downloadMySQL
-
+(click to zoom)
 
 b. You will be prompted to login, sign up, or begin your download.  You can click No thanks, just start my download for a quick download.
 
 rds-22-mysql
+(click to zoom)
 
 Step 3: Connect to the MySQL Database
 In this step, we will connect to the database you created using MySQL Workbench.
 
 a. Launch the MySQL Workbench application and go to Database > Connect to Database (Ctrl+U) from the menu bar.
 
-
-
+rds-13-mySQLworkbench
+(click to zoom)
 b. A dialog box appears.  Enter the following:
 
 Hostname: You can find your hostname on the Amazon RDS console as shown in the screenshot to the right.  
@@ -136,9 +137,13 @@ Password: Click Store in Vault (or Store in Keychain on macOS) and enter the pas
 Click OK
 
  
+
+Untitled-2
+(click to zoom)
 c. You are now connected to the database! On the MySQL Workbench, you will see various schema objects available in the database. Now you can start creating tables, insert data, and run queries.
 
-
+rds-18-mysqlInterface
+(click to zoom)
 Step 4: Delete the DB Instance
 You can easily delete the MySQL DB Instance from the Amazon RDS console. It is a best practice to delete instances that you are no longer using so that you don’t keep getting charged for them.
 a. Go back to your Amazon RDS Console. Select Databases, choose the instance that you want to delete, and then select Delete from the Actions dropdown menu.
@@ -152,3 +157,10 @@ b. You are asked to create a final snapshot and to confirm the deletion. For our
 
 rds-21-deleteInstance
 (click to zoom)
+
+Congratulations!
+You have created, connected to, and deleted a MySQL Database Instance with Amazon RDS.  Amazon RDS makes it easy to set up, operate, and scale a relational database in the cloud. It provides cost-efficient and resizable capacity while managing time-consuming database administration tasks, freeing you up to focus on your applications and business.
+
+Next Steps
+Now that you have learned to create and connect to a MySQL Database through Amazon RDS, you can progress to the next tutorial where you will learn how to use a MySQL database with a PHP application running on a web server.
+Create a Web Server and an Amazon RDS Database »
