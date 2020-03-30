@@ -75,11 +75,18 @@ export default class SignIn extends React.Component {
 	  
 	  /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
 	  
+	  console.log(this.state.email);
+	  console.log(this.state.passwd);
+	  
 	  const requestOptions = {
 		method: 'POST',
 		headers: {
-		  'username':this.state.email,
-		  'password':this.state.passwd
+		  'username': this.state.email,
+		  'password': this.state.passwd
+		},
+		body:{
+		  'username': this.state.email,
+		  'password': this.state.passwd
 		}
 		  
 	  };
