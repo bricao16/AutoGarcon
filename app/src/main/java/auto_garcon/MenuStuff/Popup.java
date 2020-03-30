@@ -2,21 +2,15 @@ package auto_garcon.MenuStuff;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.auto_garcon.R;
 
-import auto_garcon.InitialPages.Login;
-import auto_garcon.InitialPages.QRcode;
-import auto_garcon.InitialPages.twoButtonPage;
 import auto_garcon.Singleton.SharedPreference;
 import auto_garcon.Singleton.ShoppingCartSingleton;
 

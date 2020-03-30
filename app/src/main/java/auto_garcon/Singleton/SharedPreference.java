@@ -24,6 +24,12 @@ public class SharedPreference {
         //how you save???
         editor.apply();
     }
+
+    public void logOut(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear().apply();
+    }
+
     public  boolean getLoginStatus(){
         // gets the login status from preference file
         return sharedPreferences.getBoolean(context.getString(R.string.pref_login_status), false);
@@ -31,7 +37,7 @@ public class SharedPreference {
 
     public void writeName(String name){
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        // we take in the name given and store it in our prefrence file
+        // we take in the name given and store it in our preference file
         editor.putString(context.getString(R.string.pref_user_name),name);
         //save
         editor.apply();

@@ -1,6 +1,7 @@
 package auto_garcon.InitialPages;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -25,12 +26,14 @@ import auto_garcon.Singleton.SharedPreference;
 
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
 
+    private SharedPreference pref;
+
     @Override
-    //do any quriy here, firebase.......
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
         NavigationView navigationView = findViewById(R.id.navigationView);
@@ -43,22 +46,10 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        SharedPreference pref = new SharedPreference(this);
-        if(!pref.getLoginStatus()){
-            pref.changeLogStatus(false);
-            Intent signIn = new Intent(Home.this, Login.class);
-            startActivity(signIn);
-        }
+        pref = new SharedPreference(this);
+        Toast.makeText(Home.this, pref.getName(), Toast.LENGTH_SHORT).show();
 
-
-        //DB STUFF
-
-        // Create a new user with a first and last name
-        //Map<String, Object> user = new HashMap<>();
-        // Add a new document with a generated ID
-
-        //DB STUFF
-
+        //shake feature
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector shakeDetector = new ShakeDetector(this);
         shakeDetector.start(sensorManager);
@@ -69,6 +60,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         Toast.makeText(this, "HI", Toast.LENGTH_SHORT).show();
     }
 
+    //onClick for side nav bar
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
@@ -84,6 +76,10 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 break;
             case R.id.log_out:
                 Toast.makeText(Home.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
+
+                pref.changeLogStatus(false);
+                pref.logOut();
+
                 Intent login = new Intent(getBaseContext(),   Login.class);
                 startActivity(login);
                 break;
@@ -91,16 +87,19 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         return false;
     }
 
+    //onClick to home activity
     public void goHome(View view){
         Intent home = new Intent(getBaseContext(),   Home.class);
         startActivity(home);
     }
 
+    //onClick to order history activity
     public void goOrderHistory(View view){
         Intent order_history = new Intent(getBaseContext(),   OrderHistory.class);
         startActivity(order_history);
     }
 
+    //onClick to shopping cart activity
     public void goShoppingCart(View view){
         Intent shopping_cart = new Intent(getBaseContext(),   ShoppingCart.class);
         startActivity(shopping_cart);

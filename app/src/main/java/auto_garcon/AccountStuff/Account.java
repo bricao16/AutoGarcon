@@ -19,14 +19,18 @@ import auto_garcon.InitialPages.Home;
 import auto_garcon.InitialPages.Login;
 import auto_garcon.Cart_OrderHistory.OrderHistory;
 import auto_garcon.Cart_OrderHistory.ShoppingCart;
+import auto_garcon.Singleton.SharedPreference;
 
 public class Account extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private SharedPreference pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
+        //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.account_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
         NavigationView navigationView = findViewById(R.id.navigationView);
@@ -38,8 +42,11 @@ public class Account extends AppCompatActivity implements NavigationView.OnNavig
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        pref = new SharedPreference(this);
     }
 
+    //onClick for side nav bar
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
@@ -55,6 +62,10 @@ public class Account extends AppCompatActivity implements NavigationView.OnNavig
                 break;
             case R.id.log_out:
                 Toast.makeText(Account.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
+
+                pref.changeLogStatus(false);
+                pref.logOut();
+
                 Intent login = new Intent(getBaseContext(),   Login.class);
                 startActivity(login);
                 break;
@@ -62,16 +73,19 @@ public class Account extends AppCompatActivity implements NavigationView.OnNavig
         return false;
     }
 
+    //onClick to home activity
     public void goHome(View view){
         Intent home = new Intent(getBaseContext(),   Home.class);
         startActivity(home);
     }
 
+    //onClick to order history activity
     public void goOrderHistory(View view){
         Intent order_history = new Intent(getBaseContext(),   OrderHistory.class);
         startActivity(order_history);
     }
 
+    //onClick to shopping cart activity
     public void goShoppingCart(View view){
         Intent shopping_cart = new Intent(getBaseContext(),   ShoppingCart.class);
         startActivity(shopping_cart);
