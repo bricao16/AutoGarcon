@@ -1,7 +1,5 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
-
-import Col from 'react-bootstrap/Col';
 import StatsProp from './StatsProp';
 
 /*this is the stats component for the manager

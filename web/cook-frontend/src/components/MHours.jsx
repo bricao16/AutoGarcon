@@ -1,7 +1,7 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
 import HoursProp from './HoursProp';
-import Col from 'react-bootstrap/Col';
+
 /* This component is used to render the 
 resturant hours for the manager view.
 the hours are held in a state array called

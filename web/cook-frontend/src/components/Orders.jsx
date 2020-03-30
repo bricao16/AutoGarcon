@@ -32,24 +32,17 @@ class Orders extends React.Component{
     );
   }
 
+  // Returns orders wrapped in a flexbox so each order wraps to the next line 
+  // when necessary
   render() {
     return (
       <Container fluid>
-        <div style={ordersStyle}>
+        <div class="d-flex flex-wrap">
           {this.renderOrders()}
         </div>
       </Container>
     )
   };
 }
-
-const ordersStyle = {
-  'display': 'flex',
-  'fontSize': '1.2em',
-  'justifyContent': 'space-between',
-  'margin': '30px',
-  'marginTop': '0',
-  'flexWrap': "wrap"
-};
 
 export default Orders;

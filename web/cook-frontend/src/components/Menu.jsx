@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import MenuItem from './MenuItem';
-import NewItem from './newItem';
+import NewItem from './NewItem';
 
 /*
   This component is used to get the menu information
