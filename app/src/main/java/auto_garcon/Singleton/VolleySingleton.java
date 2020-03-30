@@ -1,4 +1,4 @@
-package auto_garcon;
+package auto_garcon.Singleton;
 
 import android.content.Context;
 import com.android.volley.Request;

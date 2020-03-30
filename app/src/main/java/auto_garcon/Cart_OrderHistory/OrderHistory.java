@@ -1,4 +1,4 @@
-package auto_garcon;
+package auto_garcon.Cart_OrderHistory;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -14,6 +14,11 @@ import android.widget.Toast;
 
 import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
+
+import auto_garcon.AccountStuff.Account;
+import auto_garcon.AccountStuff.Settings;
+import auto_garcon.InitialPages.Home;
+import auto_garcon.InitialPages.Login;
 
 public class OrderHistory extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 

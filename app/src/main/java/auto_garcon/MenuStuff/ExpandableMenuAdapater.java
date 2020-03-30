@@ -1,4 +1,4 @@
-package auto_garcon;
+package auto_garcon.MenuStuff;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,8 @@ import com.example.auto_garcon.R;
 
 import java.util.HashMap;
 import java.util.List;
+
+import auto_garcon.MenuStuff.Popup;
 
 public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private Context context;

@@ -1,4 +1,4 @@
-package auto_garcon;
+package auto_garcon.MenuStuff;
 
 public class MenuItem {
     private String nameOfItem;

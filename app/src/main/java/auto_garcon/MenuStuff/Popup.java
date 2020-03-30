@@ -1,4 +1,4 @@
-package auto_garcon;
+package auto_garcon.MenuStuff;
 
 import androidx.appcompat.app.AppCompatActivity;
 

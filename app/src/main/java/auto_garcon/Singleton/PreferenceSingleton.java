@@ -1,16 +1,16 @@
-package auto_garcon;
+package auto_garcon.Singleton;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.auto_garcon.R;
 
-public class Prefrence {
+public class PreferenceSingleton {
     private SharedPreferences sharedPreferences;
     private Context context;
 
 
-    public Prefrence(Context context){
+    public PreferenceSingleton(Context context){
         this.context=context;
 
         sharedPreferences= context.getSharedPreferences(context.getString(R.string.pref_file),Context.MODE_PRIVATE);

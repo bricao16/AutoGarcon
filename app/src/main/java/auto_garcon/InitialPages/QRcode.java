@@ -1,6 +1,6 @@
 
 
-package auto_garcon;
+package auto_garcon.InitialPages;
 
 import android.Manifest;
 

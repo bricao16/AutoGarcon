@@ -1,4 +1,4 @@
-package auto_garcon;
+package auto_garcon.InitialPages;
 
 import android.content.Intent;
 import android.hardware.SensorManager;
@@ -19,6 +19,12 @@ import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.seismic.ShakeDetector;
 
+import auto_garcon.AccountStuff.Account;
+import auto_garcon.AccountStuff.Settings;
+import auto_garcon.Cart_OrderHistory.OrderHistory;
+import auto_garcon.Cart_OrderHistory.ShoppingCart;
+import auto_garcon.Singleton.PreferenceSingleton;
+
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
     DrawerLayout drawerLayout;
@@ -26,7 +32,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
     Button logOut;
-    public Prefrence pref;
+    public PreferenceSingleton pref;
 
 
     //This is where we can get url from database.
@@ -45,7 +51,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        pref = new Prefrence(this);
+        pref = new PreferenceSingleton(this);
         if(!pref.getLoginStatus()){
             pref.changeLogStatus(false);
             Intent signIn = new Intent(Home.this, Login.class);

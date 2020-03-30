@@ -1,4 +1,4 @@
-package auto_garcon;
+package auto_garcon.MenuStuff;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -30,6 +30,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import auto_garcon.AccountStuff.Account;
+import auto_garcon.AccountStuff.Settings;
+import auto_garcon.InitialPages.Home;
+import auto_garcon.InitialPages.Login;
+import auto_garcon.Cart_OrderHistory.OrderHistory;
+import auto_garcon.Cart_OrderHistory.ShoppingCart;
+import auto_garcon.Singleton.VolleySingleton;
 
 public class Menu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -93,7 +101,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 String key = keys.next();
                                 if (response.get(key) instanceof JSONObject) {
 
-                                    auto_garcon.MenuItem itemToBeAdded = new auto_garcon.MenuItem();
+                                    auto_garcon.MenuStuff.MenuItem itemToBeAdded = new auto_garcon.MenuStuff.MenuItem();
                                     JSONObject item = response.getJSONObject(key.toString());
 
                                     Iterator<String> inner_keys = item.keys();

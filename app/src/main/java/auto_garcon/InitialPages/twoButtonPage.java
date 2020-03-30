@@ -1,4 +1,4 @@
-package auto_garcon;
+package auto_garcon.InitialPages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,14 +24,14 @@ public class twoButtonPage extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent QrCode = new Intent(twoButtonPage.this,QRcode.class);
+                Intent QrCode = new Intent(twoButtonPage.this, QRcode.class);
                 startActivity(QrCode);
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent home = new Intent(twoButtonPage.this,Home.class);
+                Intent home = new Intent(twoButtonPage.this, Home.class);
                 startActivity(home);
             }
         });

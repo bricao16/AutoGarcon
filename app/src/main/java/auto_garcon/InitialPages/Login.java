@@ -1,4 +1,4 @@
-package auto_garcon;
+package auto_garcon.InitialPages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,7 +18,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 
 import org.json.JSONException;
@@ -26,6 +25,10 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import auto_garcon.AccountStuff.Account;
+import auto_garcon.Singleton.PreferenceSingleton;
+import auto_garcon.Singleton.VolleySingleton;
 
 public class Login extends AppCompatActivity {
     Context context = this;
@@ -35,7 +38,7 @@ public class Login extends AppCompatActivity {
     private TextView textViewSignUp;
     private Account currentAccount;
     private AccountManager accountManager;
-    public Prefrence pref;
+    public PreferenceSingleton pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // this is how we identify an existing user when they've already logged in
-        pref = new Prefrence(this);
+        pref = new PreferenceSingleton(this);
 
 /*
         if(pref.getLoginStatus()){//send them to the homepage if their already logged in

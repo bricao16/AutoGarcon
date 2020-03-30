@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="auto_garcon.Popup"
+    tools:context="auto_garcon.MenuStuff.Popup"
     android:background="#102644">
 
     <Button

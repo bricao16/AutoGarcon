@@ -1,4 +1,4 @@
-package auto_garcon;
+package auto_garcon.AccountStuff;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -14,6 +14,11 @@ import android.widget.Toast;
 
 import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
+
+import auto_garcon.InitialPages.Home;
+import auto_garcon.InitialPages.Login;
+import auto_garcon.Cart_OrderHistory.OrderHistory;
+import auto_garcon.Cart_OrderHistory.ShoppingCart;
 
 public class Settings extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
