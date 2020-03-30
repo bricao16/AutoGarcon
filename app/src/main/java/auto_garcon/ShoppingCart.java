@@ -37,24 +37,13 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
 
-    ArrayList<Food> orders;
     TextView mealTotalText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
 
-        ListView storedOrders = (ListView)findViewById(R.id.selected_food_list);
-
-        orders = getListItemData();
-        mealTotalText = (TextView)findViewById(R.id.meal_total);
-        OrderAdapter adapter = new OrderAdapter(this, orders);
-
-        storedOrders.setAdapter(adapter);
-        adapter.registerDataSetObserver(observer);
-
-        //This casues a crashe somehow.
-        /*toolbar = findViewById(R.id.xml_toolbar);
+        toolbar = findViewById(R.id.xml_toolbar);
         navigationView = findViewById(R.id.navigationView);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
@@ -62,64 +51,8 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);*/
+        navigationView.setNavigationItemSelectedListener(this);
     }
-    //calc total price every time,
-    public int calculateMealTotal(){
-        int mealTotal = 0;
-        for(Food order : orders){
-            mealTotal += order.getmAmount() * order.getmQuantity();
-        }
-        return mealTotal;
-    }
-    //set observer to check updating from action buttons.
-    DataSetObserver observer = new DataSetObserver() {
-        @Override
-        public void onChanged() {
-            super.onChanged();
-            setMealTotal();
-        }
-    };
-    //create menu lists [name, price]
-    private ArrayList<Food> getListItemData(){
-        //this is where we can get data[ordered menu] from database.
-        ArrayList<Food> listViewItems = new ArrayList<Food>();
-        listViewItems.add(new Food("Rice",30));
-        listViewItems.add(new Food("Beans",40));
-        listViewItems.add(new Food("Yam",60));
-        listViewItems.add(new Food("Pizza",80));
-        listViewItems.add(new Food("Fries",100));
-
-        return listViewItems;
-    }
-    //set font and get total price of orders.
-    public void setMealTotal(){
-        mealTotalText.setText("GH"+"\u20B5"+" "+ calculateMealTotal());
-    }
-
-    /*private void arrayAdapterListView() {
-        setTitle("ArrayAdapter List View");
-
-        List<Food> dataList = new ArrayList<Food>();
-        dataList.add( new Food("Rice",30) );
-        dataList.add( new Food("Rice",30) );
-
-
-        ListView listView = (ListView)findViewById(R.id.listViewExample);
-        ArrayAdapter<Food> arrayAdapter = new ArrayAdapter<Food>(this, android.R.layout.simple_list_item_multiple_choice, dataList);
-        listView.setAdapter(arrayAdapter);
-
-
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
-                Object clickItemObj = adapterView.getAdapter().getItem(index);
-                Toast.makeText(ShoppingCart.this, "You clicked " + clickItemObj.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
@@ -157,124 +90,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         Intent shopping_cart = new Intent(getBaseContext(),   ShoppingCart.class);
         startActivity(shopping_cart);
     }
-}
-
-//created custom Adapter for Food object.
-class OrderAdapter extends ArrayAdapter<Food>{
-    private List<Food> list;
-    private Context context;
-
-    TextView currentFoodName,
-            currentCost,
-            quantityText,
-            addMeal,
-            subtractMeal,
-            removeMeal;
-
-    public OrderAdapter(Context context, List<Food> myOrders) {
-        super(context, 0, myOrders);
-        this.list = myOrders;
-        this.context = context;
-    }
-
-    //create visible view on the screen
-    public View getView(final int position, View convertView, ViewGroup parent){
-        View listItemView = convertView;
-        if(listItemView == null){
-            listItemView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.item_my_meal,parent,false
-            );
-        }
-
-        final Food currentFood = getItem(position);
-        //make them viewable on the screen.
-        currentFoodName = (TextView)listItemView.findViewById(R.id.selected_food_name);
-        currentCost = (TextView)listItemView.findViewById(R.id.selected_food_amount);
-        subtractMeal = (TextView)listItemView.findViewById(R.id.minus_meal);
-        quantityText = (TextView)listItemView.findViewById(R.id.quantity);
-        addMeal = (TextView)listItemView.findViewById(R.id.plus_meal);
-        removeMeal = (TextView)listItemView.findViewById(R.id.delete_item);
-
-        //Set the text of the meal, amount and quantity
-        currentFoodName.setText(currentFood.getmName());
-        currentCost.setText("$"+""+" "+ (currentFood.getmAmount() * currentFood.getmQuantity()));
-        quantityText.setText("x "+ currentFood.getmQuantity());
-
-        //OnClick listeners for all the buttons on the ListView Item
-        addMeal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                currentFood.addToQuantity();
-                quantityText.setText("x "+ currentFood.getmQuantity());
-                currentCost.setText("$"+""+" "+ (currentFood.getmAmount() * currentFood.getmQuantity()));
-                notifyDataSetChanged();
-            }
-        });
-
-        subtractMeal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                currentFood.removeFromQuantity();
-                quantityText.setText("x "+currentFood.getmQuantity());
-                currentCost.setText("$"+""+" "+ (currentFood.getmAmount() * currentFood.getmQuantity()));
-                notifyDataSetChanged();
-            }
-        });
-
-        removeMeal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                list.remove(position);
-                notifyDataSetChanged();
-            }
-        });
-        //return each menu list.
-        return listItemView;
-    }
-
-}
-
-//create serialized Food object.
-class Food implements Serializable {
-    // It has menu name, quantity, and price.
-    private  String mName;
-    private int mAmount;
-    private int mQuantity;
-
-    public void setmQuantity(int mQuantity) {
-        this.mQuantity = mQuantity;
-    }
-
-    public Food(){}
-
-    public Food(String mName, int mAmount) {
-        this.mName = mName;
-        this.mAmount = mAmount;
-        this.mQuantity = 1;
-    }
-
-    public String getmName() {
-        return mName;
-    }
-
-    public int getmAmount() {
-        return mAmount;
-    }
-
-    public int getmQuantity(){
-        return mQuantity;
-    }
-
-    public void addToQuantity(){
-        this.mQuantity += 1;
-    }
-
-    public void removeFromQuantity(){
-        if(this.mQuantity > 1){
-            this.mQuantity -= 1;
-        }
-    }
-
 }
 
 
