@@ -11,6 +11,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -22,16 +24,36 @@ import auto_garcon.HomeStuff.Home;
 import auto_garcon.InitialPages.Login;
 import auto_garcon.InitialPages.QRcode;
 import auto_garcon.Singleton.SharedPreference;
+import auto_garcon.Singleton.ShoppingCartSingleton;
 
 public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private SharedPreference pref;
+    private SharedPreference preference;
+    private ShoppingCartSingleton shoppingCart;
+    private RecyclerView.Adapter adapter;
+    private  RecyclerView.LayoutManager layoutManager;
+    private RecyclerView recyclerView;
     BottomNavigationView bottomNavigation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
         bottomNavigation = findViewById(R.id.bottom_navigation);
+        recyclerView = findViewById(R.id.list);
+        pref = new SharedPreference(this);
+        if(pref.getShoppingCart()==null){
+            shoppingCart = new ShoppingCartSingleton();
+            pref.setShoppingCart(shoppingCart);
+        }
+        else{
+            shoppingCart = pref.getShoppingCart();
+        }
+        ShoppingCartAdapter adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
 
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
