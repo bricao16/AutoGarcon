@@ -11,6 +11,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {Redirect} from "react-router-dom";
 
 /*this is the login component for the cook
 view. Asks for the email address, password and logs in if the user and correct password
@@ -41,6 +42,7 @@ export default class SignIn extends React.Component {
 	  this.state = {
 	    email: '',
 		passwd:'',
+		redirect: false
 	  };
 	  
 	  this.handleSubmit = this.handleSubmit.bind(this);
@@ -77,15 +79,14 @@ export default class SignIn extends React.Component {
 				const error = (data && data.message) || response.status;
 				return Promise.reject(error);
 			}
-			console.log(data.staff.restaurant_id);
+			this.setState({redirect: true});
 			
 		
 		})
 		.catch(error =>{
 			
-			
-			console.error("There was an error!", error);
-			
+			this.setState({redirect: false});
+			console.error("There was an error!", error);	
 		});
   }
   
@@ -97,77 +98,74 @@ export default class SignIn extends React.Component {
 	  this.setState({passwd: event.target.value});
   }
 
-  requestOptions = {
-
-  };
-
   render(){
+	if(this.state.redirect === true){
+	  return <Redirect to='/cook'/>
+	}  
+	return (
+  	  <Container component="main" maxWidth="xs">
+		<CssBaseline />
+		<div className={useStyles.paper}>
+		  {/* Lock icon on top */}
+		  <Avatar className={useStyles.avatar}>
+			<LockOutlinedIcon />
+		  </Avatar>
+		  {/* Cook Sign In Title on top of page*/}
+		  <Typography component="h1" variant="h5">
+			Cook Sign In
+		  </Typography>
+		  <form className={useStyles.form} noValidate>
+			<TextField onChange = {this.handleEmail}
+			  value = {this.state.email}
+			  variant="outlined"
+			  margin="normal"
+			  required
+			  fullWidth
+			  id="email"
+			  label="Email Address"
+			  name="email"
+			  autoComplete="email"
+			  autoFocus
+			/>
+			<TextField onChange = {this.handlePasswd}
+			  value = {this.state.passwd}
+			  variant="outlined"
+			  margin="normal"
+			  required
+			  fullWidth
+			  name="password"
+			  label="Password"
+			  type="password"
+			  id="password"
+			  autoComplete="current-password"
+			/>
 
-  return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={useStyles.paper}>
-        {/* Lock icon on top */}
-        <Avatar className={useStyles.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        {/* Cook Sign In Title on top of page*/}
-        <Typography component="h1" variant="h5">
-          Cook Sign In
-        </Typography>
-        <form className={useStyles.form} noValidate>
-          <TextField onChange = {this.handleEmail}
-			value = {this.state.email}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField onChange = {this.handlePasswd}
-			value = {this.state.passwd}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-
-          {/* Remember me checkbox */}
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          {/* Submit button */}
-          <Button onClick = {this.handleSubmit}
-            type="submit"
-            fullWidth
-            variant="contained"
-            style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
-            className={useStyles.submit}
-          >
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item>
-              {/* Create an account link */}
-              <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-    
-    </Container>
-  );
+			{/* Remember me checkbox */}
+			<FormControlLabel
+			  control={<Checkbox value="remember" color="primary" />}
+			  label="Remember me"
+			/>
+			{/* Submit button */}
+			<Button onClick = {this.handleSubmit}
+			  type="submit"
+			  fullWidth
+			  variant="contained"
+			  style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
+			  className={useStyles.submit}
+			>
+			  Sign In
+			</Button>
+			<Grid container>
+			  <Grid item>
+				{/* Create an account link */}
+				<Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
+				  {"Don't have an account? Sign Up"}
+				</Link>
+			  </Grid>
+			</Grid>
+		  </form>
+		</div>
+	  </Container>
+	);
   }
 }
