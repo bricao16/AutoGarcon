@@ -33,7 +33,7 @@ menu
   price                             DOUBLE(10,2) // XX,XXX,XXX.XX
 
 orderdetails
-  order_num         KEY             INT
+  order_num         FOREIGN KEY     INT
   item_id           FOREIGN KEY     INT
   quantity                          INT
 
