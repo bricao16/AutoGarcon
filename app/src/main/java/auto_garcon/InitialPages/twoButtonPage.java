@@ -21,6 +21,11 @@ public class twoButtonPage extends AppCompatActivity {
         Button scannerButton = findViewById(R.id.scanner_button);
         Button favButton = findViewById(R.id.fav_button);
 
+
+        /*
+        When one of these buttons is clicked it will take the users onto either the QRcode or the Favorite Page
+         */
+        button1.setOnClickListener(new View.OnClickListener() {
         scannerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -28,7 +33,7 @@ public class twoButtonPage extends AppCompatActivity {
                 startActivity(QrCode);
             }
         });
-        favButton.setOnClickListener(new View.OnClickListener() {
+        button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent home = new Intent(twoButtonPage.this, Home.class);

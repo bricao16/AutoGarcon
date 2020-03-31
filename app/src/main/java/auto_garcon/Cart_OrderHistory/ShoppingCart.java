@@ -2,8 +2,11 @@ package auto_garcon.Cart_OrderHistory;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -11,24 +14,52 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.auto_garcon.R;
+import com.google.android.gms.vision.text.Line;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.ArrayList;
 
 import auto_garcon.AccountStuff.Account;
 import auto_garcon.AccountStuff.Settings;
 import auto_garcon.InitialPages.Home;
 import auto_garcon.InitialPages.Login;
+import auto_garcon.MenuStuff.Menu;
+import auto_garcon.Singleton.SharedPreference;
+import auto_garcon.Singleton.ShoppingCartSingleton;
+
+/*<<<<<<< Updated upstream:app/src/main/java/auto_garcon/ShoppingCart.java*/
+//=======
+//>>>>>>> Stashed changes:app/src/main/java/com/example/auto_garcon/ShoppingCart.java
 import auto_garcon.Singleton.SharedPreference;
 
 public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private SharedPreference pref;
+   private SharedPreference preference;
+   private ShoppingCartSingleton shoppingCart;
+   private RecyclerView.Adapter adapter;
+   private  RecyclerView.LayoutManager layoutManager;
+   private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
+        recyclerView = findViewById(R.id.list);
+        preference = new SharedPreference(this);
+        if(preference.getShoppingCart()==null){
+            shoppingCart = new ShoppingCartSingleton();
+            preference.setShoppingCart(shoppingCart);
+        }
+        else{
+            shoppingCart = preference.getShoppingCart();
+        }
+        ShoppingCartAdapter adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.shopping_cart_main);
@@ -42,10 +73,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
-        pref = new SharedPreference(this);
-        Toast.makeText(ShoppingCart.this, pref.getName(), Toast.LENGTH_SHORT).show();
-
     }
 
     //onClick for side nav bar
@@ -65,8 +92,8 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
             case R.id.log_out:
                 Toast.makeText(ShoppingCart.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
 
-                pref.changeLogStatus(false);
-                pref.logOut();
+                preference.changeLogStatus(false);
+                preference.logOut();
 
                 Intent login = new Intent(getBaseContext(),   Login.class);
                 startActivity(login);
