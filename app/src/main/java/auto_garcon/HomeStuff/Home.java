@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.seismic.ShakeDetector;
 
@@ -34,6 +35,7 @@ import auto_garcon.AccountStuff.Settings;
 import auto_garcon.Cart_OrderHistory.OrderHistory;
 import auto_garcon.Cart_OrderHistory.ShoppingCart;
 import auto_garcon.InitialPages.Login;
+import auto_garcon.InitialPages.QRcode;
 import auto_garcon.Singleton.SharedPreference;
 import auto_garcon.Singleton.VolleySingleton;
 
@@ -43,12 +45,35 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     RecyclerView recyclerView;
     HomeAdapter adapter;
     private ArrayList<RestaurantItem> items;
+    BottomNavigationView bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        bottomNavigation = findViewById(R.id.bottom_navigation);
 
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_recents:
+                                Intent home = new Intent(getBaseContext(),   QRcode.class);
+                                startActivity(home);
+                                return true;
+                            case R.id.action_favorites:
+                                Intent qrcode = new Intent(getBaseContext(),   Home.class);
+                                startActivity(qrcode);
+                                return true;
+                            case R.id.action_nearby:
+                                Intent orderhistory = new Intent(getBaseContext(),   OrderHistory.class);
+                                startActivity(orderhistory);
+                                return true;
+                        }
+                        return false;
+                    }
+                };
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);

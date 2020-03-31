@@ -13,23 +13,47 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.auto_garcon.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import auto_garcon.AccountStuff.Account;
 import auto_garcon.AccountStuff.Settings;
 import auto_garcon.HomeStuff.Home;
 import auto_garcon.InitialPages.Login;
+import auto_garcon.InitialPages.QRcode;
 import auto_garcon.Singleton.SharedPreference;
 
 public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private SharedPreference pref;
-
+    BottomNavigationView bottomNavigation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
+        bottomNavigation = findViewById(R.id.bottom_navigation);
 
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_recents:
+                                Intent home = new Intent(getBaseContext(),   QRcode.class);
+                                startActivity(home);
+                                return true;
+                            case R.id.action_favorites:
+                                Intent qrcode = new Intent(getBaseContext(),   Home.class);
+                                startActivity(qrcode);
+                                return true;
+                            case R.id.action_nearby:
+                                Intent orderhistory = new Intent(getBaseContext(),   OrderHistory.class);
+                                startActivity(orderhistory);
+                                return true;
+                        }
+                        return false;
+                    }
+                };
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.shopping_cart_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
