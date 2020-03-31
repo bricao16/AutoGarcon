@@ -1,1 +1,1 @@
-This will be used for storing images for use in documentation
+#This will be used for docmentation images
