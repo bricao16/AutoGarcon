@@ -13,6 +13,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:itemBackground="@color/colorPrimary"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/xml_toolbar"
             android:layout_width="470dp"
@@ -99,7 +110,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="120dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="70dp"/>
 
 
     <com.google.android.material.navigation.NavigationView
@@ -117,8 +129,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </com.google.android.material.navigation.NavigationView>
-
-
-
 
 </androidx.drawerlayout.widget.DrawerLayout>
