@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.Cart_OrderHistory.ShoppingCart;
 import auto_garcon.Singleton.SharedPreference;
 import auto_garcon.Singleton.VolleySingleton;
 
@@ -40,14 +41,15 @@ public class Login extends AppCompatActivity {
 
         // this is how we identify an existing user when they've already logged in
         pref = new SharedPreference(this);
-/*
-        if(pref.getLoginStatus()){//send them to the homepage if their already logged in
+
+        //send them to the homepage if their already logged in
+        if(pref.getLoginStatus()){
 
             //Todo: check if there token is still valid
             Intent intent  = new Intent(Login.this, Home.class);
             startActivity(intent);
         }
-*/
+
         emailId = findViewById(R.id.email);
         password = findViewById(R.id.password);
         buttonSignIn = findViewById(R.id.signUp);
@@ -95,7 +97,7 @@ public class Login extends AppCompatActivity {
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 
-                                        Intent home = new Intent(Login.this, Home.class);
+                                        Intent home = new Intent(Login.this, twoButtonPage.class);
                                         startActivity(home);
 
                                     } catch (JSONException e) {

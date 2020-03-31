@@ -7,10 +7,10 @@
     tools:context="auto_garcon.InitialPages.twoButtonPage">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/scanner_button"
         android:layout_width="108dp"
         android:layout_height="138dp"
-        android:text="QrCode"
+        android:text="Scanner"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.191"
@@ -18,12 +18,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/fav_button"
         android:layout_width="110dp"
         android:layout_height="133dp"
         android:layout_marginStart="80dp"
         android:text="FavPage"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintStart_toEndOf="@+id/scanner_button"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

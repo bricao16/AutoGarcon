@@ -2,6 +2,7 @@ package com.example.auto_garcon;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ public class Login extends AppCompatActivity {
    private EditText password;
    private Button buttonSignIn;
    private TextView textViewSignUp;
+   private Account currentAccount;
+   private AccountManager accountManager;
    public SharedPreference pref;
 
     @Override

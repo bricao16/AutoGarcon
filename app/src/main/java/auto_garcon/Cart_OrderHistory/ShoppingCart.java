@@ -34,6 +34,7 @@ import auto_garcon.Singleton.ShoppingCartSingleton;
 /*<<<<<<< Updated upstream:app/src/main/java/auto_garcon/ShoppingCart.java*/
 //=======
 //>>>>>>> Stashed changes:app/src/main/java/com/example/auto_garcon/ShoppingCart.java
+import auto_garcon.Singleton.SharedPreference;
 
 public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
    private SharedPreference preference;
@@ -60,8 +61,21 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+        //creating side nav drawer
+        DrawerLayout drawerLayout = findViewById(R.id.shopping_cart_main);
+        Toolbar toolbar = findViewById(R.id.xml_toolbar);
+        NavigationView navigationView = findViewById(R.id.navigationView);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+    }
 
+    //onClick for side nav bar
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
@@ -77,6 +91,10 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.log_out:
                 Toast.makeText(ShoppingCart.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
+
+                preference.changeLogStatus(false);
+                preference.logOut();
+
                 Intent login = new Intent(getBaseContext(),   Login.class);
                 startActivity(login);
                 break;
@@ -84,16 +102,19 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
+    //onClick to home activity
     public void goHome(View view){
         Intent home = new Intent(getBaseContext(),   Home.class);
         startActivity(home);
     }
 
+    //onClick to order history activity
     public void goOrderHistory(View view){
         Intent order_history = new Intent(getBaseContext(),   OrderHistory.class);
         startActivity(order_history);
     }
 
+    //onClick to shopping cart activity
     public void goShoppingCart(View view){
         Intent shopping_cart = new Intent(getBaseContext(),   ShoppingCart.class);
         startActivity(shopping_cart);
