@@ -19,7 +19,7 @@ function CustomizeProp(props) {
                 props.customizeType.items.map((item, key) => (
                     <div style={customizeStyle}>
                         <p style={{margin: "0", padding: "0.8em"}}>{item.title} <br></br> <br></br> 
-                        <button> <i class='fas fa-edit'></i> </button>
+                        <button class="btn btn-outline-dark btn-sm"> <i class='fas fa-edit'></i> </button>
                      </p>
                     </div>
                 ))
