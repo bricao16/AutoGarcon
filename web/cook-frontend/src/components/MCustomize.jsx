@@ -27,7 +27,7 @@ class MCustomize extends React.Component{
         return (
             <Container>
               <div style={backgroundStyle}>
-             <Container fluid>
+             <Container fluid style={{'min-height': '70vh'}}>
                 <div class="d-flex flex-wrap">
                     {this.renderCustomize()}
                 </div>

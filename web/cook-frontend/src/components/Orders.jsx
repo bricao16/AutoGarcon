@@ -80,7 +80,7 @@ class Orders extends React.Component{
   // when necessary
   render() {
     return (
-      <Container fluid>
+      <Container fluid style={{'min-height': '85vh', 'background-color': '#f1f1f1'}}>
         <div class="d-flex flex-wrap">
           {this.renderOrders()}
         </div>
