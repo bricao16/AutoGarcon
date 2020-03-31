@@ -18,6 +18,10 @@ public class twoButtonPage extends AppCompatActivity {
         Button button1 = findViewById(R.id.button);
         Button button2 = findViewById(R.id.button2);
 
+
+        /*
+        When one of these buttons is clicked it will take the users onto either the QRcode or the Favorite Page
+         */
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

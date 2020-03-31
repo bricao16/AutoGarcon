@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/xml_toolbar"
             android:layout_width="470dp"
@@ -94,7 +94,9 @@
             android:layout_height="567dp"
             android:layout_marginTop="117dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" >
+
+        </ListView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

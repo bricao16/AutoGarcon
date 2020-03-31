@@ -20,14 +20,16 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.InitialPages.Home;
+import auto_garcon.InitialPages.Register;
+import auto_garcon.Singleton.SharedPreference;
+
 public class Login extends AppCompatActivity {
    private EditText emailId;
    private EditText password;
    private Button buttonSignIn;
    private TextView textViewSignUp;
-   private Account currentAccount;
-   private AccountManager accountManager;
-   public Prefrence pref;
+   public SharedPreference pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // this is how we identify an existing user when they've already logged in
-        pref = new Prefrence(this);
+        pref = new SharedPreference(this);
 
 
         if(pref.getLoginStatus()){//send them to the homepage if their already logged in

@@ -24,7 +24,7 @@ import auto_garcon.Cart_OrderHistory.ShoppingCart;
 import auto_garcon.Singleton.SharedPreference;
 
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
-
+    SharedPreference pref;
     @Override
     //do any quriy here, firebase.......
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        SharedPreference pref = new SharedPreference(this);
+        pref = new SharedPreference(this);
         if(!pref.getLoginStatus()){
             pref.changeLogStatus(false);
             Intent signIn = new Intent(Home.this, Login.class);
