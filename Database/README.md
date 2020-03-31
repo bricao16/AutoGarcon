@@ -6,9 +6,9 @@ Files:
 -APIInterface.txt: Planned endpoints, still in development   
 -CurrentEndpoints.txt: Live endpoints  
 -DatabaseSchema.txt: Schema and variable types of attributes  
+-Queries: Temporary file for potential queries we will have
 -package.json: required packages to run server.js  
 -Server.js: API created by Tucker  
--Queries: Temporary file for potential queries we will have
 
 Folders:  
 +documentation  
