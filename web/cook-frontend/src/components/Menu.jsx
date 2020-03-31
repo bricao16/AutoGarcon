@@ -142,8 +142,12 @@ class Menu extends React.Component {
     } 
 
     else if (!isLoaded) {
-      return <div>Loading...</div>;
-    } 
+      return (<div class="text-center pt-5">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>)
+    }
 
     else {
       //map the menu json to an array
