@@ -60,7 +60,7 @@ restaurants
   
 services
   restaurant_id     FOREIGN KEY     INT
-  table_num         FOREIGN KEY     INT
+  table_num         KEY             INT
   service_status                    VARCHAR(50) // Bill, Help, Good
   
 staff
