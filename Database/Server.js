@@ -389,6 +389,49 @@ app.put('/customer/register', (req, res) =>
 	}); //db.query
 });	//app.put
 
+//PUT request handler for adding a menu item
+app.put('/menu/add', (req, res) =>
+{
+	//Make sure right number of parameters are entered:
+	if(!(req.body.restaurant_id && req.body.item_name && req.body.calorie_num && req.body.category && req.body.price))
+	{
+		res.status(500).send('Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price');
+		return;
+	}   //if
+
+	//Make sure the menu item doesn't exist at the restaurant:
+	let parameters = [];
+	parameters = [req.body.restaurant_id, req.body.item_name]
+	let query = "Select * FROM sample.menu WHERE restaurant_id = ? AND item_name = ?";
+	db.query(query, parameters, (err, rows) =>
+	{
+		if (rows.length > 0)
+		{
+			res.status(500).send('Error: item already exists');
+		}   //if
+		else
+		{
+			parameters = [req.body.restaurant_id, req.body.item_name, req.body.calorie_num, req.body.category,req.body.price];
+			let query = '';
+			query = 'INSERT INTO sample.menu(restaurant_id, item_name, calorie_num, category, in_stock, price)';
+			query = query + " VALUES (?, ?, ?, ?, 1, ?)";
+
+			//Add new menu item to db:
+			db.query(query, parameters, (err, rows) =>
+			{
+				if (err)
+				{
+					res.status(500).send('Error adding new menu item');
+				}   //if
+				else
+				{
+					res.status(200).send('Successfully added new menu item!');
+				}   //else
+			}); //db.query
+		}   //else
+	}); //db.query
+});	//app.put
+
 /*
 	Token format:
 		Authorization: Bearer <token>
