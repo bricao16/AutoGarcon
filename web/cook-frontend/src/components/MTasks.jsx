@@ -4,6 +4,7 @@ import Menu from './Menu';
 import Stats from './MStats';
 import Hours from './MHours';
 import MHeader from './MHeader';
+import Customize from './MCustomize';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
@@ -74,6 +75,8 @@ class MTasks extends React.Component{
                       <Nav.Link href="/manager">Statistics</Nav.Link>
                       <Nav.Link href="/menu" >Menu</Nav.Link>
                       <Nav.Link href="/hours">Hours</Nav.Link>
+                      <Nav.Link href="/customize">Customize</Nav.Link>
+
                     </Nav>
                   </Col>
                   <Col className="pt-3 px-3">
@@ -87,6 +90,9 @@ class MTasks extends React.Component{
                           </Route>
                           <Route path="/hours">
                             <Hours />
+                          </Route>
+                          <Route path="/customize">
+                            <Customize />
                           </Route>
                         </Switch>
                     </Container>

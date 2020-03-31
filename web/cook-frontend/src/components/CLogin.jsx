@@ -104,67 +104,67 @@ export default class SignIn extends React.Component {
 	}  
 	return (
   	  <Container component="main" maxWidth="xs">
-		<CssBaseline />
-		<div className={useStyles.paper}>
-		  {/* Lock icon on top */}
-		  <Avatar className={useStyles.avatar}>
-			<LockOutlinedIcon />
-		  </Avatar>
-		  {/* Cook Sign In Title on top of page*/}
-		  <Typography component="h1" variant="h5">
-			Cook Sign In
-		  </Typography>
-		  <form className={useStyles.form} noValidate>
-			<TextField onChange = {this.handleEmail}
-			  value = {this.state.email}
-			  variant="outlined"
-			  margin="normal"
-			  required
-			  fullWidth
-			  id="email"
-			  label="Email Address"
-			  name="email"
-			  autoComplete="email"
-			  autoFocus
-			/>
-			<TextField onChange = {this.handlePasswd}
-			  value = {this.state.passwd}
-			  variant="outlined"
-			  margin="normal"
-			  required
-			  fullWidth
-			  name="password"
-			  label="Password"
-			  type="password"
-			  id="password"
-			  autoComplete="current-password"
-			/>
+		  <CssBaseline />
+        <div className={useStyles.paper}>
+          {/* Lock icon on top */}
+          <Avatar className={useStyles.avatar}>
+          <LockOutlinedIcon />
+          </Avatar>
+          {/* Cook Sign In Title on top of page*/}
+          <Typography component="h1" variant="h5">
+          Cook Sign In
+          </Typography>
+          <form className={useStyles.form} noValidate>
+          <TextField onChange = {this.handleEmail}
+            value = {this.state.email}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+          />
+          <TextField onChange = {this.handlePasswd}
+            value = {this.state.passwd}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+          />
 
-			{/* Remember me checkbox */}
-			<FormControlLabel
-			  control={<Checkbox value="remember" color="primary" />}
-			  label="Remember me"
-			/>
-			{/* Submit button */}
-			<Button onClick = {this.handleSubmit}
-			  type="submit"
-			  fullWidth
-			  variant="contained"
-			  style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
-			  className={useStyles.submit}
-			>
-			  Sign In
-			</Button>
-			<Grid container>
-			  <Grid item>
-				{/* Create an account link */}
-				<Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
-				  {"Don't have an account? Sign Up"}
-				</Link>
-			  </Grid>
-			</Grid>
-		  </form>
-		</div>
+          {/* Remember me checkbox */}
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" />}
+            label="Remember me"
+          />
+          {/* Submit button */}
+          <Button onClick = {this.handleSubmit}
+            type="submit"
+            fullWidth
+            variant="contained"
+            style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
+            className={useStyles.submit}
+          >
+            Sign In
+          </Button>
+          <Grid container>
+            <Grid item>
+            {/* Create an account link */}
+            <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
+              {"Don't have an account? Sign Up"}
+            </Link>
+            </Grid>
+          </Grid>
+          </form>
+        </div>
 	  </Container>
 	);
   }

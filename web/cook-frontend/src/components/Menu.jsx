@@ -142,8 +142,12 @@ class Menu extends React.Component {
     } 
 
     else if (!isLoaded) {
-      return <div>Loading...</div>;
-    } 
+      return (<div class="text-center pt-5">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>)
+    }
 
     else {
       //map the menu json to an array
@@ -166,7 +170,7 @@ class Menu extends React.Component {
             <h2 style={mainMenuHeaderStyle}>
               Menu
             </h2>
-              <Container fluid>
+              <Container fluid style={{'min-height': '70vh'}}>
                 <div className="d-flex flex-wrap">
                     {this.renderMenuCategories()}
                     <Col sm={6} className="p-3"> {/*add a create new category option*/}
@@ -191,7 +195,7 @@ class Menu extends React.Component {
               <button type="button" onClick={() => this.changeCategory("main") } class="btn btn-outline-light m-2">Back</button>
               <div style={menuTextStyle}>{renderCategory}</div>
             </h2>
-            <Container fluid>
+            <Container fluid style={{'min-height': '70vh'}}>
               <div className="d-flex flex-wrap">
                 {this.renderMenu()}                
               </div>
