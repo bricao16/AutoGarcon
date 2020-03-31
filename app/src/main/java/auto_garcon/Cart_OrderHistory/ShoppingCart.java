@@ -44,8 +44,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         pref = new SharedPreference(this);
-        Toast.makeText(ShoppingCart.this, pref.getUserName(), Toast.LENGTH_SHORT).show();
-
     }
 
     //onClick for side nav bar
