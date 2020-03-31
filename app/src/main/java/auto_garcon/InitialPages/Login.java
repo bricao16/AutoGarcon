@@ -23,7 +23,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import auto_garcon.Cart_OrderHistory.ShoppingCart;
 import auto_garcon.Singleton.SharedPreference;
 import auto_garcon.Singleton.VolleySingleton;
 
@@ -46,7 +45,7 @@ public class Login extends AppCompatActivity {
         if(pref.getLoginStatus()){
 
             //Todo: check if there token is still valid
-            Intent intent  = new Intent(Login.this, Home.class);
+            Intent intent  = new Intent(Login.this, twoButtonPage.class);
             startActivity(intent);
         }
 
@@ -58,9 +57,9 @@ public class Login extends AppCompatActivity {
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String email = emailId.getText().toString().trim();
+                final String username = emailId.getText().toString().trim();
                 final String passwd = password.getText().toString().trim();
-                if(email.isEmpty()){
+                if(username.isEmpty()){
                     emailId.setError("Please enter email id");
                     emailId.requestFocus();
                 }
@@ -68,17 +67,17 @@ public class Login extends AppCompatActivity {
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
-                else if(email.isEmpty() && passwd.isEmpty()){
+                else if(username.isEmpty() && passwd.isEmpty()){
                     Toast.makeText(Login.this,"Fields are Empty!", Toast.LENGTH_SHORT).show();
                 }
-                else if (!(email.isEmpty() && passwd.isEmpty())) {
+                else if (!(username.isEmpty() && passwd.isEmpty())) {
 
                     //some request to server goes here
                     String url = "http://50.19.176.137:8000/customers/login";
-                    JSONObject obj = new JSONObject();//for the request paramter
+                    JSONObject obj = new JSONObject();//for the request parameter
                     try{
-                        obj.put("username",email);
-                        obj.put("password",passwd);
+                        obj.put("username", username);
+                        obj.put("password", passwd);
                     }catch (JSONException e){
                         e.printStackTrace();
                     }
@@ -87,13 +86,11 @@ public class Login extends AppCompatActivity {
                             {
                                 @Override
                                 public void onResponse(JSONObject response) {
-                                   // Log.d("TAG",response);
                                     // response
                                     try {
                                            JSONObject object = response.getJSONObject("user");
                                             String token = response.getString("token");
-                                            String username = object.getString("first_name");
-                                        pref.writeName(username);
+                                        pref.writeUserName(username);
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 
@@ -117,7 +114,7 @@ public class Login extends AppCompatActivity {
                         @Override
                         protected Map<String, String> getParams() {
                             Map<String, String> params = new HashMap<String, String>();
-                            params.put("username", email);
+                            params.put("username", username);
                             params.put("password", passwd);
 
                             return params;

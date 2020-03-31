@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.example.auto_garcon.R;
 import com.google.android.material.navigation.NavigationView;
 
-import auto_garcon.InitialPages.Home;
+import auto_garcon.HomeStuff.Home;
 import auto_garcon.InitialPages.Login;
 import auto_garcon.Cart_OrderHistory.OrderHistory;
 import auto_garcon.Cart_OrderHistory.ShoppingCart;

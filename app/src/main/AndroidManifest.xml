@@ -53,7 +53,7 @@
             </intent-filter>
 
         </activity>
-        <activity android:name="auto_garcon.InitialPages.Home" >
+        <activity android:name="auto_garcon.HomeStuff.Home" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

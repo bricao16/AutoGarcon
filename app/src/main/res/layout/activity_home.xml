@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="end"
     android:id="@+id/home_main"
-    tools:context="auto_garcon.InitialPages.Home">
+    tools:context="auto_garcon.HomeStuff.Home">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -17,7 +17,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import auto_garcon.AccountStuff.Account;
 import auto_garcon.AccountStuff.Settings;
-import auto_garcon.InitialPages.Home;
+import auto_garcon.HomeStuff.Home;
 import auto_garcon.InitialPages.Login;
 import auto_garcon.Singleton.SharedPreference;
 

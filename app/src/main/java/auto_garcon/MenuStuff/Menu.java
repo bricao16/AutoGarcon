@@ -31,7 +31,7 @@ import java.util.List;
 
 import auto_garcon.AccountStuff.Account;
 import auto_garcon.AccountStuff.Settings;
-import auto_garcon.InitialPages.Home;
+import auto_garcon.HomeStuff.Home;
 import auto_garcon.InitialPages.Login;
 import auto_garcon.Cart_OrderHistory.OrderHistory;
 import auto_garcon.Cart_OrderHistory.ShoppingCart;
@@ -80,7 +80,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         drink_list = new ArrayList<>();
         alcohol_list = new ArrayList<>();
 
-        final String url = "http://50.19.176.137:8000/menu/123";
+        final String url = "http://50.19.176.137:8000/menu/" + getIntent().getIntExtra("restaurant id", 0);
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {

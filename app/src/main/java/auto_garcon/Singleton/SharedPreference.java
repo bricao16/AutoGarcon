@@ -36,14 +36,14 @@ public class SharedPreference {
         return sharedPreferences.getBoolean(context.getString(R.string.pref_login_status), false);
     }
 
-    public void writeName(String name){
+    public void writeUserName(String name){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         // we take in the name given and store it in our preference file
-        editor.putString(context.getString(R.string.pref_user_name),name);
+        editor.putString(context.getString(R.string.pref_user_name), name);
         //save
         editor.apply();
     }
-    public String getName(){
+    public String getUserName(){
         // returns the user logged in at the moment else returns the string user
         return  sharedPreferences.getString(context.getString(R.string.pref_user_name),"User");
     }
