@@ -1,6 +1,7 @@
 package auto_garcon.InitialPages;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.view.SurfaceView;
@@ -26,6 +27,9 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import auto_garcon.MenuStuff.Menu;
+import auto_garcon.MenuStuff.MenuItem;
+import auto_garcon.Singleton.VolleySingleton;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
 
@@ -58,30 +62,6 @@ public class QRcode extends AppCompatActivity {
 
                 }
             }).check();
-        String url = "http://50.19.176.137:8000/resturant/" + txt_result;
-        Toast.makeText(QRcode.this,"help me", Toast.LENGTH_SHORT).show();
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            String restaurant = response.getString("restaurant_name");
-                            TextView text_box = (TextView)findViewById(R.id.code_info);
-                            text_box.setText(restaurant);
-                            Toast.makeText(QRcode.this,"help me", Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(QRcode.this,error.toString(),Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-
     }
 
     private void setupCamera() {
@@ -114,6 +94,31 @@ public class QRcode extends AppCompatActivity {
                     @Override
                     public void run() {
                         txt_result.setText(data);
+                        txt_result = (TextView) findViewById(R.id.code_info);
+                        String url = "http://50.19.176.137:8000/restaurant/" + txt_result.getText().toString();
+                        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        try {
+                                            String restaurant = response.getJSONObject("restaurant").getString("name");
+                                            txt_result.setText(restaurant);
+                                            txt_result = (TextView) findViewById(R.id.code_info);
+                                            Intent Menu = new Intent(QRcode.this, Menu.class);
+                                            startActivity(Menu);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(QRcode.this,error.toString(),Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                        );
+                        VolleySingleton.getInstance(QRcode.this).addToRequestQueue(getRequest);
                     }
                 });
             }
