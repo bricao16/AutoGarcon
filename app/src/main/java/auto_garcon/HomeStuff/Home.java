@@ -134,7 +134,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
 
                             }
-                            Toast.makeText(Home.this,items.get(0).getName(),Toast.LENGTH_LONG).show();
+                         //   Toast.makeText(Home.this,items.get(0).getName(),Toast.LENGTH_LONG).show();
 
                             recyclerView = findViewById(R.id.favorites_list);
                             recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
