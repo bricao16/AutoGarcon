@@ -1,0 +1,9 @@
+1. Alter table
+2. Go to foreign keys tab
+3. Name the foreign key you would like to set, if you would like to set an existing column. Ensure the following naming convention fk_TableName_column name.
+What you name the foreign key does not matter for the column name of the table
+4. Pick the reference table that the foreign key parent is from
+5. Pick the column you would like to reference in the child table
+6. Pick from the parent table which data column you will be using
+7. Ensure data on delete and update is set to cascade so therefore the child will match the parent.
+NOTE: Ensure the all the values in the child table match the parent data
