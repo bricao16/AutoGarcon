@@ -14,8 +14,8 @@ customers
   customer_id       KEY             VARCHAR(50)
   first_name                        VARCHAR(50)
   last_name                         VARCHAR(50)
-  password                          VARCHAR(50)
   salt                              VARCHAR(50)
+  password                          VARCHAR(50)
   email                             VARCHAR(50)
   
 favorites
@@ -49,31 +49,30 @@ restaurants
   restaurant_id     KEY             INT
   restaurant_name                   VARCHAR(50)
   restaurant_addr                   VARCHAR(50)
-  phone_number                         INT
+  phone_number                      INT
   opening_time                      TIME
   closing_time                      TIME
   font                              VARCHAR(50)
   logo                              BLOB
   primary_color                     VARCHAR(50)
   secondary_color                   VARCHAR(50)
-  tertiary_color                     VARCHAR(50)
-
+  tertiary_color                    VARCHAR(50)
+  
+services
+  restaurant_id     FOREIGN KEY     INT
+  table_num         FOREIGN KEY     INT
+  service_status                    VARCHAR(50) // Bill, Help, Good
   
 staff
   staff_id          KEY             VARCHAR(50)
   restaurant_id     FOREIGN KEY     INT
   first_name                        VARCHAR(50)
   last_name                         VARCHAR(50)
+  contact_num                       BIGINT
+  email                             VARCHAR(50)
   position                          VARCHAR(50) // Cook, Manager
   password                          VARCHAR(50)
   salt                              VARCHAR(50)
-  contact_num                       BIGINT
-  email                             VARCHAR(50)
-  
-services
-  restaurant_id     FOREIGN KEY     INT
-  table_num         FOREIGN KEY     INT
-  service_status                    VARCHAR(50) // Bill, Help, Good
 
 times
   time_name         KEY             VARCHAR(50) // Breakfast, Dinner, Lunch, Overnight, All Day
