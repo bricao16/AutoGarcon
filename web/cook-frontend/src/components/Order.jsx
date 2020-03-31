@@ -12,9 +12,9 @@ class Order extends React.Component {
     return (
       <div className="p-3">
         <Card className="text-center">
-          <Card.Header style={cardHeaderStyle}>Featured</Card.Header>
+          <Card.Header style={cardHeaderStyle}>Order Number: {this.props.order.order_num}</Card.Header>
             <Card.Body>
-              <Card.Title>Special title treatment</Card.Title>
+              {/*<Card.Title>Special title treatment</Card.Title>*/}
                 {/* <Card.Text>
                 With supporting text below as a natural lead-in to additional content.
                 </Card.Text> */}
@@ -27,7 +27,7 @@ class Order extends React.Component {
                 ))}
 
             </Card.Body>
-            <Card.Footer className="text-muted">(Custom footer)</Card.Footer>
+            <Card.Footer className="text-muted">Table: {this.props.order.table}</Card.Footer>
         </Card>
       </div>
     )
@@ -42,6 +42,6 @@ const itemStyle = {
 var cardHeaderStyle = {
   backgroundColor: '#0b658a',
   color: '#ffffff'
-}
+};
 
 export default Order;

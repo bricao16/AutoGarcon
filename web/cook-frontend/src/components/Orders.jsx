@@ -15,21 +15,49 @@ class Orders extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      orders: [
-        {table: 1, items: [{quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}]},
-        {table: 2, items: [{quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}]},
-        {table: 3, items: [{quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}]},
-        {table: 4, items: [{quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}]},
-        {table: 4, items: [{quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}]}
-      ]
+      // Each key in orders is the order number
+      orders: {
+        1: {table: 1, items: [{quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}]}
+      }
     };
+  }
+
+  configureOrders(orders){
+    console.log(orders);
+    let ordersState = {};
+    // Iterate over each order
+    Object.values(orders).forEach(order => {
+      console.log(order);
+      // Check if that table exists
+      console.log(ordersState);
+      if(order.order_num in ordersState){
+        // Add item to table
+        ordersState[order.order_num].items.push({quantity: order.quantity, title: order.item_name})
+      }else{
+        // Create table and add item
+        ordersState[order.order_num] = {order_num: order.order_num, table: order.table, items: [{quantity: order.quantity, title: order.item_name}]}
+      }
+    });
+    this.setState({orders: ordersState});
+    console.log(this.state);
+  }
+
+  componentDidMount() {
+    fetch("http://50.19.176.137:8000/orders/123")
+      .then(res => res.json())
+      .then(orders => {
+        this.configureOrders(orders);
+      })
+      .catch(e => console.log(e));
   }
 
   renderOrders() {
     // Returns every order stored in the components state as an individual Order component
-    return this.state.orders.map((item, key) =>
-      <Order key={key} id={key} order={item}/>
-    );
+    let orderComponents = [];
+    Object.keys(this.state.orders).forEach(key => {
+      orderComponents.push( <Order key={key} order={this.state.orders[key]} /> );
+    });
+    return orderComponents;
   }
 
   // Returns orders wrapped in a flexbox so each order wraps to the next line 
