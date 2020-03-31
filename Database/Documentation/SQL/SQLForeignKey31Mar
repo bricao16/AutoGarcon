@@ -4,4 +4,5 @@
 4. Pick the reference table that the foreign key parent is from
 5. Pick the column you would like to reference in the child table
 6. Pick from the parent table which data column you will be using
+7. Ensure data on delete and update is set to cascade so therefore the child will match the parent.
 NOTE: Ensure the all the values in the child table match the parent data
