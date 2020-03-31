@@ -20,6 +20,23 @@ class Orders extends React.Component{
         1: {table: 1, items: [{quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}]}
       }
     };
+    this.setupClearOrder();
+  }
+
+  setupClearOrder(){
+    document.addEventListener('keypress', this.clearOrder.bind(this));
+  }
+
+  clearOrder(e){
+    let boxNumber = e.keyCode - 48; // ascii to number
+    let ordersArray = Object.entries(this.state.orders);
+    ordersArray.splice(boxNumber-1, 1);
+    let ordersState = Object.fromEntries(ordersArray);
+    this.setState({orders: ordersState});
+  }
+
+  confirmClear(){
+
   }
 
   configureOrders(orders){
@@ -27,19 +44,16 @@ class Orders extends React.Component{
     let ordersState = {};
     // Iterate over each order
     Object.values(orders).forEach(order => {
-      console.log(order);
-      // Check if that table exists
-      console.log(ordersState);
+      // Check if that order_num exists
       if(order.order_num in ordersState){
-        // Add item to table
+        // Add to order using order_num
         ordersState[order.order_num].items.push({quantity: order.quantity, title: order.item_name})
       }else{
-        // Create table and add item
+        // Create new order object
         ordersState[order.order_num] = {order_num: order.order_num, table: order.table, items: [{quantity: order.quantity, title: order.item_name}]}
       }
     });
     this.setState({orders: ordersState});
-    console.log(this.state);
   }
 
   componentDidMount() {
@@ -54,8 +68,10 @@ class Orders extends React.Component{
   renderOrders() {
     // Returns every order stored in the components state as an individual Order component
     let orderComponents = [];
+    let boxNumber = 1;
     Object.keys(this.state.orders).forEach(key => {
-      orderComponents.push( <Order key={key} order={this.state.orders[key]} /> );
+      orderComponents.push( <Order key={key} boxNumber={boxNumber} order={this.state.orders[key]} /> );
+      boxNumber++;
     });
     return orderComponents;
   }
