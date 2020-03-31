@@ -23,3 +23,6 @@ let query = "INSERT INTO orders(order_num, restaurant_id, customer_id, order_sta
 
 let query = "INSERT INTO ordersdetails(order_num, item_id, quantity)\
   VALUES (order_num, item_id = ?, quantity = ?)"
+
+//Post query for alexa to put orders to In Progress status
+let query = "UPDATE orders SET order_status = In Progress WHERE order_num = ?"
