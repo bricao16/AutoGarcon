@@ -1,5 +1,6 @@
 import React from "react";
 import Card from 'react-bootstrap/Card';
+import '../assets/slide-top-animation.css'
 
 class Order extends React.Component {
 
@@ -8,10 +9,17 @@ class Order extends React.Component {
     this.props = props;
   }
 
+  renderConfirmDelete(){
+    if(this.props.order.confirmDelete) {
+      return <div style={confirmDeleteStyle}></div>;
+    }
+  }
+
   render() {
     return (
       <div className="p-3">
         <Card className="text-center">
+          {this.renderConfirmDelete()}
           <Card.Header style={cardHeaderStyle}>
             <span class="px-2 py-1 mr-2" style={boxNumberStyle}>{this.props.boxNumber}</span>
             <span>Order Number: {this.props.order.order_num}</span>
@@ -53,6 +61,13 @@ var cardHeaderStyle = {
 const boxNumberStyle = {
   background: '#ffffff6e',
   borderRadius: 'calc(.25rem - 1px)',
+};
+
+const confirmDeleteStyle = {
+  background: '#ff000061',
+  width: '100%',
+  height: '100%',
+  position: 'absolute'
 };
 
 export default Order;

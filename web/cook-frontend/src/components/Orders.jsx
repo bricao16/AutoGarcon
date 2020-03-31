@@ -1,6 +1,8 @@
 import React from "react";
 import Order from "./Order";
+import OrderDelete from "./OrderDelete";
 import Container from 'react-bootstrap/Container';
+import $ from 'jquery';
 
 class Orders extends React.Component{
   /*
@@ -17,26 +19,63 @@ class Orders extends React.Component{
     this.state = {
       // Each key in orders is the order number
       orders: {
-        1: {table: 1, items: [{quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}, {quantity: 1, title: "Hamburger"}]}
+        1: {order_num: 1, table: 1, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]}
+      },
+      confirmDelete: {
+        show: false,
+        cardId: 0
       }
     };
     this.setupClearOrder();
   }
 
   setupClearOrder(){
-    document.addEventListener('keypress', this.clearOrder.bind(this));
+    $(document).keypress(this.clearOrder.bind(this));
   }
 
   clearOrder(e){
-    let boxNumber = e.keyCode - 48; // ascii to number
-    let ordersArray = Object.entries(this.state.orders);
-    ordersArray.splice(boxNumber-1, 1);
-    let ordersState = Object.fromEntries(ordersArray);
-    this.setState({orders: ordersState});
+    // If confirm delete is showing
+    if(this.state.confirmDelete.show){
+      // If Yes
+      let cardId = this.state.confirmDelete.cardId;
+      if(e.key.toLowerCase() === 'y'){
+        // Hide confirm delete dialog
+        this.changeConfirmDelete(false, cardId);
+        
+        let ordersArray = Object.entries(this.state.orders);
+        ordersArray.splice(cardId-1, 1);
+        let ordersState = Object.fromEntries(ordersArray);
+        this.setState({orders: ordersState});
+      } else if(e.key.toLowerCase() === 'n'){
+        this.changeConfirmDelete(false, cardId);
+      }
+    } else {
+      // Confirm delete dialog is not showing
+      let cardId = e.keyCode - 48;
+      if(cardId > 0 && cardId <= 9 && cardId <= Object.keys(this.state.orders).length) {
+        this.changeConfirmDelete(true, cardId);
+      }
+    }
   }
 
-  confirmClear(){
+  changeConfirmDelete(show, id){
+    let state = this.state;
+    let key = Object.keys(state.orders)[id-1];
+    if(show){
+      state.orders[key].confirmDelete = true;
+    } else {
+      state.orders[key].confirmDelete = false;
+    }
+    state.confirmDelete.show = show;
+    state.confirmDelete.cardId = id;
 
+    this.setState(state);
+  }
+
+  renderConfirmDelete(){
+    if(this.state.confirmDelete.show){
+      return <OrderDelete cardId={this.state.confirmDelete.cardId}/>
+    }
   }
 
   configureOrders(orders){
@@ -84,6 +123,7 @@ class Orders extends React.Component{
         <div class="d-flex flex-wrap">
           {this.renderOrders()}
         </div>
+        {this.renderConfirmDelete()}
       </Container>
     )
   };
