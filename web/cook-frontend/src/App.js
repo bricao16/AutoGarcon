@@ -59,6 +59,8 @@ function App() {
            
                   <Route path="/hours" 
                     render={(props) => <MTasks {...props} content={"hours"}/>} />
+                  <Route path="/customize" 
+                    render={(props) => <MTasks {...props} content={"customize"}/>} />
                 </Switch>
               </div>
             </Col>

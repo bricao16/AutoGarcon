@@ -32,7 +32,19 @@ class Menu extends React.Component {
       menu:[],
       categories: [],
       renderCategory: "main",
-      newItem: false
+      newItem: false,
+      newItemPrefill: 
+                        {
+                        type:"default",
+                        menu:
+                        [ "Name",
+                        {'category':"Category",
+                        'price' : "Price",
+                        'calories': "Calories",
+                        'in_stock': 0}
+                        ]
+                      }
+                      
     };
   }
 
@@ -63,14 +75,27 @@ class Menu extends React.Component {
   }
   //change the newItem state.  Mainly for going back to the main menu page
   setNewItem = (state) => {
-    this.setState({
-      newItem: state
-  })
-}
+      this.setState({
+        newItem: state
+    })
+  }
+   //toggle between creating a new menu item and not
+  toggleNewItem= (itemProperties) => {
+
+      this.setState({
+        newItem: !this.state.newItem,
+        newItemPrefill:itemProperties
+    })
+    //if the new item prefill is default set to default prefill
+    if(itemProperties === "default")
+    {
+      this.resetNewItem();
+    }  
+  }
   /* Aggregate all the menu categories onto cards and call the change which menu to display is clicked */
   renderMenuCategories(){
-    return this.state.categories.map((item, key) =>
-      <Col sm={6} className="p-3" style={{'min-width':'225px'}}>
+    return this.state.categories.map((item) =>
+      <Col sm={6} className="p-3" style={{'minWidth':'225px'}}>
         <Card className="text-center" >
           <div onClick={() => this.changeCategory(item) }>                     
             <Card.Header style={cardHeaderStyle}>{item}</Card.Header>
@@ -79,49 +104,61 @@ class Menu extends React.Component {
       </Col>  
     );
   }
+  //creates default placeholders for the new item
+  resetNewItem(){
+    this.setState({
+      newItemPrefill:{
+                        type:"default",
+                        menu:
+                        [ "Name",
+                        {'category':"Category",
+                        'price' : "Price",
+                        'calories': "Calories",
+                        'in_stock': 0}
+                        ]
+                      }
+    })
+  }
   //render the menu prop of the current category 
   renderMenu(){
+    //onNew is a callback passed to call the new item form if it is clicked
     return this.state.menu.map((item, key) =>
-        <MenuItem menu={item} category={this.state.renderCategory} />
+        <MenuItem menu={item} category={this.state.renderCategory} onNew={this.toggleNewItem.bind(this)}/>
     );
-  }
-   //toggle between creating a new menu item and not
-  ToggleNewItem= () => {
-      this.setState({
-        newItem: !this.state.newItem
-    })
   }
     //generate form for new item
     NewItemForm(){
-        return <NewItem/>
+        return <NewItem prefill = {this.state.newItemPrefill}/>
     }
-
 
   // Default render method
   render() {
+    this.state.menu = [];
     //clear the menu each time we load
-    this.state.menu = []
-    const { error, isLoaded, menuJSON, menu,categories,renderCategory, newItem } = this.state;
+    const { error, isLoaded, menuJSON, menu,categories,renderCategory, newItem} = this.state;
     
     if (error) {
       return <div>Error: {error.message}</div>;
     } 
 
     else if (!isLoaded) {
-      return <div>Loading...</div>;
-    } 
+      return (<div class="text-center pt-5">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>)
+    }
 
     else {
       //map the menu json to an array
       Object.keys(menuJSON).forEach(function(key) {
             menu.push([key ,menuJSON[key]]);
-
       });
     }
       //create a list of all unique categories of food/drink
     for (const [index, value] of menu.entries()) {
         if(categories.indexOf(value[1].category) === -1){
-          categories.push(value[1].category)
+          categories.push( value[1].category)
         }
     }
     //if the render category is main then render all the categories of food/drink of this resturant
@@ -133,12 +170,12 @@ class Menu extends React.Component {
             <h2 style={mainMenuHeaderStyle}>
               Menu
             </h2>
-              <Container fluid>
-                <div class="d-flex flex-wrap">
+              <Container fluid style={{'min-height': '70vh'}}>
+                <div className="d-flex flex-wrap">
                     {this.renderMenuCategories()}
                     <Col sm={6} className="p-3"> {/*add a create new category option*/}
                       <Card className="text-center" >
-                        <div onClick={() => this.ToggleNewItem() }>                     
+                        <div onClick={() => this.toggleNewItem("default") }>                     
                           <Card.Header style={cardHeaderStyle, createNewStyle}>Create New</Card.Header>
                         </div>
                       </Card>
@@ -158,13 +195,13 @@ class Menu extends React.Component {
               <button type="button" onClick={() => this.changeCategory("main") } class="btn btn-outline-light m-2">Back</button>
               <div style={menuTextStyle}>{renderCategory}</div>
             </h2>
-            <Container fluid>
-              <div class="d-flex flex-wrap">
+            <Container fluid style={{'min-height': '70vh'}}>
+              <div className="d-flex flex-wrap">
                 {this.renderMenu()}                
               </div>
               <Col sm={12} className="p-3"> {/*add a create new item option*/}
                 <Card className="text-center" >
-                  <button class="btn btn-link m-2" onClick={() => this.ToggleNewItem() }>                     
+                  <button className="btn btn-link m-2" onClick={() =>  this.toggleNewItem("default") }>                     
                     Create New
                   </button>
                 </Card>
@@ -180,8 +217,8 @@ class Menu extends React.Component {
         <Container>
           <div style={backgroundStyle}>
             <h2 style ={categoryHeaderStyle}>
-              <button type="button" onClick={() => {this.changeCategory("main"); this.setNewItem(false)} } class="btn btn-outline-light m-2">Back</button>
-              <div style={menuTextStyle}>Create New Item</div>
+              <button type="button" onClick={() => {this.changeCategory("main"); this.setState({menu:[]}); this.setNewItem(false);}} className="btn btn-outline-light m-2">Back</button>
+              <div style={menuTextStyle}>Menu Item</div>
             </h2>
             <Container fluid>
               <Col className="pt-3 px-3">
@@ -233,15 +270,15 @@ const mainMenuHeaderStyle = {
   'fontFamily': 'Kefa',
   'textAlign' : 'center',
   'height':'54px',
-  'padding-top':'8px'
+  'paddingTop':'8px'
 }
 const categoryHeaderStyle = Object.assign({
   'display': 'flex',
 }, menuHeaderStyle);
 const menuTextStyle = {
   'flex': '1',
-  'padding-right': '69px',
-  'padding-top': '8px'
+  'paddingRight': '69px',
+  'paddingTop': '8px'
 };
 
 export default Menu;

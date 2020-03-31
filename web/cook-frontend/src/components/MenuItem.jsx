@@ -13,6 +13,7 @@ import Pencil from '../assets/pencil.png';
 
 */
 class MenuItem extends React.Component {
+
     getStockState(in_stock){
         if(in_stock === 0)
         {
@@ -22,14 +23,19 @@ class MenuItem extends React.Component {
             return "In Stock";
         }
     }
+    //callback to newitemform when clicked pencil
+    NewItemForm(e) {
+        if (typeof this.props.onNew === 'function') {
+            this.props.onNew(this.props);
+        }
+    }
     render(){
-        console.log(this.props)
         if(this.props.menu[1].category === this.props.category)
         {
            return(
                 <Card className="text-center m-2" style={itemStyle}> { /* a header is the item name and a clickable edit pencil */}
                     <Card.Header style={cardHeaderStyle}>{this.props.menu[0]} 
-                        <div onClick={() => this.ToggleNewItem() }>  
+                        <div onClick={() => this.NewItemForm() }>  
                             <img src={Pencil} style ={imagePencil} alt='Pencil Gray clip art' />
                         </div>
                     </Card.Header>
