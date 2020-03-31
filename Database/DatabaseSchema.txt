@@ -8,7 +8,7 @@ alexas
 availability
   item_id           FOREIGN KEY         
   time_name         FOREIGN KEY
-  NOTE: May need to add rest_id  to  get  unique value from times table since restaurant_id and time_name are keys
+  
   
 customers
   customer_id       KEY             VARCHAR(50)
