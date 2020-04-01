@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -46,10 +47,25 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     HomeAdapter adapter;
     private ArrayList<RestaurantItem> items;
 
+    //Here is for Search box
+    SearchView searchView;
+    ArrayList<String> search_list;
+    ArrayAdapter<String> list_adapter;
+    //End of Search Box
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+
+        // dummy  data for a search box
+        search_list = new ArrayList<>();
+        search_list.add("French");
+        search_list.add("Chinese");
+        search_list.add("Italian");
+        search_list.add("Nigerian");
+        search_list.add("Thai");
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
@@ -158,6 +174,32 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         );
 
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequest);
+
+        //Here is for Search box
+        searchView = (SearchView) findViewById(R.id.searchView);
+        list_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,search_list);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                //here we search restaurant by name, type of cuisine, etc...
+                //and possibly re:render the table.
+                if( search_list.contains(query) ){
+                    list_adapter.getFilter().filter(query);
+                    Toast.makeText(Home.this, "Yes Match found",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(Home.this, "No Match found",Toast.LENGTH_LONG).show();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //    adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        //Here is for End Search box
     }
 
     @Override
