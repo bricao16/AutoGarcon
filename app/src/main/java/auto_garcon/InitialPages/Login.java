@@ -96,6 +96,7 @@ public class Login extends AppCompatActivity {
 
                                         Intent home = new Intent(Login.this, twoButtonPage.class);
                                         startActivity(home);
+                                        finish();
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
