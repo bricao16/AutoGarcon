@@ -19,43 +19,16 @@
             android:layout_height="wrap_content"
             android:background="@color/nav_header_background"/>
 
-        <Button
-            android:id="@+id/home_button"
-            android:layout_width="wrap_content"
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="70dp"
-            android:layout_toStartOf="@+id/order_history_button"
-            android:text="@string/home"
-            android:textSize="14sp"
-            android:textColor="@color/white"
-            style="?android:attr/borderlessButtonStyle"
-            android:onClick="goHome"/>
-
-        <Button
-            android:id="@+id/order_history_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_toStartOf="@id/cart_button"
-            android:text="@string/order_history"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            style="?android:attr/borderlessButtonStyle"
-            android:onClick="goOrderHistory"/>
-
-        <Button
-            android:id="@+id/cart_button"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
-            android:text="@string/cart"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            style="?android:attr/borderlessButtonStyle"
-            android:onClick="goShoppingCart"/>
+            android:layout_alignParentBottom="true"
+            app:itemBackground="@color/colorPrimary"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
 
     </RelativeLayout>
 
@@ -63,6 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="65dp"
+        android:layout_marginBottom="70dp"
         android:id="@+id/menu_list">
 
     </ExpandableListView>

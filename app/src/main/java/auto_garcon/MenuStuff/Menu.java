@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListAdapter;
@@ -19,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONException;
@@ -33,8 +35,8 @@ import auto_garcon.AccountStuff.Account;
 import auto_garcon.AccountStuff.Settings;
 import auto_garcon.HomeStuff.Home;
 import auto_garcon.InitialPages.Login;
-import auto_garcon.Cart_OrderHistory.OrderHistory;
 import auto_garcon.Cart_OrderHistory.ShoppingCart;
+import auto_garcon.InitialPages.QRcode;
 import auto_garcon.Singleton.SharedPreference;
 import auto_garcon.Singleton.VolleySingleton;
 
@@ -70,17 +72,42 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_scan:
+                                Log.d("HI","HI");
+                                Intent home = new Intent(getBaseContext(),   QRcode.class);
+                                startActivity(home);
+                                return true;
+                            case R.id.action_home:
+                                Intent qrcode = new Intent(getBaseContext(),   Home.class);
+                                startActivity(qrcode);
+                                return true;
+                            case R.id.action_cart:
+                                Intent shoppingCart = new Intent(getBaseContext(),   ShoppingCart.class);
+                                startActivity(shoppingCart);
+                                return true;
+                        }
+                        return false;
+                    }
+                };
+
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+
         pref = new SharedPreference(this);
 
         //creating list
         appetizer_list = new ArrayList<>();
         entree_list = new ArrayList<>();
         dessert_list = new ArrayList<>();
-
         drink_list = new ArrayList<>();
         alcohol_list = new ArrayList<>();
 
-        final String url = "http://50.19.176.137:8000/menu/" + getIntent().getIntExtra("restaurant id", 123);
+        final String url = "http://50.19.176.137:8000/menu/" + getIntent().getIntExtra("restaurant id", 0);
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -172,24 +199,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 break;
         }
         return false;
-    }
-
-    //onClick to home activity
-    public void goHome(View view){
-        Intent home = new Intent(getBaseContext(),   Home.class);
-        startActivity(home);
-    }
-
-    //onClick to order history activity
-    public void goOrderHistory(View view){
-        Intent order_history = new Intent(getBaseContext(),   OrderHistory.class);
-        startActivity(order_history);
-    }
-
-    //onClick to shopping cart activity
-    public void goShoppingCart(View view){
-        Intent shopping_cart = new Intent(getBaseContext(),   ShoppingCart.class);
-        startActivity(shopping_cart);
     }
 
     //creating headers and hashmap for menu

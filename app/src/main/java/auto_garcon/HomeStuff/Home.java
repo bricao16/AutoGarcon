@@ -45,35 +45,12 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     RecyclerView recyclerView;
     HomeAdapter adapter;
     private ArrayList<RestaurantItem> items;
-    BottomNavigationView bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        bottomNavigation = findViewById(R.id.bottom_navigation);
 
-        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_recents:
-                                Intent home = new Intent(getBaseContext(),   QRcode.class);
-                                startActivity(home);
-                                return true;
-                            case R.id.action_favorites:
-                                Intent qrcode = new Intent(getBaseContext(),   Home.class);
-                                startActivity(qrcode);
-                                return true;
-                            case R.id.action_nearby:
-                                Intent orderhistory = new Intent(getBaseContext(),   OrderHistory.class);
-                                startActivity(orderhistory);
-                                return true;
-                        }
-                        return false;
-                    }
-                };
-        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
@@ -86,6 +63,31 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_scan:
+                                Intent QRcode = new Intent(getBaseContext(),   QRcode.class);
+                                startActivity(QRcode);
+                                return true;
+                            case R.id.action_home:
+                                Intent home = new Intent(getBaseContext(),   Home.class);
+                                startActivity(home);
+                                return true;
+                            case R.id.action_cart:
+                                Intent shoppingCart = new Intent(getBaseContext(),   ShoppingCart.class);
+                                startActivity(shoppingCart);
+                                return true;
+                        }
+                        return false;
+                    }
+                };
+
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
         pref = new SharedPreference(this);
 
@@ -134,7 +136,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
 
                             }
-                         //   Toast.makeText(Home.this,items.get(0).getName(),Toast.LENGTH_LONG).show();
 
                             recyclerView = findViewById(R.id.favorites_list);
                             recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
@@ -173,6 +174,11 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
                 break;
+            case R.id.order_history:
+                Toast.makeText(Home.this, "Order History Selected", Toast.LENGTH_SHORT).show();
+                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
+                startActivity(orderHistory);
+                break;
             case R.id.settings:
                 Toast.makeText(Home.this, "Settings Selected", Toast.LENGTH_SHORT).show();
                 Intent settings = new Intent(getBaseContext(),   Settings.class);
@@ -189,23 +195,5 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 break;
         }
         return false;
-    }
-
-    //onClick to home activity
-    public void goHome(View view){
-        Intent home = new Intent(getBaseContext(),   Home.class);
-        startActivity(home);
-    }
-
-    //onClick to order history activity
-    public void goOrderHistory(View view){
-        Intent order_history = new Intent(getBaseContext(),   OrderHistory.class);
-        startActivity(order_history);
-    }
-
-    //onClick to shopping cart activity
-    public void goShoppingCart(View view){
-        Intent shopping_cart = new Intent(getBaseContext(),   ShoppingCart.class);
-        startActivity(shopping_cart);
     }
 }

@@ -13,12 +13,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.auto_garcon.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import auto_garcon.HomeStuff.Home;
 import auto_garcon.InitialPages.Login;
 import auto_garcon.Cart_OrderHistory.OrderHistory;
 import auto_garcon.Cart_OrderHistory.ShoppingCart;
+import auto_garcon.InitialPages.QRcode;
 import auto_garcon.Singleton.SharedPreference;
 
 public class Settings extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -55,6 +57,11 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
                 break;
+            case R.id.order_history:
+                Toast.makeText(Settings.this, "Order History Selected", Toast.LENGTH_SHORT).show();
+                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
+                startActivity(orderHistory);
+                break;
             case R.id.settings:
                 Toast.makeText(Settings.this, "Settings Selected", Toast.LENGTH_SHORT).show();
                 Intent settings = new Intent(getBaseContext(),   Settings.class);
@@ -71,23 +78,5 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
                 break;
         }
         return false;
-    }
-
-    //onClick to home activity
-    public void goHome(View view){
-        Intent home = new Intent(getBaseContext(),   Home.class);
-        startActivity(home);
-    }
-
-    //onClick to order history activity
-    public void goOrderHistory(View view){
-        Intent order_history = new Intent(getBaseContext(),   OrderHistory.class);
-        startActivity(order_history);
-    }
-
-    //onClick to shopping cart activity
-    public void goShoppingCart(View view){
-        Intent shopping_cart = new Intent(getBaseContext(),   ShoppingCart.class);
-        startActivity(shopping_cart);
     }
 }

@@ -34,12 +34,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     private RecyclerView.Adapter adapter;
     private  RecyclerView.LayoutManager layoutManager;
     private RecyclerView recyclerView;
-    BottomNavigationView bottomNavigation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
-        bottomNavigation = findViewById(R.id.bottom_navigation);
+
         recyclerView = findViewById(R.id.list);
         pref = new SharedPreference(this);
         if(pref.getShoppingCart()==null){
@@ -53,29 +52,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-
-        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_recents:
-                                Intent home = new Intent(getBaseContext(),   QRcode.class);
-                                startActivity(home);
-                                return true;
-                            case R.id.action_favorites:
-                                Intent qrcode = new Intent(getBaseContext(),   Home.class);
-                                startActivity(qrcode);
-                                return true;
-                            case R.id.action_nearby:
-                                Intent orderhistory = new Intent(getBaseContext(),   OrderHistory.class);
-                                startActivity(orderhistory);
-                                return true;
-                        }
-                        return false;
-                    }
-                };
-        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.shopping_cart_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
@@ -89,6 +65,31 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_scan:
+                                Intent QRcode = new Intent(getBaseContext(),   QRcode.class);
+                                startActivity(QRcode);
+                                return true;
+                            case R.id.action_home:
+                                Intent home = new Intent(getBaseContext(),   Home.class);
+                                startActivity(home);
+                                return true;
+                            case R.id.action_cart:
+                                Intent shoppingCart = new Intent(getBaseContext(),   ShoppingCart.class);
+                                startActivity(shoppingCart);
+                                return true;
+                        }
+                        return false;
+                    }
+                };
+
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+
         pref = new SharedPreference(this);
     }
 
@@ -100,6 +101,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(ShoppingCart.this, "Account Selected", Toast.LENGTH_SHORT).show();
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
+                break;
+            case R.id.order_history:
+                Toast.makeText(ShoppingCart.this, "Order History Selected", Toast.LENGTH_SHORT).show();
+                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
+                startActivity(orderHistory);
                 break;
             case R.id.settings:
                 Toast.makeText(ShoppingCart.this, "Settings Selected", Toast.LENGTH_SHORT).show();
@@ -117,23 +123,5 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 break;
         }
         return false;
-    }
-
-    //onClick to home activity
-    public void goHome(View view){
-        Intent home = new Intent(getBaseContext(), Home.class);
-        startActivity(home);
-    }
-
-    //onClick to order history activity
-    public void goOrderHistory(View view){
-        Intent order_history = new Intent(getBaseContext(),   OrderHistory.class);
-        startActivity(order_history);
-    }
-
-    //onClick to shopping cart activity
-    public void goShoppingCart(View view){
-        Intent shopping_cart = new Intent(getBaseContext(),   ShoppingCart.class);
-        startActivity(shopping_cart);
     }
 }
