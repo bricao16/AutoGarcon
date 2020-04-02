@@ -2,9 +2,10 @@ package auto_garcon.MenuStuff;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,6 +20,7 @@ public class MenuPopup extends AppCompatActivity {
 
     private SharedPreference pref;
     private MenuItem item;
+    public static Activity menuPopupDeletion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,8 @@ public class MenuPopup extends AppCompatActivity {
 
         getWindow().setAttributes(params);
 
+        menuPopupDeletion = this;
+
         Button addToCart = findViewById(R.id.add_to_cart);
 
         /*this will check if the cart is currently empty and if it it will just add to it
@@ -53,17 +57,22 @@ public class MenuPopup extends AppCompatActivity {
             public void onClick(View v) {
                 ShoppingCartSingleton cart;
 
-                if(pref.getShoppingCart().getCart().size() == 0) {
-                    Log.d("HIHIHI",  Integer.toString(item.getRestaurantID()));
-
-                    cart = new ShoppingCartSingleton(item.getRestaurantID());
-                    cart.addToCart(item);
-                    pref.setShoppingCart(cart);
-                }
-                else {
+                if(pref.getShoppingCart().getRestaurantID() == item.getRestaurantID()) {
                     cart = pref.getShoppingCart();
                     cart.addToCart(item);
                     pref.setShoppingCart(cart);
+                    finish();
+                }
+                else if(pref.getShoppingCart().getCart().size() == 0) {
+                    cart = new ShoppingCartSingleton(item.getRestaurantID());
+                    cart.addToCart(item);
+                    pref.setShoppingCart(cart);
+                    finish();
+                }
+                else {
+                    Intent confirm = new Intent(MenuPopup.this, ConfirmPopup.class);
+                    confirm.putExtra("menuItem", item);
+                    startActivity(confirm);
                 }
             }
         });

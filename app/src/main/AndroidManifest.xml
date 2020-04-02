@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="auto_garcon.HomeStuff.ConfirmPopup"
+        <activity android:name="auto_garcon.MenuStuff.ConfirmPopup"
             android:theme="@style/AppTheme.Popup"/>
         <activity android:name="auto_garcon.InitialPages.twoButtonPage" />
         <activity

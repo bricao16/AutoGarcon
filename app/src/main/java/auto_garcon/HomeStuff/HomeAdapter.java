@@ -65,16 +65,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(pref.getShoppingCart().getCart().size() == 0 || pref.getShoppingCart().getRestaurantID() == data.get(getAdapterPosition()).getID()) {
-                        Intent menu = new Intent(v.getContext(), Menu.class);
-                        menu.putExtra("restaurant id", data.get(getAdapterPosition()).getID());
-                        context.startActivity(menu);
-                    }
-                    else {
-                    Intent confirm = new Intent(v.getContext(), ConfirmPopup.class);
-                        confirm.putExtra("restaurant id", data.get(getAdapterPosition()).getID());
-                        context.startActivity(confirm);
-                    }
+                    Intent menu = new Intent(v.getContext(), Menu.class);
+                    menu.putExtra("restaurant id", data.get(getAdapterPosition()).getID());
+                    context.startActivity(menu);
                 }
             });
 

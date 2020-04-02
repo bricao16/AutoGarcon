@@ -78,8 +78,8 @@ public class MenuItem implements Serializable {
     public void incrementQuantity(){this.quantity= this.quantity+1;}
 
     public void decrementQuantity(){
-        if(this.quantity>0){
-            this.quantity=this.quantity-1;
+        if(this.quantity > 0){
+            this.quantity = this.quantity-1;
         }
     }
 }

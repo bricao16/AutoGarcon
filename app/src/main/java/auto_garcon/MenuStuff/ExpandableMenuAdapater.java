@@ -96,9 +96,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 Intent popup = new Intent(context, MenuPopup.class);
-
-                Log.d("SDFSDFSDFSDF", Integer.toString(getChild(i, j).getRestaurantID()));
-
                 popup.putExtra("menuItem", (Serializable) getChild(i, j));
                 context.startActivity(popup);
             }

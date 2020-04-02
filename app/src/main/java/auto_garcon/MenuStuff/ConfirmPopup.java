@@ -1,4 +1,4 @@
-package auto_garcon.HomeStuff;
+package auto_garcon.MenuStuff;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,20 +12,20 @@ import android.widget.Button;
 
 import com.example.auto_garcon.R;
 
-import auto_garcon.MenuStuff.Menu;
 import auto_garcon.Singleton.SharedPreference;
 import auto_garcon.Singleton.ShoppingCartSingleton;
 
 public class ConfirmPopup extends AppCompatActivity {
 
     private SharedPreference pref;
+    private MenuItem item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.confirm_popup);
 
-        final int restaurantID = this.getIntent().getIntExtra("restaurant id", 0);
+        item = (MenuItem) this.getIntent().getSerializableExtra("menuItem");
         pref = new SharedPreference(this);
 
 
@@ -51,13 +51,13 @@ public class ConfirmPopup extends AppCompatActivity {
             public void onClick(View v) {
                 ShoppingCartSingleton cart;
 
-                cart = new ShoppingCartSingleton();
+                cart = new ShoppingCartSingleton(item.getRestaurantID());
 
+                cart.addToCart(item);
                 pref.setShoppingCart(cart);
 
-                Intent menu = new Intent(v.getContext(), Menu.class);
-                menu.putExtra("restaurant id", restaurantID);
-                startActivity(menu);
+                MenuPopup.menuPopupDeletion.finish();
+                finish();
             }
         });
 

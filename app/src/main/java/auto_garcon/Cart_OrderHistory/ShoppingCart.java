@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -65,6 +66,16 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        Button PlaceOrderButton = findViewById(R.id.btn_placeorder);
+
+        PlaceOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //
+            }
+        });
+
+
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
 
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
@@ -72,15 +83,15 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
-                                Intent QRcode = new Intent(getBaseContext(),   QRcode.class);
+                                Intent QRcode = new Intent(getBaseContext(), QRcode.class);
                                 startActivity(QRcode);
                                 return true;
                             case R.id.action_home:
-                                Intent home = new Intent(getBaseContext(),   Home.class);
+                                Intent home = new Intent(getBaseContext(), Home.class);
                                 startActivity(home);
                                 return true;
                             case R.id.action_cart:
-                                Intent shoppingCart = new Intent(getBaseContext(),   ShoppingCart.class);
+                                Intent shoppingCart = new Intent(getBaseContext(), ShoppingCart.class);
                                 startActivity(shoppingCart);
                                 return true;
                         }

@@ -95,10 +95,10 @@ public class Register extends AppCompatActivity {
                                     // response
                                     Toast.makeText(Register.this,response.toString(),Toast.LENGTH_LONG).show();
 
-                                    pref.writeUserName(username);
-                                    pref.changeLogStatus(true);
+                                    //pref.writeUserName(username);
+                                    //pref.changeLogStatus(true);
 
-                                    Intent twoButton = new Intent(Register.this, twoButtonPage.class);
+                                    Intent twoButton = new Intent(Register.this, Login.class);
                                     startActivity(twoButton);
                                     finish();
                                 }

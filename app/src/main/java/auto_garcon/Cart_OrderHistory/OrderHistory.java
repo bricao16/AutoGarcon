@@ -51,15 +51,15 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
-                                Intent QRcode = new Intent(getBaseContext(),   QRcode.class);
+                                Intent QRcode = new Intent(getBaseContext(), QRcode.class);
                                 startActivity(QRcode);
                                 return true;
                             case R.id.action_home:
-                                Intent home = new Intent(getBaseContext(),   Home.class);
+                                Intent home = new Intent(getBaseContext(), Home.class);
                                 startActivity(home);
                                 return true;
                             case R.id.action_cart:
-                                Intent shoppingCart = new Intent(getBaseContext(),   ShoppingCart.class);
+                                Intent shoppingCart = new Intent(getBaseContext(), ShoppingCart.class);
                                 startActivity(shoppingCart);
                                 return true;
                         }

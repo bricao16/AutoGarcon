@@ -88,15 +88,15 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
-                                Intent QRcode = new Intent(getBaseContext(),   QRcode.class);
+                                Intent QRcode = new Intent(getBaseContext(), QRcode.class);
                                 startActivity(QRcode);
                                 return true;
                             case R.id.action_home:
-                                Intent home = new Intent(getBaseContext(),   Home.class);
+                                Intent home = new Intent(getBaseContext(), Home.class);
                                 startActivity(home);
                                 return true;
                             case R.id.action_cart:
-                                Intent shoppingCart = new Intent(getBaseContext(),   ShoppingCart.class);
+                                Intent shoppingCart = new Intent(getBaseContext(), ShoppingCart.class);
                                 startActivity(shoppingCart);
                                 return true;
                         }
@@ -108,7 +108,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         pref = new SharedPreference(this);
         Toast.makeText(Home.this, pref.getUserName(), Toast.LENGTH_SHORT).show();
-        Log.d("HI", pref.getShoppingCart().toString());
 
         //shake feature
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);

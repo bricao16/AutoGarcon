@@ -47,6 +47,7 @@ public class Login extends AppCompatActivity {
             //Todo: check if there token is still valid
             Intent intent  = new Intent(Login.this, twoButtonPage.class);
             startActivity(intent);
+            finish();
         }
 
         emailId = findViewById(R.id.email);
@@ -96,7 +97,6 @@ public class Login extends AppCompatActivity {
                                         Intent twoButton = new Intent(Login.this, twoButtonPage.class);
                                         startActivity(twoButton);
                                         finish();
-
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
