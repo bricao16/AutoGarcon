@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:padding="@dimen/activity_horizontal_margin">
 
     <TextView
         android:layout_width="0dp"
@@ -25,23 +25,23 @@
         android:id="@+id/plus_meal"/>
 
     <TextView
+        android:id="@+id/minus_meal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="3dp"
-        android:layout_margin="3dp"
+        android:layout_height="18dp"
         android:layout_gravity="center_vertical"
+        android:layout_margin="3dp"
         android:background="@drawable/rectangle_border"
         android:drawableLeft="@drawable/ic_remove_black"
-        android:id="@+id/minus_meal"/>
+        android:padding="3dp" />
 
     <TextView
+        android:id="@+id/quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:gravity="right"
-        android:text="x 1"
-        android:layout_gravity="center_vertical"
-        android:id="@+id/quantity"/>
+        android:text="x 1" />
 
     <TextView
         android:layout_width="0dp"
@@ -62,3 +62,4 @@
         android:drawableLeft="@drawable/ic_close"
         android:id="@+id/delete_item"/>
 </LinearLayout>
+

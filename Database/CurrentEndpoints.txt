@@ -1,0 +1,175 @@
+Current Endpoints
+GET /menu/:id
+	Returns menu information for restaurant with restaurant_id = id
+	Inputs: id
+	Output:
+	{
+		dish_name:
+		{
+			restaurant,
+			calories,
+			price,
+			tax,
+			options,
+			category,
+			breakfast,
+			lunch,
+			dinner,
+			picture,
+			in_stock
+		}
+	}
+
+GET /restaurant/:id
+	Returns restaurant information and menu information for restaurant with restaurant_id = id
+	Inputs: id
+	Output:
+	{
+		restaurant:
+		{
+			name,
+			address,
+			phone_number,
+			opening,
+			closing
+		}
+		menu:
+		{
+			dish_name:
+			{
+				calories,
+				price,
+				tax,
+				options,
+				category,
+				breakfast,
+				lunch,
+				dinner,
+				picture,
+				in_stock
+			}
+		}
+	}
+
+GET /orders/:id
+	Returns in progress orders for restaurant with restaurant_id = id
+	Inputs: id
+	Output:
+	{
+		i:
+		{
+			order_num,
+			item_name,
+			quantity,
+			order_date,
+			table_num
+		}	
+	}
+
+GET /alexa/:id
+	Returns information associated with the alexa with alexa_id = id
+	Inputs: id
+	Output:
+	{
+		alexa_id:
+		{
+			restaurant_id,
+			table_num
+		}
+	}
+
+GET /favorites/:id
+	Returns information about a users favorite restaurants
+	Inputs: id
+	Output:
+	{
+		0:
+		{
+			restaurant_id,
+			restaurant_name
+		}
+	}
+
+POST /customers/login
+	Logs a customer in and returns a signed JWT and customer information
+	Inputs: username and password (in body of request)
+	Output:
+	{
+		token:
+		{
+			token
+		}
+		user:
+		{
+			user_id,
+			first_name,
+			last_name,
+			email
+		}
+	}
+
+POST /staff/login
+	Logs a customer in and returns a signed JWT and customer information
+	Inputs: username and password (in body of request)
+	Output:
+	{
+		token:
+		{
+			token
+		}
+		staff:
+		{
+			staff_id,
+			restaurant_id,
+			first_name,
+			last_name,
+			contact_num,
+			email,
+			position
+		}
+	}
+
+POST /verify
+	Verifies a JWT Token
+	Output:
+	{
+		'message': 'Test Passed'
+	}
+
+PUT /staff/register
+	Creates a new staff member
+	Inputs (in body of request): staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password
+	Outputs:
+		On success:
+			Successfully added new staff member!
+		If staff_id exists already:
+			Error: staff_id already exists
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password
+
+
+PUT /customer/register
+	Creates a new customer
+	Inputs (in body of request): customer_id, first_name, last_name, email, password
+	Outputs: 
+		On success:
+			Successfully added new customer!
+		If customer_id exists already:
+			Error: customer_id already exists
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password
+
+PUT /menu/add
+	Adds a new item to the menu
+	Inputs (in body of request): restaurant_id, item_name, calorie_num, category, price
+	Outputs:
+		On success:
+			Successfully added new menu item!
+		If item_name and restaurant_id exists already:
+			Error: item already exists
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price
+
+
+Added testing user for both /staff/login and /customers/login
+	user:password

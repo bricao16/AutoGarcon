@@ -11,6 +11,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {Redirect} from "react-router-dom";
 
 /*this is the login component for the cook
 view. Asks for the email address, password and logs in if the user and correct password
@@ -34,23 +35,88 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SignIn() {
-  const classes = useStyles();
+export default class SignIn extends React.Component {
+  constructor(props){
+	  super(props);
+	  
+	  this.state = {
+	    email: '',
+		passwd:'',
+		redirect: false
+	  };
+	  
+	  this.handleSubmit = this.handleSubmit.bind(this);
+	  this.handleEmail = this.handleEmail.bind(this);
+	  this.handlePasswd = this.handlePasswd.bind(this);
+  }
 
-  return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        {/* Lock icon on top */}
-        <Avatar className={classes.avatar}>
+  handleSubmit(event){
+	  
+	  event.preventDefault();
+	  
+	  /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
+	  
+	  console.log(this.state.email);
+	  console.log(this.state.passwd);
+	  
+	  const requestOptions = {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		/*body: JSON.stringify({
+		  'username': this.state.email,
+		  'password': this.state.passwd
+		})*/
+		body: 'username='+this.state.email+'&password='+this.state.passwd
+		  
+	  };
+	  fetch('http://50.19.176.137:8000/staff/login', requestOptions)
+		.then(async response => {
+			const data = await response.json();
+			
+			if(!response.ok){
+				const error = (data && data.message) || response.status;
+				return Promise.reject(error);
+			}
+			this.setState({redirect: true});
+			
+		
+		})
+		.catch(error =>{
+			
+			this.setState({redirect: false});
+			console.error("There was an error!", error);	
+		});
+  }
+  
+  handleEmail(event){
+	  this.setState({email: event.target.value});
+  }
+  
+  handlePasswd(event){
+	  this.setState({passwd: event.target.value});
+  }
+
+  render(){
+	if(this.state.redirect === true){
+	  return <Redirect to='/cook'/>
+	}  
+	return (
+  	  <Container component="main" maxWidth="xs">
+		  <CssBaseline />
+        <div className={useStyles.paper}>
+          {/* Lock icon on top */}
+          <Avatar className={useStyles.avatar}>
           <LockOutlinedIcon />
-        </Avatar>
-        {/* Cook Sign In Title on top of page*/}
-        <Typography component="h1" variant="h5">
+          </Avatar>
+          {/* Cook Sign In Title on top of page*/}
+          <Typography component="h1" variant="h5">
           Cook Sign In
-        </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
+          </Typography>
+          <form className={useStyles.form} noValidate>
+          <TextField onChange = {this.handleEmail}
+            value = {this.state.email}
             variant="outlined"
             margin="normal"
             required
@@ -61,7 +127,8 @@ export default function SignIn() {
             autoComplete="email"
             autoFocus
           />
-          <TextField
+          <TextField onChange = {this.handlePasswd}
+            value = {this.state.passwd}
             variant="outlined"
             margin="normal"
             required
@@ -79,26 +146,26 @@ export default function SignIn() {
             label="Remember me"
           />
           {/* Submit button */}
-          <Button
+          <Button onClick = {this.handleSubmit}
             type="submit"
             fullWidth
             variant="contained"
             style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
-            className={classes.submit}
+            className={useStyles.submit}
           >
             Sign In
           </Button>
           <Grid container>
             <Grid item>
-              {/* Create an account link */}
-              <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
-                {"Don't have an account? Sign Up"}
-              </Link>
+            {/* Create an account link */}
+            <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
+              {"Don't have an account? Sign Up"}
+            </Link>
             </Grid>
           </Grid>
-        </form>
-      </div>
-    
-    </Container>
-  );
+          </form>
+        </div>
+	  </Container>
+	);
+  }
 }

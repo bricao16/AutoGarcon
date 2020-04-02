@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="end"
     android:id="@+id/account_main"
-    tools:context=".Account">
+    tools:context="auto_garcon.AccountStuff.Account">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -46,16 +46,16 @@
 
         <Button
             android:id="@+id/cart_button"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
+            android:onClick="goShoppingCart"
             android:text="@string/cart"
             android:textColor="@color/white"
-            android:textSize="14sp"
-            style="?android:attr/borderlessButtonStyle"
-            android:onClick="goShoppingCart"/>
+            android:textSize="14sp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -65,10 +65,10 @@
                 android:id="@+id/changepasswd_text"
                 android:layout_width="208dp"
                 android:layout_height="37dp"
-                android:layout_marginStart="48dp"
                 android:layout_marginTop="96dp"
                 android:text="@string/changepasswd"
                 android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -76,11 +76,11 @@
                 android:id="@+id/passwd_change"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
                 android:layout_marginTop="24dp"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:text="Password"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/changepasswd_text" />
 
@@ -88,11 +88,11 @@
                 android:id="@+id/confirm_passwd_change"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
                 android:layout_marginTop="24dp"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:text="@string/confirm_password"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/passwd_change" />
 
@@ -100,9 +100,9 @@
                 android:id="@+id/save_acct_change"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="112dp"
                 android:layout_marginTop="20dp"
                 android:text="@string/save"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/last_name_change" />
 
@@ -110,10 +110,10 @@
                 android:id="@+id/change_name_text"
                 android:layout_width="213dp"
                 android:layout_height="35dp"
-                android:layout_marginStart="48dp"
                 android:layout_marginTop="40dp"
                 android:text="@string/change_name"
                 android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/confirm_passwd_change" />
 
@@ -121,11 +121,11 @@
                 android:id="@+id/first_name_change"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
                 android:layout_marginTop="24dp"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:text="@string/first_name"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/change_name_text" />
 
@@ -133,11 +133,11 @@
                 android:id="@+id/last_name_change"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
                 android:layout_marginTop="24dp"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:text="@string/last_name"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/first_name_change" />
         </androidx.constraintlayout.widget.ConstraintLayout>

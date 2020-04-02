@@ -1,0 +1,28 @@
+//Put for orders on Android / web
+let query = "INSERT INTO orders(order_num, restaurant_id, customer_id, order_status, order_date, table_num)\
+  VALUES (?, ?, In Progress, CURRENT_TIMESTAMP, ?)"
+
+let query = "INSERT INTO ordersdetails(order_num, item_id, quantity)\
+  VALUES (order_num, ?, ?)"
+
+//Put for staff login
+let query = "INSERT INTO staff(staff_id, restaurant_id, first_name, last_name, position, password, salt, contact_num, email)\
+  VALUES (?, ?, ?, ?, ?, ?, SALT, ?, ?)"
+
+//Put for customer login
+let query = "INSERT INTO customers(customer_id, first_name, last_name, password, salt, email)\
+  VALUES (?, ?, ?, ?, salt, ?)"
+
+//Adding menu items
+//let query = "INSERT INTO menu(item_id, restaurant_id, item_name, calorie_num, category, image, in_stock, price)\
+  VALUES (?, ?, ?, ?, ?, In Stock, ?)
+
+//Put for orders on alexa
+let query = "INSERT INTO orders(order_num, restaurant_id, customer_id, order_status, order_date, table_num)\
+  VALUES (?, null, Pending, CURRENT_TIMESTAMP, ?)"
+
+let query = "INSERT INTO ordersdetails(order_num, item_id, quantity)\
+  VALUES (order_num, ?, ?)"
+
+//Post query for alexa to put orders to In Progress status
+let query = "UPDATE orders SET order_status = In Progress, order_date = CURRENT_TIMESTAMP WHERE order_num = ?"

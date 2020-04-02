@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="end"
     android:id="@+id/restaurant_main"
-    tools:context=".RestaurantPage">
+    tools:context="auto_garcon.MenuStuff.Menu">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -59,6 +59,14 @@
 
     </RelativeLayout>
 
+    <ExpandableListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="65dp"
+        android:id="@+id/menu_list">
+
+    </ExpandableListView>
+
     <com.google.android.material.navigation.NavigationView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -68,18 +76,8 @@
         android:layout_gravity="start"
         android:background="@color/white"/>
 
-    <ExpandableListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="65dp"
-        android:id="@+id/menu_list">
-
-
-
-    </ExpandableListView>
-
-
 
 </androidx.drawerlayout.widget.DrawerLayout>
+
 
 

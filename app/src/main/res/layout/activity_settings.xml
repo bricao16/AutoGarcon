@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="end"
     android:id="@+id/settings_main"
-    tools:context=".Settings">
+    tools:context="auto_garcon.AccountStuff.Settings">
 
     <RelativeLayout
         android:layout_width="match_parent"

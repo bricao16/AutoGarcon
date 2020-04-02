@@ -5,25 +5,17 @@ import MTasks from "./components/MTasks";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
-
-import logoImage from "./assets/AutoGarcon.png";
-
-import Container from 'react-bootstrap/Container';
+import logoImage from "./assets/AutoGarconLogo.png";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import {BrowserRouter as Router, Switch, Link, Route} from "react-router-dom";
 
-import {
-    BrowserRouter as Router,
-    Switch,
-    Link,
-    Route
-  } from "react-router-dom";
-  
+ /*
 var req  = new XMLHttpRequest();
 
 var menu;
 
-/*req.open("GET", "http://50.19.176.137:8000/menu", true);
+req.open("GET", "http://50.19.176.137:8000/menu", true);
 req.send();
 
 req.onload = function(){
@@ -36,7 +28,7 @@ function App() {
   return (
     <Router>
       <div style={backgroundStyle}>
-        <Container>
+        <div className="px-4">
           <Row style={{'minHeight': '90vh'}}>
             <Col className="pt-3 px-3">
               <div className="rounded" style={sectionStyle}>
@@ -63,19 +55,20 @@ function App() {
                     <MTasks/>
                   </Route>
                   <Route path="/menu" 
-                        render={(props) => <MTasks {...props} content={"menu"}/>} />
-           
+                    render={(props) => <MTasks {...props} content={"menu"}/>} />
                   <Route path="/hours" 
-                  render={(props) => <MTasks {...props} content={"hours"}/>} />
+                    render={(props) => <MTasks {...props} content={"hours"}/>} />
+                  <Route path="/customize" 
+                    render={(props) => <MTasks {...props} content={"customize"}/>} />
                 </Switch>
               </div>
             </Col>
           </Row>
-        </Container>
+        </div>
       </div>
       <footer style={footerStyle}>
-        Powered by  
-        <img src={logoImage} width="auto" height="100vh" alt="waiter" />
+        Powered by Auto Garcon
+        <img src={logoImage} width="auto" height="50vh" alt="waiter" />
       </footer>
     </Router>      
   );
@@ -88,8 +81,8 @@ function Home() {
     <div>
 
       <div style={homeStyle}>
-        <h2> Welcome to 
-        <img src={logoImage} width="auto" height="200vw" alt="waiter" />
+        <h2> Welcome to Auto Garcon 
+        <img src={logoImage} width="auto" height="75vw" alt="waiter" />
          </h2>
 
         <br/>
@@ -141,11 +134,13 @@ var footerStyle = {
   'paddingBottom': '5px',
   'paddingRight': '12px',
   'paddingTop': '12px',
-  'textAlign': 'right'
+  'textAlign': 'right',
+  'fontFamily': 'Kefa'
 }
 var homeStyle = {
   'fontWeight': '300',
   'textAlign' : 'center',
   'listStyleType': 'none',
-  'textSize': '50pt'
+  'textSize': '90pt',
+  'fontFamily': 'Kefa'
 };
