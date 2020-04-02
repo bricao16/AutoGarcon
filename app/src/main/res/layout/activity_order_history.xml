@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/nav_header_background"/>
+
         <!--Code for bottom nav bar -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
@@ -29,6 +30,7 @@
             app:itemTextColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:menu="@menu/bottom_nav_menu" />
+
     </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -39,8 +41,6 @@
         app:headerLayout="@layout/nav_header"
         android:layout_gravity="start"
         android:background="@color/white"/>
-
-
 
 </androidx.drawerlayout.widget.DrawerLayout>
 
