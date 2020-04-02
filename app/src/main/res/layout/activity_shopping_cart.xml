@@ -9,29 +9,23 @@
     android:id="@+id/shopping_cart_main"
     tools:context="auto_garcon.Cart_OrderHistory.ShoppingCart">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <!--Code for bottom nav bar -->
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/xml_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/nav_header_background" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="65dp"
+            android:layout_marginBottom="135dp"
             ></androidx.recyclerview.widget.RecyclerView>
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="3dp"
-            app:itemBackground="@color/colorPrimary"
-            app:itemIconTint="@android:color/white"
-            app:itemTextColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:menu="@menu/bottom_nav_menu" />
 
         <Button
             android:id="@+id/btn_placeorder"
@@ -44,11 +38,18 @@
             android:text="Place Order"
             android:textColor="@android:color/black"></Button>
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/xml_toolbar"
+        <!--Code for bottom nav bar -->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/nav_header_background" />
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="3dp"
+            app:itemBackground="@color/colorPrimary"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
 
     </RelativeLayout>
 
@@ -59,10 +60,7 @@
         app:menu="@menu/nav_menu"
         app:headerLayout="@layout/nav_header"
         android:layout_gravity="start"
-        android:background="@color/white">
-
-    </com.google.android.material.navigation.NavigationView>
-
+        android:background="@color/white"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
 
