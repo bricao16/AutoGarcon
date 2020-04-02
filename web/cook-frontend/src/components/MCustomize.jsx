@@ -1,6 +1,5 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
-import CustomizeProp from './CustomizeProp';
 import Card from 'react-bootstrap/Card';
 
 /*this is the customize component for the manager
