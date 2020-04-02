@@ -8,19 +8,37 @@
 const Alexa = require('ask-sdk-core');
 const http = require('http');
 const api = 'http://50.19.176.137:8000';
-var restaurant = '123'; // we will change this when we add functionality that automatically determines what restaurant
+var AlexaID = '';
+var restaurantID = ''; // we will change this when we add functionality that automatically determines what restaurant
                         // the current device ID is in from the database
+
 
 // When skill is first invoked, need to find Alexa device ID here to determine which restaurant the Alexa device is currently at.
 const LaunchRequestHandler = {
-  canHandle(handlerInput) {
-      return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
-  },
-  handle(handlerInput) {
-  const speakOutput = 'Welcome to Auto Garcon, you can say Hello, Menu, or Help.'; // the first thing a user is greeted with
+   canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
+    },
+  async handle(handlerInput) {
+    AlexaID = handlerInput.requestEnvelope.context.System.device.deviceId.toString();
+    var speakOutput = '';
+    try {
+      const alexaResponse = await getHttp(api+'/alexa/'+AlexaID);
+      const alexaResponseJSON = JSON.parse(alexaResponse);
+      restaurantID = JSON.stringify(alexaResponseJSON[AlexaID].restaurant_id);
+      const restaurantResponse = await getHttp(api+'/restaurant/'+alexaResponseJSON[AlexaID].restaurant_id);
+      const restaurantResponseJSON = JSON.parse(restaurantResponse);
+      const restaurantName = restaurantResponseJSON['restaurant'].name;
+    
+      speakOutput = "Hi, Welcome to " + restaurantName + "! Thank you for using AutoGarcon Alexa to place your order. How can I help you?";
+    
+      handlerInput.responseBuilder
+          .speak(speakOutput)
+        
+    } catch(error) {
+      handlerInput.responseBuilder
+        .speak(`This Alexa isn't registered. Please add it by saying "add a new device".`);
+    }
     return handlerInput.responseBuilder
-      .speak(speakOutput)
-      .reprompt(speakOutput)
       .getResponse();
   }
 };
@@ -62,7 +80,7 @@ const TestDataIntentHandler = {
     var speakOutput = '';
     var repromptOutput = 'More data?';
     try {
-      const response = await getHttp(api+'/menu/'+restaurant);
+      const response = await getHttp(api+'/menu/'+restaurantID);
     
       speakOutput += " " + response;
     
@@ -90,7 +108,7 @@ const ClosingTimeIntentHandler = {
     var speakOutput = '';
     var repromptOutput = 'reprompt';
     try {
-      const response = await getHttp(api+'/restaurant/'+restaurant);
+      const response = await getHttp(api+'/restaurant/'+restaurantID);
       const responseJSON = JSON.parse(response);
       const closingTimeJSON = responseJSON.restaurant.closing%12;
       var ampm = "";
@@ -129,7 +147,7 @@ const MenuIntentHandler = {
       var speakOutput = '';
       var repromptOutput = 'What would you like?';
       try {
-        const response = await getHttp(api+'/menu/'+restaurant);
+        const response = await getHttp(api+'/menu/'+restaurantID);
                     
         const responseJSON = JSON.parse(response);
                     
@@ -152,19 +170,19 @@ const MenuIntentHandler = {
 };
 
 // base initial default intent for reference and saying hello
-const HelloWorldIntentHandler = {
-  canHandle(handlerInput) {
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-      && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
-  },
-  handle(handlerInput) {
-      const speakOutput = 'Hello, how may I help you today?';
-      return handlerInput.responseBuilder
-        .speak(speakOutput)
-        //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
-        .getResponse();
-  }
-};
+// const HelloWorldIntentHandler = {
+//   canHandle(handlerInput) {
+//     return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+//       && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
+//   },
+//   handle(handlerInput) {
+//       const speakOutput = 'Hello, how may I help you today?';
+//       return handlerInput.responseBuilder
+//         .speak(speakOutput)
+//         //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+//         .getResponse();
+//   }
+// };
 
 // A basic intent to get help, it currently says a waiter will be by shortly and does nothing else
 const HelpIntentHandler = {
@@ -252,7 +270,7 @@ exports.handler = Alexa.SkillBuilders.custom()
   .addRequestHandlers(
     LaunchRequestHandler,
     TestDataIntentHandler,
-    HelloWorldIntentHandler,
+    // HelloWorldIntentHandler,
     MenuIntentHandler,
     ClosingTimeIntentHandler,
     HelpIntentHandler,
