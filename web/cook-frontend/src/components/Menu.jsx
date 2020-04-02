@@ -6,11 +6,19 @@ import MenuItem from './MenuItem';
 import NewItem from './NewItem';
 
 /*
-  This component is used to get the menu information
-  from the database for the appropriate resturant. 
+  This component is used to render menu information which
+  is pulled from the database in MTasks. 
+
+  The menu and unique categories are put into arrays.
+    If we are on the main menu we just display the categories.
   
-  componentDidMount() connects to the database and puts
-  the information in out state.
+    If a category is click then we render the menu items with
+    that category assigned. 
+      If the edit button is clicked on a particular item then
+      the new form will render with prefilled info from the item
+
+    If the "create new" button is clicked then a new form with
+    no prefilled information will render
   
   in the state renderCategory is what component we are on.
   render() checks if the database was properly loaded
@@ -18,17 +26,12 @@ import NewItem from './NewItem';
 
   renderMenu() will create the call the MenuProp for each 
   item making a Card for each to display.
-
-
 */
 class Menu extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      error: null,
-      isLoaded: false,
-      menuJSON: [],
       menu:[],
       categories: [],
       renderCategory: "main",
@@ -48,25 +51,6 @@ class Menu extends React.Component {
     };
   }
 
-  /* Used for connecting to Menu in database */
-  componentDidMount() {
-  fetch("http://50.19.176.137:8000/menu/123")
-    .then(res => res.json())
-    .then(
-      (result) => {
-        this.setState({
-          isLoaded: true,
-          menuJSON: result
-        });
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error
-        });
-      }
-    )
-  }
   //change the category of menu to render
   changeCategory = (category) => {
       this.setState({
@@ -121,41 +105,29 @@ class Menu extends React.Component {
   }
   //render the menu prop of the current category 
   renderMenu(){
-    //onNew is a callback passed to call the new item form if it is clicked
+    //onNew is a callback passed to call the new item form if it is edit is clicked
     return this.state.menu.map((item, key) =>
         <MenuItem menu={item} category={this.state.renderCategory} onNew={this.toggleNewItem.bind(this)}/>
     );
   }
-    //generate form for new item
-    NewItemForm(){
-        return <NewItem prefill = {this.state.newItemPrefill}/>
-    }
+  //generate form for new item with prefilled of whats already on the menu for this item
+  newItemForm(){
+      return <NewItem prefill = {this.state.newItemPrefill}/>
+  }
 
   // Default render method
   render() {
-    this.state.menu = [];
     //clear the menu each time we load
-    const { error, isLoaded, menuJSON, menu,categories,renderCategory, newItem} = this.state;
-    
-    if (error) {
-      return <div>Error: {error.message}</div>;
-    } 
+    this.state.menu = [];
+    const {menu,categories,renderCategory, newItem} = this.state;
+    const menuJSON = this.props.menu;
 
-    else if (!isLoaded) {
-      return (<div class="text-center pt-5">
-        <div class="spinner-border" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>)
-    }
+    //map the menu json from Mtasks to an array
+    Object.keys(menuJSON).forEach(function(key) {
+          menu.push([key ,menuJSON[key]]);
+    });
 
-    else {
-      //map the menu json to an array
-      Object.keys(menuJSON).forEach(function(key) {
-            menu.push([key ,menuJSON[key]]);
-      });
-    }
-      //create a list of all unique categories of food/drink
+    //create a list of all unique categories of food/drink
     for (const [index, value] of menu.entries()) {
         if(categories.indexOf(value[1].category) === -1){
           categories.push( value[1].category)
@@ -170,7 +142,7 @@ class Menu extends React.Component {
             <h2 style={mainMenuHeaderStyle}>
               Menu
             </h2>
-              <Container fluid style={{'min-height': '70vh'}}>
+              <Container fluid style={{'minHeight': '70vh'}}>
                 <div className="d-flex flex-wrap">
                     {this.renderMenuCategories()}
                     <Col sm={6} className="p-3"> {/*add a create new category option*/}
@@ -224,7 +196,7 @@ class Menu extends React.Component {
               <Col className="pt-3 px-3">
                 <Container fluid>
                   <div style={managerStyle}>
-                    {this.NewItemForm()}
+                    {this.newItemForm()}
                   </div>
                 </Container>
               </Col>

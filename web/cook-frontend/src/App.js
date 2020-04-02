@@ -28,7 +28,7 @@ function App() {
   return (
     <Router>
       <div style={backgroundStyle}>
-        <div class="px-4">
+        <div className="px-4">
           <Row style={{'minHeight': '90vh'}}>
             <Col className="pt-3 px-3">
               <div className="rounded" style={sectionStyle}>
@@ -56,7 +56,6 @@ function App() {
                   </Route>
                   <Route path="/menu" 
                     render={(props) => <MTasks {...props} content={"menu"}/>} />
-           
                   <Route path="/hours" 
                     render={(props) => <MTasks {...props} content={"hours"}/>} />
                   <Route path="/customize" 
