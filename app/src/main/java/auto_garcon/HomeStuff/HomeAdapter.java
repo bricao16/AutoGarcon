@@ -16,18 +16,23 @@ import com.example.auto_garcon.R;
 import java.util.List;
 
 import auto_garcon.MenuStuff.Menu;
+import auto_garcon.MenuStuff.MenuPopup;
+import auto_garcon.Singleton.SharedPreference;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     private LayoutInflater layoutInflater;
     private List<RestaurantItem> data;
     private Context context;
+    private SharedPreference pref;
 
 
     HomeAdapter(Context context, List<RestaurantItem> data) {
         this.layoutInflater = LayoutInflater.from(context);
         this.data = data;
         this.context = context;
+
+        this.pref = new SharedPreference(context);
     }
 
     @NonNull
@@ -53,18 +58,25 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         TextView textTitle;
         TextView textDescription;
 
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent menu = new Intent(v.getContext(), Menu.class);
-                    menu.putExtra("restaurant id", data.get(getAdapterPosition()).getID());
-                    context.startActivity(menu);
+                    if(pref.getShoppingCart().getCart().size() == 0 || pref.getShoppingCart().getRestaurantID() == data.get(getAdapterPosition()).getID()) {
+                        Intent menu = new Intent(v.getContext(), Menu.class);
+                        menu.putExtra("restaurant id", data.get(getAdapterPosition()).getID());
+                        context.startActivity(menu);
+                    }
+                    else {
+                    Intent confirm = new Intent(v.getContext(), ConfirmPopup.class);
+                        confirm.putExtra("restaurant id", data.get(getAdapterPosition()).getID());
+                        context.startActivity(confirm);
+                    }
                 }
             });
-
 
             textTitle = itemView.findViewById(R.id.restaurant_title);
             textDescription = itemView.findViewById(R.id.restaurant_location);

@@ -79,7 +79,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
-                                Log.d("HI","HI");
                                 Intent home = new Intent(getBaseContext(),   QRcode.class);
                                 startActivity(home);
                                 return true;
@@ -100,12 +99,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
         pref = new SharedPreference(this);
 
-        //creating list
-        appetizer_list = new ArrayList<>();
-        entree_list = new ArrayList<>();
-        dessert_list = new ArrayList<>();
-        drink_list = new ArrayList<>();
-        alcohol_list = new ArrayList<>();
+        listDataHeader = new ArrayList<>();
+        listHash = new HashMap<>();
 
         final String url = "http://50.19.176.137:8000/menu/" + getIntent().getIntExtra("restaurant id", 0);
 
@@ -115,7 +110,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     public void onResponse(JSONObject response) {
                         try {
 
-                            initData();
                             listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash);
                             listView = findViewById(R.id.menu_list);
                             listView.setAdapter(listAdapter);
@@ -135,9 +129,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                         String inner_key = inner_keys.next();
 
                                         switch(inner_key){
-                                            case "restaurant":
-                                                itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
-                                                break;
                                             case "calories":
                                                 itemToBeAdded.setCalories(Integer.parseInt(item.get(inner_key).toString()));
                                                 break;
@@ -150,6 +141,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                                 break;
                                             case "in_stock":
                                                 itemToBeAdded.setAmountInStock(Integer.parseInt(item.get(inner_key).toString()));
+                                                break;
+                                            case "restaurant":
+                                                itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
                                                 break;
                                         }
                                     }
@@ -201,26 +195,36 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         return false;
     }
 
-    //creating headers and hashmap for menu
-    private void initData() {
-        listDataHeader = new ArrayList<>();
-        listHash = new HashMap<>();
-
-        listDataHeader.add("Appetizer");
-        listDataHeader.add("Entrees");
-        listDataHeader.add("Dessert");
-        listDataHeader.add("Refillable Drink");
-        listDataHeader.add("Alcohol");
-
-        listHash.put(listDataHeader.get(0), appetizer_list);
-        listHash.put(listDataHeader.get(1), entree_list);
-        listHash.put(listDataHeader.get(2), dessert_list);
-        listHash.put(listDataHeader.get(3), drink_list);
-        listHash.put(listDataHeader.get(4), alcohol_list);
-    }
-
     //this will filter the json object from get request and place items in correct category
     private void addToList(auto_garcon.MenuStuff.MenuItem key, String category) {
+        if(!listDataHeader.contains(category)) {
+            listDataHeader.add(category);
+
+            switch(category){
+                case "Appetizer":
+                    appetizer_list = new ArrayList<>();
+                    listHash.put(listDataHeader.get(listDataHeader.size() - 1), appetizer_list);
+                    break;
+                case "Entree":
+                    entree_list = new ArrayList<>();
+                    listHash.put(listDataHeader.get(listDataHeader.size() - 1), entree_list);
+                    break;
+                case "Desert":
+                    dessert_list = new ArrayList<>();
+                    listHash.put(listDataHeader.get(listDataHeader.size() - 1), dessert_list);
+                    break;
+                case "Refillable Drink":
+                    drink_list = new ArrayList<>();
+                    listHash.put(listDataHeader.get(listDataHeader.size() - 1), drink_list);
+                    break;
+                case "Alcohol":
+                    alcohol_list = new ArrayList<>();
+                    listHash.put(listDataHeader.get(listDataHeader.size() - 1), alcohol_list);
+                    break;
+            }
+
+        }
+
         switch(category){
             case "Appetizer":
                 appetizer_list.add(key);
@@ -228,7 +232,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             case "Entree":
                 entree_list.add(key);
                 break;
-            case "Dessert":
+            case "Desert":
                 dessert_list.add(key);
                 break;
             case "Refillable Drink":

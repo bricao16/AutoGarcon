@@ -41,7 +41,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
         recyclerView = findViewById(R.id.list);
         pref = new SharedPreference(this);
-        if(pref.getShoppingCart()==null){
+        if(pref.getShoppingCart() == null ){
             shoppingCart = new ShoppingCartSingleton();
             pref.setShoppingCart(shoppingCart);
         }

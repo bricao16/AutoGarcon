@@ -16,9 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="auto_garcon.InitialPages.twoButtonPage"></activity>
+        <activity android:name="auto_garcon.HomeStuff.ConfirmPopup"
+            android:theme="@style/AppTheme.Popup"/>
+        <activity android:name="auto_garcon.InitialPages.twoButtonPage" />
         <activity
-            android:name="auto_garcon.MenuStuff.Popup"
+            android:name="auto_garcon.MenuStuff.MenuPopup"
             android:theme="@style/AppTheme.Popup" />
         <activity android:name="auto_garcon.InitialPages.LoadingScreen">
             <intent-filter>
@@ -29,37 +31,13 @@
         </activity>
         <activity android:name="auto_garcon.Cart_OrderHistory.OrderHistory" />
         <activity android:name="auto_garcon.Cart_OrderHistory.ShoppingCart" />
-        <activity android:name="auto_garcon.AccountStuff.Account" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name="auto_garcon.AccountStuff.Account"/>
         <activity android:name="auto_garcon.AccountStuff.Settings" />
-        <activity android:name="auto_garcon.MenuStuff.Menu">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name="auto_garcon.MenuStuff.Menu"/>
         <activity android:name="auto_garcon.InitialPages.Register" />
-        <activity android:name="auto_garcon.InitialPages.Login">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name="auto_garcon.InitialPages.Login"/>
+        <activity android:name="auto_garcon.HomeStuff.Home"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
-        <activity android:name="auto_garcon.HomeStuff.Home" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3180674783074402~6809677430" /> <!-- This is for the Qr code -->
@@ -67,13 +45,7 @@
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
 
-        <activity android:name="auto_garcon.InitialPages.QRcode">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name="auto_garcon.InitialPages.QRcode"/>
     </application>
 
 </manifest>

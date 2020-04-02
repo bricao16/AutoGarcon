@@ -6,9 +6,15 @@ import auto_garcon.MenuStuff.MenuItem;
 
 public class ShoppingCartSingleton {
     private  ArrayList<MenuItem> Items;
+    private int restaurantID;
 
     public ShoppingCartSingleton(){
         this.Items = new ArrayList<MenuItem>();
+    }
+
+    public ShoppingCartSingleton(int restaurantID){
+        this.Items = new ArrayList<MenuItem>();
+        this.restaurantID = restaurantID;
     }
 
     public ArrayList<MenuItem> getCart(){
@@ -41,5 +47,13 @@ public class ShoppingCartSingleton {
         }
 
         return calories;
+    }
+
+    public void setRestaurantID(int restaurantID) {
+        this.restaurantID = restaurantID;
+    }
+
+    public int getRestaurantID() {
+        return this.restaurantID;
     }
 }

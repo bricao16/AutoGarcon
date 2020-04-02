@@ -3,6 +3,7 @@ package auto_garcon.HomeStuff;
 import android.content.Intent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
@@ -106,6 +107,8 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
         pref = new SharedPreference(this);
+        Toast.makeText(Home.this, pref.getUserName(), Toast.LENGTH_SHORT).show();
+        Log.d("HI", pref.getShoppingCart().toString());
 
         //shake feature
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);

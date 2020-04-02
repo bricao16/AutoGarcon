@@ -3,6 +3,9 @@
     <color name="toolbar">#0066ff</color>
     <color name="nav_header_background">#1F242B</color>
 
+    <color name="black">#000000</color>
+
+
     <color name="colorPrimary">#0B658A</color>
     <color name="colorPrimaryDark">#102644</color>
     <color name="colorAccent">#318381</color>

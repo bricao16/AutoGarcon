@@ -60,7 +60,7 @@ public class SharedPreference {
         // this gson object will be used to convert our json string into a java object
         Gson gson = new Gson();
         //here we extract the json String from our sharedPreference file
-        String stringJson = sharedPreferences.getString("ShoppingCartSingleton", "");
+        String stringJson = sharedPreferences.getString("ShoppingCartSingleton", null);
 
         //here we convert the json String to our Java Object
         return gson.fromJson(stringJson, ShoppingCartSingleton.class);

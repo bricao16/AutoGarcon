@@ -17,7 +17,7 @@
             android:id="@+id/xml_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/nav_header_background" />
+            android:background="@color/colorAccent" />
 
         <EditText
             android:id="@+id/editText"

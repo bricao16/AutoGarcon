@@ -67,12 +67,9 @@ public class Login extends AppCompatActivity {
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
-                else if(username.isEmpty() && passwd.isEmpty()){
-                    Toast.makeText(Login.this,"Fields are Empty!", Toast.LENGTH_SHORT).show();
-                }
                 else if (!(username.isEmpty() && passwd.isEmpty())) {
 
-                    //some request to server goes here
+                    //post request for logging in
                     String url = "http://50.19.176.137:8000/customers/login";
                     JSONObject obj = new JSONObject();//for the request parameter
                     try{
@@ -81,21 +78,23 @@ public class Login extends AppCompatActivity {
                     }catch (JSONException e){
                         e.printStackTrace();
                     }
-                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url,obj,
+
+                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, obj,
                             new Response.Listener<JSONObject>()
                             {
                                 @Override
                                 public void onResponse(JSONObject response) {
                                     // response
                                     try {
-                                           JSONObject object = response.getJSONObject("user");
-                                            String token = response.getString("token");
+                                        JSONObject object = response.getJSONObject("user");
+                                        String token = response.getString("token");
+
                                         pref.writeUserName(username);
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 
-                                        Intent home = new Intent(Login.this, twoButtonPage.class);
-                                        startActivity(home);
+                                        Intent twoButton = new Intent(Login.this, twoButtonPage.class);
+                                        startActivity(twoButton);
                                         finish();
 
                                     } catch (JSONException e) {
@@ -111,17 +110,8 @@ public class Login extends AppCompatActivity {
                                     Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG).show();
                                 }
                             }
-                    ) {
-                        @Override
-                        protected Map<String, String> getParams() {
-                            Map<String, String> params = new HashMap<String, String>();
-                            params.put("username", username);
-                            params.put("password", passwd);
+                    );
 
-                            return params;
-                        }
-                    };
-                    postRequest.setShouldCache(false);
                     VolleySingleton.getInstance(Login.this).addToRequestQueue(postRequest);
                 }
                 else{

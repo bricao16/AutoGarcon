@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,7 +15,7 @@ import com.example.auto_garcon.R;
 import auto_garcon.Singleton.SharedPreference;
 import auto_garcon.Singleton.ShoppingCartSingleton;
 
-public class Popup extends AppCompatActivity {
+public class MenuPopup extends AppCompatActivity {
 
     private SharedPreference pref;
     private MenuItem item;
@@ -22,7 +23,7 @@ public class Popup extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_popup);
+        setContentView(R.layout.menu_popup);
 
         item = (MenuItem) this.getIntent().getSerializableExtra("menuItem");
         pref = new SharedPreference(this);
@@ -43,17 +44,19 @@ public class Popup extends AppCompatActivity {
 
         getWindow().setAttributes(params);
 
-        Button add_to_cart = findViewById(R.id.add_to_cart);
+        Button addToCart = findViewById(R.id.add_to_cart);
 
         /*this will check if the cart is currently empty and if it it will just add to it
         otherwise it will get the cart, add to it, then set the cart in SharedPreference again*/
-        add_to_cart.setOnClickListener(new View.OnClickListener() {
+        addToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ShoppingCartSingleton cart;
 
-                if(pref.getShoppingCart() == null){
-                    cart = new ShoppingCartSingleton();
+                if(pref.getShoppingCart().getCart().size() == 0) {
+                    Log.d("HIHIHI",  Integer.toString(item.getRestaurantID()));
+
+                    cart = new ShoppingCartSingleton(item.getRestaurantID());
                     cart.addToCart(item);
                     pref.setShoppingCart(cart);
                 }

@@ -3,6 +3,7 @@ package auto_garcon.MenuStuff;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,10 +89,15 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         TextView txtListChild = view.findViewById(R.id.list_item);
         txtListChild.setText(childText);
 
+        TextView txtListChildPrice = view.findViewById(R.id.list_item_price);
+        txtListChildPrice.setText(String.format("$%.02f", getChild(i, j).getPrice()));
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent popup = new Intent(context, Popup.class);
+                Intent popup = new Intent(context, MenuPopup.class);
+
+                Log.d("SDFSDFSDFSDF", Integer.toString(getChild(i, j).getRestaurantID()));
 
                 popup.putExtra("menuItem", (Serializable) getChild(i, j));
                 context.startActivity(popup);
