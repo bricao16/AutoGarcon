@@ -112,7 +112,7 @@ class Menu extends React.Component {
   }
   //generate form for new item with prefilled of whats already on the menu for this item
   newItemForm(){
-      return <NewItem prefill = {this.state.newItemPrefill}/>
+    return <NewItem prefill = {this.state.newItemPrefill}/>
   }
 
   // Default render method
@@ -185,24 +185,14 @@ class Menu extends React.Component {
     }
     else{
       //render a form for the new menu item(s)
-      return ( 
-        <Container>
-          <div style={backgroundStyle}>
-            <h2 style ={categoryHeaderStyle}>
-              <button type="button" onClick={() => {this.changeCategory("main"); this.setState({menu:[]}); this.setNewItem(false);}} className="btn btn-outline-light m-2">Back</button>
-              <div style={menuTextStyle}>Menu Item</div>
-            </h2>
-            <Container fluid>
-              <Col className="pt-3 px-3">
-                <Container fluid>
-                  <div style={managerStyle}>
-                    {this.newItemForm()}
-                  </div>
-                </Container>
-              </Col>
-            </Container> 
-          </div>
-        </Container>
+      return (
+        <div style={backgroundStyle}>
+          <h2 style ={categoryHeaderStyle}>
+            <button type="button" onClick={() => {this.changeCategory("main"); this.setState({menu:[]}); this.setNewItem(false);}} className="btn btn-outline-light m-2">Back</button>
+            <div style={menuTextStyle}>Menu Item</div>
+          </h2>
+          {this.newItemForm()}
+        </div>
       );
     }
   

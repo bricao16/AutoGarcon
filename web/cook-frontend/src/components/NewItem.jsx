@@ -51,126 +51,134 @@ class NewItem extends React.Component {
     if(this.props.prefill.type === "default")
     {
       return ( 
-        <Container>
-          <div>
-            <Container fluid>
-              <Col className="pt-3 px-3">
-                <Container fluid>
+        <Col className="pt-3 px-3">
+          <Container>
+            <div class="d-flex flex-row-reverse pb-3">
+              <button type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
+            </div>
+            <div>
+              <form class="pb-1">
+
+                <div className="form-group row">
+                  <label className="col ">Name </label>
+                    <input className="form-control col" type="text" id = "itemName" placeholder={this.props.prefill.menu[0]}>
+                    </input>
+                </div>
+
+                <div className="form-group row">
+                  <label className="col">Category </label>
+                  <input className="form-control col" type="text" id = "itemCategory" placeholder={this.props.prefill.menu[1].category}>
+                  </input>
+                </div>
+
+                  <div className="form-group row">
+                    <label className="col">Calories</label>
+                    <input className="form-control col" type="text" id = "itemCalories" placeholder={this.props.prefill.menu[1].calories}>
+                    </input>
+                </div>
+
+                <div className="form-group row">
+                <label className="col">Price</label>
+                    <div className="col input-group mb-2 mr-sm-2">
+                      <div className="input-group-prepend">
+                        <div className="input-group-text">$</div>
+                      </div>
+                      <input type="text" className="form-control" id="inlineFormInputGroupUsername2" placeholder={this.props.prefill.menu[1].price}>
+                      </input>
+                    </div>
+                </div>
+
+                <div class="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
-                    <form>
-                      <div className="form-group">
-                        <input className="form-control" type="text" id = "itemName" placeholder={this.props.prefill.menu[0]}>
-                        </input>
-                       </div>
-                       <div className="form-group">
-                        <input className="form-control" type="text" id = "itemCategory" placeholder={this.props.prefill.menu[1].category}>
-                        </input>
-                       </div>
-                        <div className="form-group">
-                          <input className="form-control" type="text" id = "itemCalories" placeholder={this.props.prefill.menu[1].calories}>
-                          </input>
-                       </div>
-                       <div className="form-group">
-                          <div className="input-group mb-2 mr-sm-2">
-                            <div className="input-group-prepend">
-                              <div className="input-group-text">$</div>
-                            </div>
-                            <input type="text" className="form-control" id="inlineFormInputGroupUsername2" placeholder={this.props.prefill.menu[1].price}>
-                            </input>
-                          </div>
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="itemDescription">Description</label>
-                        <textarea className="form-control" id="itemDescription" rows="3"></textarea>
-                      </div>
-                      <div className="form-group">
-                        <label hmtlfor="exampleFormControlFile1">Picture</label>
-                        <input type="file" className="form-control-file" id="exampleFormControlFile1">
-                        </input>
-                      </div>
-                      <div className="pretty p-switch p-fill">
-                          <input type="checkbox" defaultChecked/>
-                          <div className="state">
-                              <label placeholder = {this.props.prefill.menu[1].in_stock}>In stock</label>
-                          </div>
-                      </div>
-                      <br/>
-                      <div className="row">
-                        <button type="submit" className="btn btn-primary  col m-5" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                        </div>
-                      
-                    </form>
+                    <input type="checkbox" defaultChecked/> 
+                    <label class="pl-2" placeholder={this.props.prefill.menu[1].in_stock}>In stock</label>
                   </div>
-                </Container>
-              </Col>
-            </Container> 
-          </div>
-        </Container>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="itemDescription">Description</label>
+                  <textarea className="form-control" id="itemDescription" rows="3"></textarea>
+                </div>
+
+                <div className="form-group">
+                  <label hmtlfor="exampleFormControlFile1">Picture</label>
+                  <input type="file" className="form-control-file" id="exampleFormControlFile1">
+                  </input>
+                </div>
+
+                <div className="d-flex justify-content-center row p-2">
+                  <button type="submit" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
+                </div>
+              </form>
+            </div>
+          </Container>
+        </Col>
       );
     }
     else{
       return ( 
-        <Container>
-          <div>
-            <Container fluid>
-              <Col className="pt-3 px-3">
-                <Container fluid>
-                  <div>
-                    <form>
-                      <div className="form-group row">
-                        <label className="col ">Name </label>
-                          <input className="form-control col" type="text" id = "itemName" defaultValue={this.props.prefill.menu[0]}>
-                          </input>
-                       </div>
-                       <div className="form-group row">
-                        <label className="col">Category </label>
-                        <input className="form-control col" type="text" id = "itemCategory" defaultValue={this.props.prefill.menu[1].category}>
-                        </input>
-                       </div>
-                        <div className="form-group row">
-                          <label className="col">Calories</label>
-                          <input className="form-control col" type="text" id = "itemCalories" defaultValue={this.props.prefill.menu[1].calories}>
-                          </input>
-                       </div>
-                       <div className="form-group row">
-                       <label className="col">Price</label>
-                          <div className="col input-group mb-2 mr-sm-2">
-                            <div className="input-group-prepend">
-                              <div className="input-group-text">$</div>
-                            </div>
-                            <input type="text" className="form-control" id="inlineFormInputGroupUsername2" defaultValue={this.props.prefill.menu[1].price}>
-                            </input>
-                          </div>
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="itemDescription">Description</label>
-                        <textarea className="form-control" id="itemDescription" rows="3"></textarea>
-                      </div>
-                      <div className="form-group">
-                        <label hmtlfor="exampleFormControlFile1">Picture</label>
-                        <input type="file" className="form-control-file" id="exampleFormControlFile1">
-                        </input>
-                      </div>
-                      <div class="pretty p-switch p-fill">
-                          <input type="checkbox" defaultChecked/>
-                          <div class="state">
-                              <label placeholder = {this.props.prefill.menu[1].in_stock}>In stock</label>
-                          </div>
-                      </div>
+        <Col className="pt-3 px-3">
+          <Container>
+            <div class="d-flex flex-row-reverse pb-3">
+              <button type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
+            </div>
+            <div>
+              <form class="pb-1">
 
-                      <div className="row m-2">
-                        <button type="submit" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                <div className="form-group row">
+                  <label className="col ">Name </label>
+                    <input className="form-control col" type="text" id = "itemName" defaultValue={this.props.prefill.menu[0]}>
+                    </input>
+                </div>
+
+                <div className="form-group row">
+                  <label className="col">Category </label>
+                  <input className="form-control col" type="text" id = "itemCategory" defaultValue={this.props.prefill.menu[1].category}>
+                  </input>
+                </div>
+
+                  <div className="form-group row">
+                    <label className="col">Calories</label>
+                    <input className="form-control col" type="text" id = "itemCalories" defaultValue={this.props.prefill.menu[1].calories}>
+                    </input>
+                </div>
+
+                <div className="form-group row">
+                <label className="col">Price</label>
+                    <div className="col input-group mb-2 mr-sm-2">
+                      <div className="input-group-prepend">
+                        <div className="input-group-text">$</div>
                       </div>
-                      <div className="float-right m-2">
-                        <button type="delete" className="btn btn-outline-danger">Delete</button>
-                      </div>
-                    </form>
+                      <input type="text" className="form-control" id="inlineFormInputGroupUsername2" defaultValue={this.props.prefill.menu[1].price}>
+                      </input>
+                    </div>
+                </div>
+
+                <div class="pretty p-switch p-fill d-flex flex-row-reverse">
+                  <div>
+                    <input type="checkbox" defaultChecked/> 
+                    <label class="pl-2" placeholder={this.props.prefill.menu[1].in_stock}>In stock</label>
                   </div>
-                </Container>
-              </Col>
-            </Container> 
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="itemDescription">Description</label>
+                  <textarea className="form-control" id="itemDescription" rows="3"></textarea>
+                </div>
+
+                <div className="form-group">
+                  <label hmtlfor="exampleFormControlFile1">Picture</label>
+                  <input type="file" className="form-control-file" id="exampleFormControlFile1">
+                  </input>
+                </div>
+
+                <div className="d-flex justify-content-center row p-2">
+                  <button type="submit" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
+                </div>
+            </form>
           </div>
         </Container>
+      </Col>
       ); 
     }
   }
