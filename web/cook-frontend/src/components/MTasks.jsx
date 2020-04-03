@@ -73,11 +73,10 @@ class MTasks extends React.Component{
                 <Row>
                   <Col sm={4} className="pt-3 px-3" style={navColStyle}>
                     <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
-                      <Nav.Link href="/manager">Statistics</Nav.Link>
                       <Nav.Link href="/menu" >Menu</Nav.Link>
+                      <Nav.Link href="/manager">Statistics</Nav.Link>
                       <Nav.Link href="/hours">Restaurant Information</Nav.Link>
                       <Nav.Link href="/customize">Customize</Nav.Link>
-
                     </Nav>
                   </Col>
                   <Col className="pt-3 px-3">
