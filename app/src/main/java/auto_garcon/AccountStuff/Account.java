@@ -23,7 +23,7 @@ import auto_garcon.Cart_OrderHistory.ShoppingCart;
 import auto_garcon.InitialPages.QRcode;
 import auto_garcon.Singleton.SharedPreference;
 
-public class Account extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Account extends AppCompatActivity {
 
     private SharedPreference pref;
 
@@ -32,51 +32,6 @@ public class Account extends AppCompatActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
-        //creating side nav drawer
-        DrawerLayout drawerLayout = findViewById(R.id.account_main);
-        Toolbar toolbar = findViewById(R.id.xml_toolbar);
-        NavigationView navigationView = findViewById(R.id.navigationView);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-
         pref = new SharedPreference(this);
-    }
-
-    //onClick for side nav bar
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
-        switch(nav_item.getItemId()){
-            case R.id.account:
-                Toast.makeText(Account.this, "Account Selected", Toast.LENGTH_SHORT).show();
-                Intent account = new Intent(getBaseContext(),   Account.class);
-                startActivity(account);
-                break;
-            case R.id.order_history:
-                Toast.makeText(Account.this, "Order History Selected", Toast.LENGTH_SHORT).show();
-                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
-                startActivity(orderHistory);
-                break;
-            case R.id.settings:
-                Toast.makeText(Account.this, "Settings Selected", Toast.LENGTH_SHORT).show();
-                Intent settings = new Intent(getBaseContext(),   Settings.class);
-                startActivity(settings);
-                break;
-            case R.id.log_out:
-                Toast.makeText(Account.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
-
-                pref.changeLogStatus(false);
-                pref.logOut();
-
-                Intent login = new Intent(getBaseContext(),   Login.class);
-                startActivity(login);
-                break;
-        }
-        return false;
     }
 }

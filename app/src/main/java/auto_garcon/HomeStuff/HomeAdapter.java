@@ -2,7 +2,6 @@ package auto_garcon.HomeStuff;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import com.example.auto_garcon.R;
 import java.util.List;
 
 import auto_garcon.MenuStuff.Menu;
-import auto_garcon.MenuStuff.MenuPopup;
 import auto_garcon.Singleton.SharedPreference;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {

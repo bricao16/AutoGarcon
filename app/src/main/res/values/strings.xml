@@ -22,7 +22,7 @@
     <string name="first_name">First Name</string>
     <string name="username">Username</string>
     <string name="confirm">Confirm</string>
-
+    <string name="adding_item_confirmation_text">Adding this item will remove the other items currently in cart.</string>
 
 
     <string name="last_name">Last Name</string>

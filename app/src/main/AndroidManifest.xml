@@ -12,16 +12,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/small_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="auto_garcon.MenuStuff.ConfirmPopup"
-            android:theme="@style/AppTheme.Popup"/>
         <activity android:name="auto_garcon.InitialPages.twoButtonPage" />
-        <activity
-            android:name="auto_garcon.MenuStuff.MenuPopup"
-            android:theme="@style/AppTheme.Popup" />
         <activity android:name="auto_garcon.InitialPages.LoadingScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

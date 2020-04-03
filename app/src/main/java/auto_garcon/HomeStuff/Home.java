@@ -74,9 +74,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         NavigationView navigationView = findViewById(R.id.navigationView);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
@@ -88,15 +86,15 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
-                                Intent QRcode = new Intent(getBaseContext(), QRcode.class);
+                                Intent QRcode = new Intent(Home.this, QRcode.class);
                                 startActivity(QRcode);
                                 return true;
                             case R.id.action_home:
-                                Intent home = new Intent(getBaseContext(), Home.class);
+                                Intent home = new Intent(Home.this, Home.class);
                                 startActivity(home);
                                 return true;
                             case R.id.action_cart:
-                                Intent shoppingCart = new Intent(getBaseContext(), ShoppingCart.class);
+                                Intent shoppingCart = new Intent(Home.this, ShoppingCart.class);
                                 startActivity(shoppingCart);
                                 return true;
                         }
@@ -146,20 +144,16 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                                 itemToBeAdded.setName(item.get(inner_key).toString());
                                                 break;
                                         }
-
                                     }
 
                                     items.add(itemToBeAdded);
                                 }
-
-
                             }
 
                             recyclerView = findViewById(R.id.favorites_list);
                             recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
                             adapter = new HomeAdapter(Home.this, items);
                             recyclerView.setAdapter(adapter);
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
