@@ -261,7 +261,7 @@ app.post('/staff/login', (req, res) => {
 			res.status(500).send('Error: no user with that username/password');
 		}   //else if
 		else {
-			//Build staff object:
+			//Build user object:
 			let staff = {
 				'staff_id': rows[0].staff_id,
 				'restaurant_id': rows[0].restaurant_id,
