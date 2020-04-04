@@ -41,7 +41,7 @@ class Orders extends React.Component{
       if(e.key.toLowerCase() === 'y'){
         // Hide confirm delete dialog
         this.changeConfirmDelete(false, cardId);
-        
+
         let ordersArray = Object.entries(this.state.orders);
         ordersArray.splice(cardId-1, 1);
         let ordersState = Object.fromEntries(ordersArray);
@@ -108,8 +108,8 @@ class Orders extends React.Component{
     // Returns every order stored in the components state as an individual Order component
     let orderComponents = [];
     let boxNumber = 1;
-    Object.keys(this.state.orders).forEach(key => {
-      orderComponents.push( <Order key={key} boxNumber={boxNumber} order={this.state.orders[key]} /> );
+    Object.keys(this.state.orders).forEach((key, index) => {
+      orderComponents.push( <Order key={index} boxNumber={boxNumber} order={this.state.orders[key]} /> );
       boxNumber++;
     });
     return orderComponents;
@@ -119,8 +119,8 @@ class Orders extends React.Component{
   // when necessary
   render() {
     return (
-      <Container fluid style={{'min-height': '85vh', 'background-color': '#f1f1f1'}}>
-        <div class="d-flex flex-wrap">
+      <Container fluid style={{minHeight: '85vh', backgroundColor: '#f1f1f1'}}>
+        <div className="d-flex flex-wrap">
           {this.renderOrders()}
         </div>
         {this.renderConfirmDelete()}

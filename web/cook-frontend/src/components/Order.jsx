@@ -21,7 +21,7 @@ class Order extends React.Component {
         <Card className="text-center">
           {this.renderConfirmDelete()}
           <Card.Header style={cardHeaderStyle}>
-            <span class="px-2 py-1 mr-2" style={boxNumberStyle}>{this.props.boxNumber}</span>
+            <span className="px-2 py-1 mr-2" style={boxNumberStyle}>{this.props.boxNumber}</span>
             <span>Order Number: {this.props.order.order_num}</span>
           </Card.Header>
           <Card.Body>
@@ -31,7 +31,7 @@ class Order extends React.Component {
               </Card.Text> */}
 
               {this.props.order.items.map((item, key) => (
-                <div style={itemStyle}>
+                <div style={itemStyle} key={key}>
                   <p style={{margin: "0", padding: "0.8em"}}>{item.quantity}x</p>
                   <p style={{margin: "0", padding: "0.8em"}}>{item.title}</p>
                 </div>
