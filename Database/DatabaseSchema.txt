@@ -4,6 +4,10 @@ alexas
   alexa_id          KEY             INT
   restaurant_id     FOREIGN KEY     INT
   table_num                         INT
+  
+allergens
+  item_id           FOREIGN KEY     INT
+  allergen_name     KEY             VARCHAR(50)
 
 availability
   item_id           FOREIGN KEY         
