@@ -2,7 +2,7 @@
 	REST-API Server
 	Tucker Urbanski
 	Date Created: 3/2/2020
-	Last Modified: 3/31/2020
+	Last Modified: 4/4/2020
 */
 
 // Built-in Node.js modules
@@ -195,7 +195,11 @@ app.get('/favorites/:id', (req, res) => {
 			for (let i=0; i<rows.length; i++) {
 				response[i] =   {
 					'restaurant_id': rows[i].restaurant_id,
-			'restaurant_name': rows[i].restaurant_name
+					'restaurant_name': rows[i].restaurant_name,
+					'address': rows[i].restaurant_addr,
+					'phone_number': rows[i].phone_number,
+					'opening_time': rows[i].opening_time,
+					'closing_time': rows[i].closing_time
 				};
 			}   //for
 
