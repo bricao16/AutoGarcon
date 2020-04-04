@@ -86,7 +86,11 @@ GET /favorites/:id
 		0:
 		{
 			restaurant_id,
-			restaurant_name
+			restaurant_name,
+			address,
+			phone_number,
+			opening_time,
+			closing_time
 		}
 	}
 
