@@ -170,6 +170,16 @@ PUT /menu/add
 		If any inputs are missing:
 			Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price
 
+POST /menu/update
+	Updates an existing menu item
+	Inputs (in body of request): item_id, restaurant_id, item_name, calorie_num, category, in_stock, price
+	Outputs:
+		On success:
+			Successfully updated menu item!
+		If item_name and restaurant_id does not exist already:
+			Error: item does not exist
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price
 
 Added testing user for both /staff/login and /customers/login
 	user:password
