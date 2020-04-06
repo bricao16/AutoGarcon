@@ -114,7 +114,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 
 * Install React by typing in terminal: **npm install -g create-react-app**
 
-* Create react project by typing in terminal: **create-react-app <projectname>**
+* Create react project by typing in terminal: **create-react-app (projectname)**
  
 * In AutoGarcon-master file from GitHub, go into the folders: 
 
@@ -134,7 +134,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
   
 * Run project by typing: 
 
-  * **cd <projectname>**
+  * **cd (projectname)**
  
   * **Npm start**
 
