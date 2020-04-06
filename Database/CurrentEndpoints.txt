@@ -9,12 +9,7 @@ GET /menu/:id
 			restaurant,
 			calories,
 			price,
-			tax,
-			options,
 			category,
-			breakfast,
-			lunch,
-			dinner,
 			picture,
 			in_stock
 		}
@@ -31,7 +26,12 @@ GET /restaurant/:id
 			address,
 			phone_number,
 			opening,
-			closing
+			closing,
+			font,
+			primary_color,
+			secondary_color,
+			tertiary_color,
+			logo
 		}
 		menu:
 		{
@@ -39,12 +39,7 @@ GET /restaurant/:id
 			{
 				calories,
 				price,
-				tax,
-				options,
 				category,
-				breakfast,
-				lunch,
-				dinner,
 				picture,
 				in_stock
 			}
@@ -90,7 +85,8 @@ GET /favorites/:id
 			address,
 			phone_number,
 			opening_time,
-			closing_time
+			closing_time,
+			logo
 		}
 	}
 
