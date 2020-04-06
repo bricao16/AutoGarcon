@@ -1,8 +1,8 @@
 import React from "react";
 import Order from "./Order";
-import OrderDelete from "./OrderDelete";
+// import OrderDelete from "./OrderDelete";
 import Container from 'react-bootstrap/Container';
-import $ from 'jquery';
+// import $ from 'jquery';
 
 class Orders extends React.Component{
   /*
@@ -16,6 +16,14 @@ class Orders extends React.Component{
   */
   constructor(props) {
     super(props);
+    this.state = {
+      items: [
+        {quantity: 1, title: "Stuffed Ziti Fritta", type: "Appetizers"},
+        {quantity: 1, title: "Grilled Chicken", type: "Entrees"},
+        {quantity: 1, title: "Hamburger", type: "Entrees"},
+        {quantity: 1, title: "Spaghetti", type: "Entrees"},
+      ]
+    };
   }
   /*
   constructor(props) {
@@ -77,37 +85,26 @@ class Orders extends React.Component{
       return <OrderDelete cardId={this.state.confirmDelete.cardId}/>
     }
   }
-
-  configureOrders(orders){
-    let ordersState = {};
-    // Iterate over each order
-    Object.values(orders).forEach(order => {
-      // Check if that order_num exists
-      if(order.order_num in ordersState){
-        // Add to order using order_num
-        ordersState[order.order_num].items.push({quantity: order.quantity, title: order.item_name})
-      }else{
-        // Create new order object
-        ordersState[order.order_num] = {order_num: order.order_num, table: order.table, items: [{quantity: order.quantity, title: order.item_name}]}
-      }
-    });
-    this.setState({orders: ordersState});
-  }
-
-  componentDidMount() {
-    fetch("http://50.19.176.137:8000/orders/123")
-      .then(res => res.json())
-      .then(orders => {
-        this.configureOrders(orders);
-      })
-      .catch(e => console.log(e));
-  }
   */
 
+
+
+
   renderOrders() {
+    // let i = {quantity: 1, title: "Stuffed Ziti Fritta", type: "Appetizers"};
+    // let itemsByType = {
+    //
+    // };
+    // this.state.items.forEach(item => {
+    //   if(!(item.type in itemsByType)){
+    //     itemsByType[item.type] = [];
+    //   }
+    //   itemsByType[item.type].push({quantity: item.quantity, title: item.title});
+    // });
+    // console.log(itemsByType);
     // Returns every order stored in the components state as an individual Order component
     let orderComponents = [];
-    let boxNumber = 1;
+    // let boxNumber = 1;
     // Object.keys(this.state.orders).forEach((key, index) => {
     //   // orderComponents.push( <Order key={index} boxNumber={boxNumber} order={this.state.orders[key]} /> );
     //   boxNumber++;
@@ -116,8 +113,13 @@ class Orders extends React.Component{
       {
         order_num: 128971,
         table: 1,
-        confirmDelete: false,
         items: {
+          Appetizers: [
+            {
+              quantity: 1,
+              title: "Stuffed Ziti Fritta"
+            }
+          ],
           Entrees: [
             {
               quantity: 1,
@@ -133,12 +135,12 @@ class Orders extends React.Component{
               quantity: 1,
               title: "Coke"
             }
-           ]
+          ]
         }
        }
     ];
-    for(let i = 0; i<orders.length; i++){
-      orderComponents.push(<Order key={i} boxNumber={i} order={orders[i]} />);
+    for(let i = 0; i<12; i++){
+      orderComponents.push(<Order key={i} cardId={i} order={orders[0]} />);
     }
     return orderComponents;
   }
