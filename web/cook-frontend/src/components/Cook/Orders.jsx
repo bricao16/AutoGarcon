@@ -2,12 +2,12 @@ import React from "react";
 import Order from "./Order";
 // import OrderDelete from "./OrderDelete";
 import Container from 'react-bootstrap/Container';
-// import $ from 'jquery';
+import $ from 'jquery';
 import '../../assets/order.css'
 
 class Orders extends React.Component{
   /*
-    This Prop is used to render the orders for the Cook page.
+    This component is used to render the orders for the Cook page.
     The orders are an array of object containing order details.  Look at the Order component for more details on the format of an order object.
 
     renderOrders is a helper function which takes all the orders,
@@ -26,6 +26,10 @@ class Orders extends React.Component{
       ]
     };
   }
+
+
+
+
   /*
   constructor(props) {
     super(props);
@@ -141,7 +145,11 @@ class Orders extends React.Component{
        }
     ];
     for(let i = 0; i<12; i++){
-      orderComponents.push(<Order key={i} cardId={i} order={orders[0]} />);
+      let isSelected = false;
+      if(i === this.props.selectedOrder){
+        isSelected = true;
+      }
+      orderComponents.push(<Order key={i} cardId={i} order={orders[0]} selectedOrder={isSelected} handleClick={this.props.handleClick}/>);
     }
     return orderComponents;
   }
@@ -150,7 +158,7 @@ class Orders extends React.Component{
   // when necessary
   render() {
     return (
-      <Container fluid className="p-0 d-flex flex-wrap" id="orders">
+      <Container fluid className="p-0 d-flex flex-wrap" id="orders" style={ordersStyle}>
         {this.renderOrders()}
         {/*{this.renderConfirmDelete()}*/}
       </Container>
@@ -158,6 +166,8 @@ class Orders extends React.Component{
   };
 }
 
-
+const ordersStyle = {
+  alignItems: 'flex-start'
+};
 
 export default Orders;

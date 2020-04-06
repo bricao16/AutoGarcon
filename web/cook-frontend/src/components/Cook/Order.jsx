@@ -17,32 +17,43 @@ class Order extends React.Component {
   */
   renderItems(){
     let allItems = [];
+    let key1 = 0;
     for(let category in this.props.order.items){
       let items = [];
+      let key2 = 0;
       this.props.order.items[category].forEach(item => {
         items.push(
-          <div>
+          <div key={key2++}>
             <span className="pr-2">{item.quantity}x</span>
             <span>{item.title}</span>
           </div>
-        )
+        );
       });
       allItems.push(
         // Category with children items
-        <div>
+        <div key={key1++}>
           <p style={itemCategoryStyle} className="m-0">{category}</p>
           <div style={itemsStyle} className="px-2">
             {items}
           </div>
         </div>
-      )
+      );
     }
     return allItems;
   }
 
+  selectedOrder(){
+    if(this.props.selectedOrder){
+      return {
+        background: '#7e7e7e'
+      }
+    }
+    return {}
+  }
+
   render() {
     return (
-      <div className="p-1 m-2">
+      <div className="p-1 m-2 order" style={this.selectedOrder()} onClick={() => this.props.handleClick(this.props.cardId)}>
         <Card>
           <Card.Header style={cardHeaderStyle} className="p-0">
             <span className="px-2 py-1" style={cardIdStyle}>{this.props.cardId + 1}</span>
