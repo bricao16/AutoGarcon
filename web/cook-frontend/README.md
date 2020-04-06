@@ -122,7 +122,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
   
   * Delete all of the files from the React project that you just created
   
-  * Copy and paste all of the files from cook-frontend into React project that you just created (<projectname>)
+  * Copy and paste all of the files from cook-frontend into React project that you just created <projectname>
  
 * Import the following packages to run by using following commands:
  
