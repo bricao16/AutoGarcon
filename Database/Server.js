@@ -2,7 +2,7 @@
 	REST-API Server
 	Tucker Urbanski
 	Date Created: 3/2/2020
-	Last Modified: 4/4/2020
+	Last Modified: 4/6/2020
 */
 
 // Built-in Node.js modules
@@ -102,7 +102,8 @@ app.get('/restaurant/:id', (req, res) => {
 				'font': rows[0].font,
 				'primary_color': rows[0].primary_color,
 				'secondary_color': rows[0].secondary_color,
-				'tertiary_color': rows[0].tertiary_color
+				'tertiary_color': rows[0].tertiary_color,
+				'logo': rows[0].logo
 			};
 
 			//Add menu to response:
@@ -199,7 +200,8 @@ app.get('/favorites/:id', (req, res) => {
 					'address': rows[i].restaurant_addr,
 					'phone_number': rows[i].phone_number,
 					'opening_time': rows[i].opening_time,
-					'closing_time': rows[i].closing_time
+					'closing_time': rows[i].closing_time,
+					'logo': rows[i].logo
 				};
 			}   //for
 
