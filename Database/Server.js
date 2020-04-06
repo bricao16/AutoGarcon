@@ -438,6 +438,49 @@ app.put('/menu/add', (req, res) =>
 	}); //db.query
 });	//app.put
 
+//POST request handler for updating menu item
+app.post('/menu/update', (req, res) =>
+{
+	//Make sure right number of parameters are entered:
+	if(!(req.body.item_id && req.body.restaurant_id && req.body.item_name && req.body.calorie_num && req.body.category && req.body.in_stock && req.body.price))
+	{
+		res.status(500).send('Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price');
+		return;
+	}   //if
+
+	//Make sure the menu item exists at the restaurant:
+	let parameters = [];
+	parameters = [req.body.item_id, req.body.restaurant_id]
+	let query = "Select * FROM sample.menu WHERE item_id = ? AND restaurant_id = ?";
+	db.query(query, parameters, (err, rows) =>
+	{
+		if (rows.length == 0)
+		{
+			res.status(500).send('Error: item does not exist');
+		}   //if
+		else
+		{
+			parameters = [req.body.item_name, req.body.calorie_num, req.body.category, req.body.in_stock, req.body.price, req.body.item_id];
+			let query = '';
+			query = 'UPDATE sample.menu SET item_name = ?, calorie_num = ?, category = ?, in_stock = ?, price = ?';
+			query = query + " WHERE item_id = ?";
+
+			//Edit menu item in db:
+			db.query(query, parameters, (err, rows) =>
+			{
+				if (err)
+				{
+					res.status(500).send('Error updating menu item');
+				}   //if
+				else
+				{
+					res.status(200).send('Successfully updated menu item!');
+				}   //else
+			}); //db.query
+		}   //else
+	}); //db.query
+});	//app.post
+
 /*
 	Token format:
 		Authorization: Bearer <token>
