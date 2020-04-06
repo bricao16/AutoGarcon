@@ -33,7 +33,7 @@ class Order extends React.Component {
         // Category with children items
         <div key={key1++}>
           <p style={itemCategoryStyle} className="m-0">{category}</p>
-          <div style={itemsStyle} className="px-2">
+          <div className="px-2">
             {items}
           </div>
         </div>
@@ -43,19 +43,21 @@ class Order extends React.Component {
   }
 
   selectedOrder(){
+    let style = {};
     if(this.props.selectedOrder){
-      return {
-        background: '#7e7e7e'
-      }
+      style.background = '#7e7e7e';
     }
-    return {}
+    if(this.props.order.expand){
+      style.fontSize = '2em';
+    }
+    return style
   }
 
   render() {
     return (
-      <div className="p-1 m-2 order" style={this.selectedOrder()} onClick={() => this.props.handleClick(this.props.cardId)}>
+      <div className="p-1 m-2 order" style={this.selectedOrder()} onClick={() => this.props.handleCardClick(this.props.cardId)}>
         <Card>
-          <Card.Header style={cardHeaderStyle} className="p-0">
+          <Card.Header style={cardHeaderStyle} className="p-0 d-flex">
             <span className="px-2 py-1" style={cardIdStyle}>{this.props.cardId + 1}</span>
             <div style={{flexGrow: 1, display: 'flex', justifyContent: 'space-between'}}>
               <span className="px-2 py-1">Table {this.props.order.table}</span>
@@ -77,10 +79,9 @@ class Order extends React.Component {
 
 
 
-var cardHeaderStyle = {
+const cardHeaderStyle = {
   backgroundColor: '#0b658a',
   color: '#ffffff',
-  display: 'flex',
   borderBottom: 'none'
   // justifyContent: 'space-evenly',
   // alignItems: 'center'
@@ -100,21 +101,10 @@ const itemCategoryStyle = {
   borderTop: '1px solid rgba(0,0,0,.125)'
 };
 
-const itemsStyle = {
-
-};
-
-// const confirmDeleteStyle = {
-//   background: '#ff000061',
-//   width: '100%',
-//   height: '100%',
-//   position: 'absolute'
-// };
-
 const cardFooterStyle = {
-  color: 'white',
+  backgroundColor: '#0b658a',
+  color: '#ffffff',
   justifyContent: 'space-between',
-  backgroundColor: 'rgb(11, 101, 138)'
 };
 
 

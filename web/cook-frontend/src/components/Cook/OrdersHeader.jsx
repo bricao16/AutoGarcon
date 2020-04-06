@@ -15,7 +15,7 @@ class OrdersHeader extends React.Component {
           <h2 className="m-0 mx-2">Current Orders</h2>
           <div style={buttonsContainerStyle}>
             <Button variant="secondary" size="sm" className="mx-3">In-Progress</Button>
-            <Button variant="secondary" size="sm" className="mx-3">Complete</Button>
+            <Button variant="secondary" size="sm" className="mx-3" onClick={this.props.handleCompleteClick}>Complete</Button>
             <Button variant="secondary" size="sm" className="mx-3" onClick={this.props.handleExpandClick}>Expand</Button>
           </div>
         </div>
