@@ -16,6 +16,10 @@ class Orders extends React.Component{
   */
   constructor(props) {
     super(props);
+  }
+  /*
+  constructor(props) {
+    super(props);
     this.state = {
       // Each key in orders is the order number
       orders: {
@@ -61,11 +65,7 @@ class Orders extends React.Component{
   changeConfirmDelete(show, id){
     let state = this.state;
     let key = Object.keys(state.orders)[id-1];
-    if(show){
-      state.orders[key].confirmDelete = true;
-    } else {
-      state.orders[key].confirmDelete = false;
-    }
+    state.orders[key].confirmDelete = show;
     state.confirmDelete.show = show;
     state.confirmDelete.cardId = id;
 
@@ -79,7 +79,6 @@ class Orders extends React.Component{
   }
 
   configureOrders(orders){
-    console.log(orders);
     let ordersState = {};
     // Iterate over each order
     Object.values(orders).forEach(order => {
@@ -103,15 +102,52 @@ class Orders extends React.Component{
       })
       .catch(e => console.log(e));
   }
+  */
 
   renderOrders() {
     // Returns every order stored in the components state as an individual Order component
     let orderComponents = [];
     let boxNumber = 1;
-    Object.keys(this.state.orders).forEach((key, index) => {
-      orderComponents.push( <Order key={index} boxNumber={boxNumber} order={this.state.orders[key]} /> );
-      boxNumber++;
-    });
+    // Object.keys(this.state.orders).forEach((key, index) => {
+    //   // orderComponents.push( <Order key={index} boxNumber={boxNumber} order={this.state.orders[key]} /> );
+    //   boxNumber++;
+    // });
+    let orders = [
+      {
+        order_num: 128971,
+        table: 1,
+        confirmDelete: false,
+        items: {
+          Entrees: [
+            {
+              quantity: 1,
+              title: "Grilled Chicken"
+            },
+            {
+              quantity: 2,
+              title: "Hamburger"
+            }
+          ],
+          Drinks: [
+            {
+              quantity: 1,
+              title: "Coke"
+            }
+           ]
+        }
+       },
+      // {order_num: 128971, table: 2, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
+      // {order_num: 128971, table: 3, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
+      // {order_num: 128971, table: 4, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
+      // {order_num: 128971, table: 5, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
+      // {order_num: 128971, table: 6, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
+      // {order_num: 128971, table: 7, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
+      // {order_num: 128971, table: 8, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
+      // {order_num: 128971, table: 9, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
+    ];
+    for(let i = 0; i<orders.length; i++){
+      orderComponents.push(<Order key={i} boxNumber={i} order={orders[i]} />);
+    }
     return orderComponents;
   }
 
@@ -119,14 +155,14 @@ class Orders extends React.Component{
   // when necessary
   render() {
     return (
-      <Container fluid style={{minHeight: '85vh', backgroundColor: '#f1f1f1'}}>
-        <div className="d-flex flex-wrap">
-          {this.renderOrders()}
-        </div>
-        {this.renderConfirmDelete()}
+      <Container fluid className="p-3 d-flex flex-wrap">
+        {this.renderOrders()}
+        {/*{this.renderConfirmDelete()}*/}
       </Container>
     )
   };
 }
+
+
 
 export default Orders;

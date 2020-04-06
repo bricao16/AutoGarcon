@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Orders from "./components/Orders";
+import Cook from "./components/Cook/Cook.jsx";
 import MTasks from "./components/MTasks";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
@@ -54,11 +54,11 @@ function App() {
                   <Route path="/statistics">
                     <MTasks/>
                   </Route>
-                  <Route path="/menu" 
+                  <Route path="/menu"
                     render={(props) => <MTasks {...props} content={"menu"}/>} />
-                  <Route path="/hours" 
+                  <Route path="/hours"
                     render={(props) => <MTasks {...props} content={"hours"}/>} />
-                  <Route path="/customize" 
+                  <Route path="/customize"
                     render={(props) => <MTasks {...props} content={"customize"}/>} />
                 </Switch>
               </div>
@@ -103,12 +103,6 @@ function Home() {
       </div>
 
     </div>
-  );
-}
-
-function Cook() {
-  return (
-      <Orders/>
   );
 }
 
