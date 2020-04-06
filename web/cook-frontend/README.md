@@ -154,21 +154,21 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 
 * Initialize a git repository in a new or existing directory by typing into Command Prompt:
 
- * **Cd my-project/**
+   * **Cd my-project/**
  
- * **Git init**
+   * **Git init**
  
- * **Heroku git:remote -a (heroku-app-name)**
+   * **Heroku git:remote -a (heroku-app-name)**
 
 * Commit code to the repository and deploy it to Heroku by typing into Command Prompt:
 
- * **Git add .**
+   * **Git add .**
 
- * **Git commit -am “update”**
+   * **Git commit -am “update”**
 
- * **Git push heroku master**
+   * **Git push heroku master**
 
 * Open up the app by typing into a web browser:
 
- * **(heroku-app-name>).herokuapp.com** 
+   * **(heroku-app-name>).herokuapp.com** 
 
