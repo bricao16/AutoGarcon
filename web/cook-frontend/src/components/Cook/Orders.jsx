@@ -135,15 +135,7 @@ class Orders extends React.Component{
             }
            ]
         }
-       },
-      // {order_num: 128971, table: 2, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
-      // {order_num: 128971, table: 3, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
-      // {order_num: 128971, table: 4, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
-      // {order_num: 128971, table: 5, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
-      // {order_num: 128971, table: 6, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
-      // {order_num: 128971, table: 7, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
-      // {order_num: 128971, table: 8, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
-      // {order_num: 128971, table: 9, confirmDelete: false, items: [{quantity: 1, title: "Grilled Chicken"}, {quantity: 1, title: "Hamburger"}, {quantity: 2, title: "Coke"}]},
+       }
     ];
     for(let i = 0; i<orders.length; i++){
       orderComponents.push(<Order key={i} boxNumber={i} order={orders[i]} />);

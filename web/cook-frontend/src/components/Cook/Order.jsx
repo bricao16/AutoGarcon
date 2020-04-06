@@ -28,35 +28,13 @@ class Order extends React.Component {
               <span className="px-2 py-1">#{this.props.order.order_num}</span>
             </div>
           </Card.Header>
-          <div style={cardBodyStyle} className="px-1">
-              {/*{this.props.order.items.map((item, key) => (*/}
-              {/*  <React.Fragment>*/}
-              {/*    <span style={itemTypeStyle}>key</span>*/}
-              {/*    <div style={itemStyle}>*/}
-              {/*      <p className="p-1 pr-1 m-0">{item.quantity}x</p>*/}
-              {/*      <p className="p-1 m-0">{item.title}</p>*/}
-              {/*    </div>*/}
-              {/*    <p className="m-0 ml-3 text-muted">- Add sauce</p>*/}
-              {/*  </React.Fragment>*/}
-              {/*))}*/}
-          </div>
-          <span style={itemTypeStyle}>Entrees</span>
-          <div style={cardBodyStyle} className="px-1">
-            {
-              Object.keys(this.props.order.items).forEach(key => {
-                <div style={itemStyle} key={key}>
-                  <p className="p-1 pr-1 m-0">{this.props.order.items[keys].quantity}x</p>
-                  <p className="p-1 m-0">{this.props.order.items[keys].title}</p>
-                </div>
-              })
-            }
-            {this.props.order.items.map((item, key) => (
-              <div style={itemStyle} key={key}>
-                <p className="p-1 pr-1 m-0">{item.quantity}x</p>
-                <p className="p-1 m-0">{item.title}</p>
-              </div>
-            ))}
-          </div>
+          <Card.Body className="p-0">
+            <div style={itemTypeStyle}>Entrees</div>
+            <div style={cardBodyStyle} className="px-1">
+              <div>2x Grilled Chicken</div>
+              <div>1x Hamburger</div>
+            </div>
+          </Card.Body>
           <Card.Footer className="p-0 p-1 px-2 d-flex" style={cardFooterStyle}>
             <span>10:30 am</span>
             <span>2:20</span>
