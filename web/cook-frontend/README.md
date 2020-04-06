@@ -106,7 +106,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 
 * Open up the folder and click ‘Extract all’ on the top right
 
-* Install Visual Studio Code
+* Install [Visual Studio Code](https://code.visualstudio.com/)
 
 * Make sure Node.js is installed by typing **node -v** in terminal (something similar to v.6.9.5 should appear) - if it isn’t installed, install and run the Node.js installer from the Node.js website’s downloads page
 
