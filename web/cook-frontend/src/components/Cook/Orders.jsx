@@ -3,6 +3,7 @@ import Order from "./Order";
 // import OrderDelete from "./OrderDelete";
 import Container from 'react-bootstrap/Container';
 // import $ from 'jquery';
+import '../../assets/order.css'
 
 class Orders extends React.Component{
   /*
@@ -149,7 +150,7 @@ class Orders extends React.Component{
   // when necessary
   render() {
     return (
-      <Container fluid className="p-3 d-flex flex-wrap">
+      <Container fluid className="p-0 d-flex flex-wrap" id="orders">
         {this.renderOrders()}
         {/*{this.renderConfirmDelete()}*/}
       </Container>

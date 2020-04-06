@@ -42,7 +42,7 @@ class Order extends React.Component {
 
   render() {
     return (
-      <div className="p-3">
+      <div className="p-1 m-2">
         <Card>
           <Card.Header style={cardHeaderStyle} className="p-0">
             <span className="px-2 py-1" style={cardIdStyle}>{this.props.cardId + 1}</span>

@@ -1,6 +1,7 @@
 import React from "react";
 import Orders from "./Orders"
 import OrdersMenu from "./OrdersMenu.jsx";
+import OrdersHeader from "./OrdersHeader.jsx";
 
 class Cook extends React.Component {
 
@@ -40,8 +41,11 @@ class Cook extends React.Component {
   render() {
     return (
       <div style={cookPageStyle}>
-        <OrdersMenu />
-        <Orders orders={this.state.orders}/>
+        {/*<OrdersMenu />*/}
+        <div className="p-3">
+          <OrdersHeader />
+          <Orders orders={this.state.orders}/>
+        </div>
       </div>
     )
   }
@@ -49,7 +53,7 @@ class Cook extends React.Component {
 
 const cookPageStyle = {
   backgroundColor: '#f1f1f1',
-  height: '100vh',
+  minHeight: '100%',
   width: '100vw'
 };
 

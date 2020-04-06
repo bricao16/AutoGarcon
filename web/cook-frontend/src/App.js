@@ -27,7 +27,7 @@ req.onload = function(){
 function App() {
   return (
     <Router>
-      <main style={mainStyle}>
+      <main style={mainStyle} className="d-flex">
         {/*<div className="px-4">*/}
         {/*  <Row style={{'minHeight': '90vh'}}>*/}
         {/*    <Col className="pt-3 px-3">*/}
@@ -114,7 +114,7 @@ function Manager() {
 
 var mainStyle = {
   'backgroundColor': '#ffffff',
-  height: 'calc(100vh - 67px)'
+  minHeight: 'calc(100vh - 67px)'
 };
 
 // var sectionStyle = {
