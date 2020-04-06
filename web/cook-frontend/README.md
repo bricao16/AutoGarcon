@@ -170,5 +170,5 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 
 * Open up the app by typing into a web browser:
 
-   * **(heroku-app-name>).herokuapp.com** 
+   * **(heroku-app-name).herokuapp.com** 
 
