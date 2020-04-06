@@ -102,39 +102,39 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 
 ### Installation
 
-*Go to https://github.com/bricao16/AutoGarcon and click the green ‘Clone or download’ button on the top right and then click download ZIP
+* Go to [GitHub Repo](https://github.com/bricao16/AutoGarcon) and click the green ‘Clone or download’ button on the top right and then click download ZIP
 
-*Open up the folder and click ‘Extract all’ on the top right
+* Open up the folder and click ‘Extract all’ on the top right
 
-*Install Visual Studio Code
+* Install Visual Studio Code
 
-*Make sure Node.js is installed by typing node -v in terminal (something similar to v.6.9.5 should appear) - if it isn’t installed, install and run the Node.js installer from the Node.js website’s downloads page
+* Make sure Node.js is installed by typing **node -v** in terminal (something similar to v.6.9.5 should appear) - if it isn’t installed, install and run the Node.js installer from the Node.js website’s downloads page
 
-*Update npm version by typing: npm install npm --global
+* Update npm version by typing: **npm install npm --global
 
-*Install React by typing in terminal: npm install -g create-react-app
+* Install React by typing in terminal: **npm install -g create-react-app
 
-*Create react project by typing in terminal: create-react-app <projectname>
+* Create react project by typing in terminal: **create-react-app <projectname>
  
-*In AutoGarcon-master file from GitHub, go into the folders: 
+* In AutoGarcon-master file from GitHub, go into the folders: 
 
-  *AutoGarcon-master > web > cook-frontend
+  * AutoGarcon-master > web > cook-frontend
   
-  *Delete all of the files from the React project that you just created
+  * Delete all of the files from the React project that you just created
   
-  *Copy and paste all of the files from cook-frontend into React project that you just created (<projectname>)
+  * Copy and paste all of the files from cook-frontend into React project that you just created (<projectname>)
  
-*Import the following packages to run by using following commands:
+* Import the following packages to run by using following commands:
  
-  *Npm install react-router-dom
+  * **Npm install react-router-dom
   
-  *Npm install react-bootstrap
+  * **Npm install react-bootstrap
   
-  *Npm install @material-ui/core
+  * **Npm install @material-ui/core
   
-*Run project by typing: 
+* Run project by typing: 
 
-  *cd <projectname>
+  * **cd <projectname>
  
-  *Npm start
+  * **Npm start
 
