@@ -27,45 +27,45 @@ req.onload = function(){
 function App() {
   return (
     <Router>
-      <div style={backgroundStyle}>
-        <div className="px-4">
-          <Row style={{'minHeight': '90vh'}}>
-            <Col className="pt-3 px-3">
-              <div className="rounded" style={sectionStyle}>
-                <Switch>
-                  <Route exact path="/">
-                    <Home />
-                  </Route>
-                  <Route path="/cook">
-                    <Cook />
-                  </Route>
-                  <Route path="/manager">
-                    <Manager />
-                  </Route>
-                  <Route path="/sign_up">
-                    <SignUp />
-                  </Route>
-                  <Route path="/login_manager">
-                    <MLogin/>
-                  </Route>
-                  <Route path="/login_cook">
-                    <CLogin/>
-                  </Route>
-                  <Route path="/statistics">
-                    <MTasks/>
-                  </Route>
-                  <Route path="/menu"
-                    render={(props) => <MTasks {...props} content={"menu"}/>} />
-                  <Route path="/hours"
-                    render={(props) => <MTasks {...props} content={"hours"}/>} />
-                  <Route path="/customize"
-                    render={(props) => <MTasks {...props} content={"customize"}/>} />
-                </Switch>
-              </div>
-            </Col>
-          </Row>
-        </div>
-      </div>
+      <main style={mainStyle}>
+        {/*<div className="px-4">*/}
+        {/*  <Row style={{'minHeight': '90vh'}}>*/}
+        {/*    <Col className="pt-3 px-3">*/}
+        {/*      <div className="rounded" style={sectionStyle}>*/}
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/cook">
+            <Cook />
+          </Route>
+          <Route path="/manager">
+            <Manager />
+          </Route>
+          <Route path="/sign_up">
+            <SignUp />
+          </Route>
+          <Route path="/login_manager">
+            <MLogin/>
+          </Route>
+          <Route path="/login_cook">
+            <CLogin/>
+          </Route>
+          <Route path="/statistics">
+            <MTasks/>
+          </Route>
+          <Route path="/menu"
+            render={(props) => <MTasks {...props} content={"menu"}/>} />
+          <Route path="/hours"
+            render={(props) => <MTasks {...props} content={"hours"}/>} />
+          <Route path="/customize"
+            render={(props) => <MTasks {...props} content={"customize"}/>} />
+        </Switch>
+        {/*    </div>*/}
+        {/*  </Col>*/}
+        {/*</Row>*/}
+        {/*</div>*/}
+      </main>
       <footer style={footerStyle}>
         Powered by Auto Garcon
         <img src={logoImage} width="auto" height="50vh" alt="waiter" />
@@ -112,16 +112,15 @@ function Manager() {
   );
 }
 
-var backgroundStyle = {
+var mainStyle = {
   'backgroundColor': '#ffffff',
-  'flexGrow': '1',
-  'height': '100%'
-}
+  height: 'calc(100vh - 67px)'
+};
 
-var sectionStyle = {
-  'backgroundColor': '#ffffff',
-  'height': '100%'
-}
+// var sectionStyle = {
+//   'backgroundColor': '#ffffff',
+//   'height': '100%'
+// }
 
 var footerStyle = {
   'backgroundColor': '#ffffff',
@@ -129,8 +128,10 @@ var footerStyle = {
   'paddingRight': '12px',
   'paddingTop': '12px',
   'textAlign': 'right',
-  'fontFamily': 'Kefa'
-}
+  'fontFamily': 'Kefa',
+  height: '67px'
+};
+
 var homeStyle = {
   'fontWeight': '300',
   'textAlign' : 'center',
