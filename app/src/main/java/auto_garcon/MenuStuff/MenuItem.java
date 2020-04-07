@@ -2,17 +2,18 @@ package auto_garcon.MenuStuff;
 
 import java.io.Serializable;
 
-public class MenuItem {
+public class MenuItem implements Serializable{
     private String category;
     private String nameOfItem;
     private int amountInStock;
     private int calories;
     private int restaurantID;
     private double price;
+    private double cost;
     private int quantity;
 
     public MenuItem() {
-        this.quantity=1;
+        this.quantity = 1;
     }
 
     public MenuItem(String category, String nameOfItem,  int amountInStock,  int calories, int restaurantID, double price) {
@@ -57,6 +58,14 @@ public class MenuItem {
         return this.price;
     }
 
+    public void setCost() {
+        this.cost = getPrice() * getQuantity();
+    }
+
+    public double getCost() {
+        return this.cost;
+    }
+
     public void setCategory(String category) {
         this.category = category;
     }
@@ -73,13 +82,17 @@ public class MenuItem {
         return this.amountInStock;
     }
 
-    public int getQuantity(){return this.quantity;}
+    public int getQuantity() {
+        return this.quantity;
+    }
 
-    public void incrementQuantity(){this.quantity= this.quantity+1;}
+    public void incrementQuantity() {
+        this.quantity = this.quantity + 1;
+    }
 
     public void decrementQuantity(){
-        if(this.quantity > 0){
-            this.quantity = this.quantity-1;
+        if(this.quantity > 0) {
+            this.quantity = this.quantity - 1;
         }
     }
 }

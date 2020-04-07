@@ -122,14 +122,21 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 addToCart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(pref.getShoppingCart().getRestaurantID() == getChild(i, j).getRestaurantID()) {
-                            cart = pref.getShoppingCart();
+                        if(pref.getShoppingCart().getCart().size() == 0) {
+                            cart = new ShoppingCartSingleton(getChild(i, j).getRestaurantID());
                             cart.addToCart(getChild(i, j));
                             pref.setShoppingCart(cart);
                         }
-                        else if(pref.getShoppingCart().getCart().size() == 0) {
-                            cart = new ShoppingCartSingleton(getChild(i, j).getRestaurantID());
-                            cart.addToCart(getChild(i, j));
+                        else if(pref.getShoppingCart().getRestaurantID() == getChild(i, j).getRestaurantID()) {
+                            cart = pref.getShoppingCart();
+
+                            if(cart.cartContainsItem(getChild(i, j)) != null) {
+                                cart.cartContainsItem(getChild(i, j)).incrementQuantity();
+                            }
+                            else {
+                                cart.addToCart(getChild(i, j));
+                            }
+
                             pref.setShoppingCart(cart);
                         }
                         else {

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -30,10 +29,7 @@ import auto_garcon.Singleton.ShoppingCartSingleton;
 public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private SharedPreference pref;
-    private SharedPreference preference;
     private ShoppingCartSingleton shoppingCart;
-    private RecyclerView.Adapter adapter;
-    private  RecyclerView.LayoutManager layoutManager;
     private RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +38,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
         recyclerView = findViewById(R.id.list);
         pref = new SharedPreference(this);
+
         if(pref.getShoppingCart() == null ){
             shoppingCart = new ShoppingCartSingleton();
             pref.setShoppingCart(shoppingCart);
@@ -71,7 +68,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 //
             }
         });
-
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
 
@@ -106,23 +102,18 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Toast.makeText(ShoppingCart.this, "Account Selected", Toast.LENGTH_SHORT).show();
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
                 break;
             case R.id.order_history:
-                Toast.makeText(ShoppingCart.this, "Order History Selected", Toast.LENGTH_SHORT).show();
                 Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
                 startActivity(orderHistory);
                 break;
             case R.id.settings:
-                Toast.makeText(ShoppingCart.this, "Settings Selected", Toast.LENGTH_SHORT).show();
                 Intent settings = new Intent(getBaseContext(),   Settings.class);
                 startActivity(settings);
                 break;
             case R.id.log_out:
-                Toast.makeText(ShoppingCart.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
-
                 pref.changeLogStatus(false);
                 pref.logOut();
 

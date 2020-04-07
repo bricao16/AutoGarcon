@@ -8,9 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
@@ -170,18 +168,14 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Toast.makeText(Menu.this, "Account Selected", Toast.LENGTH_SHORT).show();
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
                 break;
             case R.id.settings:
-                Toast.makeText(Menu.this, "Settings Selected", Toast.LENGTH_SHORT).show();
                 Intent settings = new Intent(getBaseContext(),   Settings.class);
                 startActivity(settings);
                 break;
             case R.id.log_out:
-                Toast.makeText(Menu.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
-
                 pref.changeLogStatus(false);
                 pref.logOut();
 

@@ -9,8 +9,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -37,9 +35,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.navigationView);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
@@ -77,23 +72,18 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Toast.makeText(OrderHistory.this, "Account Selected", Toast.LENGTH_SHORT).show();
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
                 break;
             case R.id.order_history:
-                Toast.makeText(OrderHistory.this, "Order History Selected", Toast.LENGTH_SHORT).show();
                 Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
                 startActivity(orderHistory);
                 break;
             case R.id.settings:
-                Toast.makeText(OrderHistory.this, "Settings Selected", Toast.LENGTH_SHORT).show();
                 Intent settings = new Intent(getBaseContext(),   Settings.class);
                 startActivity(settings);
                 break;
             case R.id.log_out:
-                Toast.makeText(OrderHistory.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
-
                 pref.changeLogStatus(false);
                 pref.logOut();
 

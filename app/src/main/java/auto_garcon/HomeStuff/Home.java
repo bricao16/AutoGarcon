@@ -1,11 +1,9 @@
 package auto_garcon.HomeStuff;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
@@ -26,7 +24,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.gson.JsonObject;
 import com.squareup.seismic.ShakeDetector;
 
 import org.json.JSONException;
@@ -233,23 +230,18 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Toast.makeText(Home.this, "Account Selected", Toast.LENGTH_SHORT).show();
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
                 break;
             case R.id.order_history:
-                Toast.makeText(Home.this, "Order History Selected", Toast.LENGTH_SHORT).show();
                 Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
                 startActivity(orderHistory);
                 break;
             case R.id.settings:
-                Toast.makeText(Home.this, "Settings Selected", Toast.LENGTH_SHORT).show();
                 Intent settings = new Intent(getBaseContext(),   Settings.class);
                 startActivity(settings);
                 break;
             case R.id.log_out:
-                Toast.makeText(Home.this, "Log Out Selected", Toast.LENGTH_SHORT).show();
-
                 pref.changeLogStatus(false);
                 pref.logOut();
 

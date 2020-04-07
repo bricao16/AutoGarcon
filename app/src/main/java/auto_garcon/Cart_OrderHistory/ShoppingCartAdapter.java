@@ -39,33 +39,37 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     @Override
     public void onBindViewHolder(@NonNull final ShoppingCartAdapter.ShoppingCartViewHolder holder, int position) {
         final int positionForOnClick =position;
-        String quantity = "Qty("+menuItemArrayList.get(position).getQuantity()+")";
+        String quantity = "Qty(" + menuItemArrayList.get(position).getQuantity() + ")";
 
         holder.name.setText(menuItemArrayList.get(position).getNameOfItem());
+        menuItemArrayList.get(position).setCost();
+        holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
         holder.quantity.setText(quantity);
+
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 menuItemArrayList.get(positionForOnClick).incrementQuantity();
-                holder.quantity.setText("Qty("+menuItemArrayList.get(positionForOnClick).getQuantity()+")");
-                Toast.makeText(ct, "hello", Toast.LENGTH_SHORT).show();
+                menuItemArrayList.get(positionForOnClick).setCost();
 
+
+                holder.quantity.setText("Qty(" + menuItemArrayList.get(positionForOnClick).getQuantity() + ")");
+                holder.price.setText(String.format("$%.02f", menuItemArrayList.get(positionForOnClick).getCost()));
             }
         });
+
         holder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(menuItemArrayList.get(positionForOnClick).getQuantity()==1){
+                if(menuItemArrayList.get(positionForOnClick).getQuantity() != 1){
                     menuItemArrayList.get(positionForOnClick).decrementQuantity();
-                }
-                else{
-                    menuItemArrayList.get(positionForOnClick).decrementQuantity();
-                    holder.quantity.setText("Qty("+menuItemArrayList.get(positionForOnClick).getQuantity()+")");
-                }
+                    menuItemArrayList.get(positionForOnClick).setCost();
 
+                    holder.quantity.setText("Qty(" + menuItemArrayList.get(positionForOnClick).getQuantity() + ")");
+                    holder.price.setText(String.format("$%.02f", menuItemArrayList.get(positionForOnClick).getCost()));
+                }
             }
         });
-
     }
 
     @Override
@@ -76,16 +80,18 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     public class ShoppingCartViewHolder extends RecyclerView.ViewHolder{
 
         TextView name;
+        TextView price;
         TextView quantity;
         ImageButton add;
         ImageButton remove;
 
         public ShoppingCartViewHolder(@NonNull View itemView) {
             super(itemView);
-            name= itemView.findViewById(R.id.itemText);
-            quantity= itemView.findViewById(R.id.item_quantity);
-            add=itemView.findViewById(R.id.addButton);
-            remove=itemView.findViewById(R.id.removeButton);
+            name = itemView.findViewById(R.id.itemText);
+            quantity = itemView.findViewById(R.id.item_quantity);
+            add = itemView.findViewById(R.id.addButton);
+            remove = itemView.findViewById(R.id.removeButton);
+            price = itemView.findViewById(R.id.price);
         }
     }
 }
