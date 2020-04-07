@@ -46,7 +46,7 @@ class MenuItem extends React.Component {
                         <p style={{margin: "0", padding: "0.3em"}}>{this.props.menu[1].picture} </p>
                         <i> <p style={{margin: "0", padding: "0.3em"}}>{this.getStockState(this.props.menu[1].in_stock)} </p></i>
                         <div onClick={() => this.NewItemForm() }>  
-                            <button class="btn btn-outline-dark btn-sm"> <i class='fas fa-edit'></i> </button>
+                            <button className="btn btn-outline-dark btn-sm"> <i className='fas fa-edit'></i> </button>
                         </div>
                     </Card.Body>
                 </Card>

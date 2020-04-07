@@ -64,7 +64,6 @@ class MTasks extends React.Component{
         Object.keys(this.state.restaurantJSON).forEach(function(key) {
           restaurantInfo.push([key ,restaurantJSON[key]]);
         });} 
-        console.log(restaurantInfo);
       return (
           <Container>
             <MHeader/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
@@ -75,7 +74,7 @@ class MTasks extends React.Component{
                     <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
                       <Nav.Link href="/manager">Statistics</Nav.Link>
                       <Nav.Link href="/menu" >Menu</Nav.Link>
-                      <Nav.Link href="/hours">Restaurant Information</Nav.Link>
+                      <Nav.Link href="/hours">General</Nav.Link>
                       <Nav.Link href="/customize">Customize</Nav.Link>
 
                     </Nav>

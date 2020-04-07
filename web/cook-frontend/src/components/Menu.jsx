@@ -128,7 +128,7 @@ class Menu extends React.Component {
     });
 
     //create a list of all unique categories of food/drink
-    for (const [index, value] of menu.entries()) {
+    for (const [index,value] of menu.entries()) {
         if(categories.indexOf(value[1].category) === -1){
           categories.push( value[1].category)
         }
@@ -164,10 +164,10 @@ class Menu extends React.Component {
         <Container>
           <div style={backgroundStyle}>
             <h2 style ={categoryHeaderStyle}>
-              <button type="button" onClick={() => this.changeCategory("main") } class="btn btn-outline-light m-2">Back</button>
+              <button type="button" onClick={() => this.changeCategory("main") } className="btn btn-outline-light m-2">Back</button>
               <div style={menuTextStyle}>{renderCategory}</div>
             </h2>
-            <Container fluid style={{'min-height': '70vh'}}>
+            <Container fluid style={{'minHeight': '70vh'}}>
               <div className="d-flex flex-wrap">
                 {this.renderMenu()}                
               </div>
