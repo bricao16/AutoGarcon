@@ -9,12 +9,7 @@ GET /menu/:id
 			restaurant,
 			calories,
 			price,
-			tax,
-			options,
 			category,
-			breakfast,
-			lunch,
-			dinner,
 			picture,
 			in_stock
 		}
@@ -31,7 +26,12 @@ GET /restaurant/:id
 			address,
 			phone_number,
 			opening,
-			closing
+			closing,
+			font,
+			primary_color,
+			secondary_color,
+			tertiary_color,
+			logo
 		}
 		menu:
 		{
@@ -39,12 +39,7 @@ GET /restaurant/:id
 			{
 				calories,
 				price,
-				tax,
-				options,
 				category,
-				breakfast,
-				lunch,
-				dinner,
 				picture,
 				in_stock
 			}
@@ -86,11 +81,16 @@ GET /favorites/:id
 		0:
 		{
 			restaurant_id,
-			restaurant_name
+			restaurant_name,
+			address,
+			phone_number,
+			opening_time,
+			closing_time,
+			logo
 		}
 	}
 
-POST /customers/login
+POST /customer/login
 	Logs a customer in and returns a signed JWT and customer information
 	Inputs: username and password (in body of request)
 	Output:
@@ -153,7 +153,17 @@ PUT /customer/register
 	Inputs (in body of request): customer_id, first_name, last_name, email, password
 	Outputs: 
 		On success:
-			Successfully added new customer!
+			token:
+			{
+				token
+			}
+			user:
+			{
+				user_id,
+				first_name,
+				last_name,
+				email
+			}
 		If customer_id exists already:
 			Error: customer_id already exists
 		If any inputs are missing:
@@ -170,6 +180,16 @@ PUT /menu/add
 		If any inputs are missing:
 			Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price
 
+POST /menu/update
+	Updates an existing menu item
+	Inputs (in body of request): item_id, restaurant_id, item_name, calorie_num, category, in_stock, price
+	Outputs:
+		On success:
+			Successfully updated menu item!
+		If item_name and restaurant_id does not exist already:
+			Error: item does not exist
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price
 
 Added testing user for both /staff/login and /customers/login
 	user:password

@@ -2,8 +2,7 @@ Last Updated:2020-03-20 10:40:00
 
 Group: Database  
 
-Files:  
--APIInterface.txt: Planned endpoints, still in development   
+Files:    
 -CurrentEndpoints.txt: Live endpoints  
 -DatabaseSchema.txt: Schema and variable types of attributes  
 -Queries: Temporary file for potential queries we will have

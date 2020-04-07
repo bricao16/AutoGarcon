@@ -1,0 +1,6 @@
+Created a new allergen table.
+
+1. First thing was to create a Google Spreadsheets file in https://docs.google.com/spreadsheets/d/1j1Wm9OV97Zx57H-bgJQSSP131dGa5u4MpY_m55ZCU44/edit?ts=5e55636a#gid=1952270776.
+2. Created the column names and the data there and downloaded it as a csv file
+3. Used table import wizard to import data as a new table
+4. Once table was created, changed int(11) to int (12) and changed text parameter to VARCHAR(50) to ensure that allergen_name could be set as a key
