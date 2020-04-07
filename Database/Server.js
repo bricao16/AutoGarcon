@@ -9,6 +9,7 @@
 var fs = require('fs');
 var path = require('path');
 var cors = require('cors');
+var crypto = require('crypto');
 
 // NPM modules
 var express = require('express');
@@ -213,11 +214,9 @@ app.get('/favorites/:id', (req, res) => {
 
 //POST request handler for customer login
 app.post('/customers/login', (req, res) => {
-	let query = "SELECT * FROM sample.customers WHERE customer_id = ? and password = ?";
+	let query = 'SELECT * FROM sample.customers WHERE customer_id = ?';
 
-	let parameters = [req.body.username, req.body.password];
-
-	db.query(query, parameters, (err, rows) => {
+	db.query(query, req.body.username, (err, rows) => {
 		if (err) {
 			res.status(500).send('Error: could not retrieve data from database');
 		}   //if
@@ -225,26 +224,42 @@ app.post('/customers/login', (req, res) => {
 			res.status(500).send('Error: no user with that username/password');
 		}   //else if
 		else {
-			//Build user object:
-			let user = {
-				'user_id': rows[0].user_id,
-				'first_name': rows[0].first_name,
-				'last_name': rows[0].last_name,
-				'email': rows[0].email
-			};  //user
+			//Store user's salt
+			let salt = rows[0].salt;
+			//Hash supplied password
+			let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+				if (err) {
+					console.log(err);
+				}
+				else
+				{
+					if (derivedKey.toString('hex')  === rows[0].password) {
+						//Build user object:
+						let user = {
+							'customer_id': rows[0].customer_id,
+							'first_name': rows[0].first_name,
+							'last_name': rows[0].last_name,
+							'email': rows[0].email
+						};  //user
 
-			//Sign JWT and send token
-			//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-			jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
-				//Build response
-				let response = {
-					'token': token,
-					user
-		};  //response
+						//Sign JWT and send token
+						//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+						jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
+							//Build response
+							let response = {
+								'token': token,
+								user
+							};  //response
 
-				//Send Response:
-				res.type('json').send(response);
-			});
+							//Send Response:
+							res.type('json').send(response);
+						});
+					}   //if
+					else {
+						res.status(500).send('Error: no user with that username/password');
+					}   //else
+				}   //else
+			}); //hashed
 		}   //else
 	}); //db.query
 }); //app.post
