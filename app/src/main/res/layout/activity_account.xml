@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:id="@+id/account_main"
     tools:context="auto_garcon.AccountStuff.Account">
 
@@ -13,7 +14,8 @@
             android:layout_marginTop="85dp"
             android:layout_marginStart="30dp"
             android:text="@string/first_name"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/first_name_change"
@@ -22,7 +24,8 @@
             android:layout_marginTop="105dp"
             android:layout_marginStart="25dp"
             android:inputType="textPersonName"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:textColor="@color/white"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,7 +33,8 @@
             android:layout_marginTop="165dp"
             android:layout_marginStart="30dp"
             android:text="@string/last_name"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/last_name_change"
@@ -39,7 +43,8 @@
             android:layout_marginTop="185dp"
             android:layout_marginStart="25dp"
             android:inputType="textPersonName"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:textColor="@color/white"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -47,7 +52,8 @@
             android:layout_marginTop="245dp"
             android:layout_marginStart="30dp"
             android:text="@string/email"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/email_change"
@@ -56,15 +62,19 @@
             android:layout_marginTop="265dp"
             android:layout_marginStart="25dp"
             android:inputType="textPersonName"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:textColor="@color/white"/>
+
         <Button
             android:id="@+id/save_acct_change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="444dp"
+            android:layout_marginTop="555dp"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:background="@drawable/oval_button"
-            android:text="@string/save" />
+            android:text="@string/save"
+            android:textSize="16sp"
+            android:textColor="@color/white"/>
 
 </RelativeLayout>
