@@ -43,8 +43,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull HomeAdapter.ViewHolder holder, int position) {
         //bind the textview with data received
-        String title = data.get(position).getName();
-        holder.textTitle.setText(title);
+        holder.textTitle.setText(data.get(position).getName());
+        holder.textDescription.setText(data.get(position).getAddress());
     }
 
     @Override
@@ -55,7 +55,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView textTitle;
         TextView textDescription;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

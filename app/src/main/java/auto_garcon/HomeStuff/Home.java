@@ -74,7 +74,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         NavigationView navigationView = findViewById(R.id.navigationView);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
-
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
@@ -143,6 +142,18 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                             case "restaurant_name":
                                                 itemToBeAdded.setName(item.get(inner_key).toString());
                                                 break;
+                                            case "address":
+                                                itemToBeAdded.setAddress(item.get(inner_key).toString());
+                                                break;
+                                            case "phone_number":
+                                                itemToBeAdded.setPhoneNumber(Long.parseLong(item.get(inner_key).toString()));
+                                                break;
+                                            case "opening_time":
+                                                itemToBeAdded.setOpeningTime(Integer.parseInt(item.get(inner_key).toString()));
+                                                break;
+                                            case "closing_time":
+                                                itemToBeAdded.setClosingTime(Integer.parseInt(item.get(inner_key).toString()));
+                                                break;
                                         }
                                     }
 
@@ -183,7 +194,8 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 if( search_list.contains(query) ){
                     list_adapter.getFilter().filter(query);
                     Toast.makeText(Home.this, "Yes Match found",Toast.LENGTH_LONG).show();
-                }else{
+                }
+                else {
                     Toast.makeText(Home.this, "No Match found",Toast.LENGTH_LONG).show();
                 }
                 return false;

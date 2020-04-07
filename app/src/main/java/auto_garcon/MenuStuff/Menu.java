@@ -65,9 +65,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         NavigationView navigationView = findViewById(R.id.navigationView);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
@@ -209,7 +206,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     entree_list = new ArrayList<>();
                     listHash.put(listDataHeader.get(listDataHeader.size() - 1), entree_list);
                     break;
-                case "Desert":
+                case "Dessert":
                     dessert_list = new ArrayList<>();
                     listHash.put(listDataHeader.get(listDataHeader.size() - 1), dessert_list);
                     break;
@@ -232,7 +229,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             case "Entree":
                 entree_list.add(key);
                 break;
-            case "Desert":
+            case "Dessert":
                 dessert_list.add(key);
                 break;
             case "Refillable Drink":

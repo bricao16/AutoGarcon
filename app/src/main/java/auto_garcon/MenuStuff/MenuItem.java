@@ -2,7 +2,7 @@ package auto_garcon.MenuStuff;
 
 import java.io.Serializable;
 
-public class MenuItem implements Serializable {
+public class MenuItem {
     private String category;
     private String nameOfItem;
     private int amountInStock;
