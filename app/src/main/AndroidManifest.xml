@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name="auto_garcon.AccountStuff.PasswordChange"></activity>
         <activity android:name="auto_garcon.InitialPages.twoButtonPage" />
         <activity android:name="auto_garcon.InitialPages.LoadingScreen">
             <intent-filter>
@@ -26,12 +27,12 @@
         </activity>
         <activity android:name="auto_garcon.Cart_OrderHistory.OrderHistory" />
         <activity android:name="auto_garcon.Cart_OrderHistory.ShoppingCart" />
-        <activity android:name="auto_garcon.AccountStuff.Account"/>
+        <activity android:name="auto_garcon.AccountStuff.Account" />
         <activity android:name="auto_garcon.AccountStuff.Settings" />
-        <activity android:name="auto_garcon.MenuStuff.Menu"/>
+        <activity android:name="auto_garcon.MenuStuff.Menu" />
         <activity android:name="auto_garcon.InitialPages.Register" />
-        <activity android:name="auto_garcon.InitialPages.Login"/>
-        <activity android:name="auto_garcon.HomeStuff.Home"/>
+        <activity android:name="auto_garcon.InitialPages.Login" />
+        <activity android:name="auto_garcon.HomeStuff.Home" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -40,7 +41,7 @@
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
 
-        <activity android:name="auto_garcon.InitialPages.QRcode"/>
+        <activity android:name="auto_garcon.InitialPages.QRcode" />
     </application>
 
 </manifest>
