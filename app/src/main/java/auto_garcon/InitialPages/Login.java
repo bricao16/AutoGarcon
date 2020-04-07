@@ -71,7 +71,7 @@ public class Login extends AppCompatActivity {
                 else if (!(username.isEmpty() && passwd.isEmpty())) {
 
                     //post request for logging in
-                    String url = "http://50.19.176.137:8000/customers/login";
+                    String url = "http://50.19.176.137:8000/customer/login";
                     JSONObject obj = new JSONObject();//for the request parameter
                     try{
                         obj.put("username", username);
