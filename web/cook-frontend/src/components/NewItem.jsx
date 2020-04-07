@@ -1,6 +1,9 @@
 import React from "react";
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
+
+
 /* 
   This component is to allow the manager to 
   create a new item. It returns a form object that allows
@@ -10,199 +13,241 @@ import Container from 'react-bootstrap/Container';
 class NewItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      id: '123',
-      name:"",
-      category: "",
-      calories: "",
-      price:"",
-      description:"",
-      picture:"",
-      in_stock:true
-    };
-    this.onChange = this.onChange.bind(this);
+    this.state = props.prefill.menu
+    this.state.type = props.prefill.type
+    this.state.item_id = props.prefill.item_id
+    this.state.show = false
+    this.handleShow = this.handleShow.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-  onChange = (e) => {
-        /*
-          Because we named the inputs to match their
-          corresponding values in state, it's
-          super easy to update the state
-        */
-        this.setState({ [e.target.name]: e.target.value });
-        console.log(this.state);
-      }
-  /* Used for connecting to Menu in database */
-  handleSubmit(event) {
-    event.preventDefault();
-    /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/ 
-    const requestOptions = {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: 'restaurant_id='+this.state.id +'&item_name='+this.state.name
-          +'calorie_num='+this.state.calories+'&category='+this.state.category
-          +'&price='+this.state.price
-          /* Need database to add these!
-            +'&description='+this.state.description+ '&picture='+this.state.picture
-          +'&in_stock='+this.state.in_stock*/
-      
-    };
-    fetch('http://50.19.176.137:8000/menu/add', requestOptions)
-    .then(async response => {
-      const data = await response.json();
-      
-      if(!response.ok){
-        
-        const error = (data && data.message) || response.status;
-        return Promise.reject(error);
-      }
-      alert('Sucessful sumbit');
-      this.setState({redirect: true});
-    
-    })
-    .catch(error =>{
-      alert('Unsucessful sumbit');
-      this.setState({redirect: false});
-      console.error("There was an error!", error);
+
+  /* Used for handling changes to the input field */
+  handleInputChange(event) {
+    const target = event.target;
+
+    const value = target.value;
+
+    const name = target.name;
+
+    this.setState({
+      [name]: value
     });
 
-}
+    console.log('input after set state', this.state)
+  }
+
+  /* Used for connecting to Menu in database */
+  handleSubmit(event){
+	  event.preventDefault();
+    
+    let requestMethod;
+    let endpoint;
+    let body;
+
+    // Non existent so need to add item
+    if (this.state.type === "default") {
+      requestMethod = "PUT"
+      endpoint = "http://50.19.176.137:8000/menu/add"
+      body = 'restaurant_id='+123
+        +'&item_name='+this.state.name
+        +'&calorie_num='+this.state.calories
+        +'&category='+this.state.category
+        +'&price='+this.state.price
+    }
+    // Item needs to be edited
+    else {
+      requestMethod = "POST"
+      endpoint = "http://50.19.176.137:8000/menu/update"
+      body = 'restaurant_id='+123
+        +'&item_id='+this.state.item_id
+        +'&item_name='+this.state.name
+        +'&calorie_num='+this.state.calories
+        +'&category='+this.state.category
+        +'&price='+this.state.price
+        +'&in_stock='+this.state.in_stock
+    }
+	  
+	  const requestOptions = {
+      method: requestMethod,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: body
+    }
+    
+    fetch(endpoint, requestOptions)
+		.then(async response => {
+      await response;
+
+      if (response.status !== 200) {this.handleShow(false);}
+      else {this.handleShow(true);}
+		})
+		.catch(error =>{
+      this.handleShow(false);
+			console.error("There was an error!", error);
+		});
+  }
+
+  /* Used to show the correct alert after hitting save item */
+  handleShow(success) {
+    if (success) {
+      this.setState({response: 'Successfully updated item!'});
+      this.setState({alertVariant: 'success'});
+    }
+    else {
+      this.setState({response: 'Failed to update item'})
+      this.setState({alertVariant: 'danger'});
+    }
+
+    this.setState({show: true});
+  }
+
 
   render(){
-    if(this.props.prefill.type === "default")
+    if(this.state.type === "default")
     {
       return ( 
-        <Container>
-          <div>
-            <Container fluid>
-              <Col className="pt-3 px-3">
-                <Container fluid>
+        <Col className="pt-3 px-3">
+          <Container>
+
+            <Alert show={this.state.show} variant={this.state.alertVariant}>
+              {this.state.response}
+            </Alert>
+
+            <div class="d-flex flex-row-reverse pb-3">
+              <button type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
+            </div>
+            <div>
+              <form class="pb-1">
+
+                <div className="form-group row">
+                  <label className="col ">Name </label>
+                    <input className="form-control col" type="text" name="name" value={this.state.name} onChange={this.handleInputChange} placeholder={this.state.name}>
+                    </input>
+                </div>
+
+                <div className="form-group row">
+                  <label className="col">Category </label>
+                  <input className="form-control col" type="text" name="category" value={this.state.category} onChange={this.handleInputChange} placeholder={this.state.category}>
+                  </input>
+                </div>
+
+                  <div className="form-group row">
+                    <label className="col">Calories</label>
+                    <input className="form-control col" type="text" name="calories" value={this.state.calories} onChange={this.handleInputChange} placeholder={this.state.calories}>
+                    </input>
+                </div>
+
+                <div className="form-group row">
+                <label className="col">Price</label>
+                    <div className="col input-group mb-2 mr-sm-2">
+                      <div className="input-group-prepend">
+                        <div className="input-group-text">$</div>
+                      </div>
+                      <input type="text" className="form-control" name="price" value={this.state.price} onChange={this.handleInputChange} placeholder={this.state.price}>
+                      </input>
+                    </div>
+                </div>
+
+                <div class="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
-                    <form onSubmit = {this.handleSubmit}>
-                      <div className="form-group">
-                        <input  className="form-control" type="text" name = "name" 
-                                placeholder={this.props.prefill.menu[0]}
-                                onChange={this.onChange}>
-                        </input>
-                       </div>
-                       <div className="form-group">
-                        <input  className="form-control" type="text" name = "category"
-                                placeholder={this.props.prefill.menu[1].category}
-                                onChange={this.onChange}>
-                        </input>
-                       </div>
-                        <div className="form-group">
-                          <input  className="form-control" type="text" name = "calories" 
-                                  placeholder={this.props.prefill.menu[1].calories}
-                                  onChange={this.onChange}>
-                          </input>
-                       </div>
-                       <div className="form-group">
-                          <div className="input-group mb-2 mr-sm-2">
-                            <div className="input-group-prepend">
-                              <div className="input-group-text">$</div>
-                            </div>
-                            <input type="text" className="form-control" name="price" 
-                            placeholder={this.props.prefill.menu[1].price}
-                            onChange={this.onChange}>
-                            </input>
-                          </div>
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="itemDescription">Description</label>
-                        <textarea className="form-control" name="description" rows="3" onChange={this.onChange}></textarea>
-                      </div>
-                      <div className="form-group">
-                        <label hmtlfor="exampleFormControlFile1">Picture</label>
-                        <input type="file" className="form-control-file" name="picture" onChange={this.onChange}>
-                        </input>
-                      </div>
-                      <div className="pretty p-switch p-fill">
-                          <input type="checkbox" defaultChecked/>
-                          <div className="state">
-                              <label type ="checkbox" name="in_stock" placeholder = {this.props.prefill.menu[1].in_stock} onChange={this.onChange}>In stock</label>
-                          </div>
-                      </div>
-                      <br/>
-                      <div className="row">
-                            <button type ="submit" className="btn btn-primary  col m-5" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>*/}
-                        </div>
-                      
-                    </form>
+                    <input type="checkbox" defaultChecked/> 
+                    <label class="pl-2" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} placeholder={this.state.in_stock}>In stock</label>
                   </div>
-                </Container>
-              </Col>
-            </Container> 
-          </div>
-        </Container>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="itemDescription">Description</label>
+                  <textarea className="form-control" id="itemDescription" rows="3"></textarea>
+                </div>
+
+                <div className="form-group">
+                  <label hmtlfor="exampleFormControlFile1">Picture</label>
+                  <input type="file" className="form-control-file" id="exampleFormControlFile1">
+                  </input>
+                </div>
+
+                <div className="d-flex justify-content-center row p-2">
+                  <button onClick={this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
+                </div>
+              </form>
+            </div>
+          </Container>
+        </Col>
       );
     }
     else{
       {/*If editing a item prefill with values*/}
-      return ( 
-        <Container>
-          <div>
-            <Container fluid>
-              <Col className="pt-3 px-3">
-                <Container fluid>
-                  <div>
-                    <form onSubmit = {this.handleSubmit}>
-                      <div className="form-group row">
-                        <label className="col ">Name </label>
-                          <input className="form-control col" type="text" id = "itemName" defaultValue={this.props.prefill.menu[0]}>
-                          </input>
-                       </div>
-                       <div className="form-group row">
-                        <label className="col">Category </label>
-                        <input className="form-control col" type="text" id = "itemCategory" defaultValue={this.props.prefill.menu[1].category}>
-                        </input>
-                       </div>
-                        <div className="form-group row">
-                          <label className="col">Calories</label>
-                          <input className="form-control col" type="text" id = "itemCalories" defaultValue={this.props.prefill.menu[1].calories}>
-                          </input>
-                       </div>
-                       <div className="form-group row">
-                       <label className="col">Price</label>
-                          <div className="col input-group mb-2 mr-sm-2">
-                            <div className="input-group-prepend">
-                              <div className="input-group-text">$</div>
-                            </div>
-                            <input type="text" className="form-control" id="inlineFormInputGroupUsername2" defaultValue={this.props.prefill.menu[1].price}>
-                            </input>
-                          </div>
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="itemDescription">Description</label>
-                        <textarea className="form-control" id="itemDescription" rows="3"></textarea>
-                      </div>
-                      <div className="form-group">
-                        <label hmtlfor="exampleFormControlFile1">Picture</label>
-                        <input type="file" className="form-control-file" id="exampleFormControlFile1">
-                        </input>
-                      </div>
-                      <div className="pretty p-switch p-fill">
-                          <input type="checkbox" defaultChecked/>
-                          <div className="state">
-                              <label placeholder = {this.props.prefill.menu[1].in_stock}>In stock</label>
-                          </div>
-                      </div>
+      return(
+        <Col className="pt-3 px-3">
+          <Container>
 
-                      <div className="row m-2">
-                        <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+          <Alert show={this.state.show} variant={this.state.alertVariant}>
+            {this.state.response}
+          </Alert>
+
+            <div class="d-flex flex-row-reverse pb-3">
+              <button type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
+            </div>
+
+            <div>
+              <form class="pb-1">
+
+                <div className="form-group row">
+                  <label className="col ">Name </label>
+                    <input className="form-control col" type="text" name="name" value={this.state.name} onChange={this.handleInputChange} defaultValue={this.state.name}>
+                    </input>
+                </div>
+
+                <div className="form-group row">
+                  <label className="col">Category </label>
+                  <input className="form-control col" type="text" name="category" value={this.state.category} onChange={this.handleInputChange} defaultValue={this.state.category}>
+                  </input>
+                </div>
+
+                  <div className="form-group row">
+                    <label className="col">Calories</label>
+                    <input className="form-control col" type="text" name="calories" value={this.state.calories} onChange={this.handleInputChange} defaultValue={this.state.calories}>
+                    </input>
+                </div>
+
+                <div className="form-group row">
+                <label className="col">Price</label>
+                    <div className="col input-group mb-2 mr-sm-2">
+                      <div className="input-group-prepend">
+                        <div className="input-group-text">$</div>
                       </div>
-                      <div className="float-right m-2">
-                        <button type="delete" className="btn btn-outline-danger">Delete</button>
-                      </div>
-                    </form>
+                      <input type="text" className="form-control" name="price" value={this.state.price} onChange={this.handleInputChange} defaultValue={this.state.price}>
+                      </input>
+                    </div>
+                </div>
+
+                <div class="pretty p-switch p-fill d-flex flex-row-reverse">
+                  <div>
+                    <input type="checkbox" defaultChecked/> 
+                    <label class="pl-2" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} placeholder={this.state.in_stock}>In stock</label>
                   </div>
-                </Container>
-              </Col>
-            </Container> 
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="itemDescription">Description</label>
+                  <textarea className="form-control" id="itemDescription" rows="3"></textarea>
+                </div>
+
+                <div className="form-group">
+                  <label hmtlfor="exampleFormControlFile1">Picture</label>
+                  <input type="file" className="form-control-file" id="exampleFormControlFile1">
+                  </input>
+                </div>
+
+                <div className="d-flex justify-content-center row p-2">
+                  <button onClick={this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
+                </div>
+            </form>
           </div>
         </Container>
+      </Col>
       ); 
     }
   }

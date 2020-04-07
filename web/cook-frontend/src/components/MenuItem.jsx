@@ -17,7 +17,9 @@ import Card from 'react-bootstrap/Card';
 
 */
 class MenuItem extends React.Component {
-
+  constructor(props) {
+        super(props);
+    }
     getStockState(in_stock){
         if(in_stock === 0)
         {
@@ -59,7 +61,6 @@ class MenuItem extends React.Component {
         }
     }
 }
-
 const cardHeaderStyle = {
     'backgroundColor': '#0b658a',
     'color': '#ffffff',

@@ -56,7 +56,11 @@ class MTasks extends React.Component{
       } 
 
       else if (!isLoaded) {
-        return <div>Loading...</div>;
+        return (
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        )
       }
 
       else {
@@ -76,7 +80,6 @@ class MTasks extends React.Component{
                       <Nav.Link href="/menu" >Menu</Nav.Link>
                       <Nav.Link href="/hours">General</Nav.Link>
                       <Nav.Link href="/customize">Customize</Nav.Link>
-
                     </Nav>
                   </Col>
                   <Col className="pt-3 px-3">

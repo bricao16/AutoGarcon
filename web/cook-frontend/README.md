@@ -99,3 +99,76 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `yarn build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+### Installation
+
+* Go to [https://github.com/bricao16/AutoGarcon](https://github.com/bricao16/AutoGarcon) and click the green ‘Clone or download’ button on the top right and then click download ZIP
+
+* Open up the folder and click ‘Extract all’ on the top right
+
+* Install [Visual Studio Code](https://code.visualstudio.com/)
+
+* Make sure Node.js is installed by typing **node -v** in terminal (something similar to v.6.9.5 should appear) - if it isn’t installed, install and run the Node.js installer from the Node.js website’s downloads page
+
+* Update npm version by typing: **npm install npm --global**
+
+* Install React by typing in terminal: **npm install -g create-react-app**
+
+* Create react project by typing in terminal: **create-react-app (projectname)**
+ 
+* In AutoGarcon-master file from GitHub, go into the folders: 
+
+  * AutoGarcon-master > web > cook-frontend
+  
+  * Delete all of the files from the React project that you just created
+  
+  * Copy and paste all of the files from cook-frontend into React project that you just created <projectname>
+ 
+* Import the following packages to run by using following commands:
+ 
+  * **Npm install react-router-dom**
+  
+  * **Npm install react-bootstrap**
+  
+  * **Npm install @material-ui/core**
+  
+* Run project by typing: 
+
+  * **cd (projectname)**
+ 
+  * **Npm start**
+
+### Heroku Install and Deployment 
+
+* Create a Heroku account if you don’t already have one at [https://signup.heroku.com/trailhead](https://signup.heroku.com/trailhead)
+
+* After logging in, create a new Heroku app by clicking the ‘Create new app’ button 
+
+* Enter in an app name and then click the ‘Create app’ button
+
+* Download and install the Heroku CLI from https://devcenter.heroku.com/articles/heroku-cli
+
+* Open Command Prompt
+
+* Log into your Heroku account by typing in: heroku login into Command Prompt
+
+* Initialize a git repository in a new or existing directory by typing into Command Prompt:
+
+   * **Cd my-project/**
+ 
+   * **Git init**
+ 
+   * **Heroku git:remote -a (heroku-app-name)**
+
+* Commit code to the repository and deploy it to Heroku by typing into Command Prompt:
+
+   * **Git add .**
+
+   * **Git commit -am “update”**
+
+   * **Git push heroku master**
+
+* Open up the app by typing into a web browser:
+
+   * **(heroku-app-name).herokuapp.com** 
+
