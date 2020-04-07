@@ -1,11 +1,16 @@
 import React from "react";
 import Card from 'react-bootstrap/Card';
+import moment from "moment";
 
 class Order extends React.Component {
 
   constructor(props) {
     super(props);
     this.props = props;
+    /*2020-03-10T15:52:23.000Z*/
+    // moment('2020-03-10T15:52:23.000Z');
+    let time = '2020-03-10T15:52:23.000Z'.split('.')[0]
+    console.log(moment(time).format('LT'));
   }
 
   /*
@@ -50,7 +55,20 @@ class Order extends React.Component {
     if(this.props.order.expand){
       style.fontSize = '2em';
     }
-    return style
+    return style;
+  }
+
+  renderTime(){
+    let time = this.props.order.order_date.split('.')[0];
+    time = moment(time);
+    let timePlaced = time.format('LT');
+    let timeSince = time.startOf('minute').fromNow();
+    return (
+      <React.Fragment>
+        <span className="pr-2">{timePlaced}</span>
+        <span>{timeSince}</span>
+      </React.Fragment>
+    );
   }
 
   render() {
@@ -68,8 +86,9 @@ class Order extends React.Component {
             {this.renderItems()}
           </Card.Body>
           <Card.Footer className="py-1 px-2 d-flex" style={cardFooterStyle}>
-            <span>10:30 am</span>
-            <span>2:20</span>
+            {
+              this.renderTime()
+            }
           </Card.Footer>
         </Card>
       </div>

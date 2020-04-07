@@ -32,6 +32,9 @@ class Cook extends React.Component {
       // e
       } else if(key.which === 69){
         this.toggleExpandOrder();
+      // 0 - 9
+      } else if(key.which >= 49 && key.which <= 57){
+        this.handleNumberKeyPress(key);
       }
     });
   }
@@ -50,6 +53,13 @@ class Cook extends React.Component {
       newSelectedOrder = ordersLength-1;
     }
     this.changeSelectedOrder(newSelectedOrder);
+  }
+
+  handleNumberKeyPress(key){
+    const number = key.which - 49;
+    if(number < Object.keys(this.state.orders).length){
+      this.changeSelectedOrder(number);
+    }
   }
 
   changeSelectedOrder(cardId){
