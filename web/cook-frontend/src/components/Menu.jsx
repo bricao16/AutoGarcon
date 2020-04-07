@@ -95,7 +95,7 @@ class Menu extends React.Component {
         type: "default",
         item_id: null,
         menu: {
-          "Name": "Name",
+          "name": "Name",
           "category":"Category",
           "price" : "Price",
           "calories": "Calories",

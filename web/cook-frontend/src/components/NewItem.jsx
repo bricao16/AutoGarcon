@@ -13,42 +13,85 @@ import Container from 'react-bootstrap/Container';
 class NewItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = props.prefill.menu
+    this.state.type = props.prefill.type
+    this.state.item_id = props.prefill.item_id
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  /* Used for connecting to Menu in database */
-  handleSubmit(event) {
-    event.preventDefault();
-    const data = new FormData(event.target);
-    
-    // Simple POST request with a JSON body using fetch
-    const requestOptions = {
-        method: 'POST',
-        data:data
-    };
+  /* Used for handling changes to the input field */
+  handleInputChange(event) {
+    const target = event.target;
 
-    fetch('http://50.19.176.137:8000/menu/123', requestOptions)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: false,
-            menuJSON: result
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      )
-}
+    const value = target.value;
+
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+
+    console.log('input after set state', this.state)
+  }
+
+  /* Used for connecting to Menu in database */
+  handleSubmit(event){
+	  event.preventDefault();
+    
+    let requestMethod;
+    let endpoint;
+    let body;
+    // Non product so need to add item
+    if (this.state.type === "default") {
+      requestMethod = "PUT"
+      endpoint = "http://50.19.176.137:8000/menu/add"
+      body = 'restaurant_id='+123
+        +'&item_name='+this.state.name
+        +'&calorie_num='+this.state.calories
+        +'&category='+this.state.category
+        +'&price='+this.state.price
+    }
+    // Needs to be updated
+    else {
+      requestMethod = "POST"
+      endpoint = "http://50.19.176.137:8000/menu/update"
+      body = 'restaurant_id='+123
+        +'&item_name='+this.state.name
+        +'&calorie_num='+this.state.calories
+        +'&category='+this.state.category
+        +'&price='+this.state.price
+    }
+	  
+	  const requestOptions = {
+      method: requestMethod,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      
+      body: body
+    }
+    
+    fetch(endpoint, requestOptions)
+		.then(async response => {
+			const data = await response.json();
+			
+			if(!response.ok){
+				const error = (data && data.message) || response.status;
+				return Promise.reject(error);
+			}
+			this.setState({redirect: true});
+		
+		})
+		.catch(error =>{
+			
+			this.setState({redirect: false});
+			console.error("There was an error!", error);
+		});
+  }
 
   render(){
-    if(this.props.prefill.type === "default")
+    if(this.state.type === "default")
     {
       return ( 
         <Col className="pt-3 px-3">
@@ -61,19 +104,19 @@ class NewItem extends React.Component {
 
                 <div className="form-group row">
                   <label className="col ">Name </label>
-                    <input className="form-control col" type="text" id = "itemName" placeholder={this.props.prefill.menu[0]}>
+                    <input className="form-control col" type="text" name="name" value={this.state.name} onChange={this.handleInputChange} placeholder={this.state.name}>
                     </input>
                 </div>
 
                 <div className="form-group row">
                   <label className="col">Category </label>
-                  <input className="form-control col" type="text" id = "itemCategory" placeholder={this.props.prefill.menu[1].category}>
+                  <input className="form-control col" type="text" name="category" value={this.state.category} onChange={this.handleInputChange} placeholder={this.state.category}>
                   </input>
                 </div>
 
                   <div className="form-group row">
                     <label className="col">Calories</label>
-                    <input className="form-control col" type="text" id = "itemCalories" placeholder={this.props.prefill.menu[1].calories}>
+                    <input className="form-control col" type="text" name="calories" value={this.state.calories} onChange={this.handleInputChange} placeholder={this.state.calories}>
                     </input>
                 </div>
 
@@ -83,7 +126,7 @@ class NewItem extends React.Component {
                       <div className="input-group-prepend">
                         <div className="input-group-text">$</div>
                       </div>
-                      <input type="text" className="form-control" id="inlineFormInputGroupUsername2" placeholder={this.props.prefill.menu[1].price}>
+                      <input type="text" className="form-control" name="price" value={this.state.price} onChange={this.handleInputChange} placeholder={this.state.price}>
                       </input>
                     </div>
                 </div>
@@ -91,7 +134,7 @@ class NewItem extends React.Component {
                 <div class="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
                     <input type="checkbox" defaultChecked/> 
-                    <label class="pl-2" placeholder={this.props.prefill.menu[1].in_stock}>In stock</label>
+                    <label class="pl-2" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} placeholder={this.state.in_stock}>In stock</label>
                   </div>
                 </div>
                 
@@ -107,7 +150,7 @@ class NewItem extends React.Component {
                 </div>
 
                 <div className="d-flex justify-content-center row p-2">
-                  <button type="submit" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
+                  <button onClick={this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
                 </div>
               </form>
             </div>
@@ -127,19 +170,19 @@ class NewItem extends React.Component {
 
                 <div className="form-group row">
                   <label className="col ">Name </label>
-                    <input className="form-control col" type="text" id = "itemName" defaultValue={this.props.prefill.menu[0]}>
+                    <input className="form-control col" type="text" name="name" value={this.state.name} onChange={this.handleInputChange} defaultValue={this.state.name}>
                     </input>
                 </div>
 
                 <div className="form-group row">
                   <label className="col">Category </label>
-                  <input className="form-control col" type="text" id = "itemCategory" defaultValue={this.props.prefill.menu[1].category}>
+                  <input className="form-control col" type="text" name="category" value={this.state.category} onChange={this.handleInputChange} defaultValue={this.state.category}>
                   </input>
                 </div>
 
                   <div className="form-group row">
                     <label className="col">Calories</label>
-                    <input className="form-control col" type="text" id = "itemCalories" defaultValue={this.props.prefill.menu[1].calories}>
+                    <input className="form-control col" type="text" name="calories" value={this.state.calories} onChange={this.handleInputChange} defaultValue={this.state.calories}>
                     </input>
                 </div>
 
@@ -149,7 +192,7 @@ class NewItem extends React.Component {
                       <div className="input-group-prepend">
                         <div className="input-group-text">$</div>
                       </div>
-                      <input type="text" className="form-control" id="inlineFormInputGroupUsername2" defaultValue={this.props.prefill.menu[1].price}>
+                      <input type="text" className="form-control" name="price" value={this.state.price} onChange={this.handleInputChange} defaultValue={this.state.price}>
                       </input>
                     </div>
                 </div>
@@ -157,7 +200,7 @@ class NewItem extends React.Component {
                 <div class="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
                     <input type="checkbox" defaultChecked/> 
-                    <label class="pl-2" placeholder={this.props.prefill.menu[1].in_stock}>In stock</label>
+                    <label class="pl-2" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} placeholder={this.state.in_stock}>In stock</label>
                   </div>
                 </div>
                 
@@ -173,7 +216,7 @@ class NewItem extends React.Component {
                 </div>
 
                 <div className="d-flex justify-content-center row p-2">
-                  <button type="submit" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
+                  <button onClick={this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
                 </div>
             </form>
           </div>
