@@ -6,6 +6,7 @@ GET /menu/:id
 	{
 		dish_name:
 		{
+			item_id,
 			restaurant,
 			calories,
 			price,
@@ -37,6 +38,7 @@ GET /restaurant/:id
 		{
 			dish_name:
 			{
+				item_id,
 				calories,
 				price,
 				category,
