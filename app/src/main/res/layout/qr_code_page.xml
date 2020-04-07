@@ -42,15 +42,15 @@
             android:text="Scan Code on Table"
             android:textColor="#000000"
             android:textSize="20sp"/>
-
+<!--
         <ToggleButton
             android:id="@+id/btn_enable_disable"
-            android:textOff="Stop"
-            android:textOn="Start"
+            android:textOff="Stop Scanning"
+            android:textOn="Start Scanning"
             android:checked="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-
+-->
     </LinearLayout>
 
     <!-- bottom nav bar -->

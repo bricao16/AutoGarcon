@@ -95,8 +95,8 @@ public class QRcode extends AppCompatActivity {
 
     private void setupCamera() {
         txt_result = (TextView) findViewById(R.id.code_info);
-        final ToggleButton btn_on_off = (ToggleButton) findViewById(R.id.btn_enable_disable);
-
+        //final ToggleButton btn_on_off = (ToggleButton) findViewById(R.id.btn_enable_disable);
+/*
         btn_on_off.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,7 +110,7 @@ public class QRcode extends AppCompatActivity {
                 }
             }
         });
-
+*/
         surfaceView = (SurfaceView) findViewById(R.id.camera_view);
         setupQREader();
     }
@@ -122,18 +122,18 @@ public class QRcode extends AppCompatActivity {
                 txt_result.post(new Runnable() {
                     @Override
                     public void run() {
-                        txt_result.setText(data);
-                        txt_result = (TextView) findViewById(R.id.code_info);
-                        String url = "http://50.19.176.137:8000/restaurant/" + txt_result.getText().toString();
+                        String url = "http://50.19.176.137:8000/restaurant/" + data;
                         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                                 new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         try {
                                             String restaurant = response.getJSONObject("restaurant").getString("name");
-                                            txt_result.setText(restaurant);
+                                            txt_result.setText("Continue to " + restaurant);
                                             txt_result = (TextView) findViewById(R.id.code_info);
+                                            onPause();
                                             Intent Menu = new Intent(QRcode.this, Menu.class);
+                                            Menu.putExtra("restaurant id",Integer.parseInt(data));
                                             startActivity(Menu);
                                         } catch (JSONException e) {
                                             e.printStackTrace();
