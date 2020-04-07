@@ -1,6 +1,6 @@
 import React from "react";
 import Orders from "./Orders"
-// import OrdersMenu from "./OrdersMenu.jsx";
+import OrdersMenu from "./OrdersMenu.jsx";
 import OrdersHeader from "./OrdersHeader.jsx";
 import Alert from "./Alert.jsx";
 import $ from "jquery";
@@ -15,27 +15,41 @@ class Cook extends React.Component {
       orders: {},
       selectedOrder: 0,
       alertActive: false,
-      alertContent: <div></div>
+      alertContent: <div></div>,
+      currentTab: 0
     };
-    this.setupArrowKeys();
+    this.setupKeyPresses();
   }
 
-  setupArrowKeys(){
+  setupKeyPresses(){
     $(document).keydown(key => {
-      let newSelectedOrder = this.state.selectedOrder;
-      if(key.which === 37){
-        newSelectedOrder -= 1;
-      } else if (key.which === 39){
-        newSelectedOrder += 1;
+      // Arrow keys right and left
+      if(key.which === 37 || key.which === 39){
+        this.handleArrowKeyPress(key);
+      // c
+      } else if(key.which === 67){
+        this.markOrderComplete();
+      // e
+      } else if(key.which === 69){
+        this.toggleExpandOrder();
       }
-      const ordersLength = Object.keys(this.state.orders).length;
-      if(newSelectedOrder >= ordersLength){
-        newSelectedOrder = 0;
-      } else if(newSelectedOrder < 0){
-        newSelectedOrder = ordersLength-1;
-      }
-      this.changeSelectedOrder(newSelectedOrder);
     });
+  }
+
+  handleArrowKeyPress(key){
+    let newSelectedOrder = this.state.selectedOrder;
+    if(key.which === 37){
+      newSelectedOrder -= 1;
+    } else if (key.which === 39){
+      newSelectedOrder += 1;
+    }
+    const ordersLength = Object.keys(this.state.orders).length;
+    if(newSelectedOrder >= ordersLength){
+      newSelectedOrder = 0;
+    } else if(newSelectedOrder < 0){
+      newSelectedOrder = ordersLength-1;
+    }
+    this.changeSelectedOrder(newSelectedOrder);
   }
 
   changeSelectedOrder(cardId){
@@ -59,7 +73,7 @@ class Cook extends React.Component {
     state.alertActive = true;
     state.alertContent =
       <div>
-        <div>Order number {orderNum} marked complete. No API yet.</div>
+        <div>Order #{orderNum} marked complete. No API yet.</div>
         <Button variant="secondary" size="sm" className="mt-3" onClick={this.deactivateAlert.bind(this)}>Okay</Button>
       </div>;
     this.setState(state);
@@ -69,6 +83,12 @@ class Cook extends React.Component {
     let state = this.state;
     state.alertActive = false;
     state.alertContent = <div></div>;
+    this.setState(state);
+  }
+
+  changeCurrentTab(tab){
+    let state = this.state;
+    state.currentTab = tab;
     this.setState(state);
   }
 
@@ -114,11 +134,10 @@ class Cook extends React.Component {
   render() {
     return (
       <div style={cookPageStyle}>
-        {/*<OrdersMenu />*/}
-        {/*<Alert alert="Order number"/>*/}
+        <OrdersMenu currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
         {this.renderAlert()}
         <div className="p-3">
-          <OrdersHeader handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)}/>
+          <OrdersHeader handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
           <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
         </div>
       </div>
@@ -128,7 +147,6 @@ class Cook extends React.Component {
 
 const cookPageStyle = {
   backgroundColor: '#f1f1f1',
-  minHeight: '100%',
   width: '100vw'
 };
 
