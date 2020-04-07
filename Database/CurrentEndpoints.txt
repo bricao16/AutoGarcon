@@ -90,7 +90,7 @@ GET /favorites/:id
 		}
 	}
 
-POST /customers/login
+POST /customer/login
 	Logs a customer in and returns a signed JWT and customer information
 	Inputs: username and password (in body of request)
 	Output:
