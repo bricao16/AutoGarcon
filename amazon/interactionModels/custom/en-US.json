@@ -35,24 +35,150 @@
           ]
         },
         {
-          "name": "TestDataIntent",
-          "slots": [],
-          "samples": [
-            "get test data",
-            "test data"
-          ]
-        },
-        {
           "name": "ClosingTimeIntent",
           "slots": [],
           "samples": [
             "closing time",
             "What time does it close"
           ]
+        },
+        {
+          "name": "MenuCategoryIntent",
+          "slots": [
+            {
+              "name": "category",
+              "type": "Category"
+            }
+          ],
+          "samples": [
+            "What type of {category} do you have",
+            "{category} menu",
+            "{category}"
+          ]
+        },
+        {
+          "name": "GetPriceIntent",
+          "slots": [
+            {
+              "name": "menuItem",
+              "type": "AMAZON.Food"
+            }
+          ],
+          "samples": [
+            "price of {menuItem}",
+            "{menuItem} price",
+            "What is the price of {menuItem}",
+            "How much does {menuItem} cost"
+          ]
+        },
+        {
+          "name": "GetCaloriesIntent",
+          "slots": [
+            {
+              "name": "menuItem",
+              "type": "AMAZON.Food"
+            }
+          ],
+          "samples": [
+            "calories in {menuItem}",
+            "{menuItem} calories",
+            "number of calories in {menuItem}",
+            "How many calories are in the {menuItem}"
+          ]
         }
       ],
-      "types": []
+      "types": [
+        {
+          "values": [
+            {
+              "name": {
+                "value": "entree",
+                "synonyms": [
+                  "main courses",
+                  "entrees",
+                  "main course"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "alcohol",
+                "synonyms": [
+                  "booze"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "refillable drink",
+                "synonyms": [
+                  "refillable drinks",
+                  "pop"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "appetizer",
+                "synonyms": [
+                  "starter",
+                  "appetizers",
+                  "starters"
+                ]
+              }
+            }
+          ],
+          "name": "Category"
+        },
+        {
+          "values": [
+            {
+              "id": "5",
+              "name": {
+                "value": "Ribs"
+              }
+            },
+            {
+              "id": "22",
+              "name": {
+                "value": "Burger"
+              }
+            },
+            {
+              "id": "19",
+              "name": {
+                "value": "Gin and Tonic"
+              }
+            },
+            {
+              "id": "12",
+              "name": {
+                "value": "Diet Coke"
+              }
+            },
+            {
+              "id": "11",
+              "name": {
+                "value": "Coke"
+              }
+            },
+            {
+              "id": "10",
+              "name": {
+                "value": "Deep Fried Green Beans"
+              }
+            },
+            {
+              "id": "6",
+              "name": {
+                "value": "Chicken Tenders"
+              }
+            }
+          ],
+          "name": "AMAZON.Food"
+        }
+      ]
     }
   },
-  "version": "15"
+  "version": "21"
 }
