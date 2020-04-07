@@ -2,7 +2,7 @@ import React from "react";
 import Container from 'react-bootstrap/Container';
 import Menu from './Menu';
 import Stats from './MStats';
-import Hours from './MHours';
+import StoreInfo from './StoreInfo';
 import MHeader from './MHeader';
 import Customize from './MCustomize';
 import Row from 'react-bootstrap/Row';
@@ -25,19 +25,19 @@ class MTasks extends React.Component{
       this.state = {
         error: null,
         isLoaded: false,
-        resturantJSON: [],
-        resturantInfo:[]
+        restaurantJSON: [],
+        restaurantInfo:[]
       };
     }
     /* Used for connecting to Resturant in database */
-    /*componentDidMount() {
-    fetch("http://50.19.176.137:8000/resturant/123")
+    componentDidMount() {
+    fetch("http://50.19.176.137:8000/restaurant/123")
       .then(res => res.json())
       .then(
         (result) => {
           this.setState({
             isLoaded: true,
-            resturantJSON: result
+            restaurantJSON: result
           });
         },
         (error) => {
@@ -47,23 +47,27 @@ class MTasks extends React.Component{
           });
         }
       )
-    }*/
+    }
     render() {
-      /* {const { error, isLoaded, menuJSON, menu } = this.state;
+      const { error, isLoaded, restaurantJSON, restaurantInfo } = this.state;
       
       if (error) {
         return <div>Error: {error.message}</div>;
       } 
 
       else if (!isLoaded) {
-        return <div>Loading...</div>;
+        return (
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        )
       }
 
       else {
         //map the menu json to an array
-        Object.keys(this.state.resturantJSON).forEach(function(key) {
-          resturantInfo.push([key ,resturantJSON[key]]);
-        });} */
+        Object.keys(this.state.restaurantJSON).forEach(function(key) {
+          restaurantInfo.push([key ,restaurantJSON[key]]);
+        });} 
       return (
           <Container>
             <MHeader/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
@@ -74,9 +78,8 @@ class MTasks extends React.Component{
                     <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
                       <Nav.Link href="/manager">Statistics</Nav.Link>
                       <Nav.Link href="/menu" >Menu</Nav.Link>
-                      <Nav.Link href="/hours">Hours</Nav.Link>
+                      <Nav.Link href="/hours">General</Nav.Link>
                       <Nav.Link href="/customize">Customize</Nav.Link>
-
                     </Nav>
                   </Col>
                   <Col className="pt-3 px-3">
@@ -86,13 +89,13 @@ class MTasks extends React.Component{
                             <Stats/>
                           </Route>
                           <Route path="/menu">
-                            <Menu />
+                            <Menu menu = {restaurantInfo[1][1]}/>
                           </Route>
                           <Route path="/hours">
-                            <Hours />
+                            <StoreInfo info = {restaurantInfo[0][1]} />
                           </Route>
                           <Route path="/customize">
-                            <Customize />
+                            <Customize info = {restaurantInfo[0][1]}/>
                           </Route>
                         </Switch>
                     </Container>

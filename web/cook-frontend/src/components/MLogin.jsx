@@ -88,7 +88,6 @@ export default class SignIn extends React.Component {
 			
 			this.setState({redirect: false});
 			console.error("There was an error!", error);
-			
 		});
   }
   

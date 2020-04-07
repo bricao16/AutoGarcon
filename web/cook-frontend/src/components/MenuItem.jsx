@@ -1,6 +1,5 @@
 import React from "react";
 import Card from 'react-bootstrap/Card';
-import Pencil from '../assets/pencil.png';
 
 /*
     This Prop is used to render the cards of the Manager Menu page.
@@ -11,9 +10,16 @@ import Pencil from '../assets/pencil.png';
     getStockState is a helper function which takes in_stock property
     which is either 0 or 1 and creates the appropriate text to display.
 
+    NewItemForm is a callback to create a new item form when the edit 
+    button is click for a particular item
+
+
+
 */
 class MenuItem extends React.Component {
-
+  constructor(props) {
+        super(props);
+    }
     getStockState(in_stock){
         if(in_stock === 0)
         {
@@ -23,10 +29,22 @@ class MenuItem extends React.Component {
             return "In Stock";
         }
     }
-    //callback to newitemform when clicked pencil
+    //callback to newitemform when clicked edit button
     NewItemForm(e) {
         if (typeof this.props.onNew === 'function') {
-            this.props.onNew(this.props);
+          var props = {
+            type: "existing",
+            item_id: this.props.menu[1].item_id,
+            menu: {
+              "name": this.props.menu[0],
+              "category": this.props.menu[1].category,
+              "price" : this.props.menu[1].price,
+              "calories": this.props.menu[1].calories,
+              "in_stock": this.props.menu[1].in_stock
+            }
+          }
+          
+          this.props.onNew(props);
         }
     }
     render(){
@@ -35,16 +53,15 @@ class MenuItem extends React.Component {
            return(
                 <Card className="text-center m-2" style={itemStyle}> { /* a header is the item name and a clickable edit pencil */}
                     <Card.Header style={cardHeaderStyle}>{this.props.menu[0]} 
-                        <div onClick={() => this.NewItemForm() }>  
-                            <img src={Pencil} style ={imagePencil} alt='Pencil Gray clip art' />
-                        </div>
                     </Card.Header>
                     <Card.Body>
                         <p style={{margin: "0", padding: "0.3em"}}>${this.props.menu[1].price} </p>
                         <p style={{margin: "0", padding: "0.3em"}}>Calories: {this.props.menu[1].calories} </p>
                         <p style={{margin: "0", padding: "0.3em"}}>{this.props.menu[1].picture} </p>
                         <i> <p style={{margin: "0", padding: "0.3em"}}>{this.getStockState(this.props.menu[1].in_stock)} </p></i>
-                        
+                        <div onClick={() => this.NewItemForm() }>  
+                            <button className="btn btn-outline-dark btn-sm"> <i className='fas fa-edit'></i> </button>
+                        </div>
                     </Card.Body>
                 </Card>
             ) 
@@ -55,12 +72,6 @@ class MenuItem extends React.Component {
              )
         }
     }
-}
-
-const imagePencil = {
-    'width':'auto',
-    'height':'2vw',
-    'paddingLeft':'1em'
 }
 const cardHeaderStyle = {
     'backgroundColor': '#0b658a',

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Orders from "./components/Orders";
+import Cook from "./components/Cook/Cook.jsx";
 import MTasks from "./components/MTasks";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
@@ -27,46 +27,45 @@ req.onload = function(){
 function App() {
   return (
     <Router>
-      <div style={backgroundStyle}>
-        <div class="px-4">
-          <Row style={{'minHeight': '90vh'}}>
-            <Col className="pt-3 px-3">
-              <div className="rounded" style={sectionStyle}>
-                <Switch>
-                  <Route exact path="/">
-                    <Home />
-                  </Route>
-                  <Route path="/cook">
-                    <Cook />
-                  </Route>
-                  <Route path="/manager">
-                    <Manager />
-                  </Route>
-                  <Route path="/sign_up">
-                    <SignUp />
-                  </Route>
-                  <Route path="/login_manager">
-                    <MLogin/>
-                  </Route>
-                  <Route path="/login_cook">
-                    <CLogin/>
-                  </Route>
-                  <Route path="/statistics">
-                    <MTasks/>
-                  </Route>
-                  <Route path="/menu" 
-                    render={(props) => <MTasks {...props} content={"menu"}/>} />
-           
-                  <Route path="/hours" 
-                    render={(props) => <MTasks {...props} content={"hours"}/>} />
-                  <Route path="/customize" 
-                    render={(props) => <MTasks {...props} content={"customize"}/>} />
-                </Switch>
-              </div>
-            </Col>
-          </Row>
-        </div>
-      </div>
+      <main style={mainStyle} className="d-flex">
+        {/*<div className="px-4">*/}
+        {/*  <Row style={{'minHeight': '90vh'}}>*/}
+        {/*    <Col className="pt-3 px-3">*/}
+        {/*      <div className="rounded" style={sectionStyle}>*/}
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/cook">
+            <Cook />
+          </Route>
+          <Route path="/manager">
+            <Manager />
+          </Route>
+          <Route path="/sign_up">
+            <SignUp />
+          </Route>
+          <Route path="/login_manager">
+            <MLogin/>
+          </Route>
+          <Route path="/login_cook">
+            <CLogin/>
+          </Route>
+          <Route path="/statistics">
+            <MTasks/>
+          </Route>
+          <Route path="/menu"
+            render={(props) => <MTasks {...props} content={"menu"}/>} />
+          <Route path="/hours"
+            render={(props) => <MTasks {...props} content={"hours"}/>} />
+          <Route path="/customize"
+            render={(props) => <MTasks {...props} content={"customize"}/>} />
+        </Switch>
+        {/*    </div>*/}
+        {/*  </Col>*/}
+        {/*</Row>*/}
+        {/*</div>*/}
+      </main>
       <footer style={footerStyle}>
         Powered by Auto Garcon
         <img src={logoImage} width="auto" height="50vh" alt="waiter" />
@@ -79,37 +78,32 @@ export default App;
 
 function Home() {
   return (
-    <div>
+    <Row style={{'minHeight': '90vh', 'width': '100%'}}>
+      <Col className="pt-3 px-3">
+        <div style={homeStyle}>
+          <h2> Welcome to Auto Garcon 
+          <img src={logoImage} width="auto" height="75vw" alt="waiter" />
+          </h2>
 
-      <div style={homeStyle}>
-        <h2> Welcome to Auto Garcon 
-        <img src={logoImage} width="auto" height="75vw" alt="waiter" />
-         </h2>
-
-        <br/>
-        <div style={{'liststyle':'none'}}>
-          <li><Link to='/login_manager'> 
-            <button type="button" className="btn btn-info btn-lg">
-                Manager Portal
-            </button>
-          </Link></li>
           <br/>
-          <li><Link to='/login_cook'>
-            <button type="button" className="btn btn-info btn-lg">
-                Cook Portal
-            </button>
-          </Link></li>
+          
+          <div style={{'liststyle':'none'}}>
+            <li><Link to='/login_manager'> 
+              <button type="button" className="btn btn-info btn-lg">
+                  Manager Portal
+              </button>
+            </Link></li>
+            <br/>
+            <li><Link to='/login_cook'>
+              <button type="button" className="btn btn-info btn-lg">
+                  Cook Portal
+              </button>
+            </Link></li>
+          </div>
+
         </div>
-
-      </div>
-
-    </div>
-  );
-}
-
-function Cook() {
-  return (
-      <Orders/>
+      </Col>
+    </Row>
   );
 }
 
@@ -119,16 +113,15 @@ function Manager() {
   );
 }
 
-var backgroundStyle = {
+var mainStyle = {
   'backgroundColor': '#ffffff',
-  'flexGrow': '1',
-  'height': '100%'
-}
+  minHeight: 'calc(100vh - 67px)'
+};
 
-var sectionStyle = {
-  'backgroundColor': '#ffffff',
-  'height': '100%'
-}
+// var sectionStyle = {
+//   'backgroundColor': '#ffffff',
+//   'height': '100%'
+// }
 
 var footerStyle = {
   'backgroundColor': '#ffffff',
@@ -136,8 +129,10 @@ var footerStyle = {
   'paddingRight': '12px',
   'paddingTop': '12px',
   'textAlign': 'right',
-  'fontFamily': 'Kefa'
-}
+  'fontFamily': 'Kefa',
+  height: '67px'
+};
+
 var homeStyle = {
   'fontWeight': '300',
   'textAlign' : 'center',
