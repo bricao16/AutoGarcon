@@ -153,7 +153,17 @@ PUT /customer/register
 	Inputs (in body of request): customer_id, first_name, last_name, email, password
 	Outputs: 
 		On success:
-			Successfully added new customer!
+			token:
+			{
+				token
+			}
+			user:
+			{
+				user_id,
+				first_name,
+				last_name,
+				email
+			}
 		If customer_id exists already:
 			Error: customer_id already exists
 		If any inputs are missing:
