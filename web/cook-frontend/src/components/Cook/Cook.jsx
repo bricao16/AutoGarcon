@@ -2,7 +2,9 @@ import React from "react";
 import Orders from "./Orders"
 // import OrdersMenu from "./OrdersMenu.jsx";
 import OrdersHeader from "./OrdersHeader.jsx";
+import Alert from "./Alert.jsx";
 import $ from "jquery";
+import Button from 'react-bootstrap/Button';
 
 class Cook extends React.Component {
 
@@ -10,8 +12,10 @@ class Cook extends React.Component {
     super(props);
     this.props = props;
     this.state = {
-      orders:{},
-      selectedOrder: 0
+      orders: {},
+      selectedOrder: 0,
+      alertActive: false,
+      alertContent: <div></div>
     };
     this.setupArrowKeys();
   }
@@ -24,51 +28,85 @@ class Cook extends React.Component {
       } else if (key.which === 39){
         newSelectedOrder += 1;
       }
-      if(newSelectedOrder > 11){
+      const ordersLength = Object.keys(this.state.orders).length;
+      if(newSelectedOrder >= ordersLength){
         newSelectedOrder = 0;
       } else if(newSelectedOrder < 0){
-        newSelectedOrder = 11;
+        newSelectedOrder = ordersLength-1;
       }
       this.changeSelectedOrder(newSelectedOrder);
     });
   }
 
   changeSelectedOrder(cardId){
-    console.log(cardId);
     let newState = this.state;
     newState.selectedOrder = cardId;
     this.setState(newState);
   }
 
   toggleExpandOrder(){
-    console.log("test");
-    // let state = this.state;
-    // state[order_num].expand = true;
+    const index = this.state.selectedOrder;
+    const orderNum = Object.keys(this.state.orders)[index];
+    let newState = this.state;
+    newState.orders[orderNum].expand = !newState.orders[orderNum].expand;
+    this.setState(newState);
+  }
+
+  markOrderComplete(){
+    const index = this.state.selectedOrder;
+    const orderNum = Object.keys(this.state.orders)[index];
+    let state = this.state;
+    state.alertActive = true;
+    state.alertContent =
+      <div>
+        <div>Order number {orderNum} marked complete. No API yet.</div>
+        <Button variant="secondary" size="sm" className="mt-3" onClick={this.deactivateAlert.bind(this)}>Okay</Button>
+      </div>;
+    this.setState(state);
+  }
+
+  deactivateAlert(){
+    let state = this.state;
+    state.alertActive = false;
+    state.alertContent = <div></div>;
+    this.setState(state);
+  }
+
+  renderAlert(){
+    if(this.state.alertActive){
+      return <Alert alert={this.state.alertContent}/>
+    }
   }
 
   configureOrders(orders){
-    console.log(orders);
+    // console.log(orders);
     let ordersState = {};
     // Iterate over each order
     Object.values(orders).forEach(order => {
+      // console.log(order);
       // Check if that order_num exists
       if(!(order.order_num in ordersState)){
         // Create new order with empty items
         ordersState[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
       }
+      if(!(order.category in ordersState[order.order_num].items)){
+        ordersState[order.order_num].items[order.category] = [];
+      }
       // Add item to order
-      ordersState[order.order_num].items.push({quantity: order.quantity, title: order.item_name})
+      ordersState[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name});
     });
-    this.setState({orders: ordersState});
-    console.log(ordersState);
+    let newState = this.state;
+    newState.orders = ordersState;
+    this.setState(newState);
   }
 
   componentDidMount() {
     // Get current orders from database
-    fetch("http://50.19.176.137:8000/orders/123")
+    // http://50.19.176.137:8000/orders/123
+    fetch("https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders")
       .then(res => res.json())
       .then(orders => {
-        // this.configureOrders(orders);
+        this.configureOrders(orders);
       })
       .catch(e => console.log(e));
   }
@@ -77,9 +115,11 @@ class Cook extends React.Component {
     return (
       <div style={cookPageStyle}>
         {/*<OrdersMenu />*/}
+        {/*<Alert alert="Order number"/>*/}
+        {this.renderAlert()}
         <div className="p-3">
-          <OrdersHeader handleExpandClick={this.toggleExpandOrder.bind(this)}/>
-          <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleClick={this.changeSelectedOrder.bind(this)} />
+          <OrdersHeader handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)}/>
+          <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
         </div>
       </div>
     )
