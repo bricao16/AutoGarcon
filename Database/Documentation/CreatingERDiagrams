@@ -1,0 +1,7 @@
+Google has a ER Diagram creater that allows the user to insert each relation, attribute, and entity.
+The application is called diagrams and is used for creating all types of diagrams but has it's own subsection for ER diagrams.
+The diagrams can be saved to google drive and can be accessed through draw.io.
+MySQL also has a function that can create an ER diagram but it is more difficult to understand due to the way it is formatted.
+
+When creating an ER Diagram, be sure that lines do not intersect each other as this makes it difficult to read.
+For the center entity, use the entity that has the most relations, this will make it easier to format the diagram as a whole.

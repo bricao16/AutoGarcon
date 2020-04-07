@@ -17,7 +17,9 @@ import Card from 'react-bootstrap/Card';
 
 */
 class MenuItem extends React.Component {
-
+  constructor(props) {
+        super(props);
+    }
     getStockState(in_stock){
         if(in_stock === 0)
         {
@@ -30,7 +32,19 @@ class MenuItem extends React.Component {
     //callback to newitemform when clicked edit button
     NewItemForm(e) {
         if (typeof this.props.onNew === 'function') {
-            this.props.onNew(this.props);
+          var props = {
+            type: "existing",
+            item_id: this.props.menu[1].item_id,
+            menu: {
+              "name": this.props.menu[0],
+              "category": this.props.menu[1].category,
+              "price" : this.props.menu[1].price,
+              "calories": this.props.menu[1].calories,
+              "in_stock": this.props.menu[1].in_stock
+            }
+          }
+          
+          this.props.onNew(props);
         }
     }
     render(){
@@ -46,7 +60,7 @@ class MenuItem extends React.Component {
                         <p style={{margin: "0", padding: "0.3em"}}>{this.props.menu[1].picture} </p>
                         <i> <p style={{margin: "0", padding: "0.3em"}}>{this.getStockState(this.props.menu[1].in_stock)} </p></i>
                         <div onClick={() => this.NewItemForm() }>  
-                            <button class="btn btn-outline-dark btn-sm"> <i class='fas fa-edit'></i> </button>
+                            <button className="btn btn-outline-dark btn-sm"> <i className='fas fa-edit'></i> </button>
                         </div>
                     </Card.Body>
                 </Card>
@@ -59,7 +73,6 @@ class MenuItem extends React.Component {
         }
     }
 }
-
 const cardHeaderStyle = {
     'backgroundColor': '#0b658a',
     'color': '#ffffff',

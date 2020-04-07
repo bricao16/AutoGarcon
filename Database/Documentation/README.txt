@@ -1,9 +1,10 @@
-Last Updated:2020-03-19 12:20:00
+Last Updated:2020-04-04 11:20:00
 
 Group: Database
 Folder: Documentation
 
 Files:
+-CreatingERDiagrams: Information for creating an ER Diagram and tips
 
 Folders:
 +SQL

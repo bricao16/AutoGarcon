@@ -2,13 +2,15 @@
 	REST-API Server
 	Tucker Urbanski
 	Date Created: 3/2/2020
-	Last Modified: 3/31/2020
+	Last Modified: 4/7/2020
 */
 
 // Built-in Node.js modules
 var fs = require('fs');
 var path = require('path');
 var cors = require('cors');
+var crypto = require('crypto');
+
 
 // NPM modules
 var express = require('express');
@@ -102,7 +104,8 @@ app.get('/restaurant/:id', (req, res) => {
 				'font': rows[0].font,
 				'primary_color': rows[0].primary_color,
 				'secondary_color': rows[0].secondary_color,
-				'tertiary_color': rows[0].tertiary_color
+				'tertiary_color': rows[0].tertiary_color,
+				'logo': rows[0].logo
 			};
 
 			//Add menu to response:
@@ -195,7 +198,12 @@ app.get('/favorites/:id', (req, res) => {
 			for (let i=0; i<rows.length; i++) {
 				response[i] =   {
 					'restaurant_id': rows[i].restaurant_id,
-			'restaurant_name': rows[i].restaurant_name
+					'restaurant_name': rows[i].restaurant_name,
+					'address': rows[i].restaurant_addr,
+					'phone_number': rows[i].phone_number,
+					'opening_time': rows[i].opening_time,
+					'closing_time': rows[i].closing_time,
+					'logo': rows[i].logo
 				};
 			}   //for
 
@@ -206,12 +214,10 @@ app.get('/favorites/:id', (req, res) => {
 }); //app.get
 
 //POST request handler for customer login
-app.post('/customers/login', (req, res) => {
-	let query = "SELECT * FROM sample.customers WHERE customer_id = ? and password = ?";
+app.post('/customer/login', (req, res) => {
+	let query = 'SELECT * FROM sample.customers WHERE customer_id = ?';
 
-	let parameters = [req.body.username, req.body.password];
-
-	db.query(query, parameters, (err, rows) => {
+	db.query(query, req.body.username, (err, rows) => {
 		if (err) {
 			res.status(500).send('Error: could not retrieve data from database');
 		}   //if
@@ -219,37 +225,51 @@ app.post('/customers/login', (req, res) => {
 			res.status(500).send('Error: no user with that username/password');
 		}   //else if
 		else {
-			//Build user object:
-			let user = {
-				'user_id': rows[0].user_id,
-				'first_name': rows[0].first_name,
-				'last_name': rows[0].last_name,
-				'email': rows[0].email
-			};  //user
+			//Store user's salt
+			let salt = rows[0].salt;
+			//Hash supplied password
+			let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+				if (err) {
+					console.log(err);
+				}
+				else
+				{
+					if (derivedKey.toString('hex')  === rows[0].password) {
+						//Build user object:
+						let user = {
+							'customer_id': rows[0].customer_id,
+							'first_name': rows[0].first_name,
+							'last_name': rows[0].last_name,
+							'email': rows[0].email
+						};  //user
 
-			//Sign JWT and send token
-			//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-			jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
-				//Build response
-				let response = {
-					'token': token,
-					user
-		};  //response
+						//Sign JWT and send token
+						//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+						jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
+							//Build response
+							let response = {
+								'token': token,
+								user
+							};  //response
 
-				//Send Response:
-				res.type('json').send(response);
-			});
+							//Send Response:
+							res.type('json').send(response);
+						});
+					}   //if
+					else {
+						res.status(500).send('Error: no user with that username/password');
+					}   //else
+				}   //else
+			}); //hashed
 		}   //else
 	}); //db.query
 }); //app.post
 
 //POST request handler for staff login
 app.post('/staff/login', (req, res) => {
-	let query = "SELECT * FROM sample.staff WHERE staff_id = ? AND password = ?";
+	let query = 'SELECT * FROM sample.staff WHERE staff_id = ?';
 
-	let parameters = [req.body.username, req.body.password];
-
-	db.query(query, parameters, (err, rows) => {
+	db.query(query, req.body.username, (err, rows) => {
 		if (err) {
 			res.status(500).send('Error: could not retrieve data from database');
 		}   //if
@@ -257,29 +277,45 @@ app.post('/staff/login', (req, res) => {
 			res.status(500).send('Error: no user with that username/password');
 		}   //else if
 		else {
-			//Build staff object:
-			let staff = {
-				'staff_id': rows[0].staff_id,
-				'restaurant_id': rows[0].restaurant_id,
-				'first_name': rows[0].first_name,
-				'last_name': rows[0].last_name,
-				'contact_num': rows[0].contact_num,
-				'email': rows[0].email,
-				'position': rows[0].position
-			};  //staff
+			//Store user's salt
+			let salt = rows[0].salt;
+			//Hash supplied password
+			let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+				if (err) {
+					console.log(err);
+				}
+				else
+				{
+					if (derivedKey.toString('hex')  === rows[0].password) {
+						//Build user object:
+						let staff = {
+							'staff_id': rows[0].staff_id,
+							'restaurant_id': rows[0].restaurant_id,
+							'first_name': rows[0].first_name,
+							'last_name': rows[0].last_name,
+							'contact_num': rows[0].contact_num,
+							'email': rows[0].email,
+							'position': rows[0].position
+						};  //user
 
-			//Sign JWT and send token
-			//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-			jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
-				//Build response
-				let response = {
-					'token': token,
-					staff
-				};  //response
+						//Sign JWT and send token
+						//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+						jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
+							//Build response
+							let response = {
+								'token': token,
+								staff
+							};  //response
 
-				//Send Response:
-				res.type('json').send(response);
-			});
+							//Send Response:
+							res.type('json').send(response);
+						});
+					}   //if
+					else {
+						res.status(500).send('Error: no user with that username/password');
+					}   //else
+				}   //else
+			}); //hashed
 		}   //else
 	}); //db.query
 }); //app.post
@@ -365,26 +401,52 @@ app.put('/customer/register', (req, res) =>
 		}   //if
 		else
 		{
-			//Create a new salt here
-			//Hash password with salt here
-
-			let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, req.body.password];
-			let query = '';
-			query = 'INSERT INTO sample.customers(customer_id, first_name, last_name, email, password)';
-			query = query + " VALUES(?, ?, ?, ?, ?)";
-
-			//Add new customer to db:
-			db.query(query, parameters, (err, rows) =>
-			{
-				if (err)
-				{
-					res.status(500).send('Error creating new customer');
-				}   //if
+			//Create a new salt
+			let salt = genSalt();
+			//Hash supplied password with salt
+			let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+				if (err) {
+					console.log(err);
+				}
 				else
 				{
-					res.status(200).send('Successfully added new customer!');
+					let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex')];
+					let query = 'INSERT INTO sample.customers(customer_id, first_name, last_name, email, salt, password)';
+					query = query + " VALUES(?, ?, ?, ?, ?, ?)";
+
+					//Add new customer to db:
+					db.query(query, parameters, (err, rows) =>
+					{
+						if (err)
+						{
+							res.status(500).send('Error creating new customer');
+						}   //if
+						else
+						{
+							//Build user object:
+							let user = {
+								'customer_id': req.body.customer_id,
+								'first_name': req.body.first_name,
+								'last_name': req.body.last_name,
+								'email': req.body.email
+							};  //user
+
+							//Sign JWT and send token
+							//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+							jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
+								//Build response
+								let response = {
+									'token': token,
+									user
+								};  //response
+
+								//Send Response:
+								res.type('json').send(response);
+							});
+						}   //else
+					}); //db.query
 				}   //else
-			}); //db.query
+			}); //hashed
 		}   //else
 	}); //db.query
 });	//app.put
@@ -432,6 +494,49 @@ app.put('/menu/add', (req, res) =>
 	}); //db.query
 });	//app.put
 
+//POST request handler for updating menu item
+app.post('/menu/update', (req, res) =>
+{
+	//Make sure right number of parameters are entered:
+	if(!(req.body.item_id && req.body.restaurant_id && req.body.item_name && req.body.calorie_num && req.body.category && req.body.in_stock && req.body.price))
+	{
+		res.status(500).send('Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price');
+		return;
+	}   //if
+
+	//Make sure the menu item exists at the restaurant:
+	let parameters = [];
+	parameters = [req.body.item_id, req.body.restaurant_id]
+	let query = "Select * FROM sample.menu WHERE item_id = ? AND restaurant_id = ?";
+	db.query(query, parameters, (err, rows) =>
+	{
+		if (rows.length == 0)
+		{
+			res.status(500).send('Error: item does not exist');
+		}   //if
+		else
+		{
+			parameters = [req.body.item_name, req.body.calorie_num, req.body.category, req.body.in_stock, req.body.price, req.body.item_id];
+			let query = '';
+			query = 'UPDATE sample.menu SET item_name = ?, calorie_num = ?, category = ?, in_stock = ?, price = ?';
+			query = query + " WHERE item_id = ?";
+
+			//Edit menu item in db:
+			db.query(query, parameters, (err, rows) =>
+			{
+				if (err)
+				{
+					res.status(500).send('Error updating menu item');
+				}   //if
+				else
+				{
+					res.status(200).send('Successfully updated menu item!');
+				}   //else
+			}); //db.query
+		}   //else
+	}); //db.query
+});	//app.post
+
 /*
 	Token format:
 		Authorization: Bearer <token>
@@ -454,3 +559,8 @@ function verifyToken(req, res, next)
 		res.status(403).send('Authorization Required!');
 	}   //else
 }   //verifyToken
+
+function genSalt() {
+	//Generate random string
+	return crypto.randomBytes(64).toString('hex');
+}   //genSalt
