@@ -78,31 +78,32 @@ export default App;
 
 function Home() {
   return (
-    <div>
+    <Row style={{'minHeight': '90vh', 'width': '100%'}}>
+      <Col className="pt-3 px-3">
+        <div style={homeStyle}>
+          <h2> Welcome to Auto Garcon 
+          <img src={logoImage} width="auto" height="75vw" alt="waiter" />
+          </h2>
 
-      <div style={homeStyle}>
-        <h2> Welcome to Auto Garcon 
-        <img src={logoImage} width="auto" height="75vw" alt="waiter" />
-         </h2>
-
-        <br/>
-        <div style={{'liststyle':'none'}}>
-          <li><Link to='/login_manager'> 
-            <button type="button" className="btn btn-info btn-lg">
-                Manager Portal
-            </button>
-          </Link></li>
           <br/>
-          <li><Link to='/login_cook'>
-            <button type="button" className="btn btn-info btn-lg">
-                Cook Portal
-            </button>
-          </Link></li>
+          
+          <div style={{'liststyle':'none'}}>
+            <li><Link to='/login_manager'> 
+              <button type="button" className="btn btn-info btn-lg">
+                  Manager Portal
+              </button>
+            </Link></li>
+            <br/>
+            <li><Link to='/login_cook'>
+              <button type="button" className="btn btn-info btn-lg">
+                  Cook Portal
+              </button>
+            </Link></li>
+          </div>
+
         </div>
-
-      </div>
-
-    </div>
+      </Col>
+    </Row>
   );
 }
 
