@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         //bind the textview with data received
         holder.textTitle.setText(data.get(position).getName());
         holder.textDescription.setText(data.get(position).getAddress());
+        holder.textPhoneNumber.setText(Long.toString(data.get(position).getPhoneNumber()));
+        holder.restaurantLogo.setImageBitmap(data.get(position).getImageBitmap());
     }
 
     @Override
@@ -55,6 +58,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView textTitle;
         TextView textDescription;
+        TextView textPhoneNumber;
+        ImageView restaurantLogo;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -70,6 +75,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
             textTitle = itemView.findViewById(R.id.restaurant_title);
             textDescription = itemView.findViewById(R.id.restaurant_location);
+            textPhoneNumber = itemView.findViewById(R.id.restaurant_number);
+            restaurantLogo = itemView.findViewById(R.id.restaurant_picture);
         }
     }
 }
