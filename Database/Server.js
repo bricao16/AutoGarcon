@@ -400,26 +400,52 @@ app.put('/customer/register', (req, res) =>
 		}   //if
 		else
 		{
-			//Create a new salt here
-			//Hash password with salt here
-
-			let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, req.body.password];
-			let query = '';
-			query = 'INSERT INTO sample.customers(customer_id, first_name, last_name, email, password)';
-			query = query + " VALUES(?, ?, ?, ?, ?)";
-
-			//Add new customer to db:
-			db.query(query, parameters, (err, rows) =>
-			{
-				if (err)
-				{
-					res.status(500).send('Error creating new customer');
-				}   //if
+			//Create a new salt
+			let salt = genSalt();
+			//Hash supplied password with salt
+			let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+				if (err) {
+					console.log(err);
+				}
 				else
 				{
-					res.status(200).send('Successfully added new customer!');
+					let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex')];
+					let query = 'INSERT INTO sample.customers(customer_id, first_name, last_name, email, salt, password)';
+					query = query + " VALUES(?, ?, ?, ?, ?, ?)";
+
+					//Add new customer to db:
+					db.query(query, parameters, (err, rows) =>
+					{
+						if (err)
+						{
+							res.status(500).send('Error creating new customer');
+						}   //if
+						else
+						{
+							//Build user object:
+							let user = {
+								'customer_id': req.body.customer_id,
+								'first_name': req.body.first_name,
+								'last_name': req.body.last_name,
+								'email': req.body.email
+							};  //user
+
+							//Sign JWT and send token
+							//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+							jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
+								//Build response
+								let response = {
+									'token': token,
+									user
+								};  //response
+
+								//Send Response:
+								res.type('json').send(response);
+							});
+						}   //else
+					}); //db.query
 				}   //else
-			}); //db.query
+			}); //hashed
 		}   //else
 	}); //db.query
 });	//app.put
@@ -532,3 +558,8 @@ function verifyToken(req, res, next)
 		res.status(403).send('Authorization Required!');
 	}   //else
 }   //verifyToken
+
+function genSalt() {
+	//Generate random string
+	return crypto.randomBytes(64).toString('hex');
+}   //genSalt
