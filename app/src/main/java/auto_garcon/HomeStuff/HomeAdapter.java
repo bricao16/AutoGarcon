@@ -46,7 +46,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         //bind the textview with data received
         holder.textTitle.setText(data.get(position).getName());
         holder.textDescription.setText(data.get(position).getAddress());
-        holder.textPhoneNumber.setText(Long.toString(data.get(position).getPhoneNumber()));
+        holder.textPhoneNumber.setText(data.get(position).getPhoneNumber());
         holder.restaurantLogo.setImageBitmap(data.get(position).getImageBitmap());
     }
 

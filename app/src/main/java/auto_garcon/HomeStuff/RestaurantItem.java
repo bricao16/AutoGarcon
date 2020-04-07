@@ -1,14 +1,18 @@
 package auto_garcon.HomeStuff;
 
+import android.graphics.Bitmap;
+import android.util.Log;
+
 import java.io.Serializable;
 
 public class RestaurantItem implements Serializable {
     private int ID;
-    private long phoneNumber;
     private int openingTime;
     private int closingTime;
-    private String name;
+    private Bitmap image;
     private String address;
+    private String name;
+    private String phoneNumber;
 
     public RestaurantItem(){}
 
@@ -18,14 +22,6 @@ public class RestaurantItem implements Serializable {
 
     public int getID(){
         return this.ID;
-    }
-
-    public void setPhoneNumber(long phoneNumber){
-        this.phoneNumber = phoneNumber;
-    }
-
-    public long getPhoneNumber(){
-        return this.phoneNumber;
     }
 
     public void setOpeningTime(int openingTime){
@@ -44,13 +40,12 @@ public class RestaurantItem implements Serializable {
         return this.closingTime;
     }
 
-
-    public void setName(String name){
-        this.name = name;
+    public void setImageBitmap(Bitmap image){
+        this.image = image;
     }
 
-    public String getName(){
-        return this.name;
+    public Bitmap getImageBitmap(){
+        return this.image;
     }
 
     public void setAddress(String address){
@@ -60,4 +55,26 @@ public class RestaurantItem implements Serializable {
     public String getAddress(){
         return this.address;
     }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public void setPhoneNumber(long phoneNumber){
+        String fullNumber = Long.toString(phoneNumber);
+
+        this.phoneNumber = "(" + fullNumber.substring(0, 3) + ") " + fullNumber.substring(3, 6) + "-" + fullNumber.substring(6);
+    }
+
+    public String getPhoneNumber(){
+        return this.phoneNumber;
+    }
+
+
+
+
 }

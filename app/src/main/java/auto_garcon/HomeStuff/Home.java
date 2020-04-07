@@ -1,6 +1,8 @@
 package auto_garcon.HomeStuff;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.JsonObject;
 import com.squareup.seismic.ShakeDetector;
 
 import org.json.JSONException;
@@ -153,6 +156,16 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                                 break;
                                             case "closing_time":
                                                 itemToBeAdded.setClosingTime(Integer.parseInt(item.get(inner_key).toString()));
+                                                break;
+                                            case "logo":
+                                                JSONObject obj = item.getJSONObject("logo");
+                                                byte[] temp = new byte[obj.getJSONArray("data").length()];
+
+                                                for(int i = 0; i < obj.getJSONArray("data").length(); i++) {
+                                                    temp[i] = (byte) (((int) obj.getJSONArray("data").get(i)) & 0xFF);
+                                                }
+
+                                                itemToBeAdded.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
                                                 break;
                                         }
                                     }
