@@ -36,17 +36,17 @@ class Menu extends React.Component {
       categories: [],
       renderCategory: "main",
       newItem: false,
-      newItemPrefill: 
-                        {
-                        type:"default",
-                        menu:
-                        [ "Name",
-                        {'category':"Category",
-                        'price' : "Price",
-                        'calories': "Calories",
-                        'in_stock': 0}
-                        ]
-                      }
+      newItemPrefill: {
+        type: "default",
+        item_id: null,
+        menu: {
+          "name": "Name",
+          "category":"Category",
+          "price" : "Price",
+          "calories": "Calories",
+          "in_stock": 0
+        }
+      }
                       
     };
   }
@@ -64,11 +64,11 @@ class Menu extends React.Component {
     })
   }
    //toggle between creating a new menu item and not
-  toggleNewItem= (itemProperties) => {
+  toggleNewItem = (itemProperties) => {
 
       this.setState({
         newItem: !this.state.newItem,
-        newItemPrefill:itemProperties
+        newItemPrefill: itemProperties
     })
     //if the new item prefill is default set to default prefill
     if(itemProperties === "default")
@@ -91,16 +91,17 @@ class Menu extends React.Component {
   //creates default placeholders for the new item
   resetNewItem(){
     this.setState({
-      newItemPrefill:{
-                        type:"default",
-                        menu:
-                        [ "Name",
-                        {'category':"Category",
-                        'price' : "Price",
-                        'calories': "Calories",
-                        'in_stock': 0}
-                        ]
-                      }
+      newItemPrefill: {
+        type: "default",
+        item_id: null,
+        menu: {
+          "Name": "Name",
+          "category":"Category",
+          "price" : "Price",
+          "calories": "Calories",
+          "in_stock": 0
+        }
+      }
     })
   }
   //render the menu prop of the current category 
@@ -148,7 +149,7 @@ class Menu extends React.Component {
                     <Col sm={6} className="p-3"> {/*add a create new category option*/}
                       <Card className="text-center" >
                         <div onClick={() => this.toggleNewItem("default") }>                     
-                          <Card.Header style={cardHeaderStyle, createNewStyle}>Create New</Card.Header>
+                          <Card.Header style={cardHeaderStyle, createNewStyle}>Create New Item</Card.Header>
                         </div>
                       </Card>
                     </Col>  
