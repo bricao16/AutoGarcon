@@ -213,7 +213,7 @@ app.get('/favorites/:id', (req, res) => {
 }); //app.get
 
 //POST request handler for customer login
-app.post('/customers/login', (req, res) => {
+app.post('/customer/login', (req, res) => {
 	let query = 'SELECT * FROM sample.customers WHERE customer_id = ?';
 
 	db.query(query, req.body.username, (err, rows) => {
