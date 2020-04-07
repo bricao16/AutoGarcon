@@ -1,9 +1,8 @@
 import React from "react";
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-//import '../../node_modules/pretty-checkbox/dist/pretty-checkbox.min.css';
-//import '../App.css';
-//components/NewItem.jsx
+import Alert from 'react-bootstrap/Alert';
+
 /* 
   This component is to allow the manager to 
   create a new item. It returns a form object that allows
@@ -16,6 +15,8 @@ class NewItem extends React.Component {
     this.state = props.prefill.menu
     this.state.type = props.prefill.type
     this.state.item_id = props.prefill.item_id
+    this.state.show = false
+    this.handleShow = this.handleShow.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -42,7 +43,8 @@ class NewItem extends React.Component {
     let requestMethod;
     let endpoint;
     let body;
-    // Non product so need to add item
+
+    // Non existent so need to add item
     if (this.state.type === "default") {
       requestMethod = "PUT"
       endpoint = "http://50.19.176.137:8000/menu/add"
@@ -52,15 +54,17 @@ class NewItem extends React.Component {
         +'&category='+this.state.category
         +'&price='+this.state.price
     }
-    // Needs to be updated
+    // Item needs to be edited
     else {
       requestMethod = "POST"
       endpoint = "http://50.19.176.137:8000/menu/update"
       body = 'restaurant_id='+123
+        +'&item_id='+this.state.item_id
         +'&item_name='+this.state.name
         +'&calorie_num='+this.state.calories
         +'&category='+this.state.category
         +'&price='+this.state.price
+        +'&in_stock='+this.state.in_stock
     }
 	  
 	  const requestOptions = {
@@ -68,26 +72,34 @@ class NewItem extends React.Component {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      
       body: body
     }
     
     fetch(endpoint, requestOptions)
 		.then(async response => {
-			const data = await response.json();
-			
-			if(!response.ok){
-				const error = (data && data.message) || response.status;
-				return Promise.reject(error);
-			}
-			this.setState({redirect: true});
-		
+      await response;
+
+      if (response.status !== 200) {this.handleShow(false);}
+      else {this.handleShow(true);}
 		})
 		.catch(error =>{
-			
-			this.setState({redirect: false});
+      this.handleShow(false);
 			console.error("There was an error!", error);
 		});
+  }
+
+  /* Used to show the correct alert after hitting save item */
+  handleShow(success) {
+    if (success) {
+      this.setState({response: 'Successfully updated item!'});
+      this.setState({alertVariant: 'success'});
+    }
+    else {
+      this.setState({response: 'Failed to update item'})
+      this.setState({alertVariant: 'danger'});
+    }
+
+    this.setState({show: true});
   }
 
   render(){
@@ -96,6 +108,11 @@ class NewItem extends React.Component {
       return ( 
         <Col className="pt-3 px-3">
           <Container>
+
+            <Alert show={this.state.show} variant={this.state.alertVariant}>
+              {this.state.response}
+            </Alert>
+
             <div class="d-flex flex-row-reverse pb-3">
               <button type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
             </div>
@@ -162,9 +179,15 @@ class NewItem extends React.Component {
       return ( 
         <Col className="pt-3 px-3">
           <Container>
+
+          <Alert show={this.state.show} variant={this.state.alertVariant}>
+            {this.state.response}
+          </Alert>
+
             <div class="d-flex flex-row-reverse pb-3">
               <button type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
             </div>
+
             <div>
               <form class="pb-1">
 
