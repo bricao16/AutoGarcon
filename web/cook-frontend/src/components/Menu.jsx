@@ -200,15 +200,6 @@ class Menu extends React.Component {
   }
 }
 
-const managerStyle = {
-  'display': "flex",
-  'fontSize': "1.2em",
-  'justifyContent': "space-between",
-  'margin': "30px",
-  'marginTop': "0",
-  'flexWrap': "wrap",
-  'fontFamily': 'Kefa'
-};
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1'
 };

@@ -32,7 +32,19 @@ class MenuItem extends React.Component {
     //callback to newitemform when clicked edit button
     NewItemForm(e) {
         if (typeof this.props.onNew === 'function') {
-            this.props.onNew(this.props);
+          var props = {
+            type: "existing",
+            item_id: this.props.menu[1].item_id,
+            menu: {
+              "name": this.props.menu[0],
+              "category": this.props.menu[1].category,
+              "price" : this.props.menu[1].price,
+              "calories": this.props.menu[1].calories,
+              "in_stock": this.props.menu[1].in_stock
+            }
+          }
+          
+          this.props.onNew(props);
         }
     }
     render(){
