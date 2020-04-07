@@ -11,7 +11,7 @@ public class SharedPreference {
     private Context context;
 
     public SharedPreference(Context context){
-        this.context=context;
+        this.context = context;
 
         sharedPreferences = context.getSharedPreferences(context.getString(R.string.pref_file),Context.MODE_PRIVATE);
     }
@@ -24,19 +24,26 @@ public class SharedPreference {
         //how you save???
         editor.apply();
     }
+
+    //logs out user
+    public void logOut(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear().apply();
+    }
+
     public  boolean getLoginStatus(){
         // gets the login status from preference file
         return sharedPreferences.getBoolean(context.getString(R.string.pref_login_status), false);
     }
 
-    public void writeName(String name){
+    public void writeUserName(String name){
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        // we take in the name given and store it in our prefrence file
-        editor.putString(context.getString(R.string.pref_user_name),name);
+        // we take in the name given and store it in our preference file
+        editor.putString(context.getString(R.string.pref_user_name), name);
         //save
         editor.apply();
     }
-    public String getName(){
+    public String getUserName(){
         // returns the user logged in at the moment else returns the string user
         return  sharedPreferences.getString(context.getString(R.string.pref_user_name),"User");
     }
@@ -53,7 +60,7 @@ public class SharedPreference {
         // this gson object will be used to convert our json string into a java object
         Gson gson = new Gson();
         //here we extract the json String from our sharedPreference file
-        String stringJson = sharedPreferences.getString("ShoppingCartSingleton", "");
+        String stringJson = sharedPreferences.getString("ShoppingCartSingleton", null);
 
         //here we convert the json String to our Java Object
         return gson.fromJson(stringJson, ShoppingCartSingleton.class);

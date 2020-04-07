@@ -5,6 +5,10 @@
         android:title="@string/account"/>
 
     <item
+        android:id="@+id/order_history"
+        android:title="@string/order_history"/>
+
+    <item
         android:id="@+id/settings"
         android:title="@string/settings"/>
 

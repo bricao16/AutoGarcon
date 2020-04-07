@@ -1,12 +1,18 @@
 package auto_garcon.MenuStuff;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.auto_garcon.R;
@@ -15,15 +21,25 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
+import auto_garcon.Singleton.SharedPreference;
+import auto_garcon.Singleton.ShoppingCartSingleton;
+
 public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private Context context;
     private List<String> listDataHeader;
     private HashMap<String, List<MenuItem>> listHashMap;
+    private SharedPreference pref;
+    private ShoppingCartSingleton cart;
+
+    Dialog addToCartPopup;
+    Dialog confirmPopup;
+
 
     public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap) {
         this.context = context;
         this.listDataHeader = listDataHeader;
         this.listHashMap = listHashMap;
+        this.pref = new SharedPreference(context);
     }
 
     @Override
@@ -88,13 +104,63 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         TextView txtListChild = view.findViewById(R.id.list_item);
         txtListChild.setText(childText);
 
+        TextView txtListChildPrice = view.findViewById(R.id.list_item_price);
+        txtListChildPrice.setText(String.format("$%.02f", getChild(i, j).getPrice()));
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent popup = new Intent(context, Popup.class);
+                addToCartPopup = new Dialog(context);
+                confirmPopup = new Dialog(context);
 
-                popup.putExtra("menuItem", (Serializable) getChild(i, j));
-                context.startActivity(popup);
+                addToCartPopup.setContentView(R.layout.menu_popup);
+                addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                addToCartPopup.show();
+
+                Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart);
+
+                addToCart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(pref.getShoppingCart().getCart().size() == 0) {
+                            cart = new ShoppingCartSingleton(getChild(i, j).getRestaurantID());
+                            cart.addToCart(getChild(i, j));
+                            pref.setShoppingCart(cart);
+                        }
+                        else if(pref.getShoppingCart().getRestaurantID() == getChild(i, j).getRestaurantID()) {
+                            cart = pref.getShoppingCart();
+
+                            if(cart.cartContainsItem(getChild(i, j)) != null) {
+                                cart.cartContainsItem(getChild(i, j)).incrementQuantity();
+                            }
+                            else {
+                                cart.addToCart(getChild(i, j));
+                            }
+
+                            pref.setShoppingCart(cart);
+                        }
+                        else {
+                            confirmPopup.setContentView(R.layout.confirm_popup);
+
+                            confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            confirmPopup.show();
+
+                            Button confirmClearCart = confirmPopup.findViewById(R.id.confirm_clear);
+
+                            confirmClearCart.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    cart = new ShoppingCartSingleton(getChild(i, j).getRestaurantID());
+
+                                    cart.addToCart(getChild(i, j));
+                                    pref.setShoppingCart(cart);
+                                    confirmPopup.dismiss();
+                                    addToCartPopup.dismiss();
+                                }
+                            });
+                        }
+                    }
+                });
             }
         });
 
