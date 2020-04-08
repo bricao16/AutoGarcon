@@ -2,17 +2,14 @@ import React from "react";
 import Card from 'react-bootstrap/Card';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClock } from '@fortawesome/free-regular-svg-icons'
+import { faClock } from '@fortawesome/free-regular-svg-icons';
+import  'moment-duration-format';
 
 class Order extends React.Component {
 
   constructor(props) {
     super(props);
     this.props = props;
-    /*2020-03-10T15:52:23.000Z*/
-    // moment('2020-03-10T15:52:23.000Z');
-    // let time = '2020-03-10T15:52:23.000Z'.split('.')[0]
-    // console.log(moment(time).format('LT'));
   }
 
   /*
@@ -31,7 +28,7 @@ class Order extends React.Component {
       this.props.order.items[category].forEach(item => {
         items.push(
           <div key={key2++}>
-            <span className="pr-2">{item.quantity}x</span>
+            <span className="pr-3">{item.quantity}</span>
             <span>{item.title}</span>
           </div>
         );
@@ -61,18 +58,26 @@ class Order extends React.Component {
   }
 
   renderTime(){
-    let time = this.props.order.order_date.split('.')[0];
-    time = moment(time).add(1, 'h');
-    let timePlaced = time.format('LT');
-    let timeSince = time.startOf('minute').fromNow(true);
+    // Make Moment object out of order placed time
+    let orderTime = moment(this.props.order.order_date, 'YYYY-MM-DD HH:mm:ss');
+    orderTime = moment(orderTime).add(27, 'h');
+    // Convert to string that displays as 12 hour time with AM/PM
+    let orderTimeString = orderTime.format('LT');
+    // Time right now as Moment object
+    let now = moment();
+    // Seconds between now and order placed time
+    const secondsSinceOrder = now.diff(orderTime, 's');
+    // Formatted time between order placed time and now as hours:minute:seconds
+    let formattedTimeSinceOrder = moment.duration(secondsSinceOrder, 's').format('hh:mm:ss');
+
     return (
-      <React.Fragment>
-        <span className="pr-3">{timePlaced}</span>
+      <>
+        <span className="pr-3">{orderTimeString}</span>
         <div className="d-flex" style={{alignItems: 'center'}}>
           <FontAwesomeIcon icon={faClock}/>
-          <span className="pl-1">{timeSince}</span>
+          <span className="pl-1">{formattedTimeSinceOrder}</span>
         </div>
-      </React.Fragment>
+      </>
     );
   }
 

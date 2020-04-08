@@ -107,7 +107,8 @@ class Orders extends React.Component{
 }
 
 const ordersStyle = {
-  alignItems: 'flex-start'
+  alignItems: 'flex-start',
+  fontSize: '1.1em'
 };
 
 export default Orders;
