@@ -18,15 +18,20 @@ import java.util.ArrayList;
 
 import auto_garcon.MenuStuff.Menu;
 import auto_garcon.MenuStuff.MenuItem;
+import auto_garcon.Singleton.SharedPreference;
+import auto_garcon.Singleton.ShoppingCartSingleton;
 
 public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapter.ShoppingCartViewHolder>{
 
     private ArrayList<MenuItem> menuItemArrayList;
     private Context ct;
+    private SharedPreference pref;
+    private ShoppingCartSingleton cart;
 
     public ShoppingCartAdapter(Context context, ArrayList<MenuItem> items) {
-        ct= context;
-        menuItemArrayList = items;
+        this.ct = context;
+        this.menuItemArrayList = items;
+        this.pref = new SharedPreference(context);
     }
     @NonNull
     @Override
@@ -38,8 +43,9 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ShoppingCartAdapter.ShoppingCartViewHolder holder, int position) {
-        final int positionForOnClick =position;
+        final int positionForOnClick = position;
         String quantity = "Qty(" + menuItemArrayList.get(position).getQuantity() + ")";
+        cart = pref.getShoppingCart();
 
         holder.name.setText(menuItemArrayList.get(position).getNameOfItem());
         menuItemArrayList.get(position).setCost();
@@ -52,9 +58,11 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 menuItemArrayList.get(positionForOnClick).incrementQuantity();
                 menuItemArrayList.get(positionForOnClick).setCost();
 
-
                 holder.quantity.setText("Qty(" + menuItemArrayList.get(positionForOnClick).getQuantity() + ")");
                 holder.price.setText(String.format("$%.02f", menuItemArrayList.get(positionForOnClick).getCost()));
+
+                cart.cartContainsItem(menuItemArrayList.get(positionForOnClick)).incrementQuantity();
+                pref.setShoppingCart(cart);
             }
         });
 
@@ -67,6 +75,9 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
                     holder.quantity.setText("Qty(" + menuItemArrayList.get(positionForOnClick).getQuantity() + ")");
                     holder.price.setText(String.format("$%.02f", menuItemArrayList.get(positionForOnClick).getCost()));
+
+                    cart.cartContainsItem(menuItemArrayList.get(positionForOnClick)).decrementQuantity();
+                    pref.setShoppingCart(cart);
                 }
             }
         });
@@ -78,7 +89,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     }
 
     public class ShoppingCartViewHolder extends RecyclerView.ViewHolder{
-
         TextView name;
         TextView price;
         TextView quantity;
