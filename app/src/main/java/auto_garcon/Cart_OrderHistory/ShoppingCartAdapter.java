@@ -19,15 +19,20 @@ import java.util.ArrayList;
 
 import auto_garcon.MenuStuff.Menu;
 import auto_garcon.MenuStuff.MenuItem;
+import auto_garcon.Singleton.SharedPreference;
+import auto_garcon.Singleton.ShoppingCartSingleton;
 
 public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapter.ShoppingCartViewHolder>{
 
     private ArrayList<MenuItem> menuItemArrayList;
     private Context ct;
+    private SharedPreference preference;
+    private ShoppingCartSingleton cart;
 
     public ShoppingCartAdapter(Context context, ArrayList<MenuItem> items) {
         ct= context;
         menuItemArrayList = items;
+        preference = new SharedPreference(ct);
     }
     @NonNull
     @Override
@@ -39,8 +44,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ShoppingCartAdapter.ShoppingCartViewHolder holder, final int position) {
-        final int positionForOnClick =position;
         String quantity = "Qty(" + menuItemArrayList.get(position).getQuantity() + ")";
+        cart = preference.getShoppingCart();
 
         holder.name.setText(menuItemArrayList.get(position).getNameOfItem());
         menuItemArrayList.get(position).setCost();
@@ -50,24 +55,28 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                menuItemArrayList.get(positionForOnClick).incrementQuantity();
-                menuItemArrayList.get(positionForOnClick).setCost();
+                menuItemArrayList.get(position).incrementQuantity();
+                menuItemArrayList.get(position).setCost();
 
 
-                holder.quantity.setText("Qty(" + menuItemArrayList.get(positionForOnClick).getQuantity() + ")");
-                holder.price.setText(String.format("$%.02f", menuItemArrayList.get(positionForOnClick).getCost()));
+                holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
+                holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
+                cart.cartContainsItem(menuItemArrayList.get(position)).incrementQuantity();
+                preference.setShoppingCart(cart);
             }
         });
 
         holder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(menuItemArrayList.get(positionForOnClick).getQuantity() != 1){
-                    menuItemArrayList.get(positionForOnClick).decrementQuantity();
-                    menuItemArrayList.get(positionForOnClick).setCost();
+                if(menuItemArrayList.get(position).getQuantity() != 1){
+                    menuItemArrayList.get(position).decrementQuantity();
+                    menuItemArrayList.get(position).setCost();
 
-                    holder.quantity.setText("Qty(" + menuItemArrayList.get(positionForOnClick).getQuantity() + ")");
-                    holder.price.setText(String.format("$%.02f", menuItemArrayList.get(positionForOnClick).getCost()));
+                    holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
+                    holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
+                    cart.cartContainsItem(menuItemArrayList.get(position)).decrementQuantity();
+                    preference.setShoppingCart(cart);
                 }
             }
         });
@@ -76,6 +85,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             public void onClick(View v) {
                 menuItemArrayList.remove(position);
                 notifyItemChanged(position);
+                cart.setItems(menuItemArrayList);
+                preference.setShoppingCart(cart);
             }
         });
     }
