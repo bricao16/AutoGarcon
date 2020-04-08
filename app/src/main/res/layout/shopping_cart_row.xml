@@ -63,7 +63,7 @@
         <TextView
             android:id="@+id/item_quantity"
             android:layout_width="102dp"
-            android:layout_height="36dp"
+            android:layout_height="30dp"
 
             android:layout_marginStart="-21dp"
 
@@ -86,5 +86,22 @@
             android:layout_toEndOf="@+id/itemText"
             android:text="Cost"
             android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/removeItem"
+            android:layout_width="30dp"
+            android:layout_height="33dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:textSize="10sp"
+            android:textColor="@color/red"
+
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="185dp"
+            android:layout_marginBottom="7dp"
+            android:background="@color/white"
+            android:text="Remove" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

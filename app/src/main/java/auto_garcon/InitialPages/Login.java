@@ -27,8 +27,8 @@ import auto_garcon.Singleton.SharedPreference;
 import auto_garcon.Singleton.VolleySingleton;
 
 public class Login extends AppCompatActivity {
-    private EditText emailId;
-    private EditText password;
+    private EditText emailId;// used to extract data from emathe login activtiy xml
+    private EditText password; // used to extract data from the password field in the login activity xml
     private Button buttonSignIn;
     private TextView textViewSignUp;
     private SharedPreference pref;
@@ -71,7 +71,7 @@ public class Login extends AppCompatActivity {
                 else if (!(username.isEmpty() && passwd.isEmpty())) {
 
                     //post request for logging in
-                    String url = "http://50.19.176.137:8000/customers/login";
+                    String url = "http://50.19.176.137:8000/customer/login";
                     JSONObject obj = new JSONObject();//for the request parameter
                     try{
                         obj.put("username", username);

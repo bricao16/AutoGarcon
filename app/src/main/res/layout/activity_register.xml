@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="#C6C6C6"
     tools:context="auto_garcon.InitialPages.Login">
 
     <TextView
@@ -143,8 +143,6 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signUp" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
