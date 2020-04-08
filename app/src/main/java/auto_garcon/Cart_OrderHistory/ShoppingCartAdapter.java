@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +38,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ShoppingCartAdapter.ShoppingCartViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ShoppingCartAdapter.ShoppingCartViewHolder holder, final int position) {
         final int positionForOnClick =position;
         String quantity = "Qty(" + menuItemArrayList.get(position).getQuantity() + ")";
 
@@ -70,6 +71,13 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 }
             }
         });
+        holder.removeItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menuItemArrayList.remove(position);
+                notifyItemChanged(position);
+            }
+        });
     }
 
     @Override
@@ -84,6 +92,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         TextView quantity;
         ImageButton add;
         ImageButton remove;
+        Button removeItem;
 
         public ShoppingCartViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -92,6 +101,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             add = itemView.findViewById(R.id.addButton);
             remove = itemView.findViewById(R.id.removeButton);
             price = itemView.findViewById(R.id.price);
+            removeItem = itemView.findViewById(R.id.removeItem);
         }
     }
 }
