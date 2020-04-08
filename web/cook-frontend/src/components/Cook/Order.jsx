@@ -1,6 +1,8 @@
 import React from "react";
 import Card from 'react-bootstrap/Card';
-import moment from "moment";
+import moment from 'moment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faClock } from '@fortawesome/free-regular-svg-icons'
 
 class Order extends React.Component {
 
@@ -9,8 +11,8 @@ class Order extends React.Component {
     this.props = props;
     /*2020-03-10T15:52:23.000Z*/
     // moment('2020-03-10T15:52:23.000Z');
-    let time = '2020-03-10T15:52:23.000Z'.split('.')[0]
-    console.log(moment(time).format('LT'));
+    // let time = '2020-03-10T15:52:23.000Z'.split('.')[0]
+    // console.log(moment(time).format('LT'));
   }
 
   /*
@@ -47,8 +49,8 @@ class Order extends React.Component {
     return allItems;
   }
 
-  selectedOrder(){
-    let style = {};
+  variableOrderStyles(){
+    let style = Object. assign({}, orderStyle);
     if(this.props.selectedOrder){
       style.background = '#7e7e7e';
     }
@@ -60,20 +62,23 @@ class Order extends React.Component {
 
   renderTime(){
     let time = this.props.order.order_date.split('.')[0];
-    time = moment(time);
+    time = moment(time).add(1, 'h');
     let timePlaced = time.format('LT');
-    let timeSince = time.startOf('minute').fromNow();
+    let timeSince = time.startOf('minute').fromNow(true);
     return (
       <React.Fragment>
-        <span className="pr-2">{timePlaced}</span>
-        <span>{timeSince}</span>
+        <span className="pr-3">{timePlaced}</span>
+        <div className="d-flex" style={{alignItems: 'center'}}>
+          <FontAwesomeIcon icon={faClock}/>
+          <span className="pl-1">{timeSince}</span>
+        </div>
       </React.Fragment>
     );
   }
 
   render() {
     return (
-      <div className="p-1 m-2 order" style={this.selectedOrder()} onClick={() => this.props.handleCardClick(this.props.cardId)}>
+      <div className="p-1 m-2 order" style={this.variableOrderStyles()} onClick={() => this.props.handleCardClick(this.props.cardId)}>
         <Card>
           <Card.Header style={cardHeaderStyle} className="p-0 d-flex">
             <span className="px-2 py-1" style={cardIdStyle}>{this.props.cardId + 1}</span>
@@ -86,9 +91,7 @@ class Order extends React.Component {
             {this.renderItems()}
           </Card.Body>
           <Card.Footer className="py-1 px-2 d-flex" style={cardFooterStyle}>
-            {
-              this.renderTime()
-            }
+            {this.renderTime()}
           </Card.Footer>
         </Card>
       </div>
@@ -96,7 +99,11 @@ class Order extends React.Component {
   }
 }
 
-
+const orderStyle = {
+  borderRadius: '0.25rem',
+  cursor: 'pointer',
+  userSelect: 'none'
+};
 
 const cardHeaderStyle = {
   backgroundColor: '#0b658a',
