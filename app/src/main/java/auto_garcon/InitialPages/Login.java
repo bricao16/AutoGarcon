@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import auto_garcon.Singleton.SharedPreference;
+import auto_garcon.Singleton.UserSingleton;
 import auto_garcon.Singleton.VolleySingleton;
 
 public class Login extends AppCompatActivity {
@@ -41,9 +42,9 @@ public class Login extends AppCompatActivity {
         // this is how we identify an existing user when they've already logged in
         pref = new SharedPreference(this);
 
+
         //send them to the homepage if their already logged in
         if(pref.getLoginStatus()){
-
             //Todo: check if there token is still valid
             Intent intent  = new Intent(Login.this, twoButtonPage.class);
             startActivity(intent);
@@ -60,6 +61,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
                 final String username = emailId.getText().toString().trim();
                 final String passwd = password.getText().toString().trim();
+
                 if(username.isEmpty()){
                     emailId.setError("Please enter email id");
                     emailId.requestFocus();
@@ -90,7 +92,8 @@ public class Login extends AppCompatActivity {
                                         JSONObject object = response.getJSONObject("user");
                                         String token = response.getString("token");
 
-                                        pref.writeUserName(username);
+                                        pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
+                                                object.get("customer_id").toString(), object.get("email").toString()));
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 

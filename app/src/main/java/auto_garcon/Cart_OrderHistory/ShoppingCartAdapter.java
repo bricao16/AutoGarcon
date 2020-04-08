@@ -103,7 +103,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         TextView quantity;
         ImageButton add;
         ImageButton remove;
-        Button removeItem;
+        TextView removeItem;
 
         public ShoppingCartViewHolder(@NonNull View itemView) {
             super(itemView);

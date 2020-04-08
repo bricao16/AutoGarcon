@@ -104,14 +104,15 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
         pref = new SharedPreference(this);
-        Toast.makeText(Home.this, pref.getUserName(), Toast.LENGTH_SHORT).show();
+
+        Toast.makeText(Home.this, pref.getUser().getUsername(), Toast.LENGTH_SHORT).show();
 
         //shake feature
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector shakeDetector = new ShakeDetector(this);
         shakeDetector.start(sensorManager);
 
-        final String url = "http://50.19.176.137:8000/favorites/" + pref.getUserName();
+        final String url = "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername();
 
         items = new ArrayList<>();
 

@@ -36,16 +36,26 @@ public class SharedPreference {
         return sharedPreferences.getBoolean(context.getString(R.string.pref_login_status), false);
     }
 
-    public void writeUserName(String name){
+    public void setUser(UserSingleton user){
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        // we take in the name given and store it in our preference file
-        editor.putString(context.getString(R.string.pref_user_name), name);
-        //save
+        //this gson object is used to convert our java object into a json String
+        Gson gson = new Gson();
+
+        String stringJson = gson.toJson(user);
+
+        // here we write the json object that represents our java object into our shared preference file
+        editor.putString("UserSingleton", stringJson);
+        //save edits
         editor.apply();
     }
-    public String getUserName(){
-        // returns the user logged in at the moment else returns the string user
-        return  sharedPreferences.getString(context.getString(R.string.pref_user_name),"User");
+    public UserSingleton getUser(){
+        // this gson object will be used to convert our json string into a java object
+        Gson gson = new Gson();
+        //here we extract the json String from our sharedPreference file
+        String stringJson = sharedPreferences.getString("UserSingleton", null);
+
+        //here we convert the json String to our Java Object
+        return gson.fromJson(stringJson, UserSingleton.class);
     }
     public String getAuth(){
         return sharedPreferences.getString(context.getString(R.string.pref_auth_token),"Token");

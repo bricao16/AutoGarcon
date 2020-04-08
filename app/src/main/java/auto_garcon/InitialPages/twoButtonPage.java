@@ -10,6 +10,7 @@ import android.widget.Button;
 import com.example.auto_garcon.R;
 
 import auto_garcon.HomeStuff.Home;
+import auto_garcon.Singleton.SharedPreference;
 
 public class twoButtonPage extends AppCompatActivity {
 
@@ -20,7 +21,6 @@ public class twoButtonPage extends AppCompatActivity {
 
         Button scannerButton = findViewById(R.id.scanner_button);
         Button favButton = findViewById(R.id.fav_button);
-
 
         /*
         When one of these buttons is clicked it will take the users onto either the QRcode or the Favorite Page
@@ -35,6 +35,7 @@ public class twoButtonPage extends AppCompatActivity {
         favButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent home = new Intent(twoButtonPage.this, Home.class);
                 startActivity(home);
             }

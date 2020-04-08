@@ -56,7 +56,7 @@
             android:textColor="@color/white"/>
 
         <EditText
-            android:id="@+id/email_change"
+            android:id="@+id/change_email"
             android:layout_width="355dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="265dp"
@@ -75,7 +75,7 @@
             android:textColor="@color/white"/>
 
         <EditText
-            android:id="@+id/username_change"
+            android:id="@+id/change_username"
             android:layout_width="355dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="345dp"

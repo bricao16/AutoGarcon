@@ -16,6 +16,7 @@ public class ShoppingCartSingleton {
         this.items = new ArrayList<MenuItem>();
         this.restaurantID = restaurantID;
     }
+
     public ArrayList<MenuItem> getCart(){
         return items;
     }

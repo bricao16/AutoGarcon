@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C6C6C6"
     tools:context="auto_garcon.InitialPages.twoButtonPage">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="355dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/logo"/>
+
 
     <Button
         android:id="@+id/scanner_button"
-        android:layout_width="108dp"
-        android:layout_height="138dp"
-        android:text="Scanner"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.191"
+        android:layout_width="match_parent"
+        android:layout_height="145dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/fav_button"
+        android:layout_marginBottom="15dp"
+        android:elevation="5555dp"
+        android:background="@color/colorPrimary"
+        android:text="Scanner"
+        android:textColor="@color/white"/>
 
     <Button
         android:id="@+id/fav_button"
-        android:layout_width="110dp"
-        android:layout_height="133dp"
-        android:layout_marginStart="80dp"
-        android:text="FavPage"
+        android:layout_width="match_parent"
+        android:layout_height="145dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/scanner_button"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="75dp"
+        android:background="@color/colorPrimary"
+        android:text="FavPage"
+        android:textColor="@color/white"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
