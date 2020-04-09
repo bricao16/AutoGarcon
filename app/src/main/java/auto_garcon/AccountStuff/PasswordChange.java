@@ -11,8 +11,6 @@ import android.widget.Toast;
 
 import com.example.auto_garcon.R;
 
-import auto_garcon.HomeStuff.Home;
-
 public class PasswordChange extends AppCompatActivity {
 
     @Override

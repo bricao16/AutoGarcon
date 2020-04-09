@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,6 +62,8 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        pref = new SharedPreference(Home.this);
+
 
         // dummy  data for a search box
         search_list = new ArrayList<>();
@@ -72,11 +77,18 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
         NavigationView navigationView = findViewById(R.id.navigationView);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(Home.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(Home.this);
+
+        //TextView sideNavBarName =  findViewById(R.id.side_nav_bar_name);
+
+        //Toast.makeText(this, sideNavBarName.getText().toString(), Toast.LENGTH_SHORT).show();
+
+
+        // sideNavBarName.setText("HI");
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
 
@@ -103,7 +115,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-        pref = new SharedPreference(this);
 
         Toast.makeText(Home.this, pref.getUser().getUsername(), Toast.LENGTH_SHORT).show();
 
@@ -185,7 +196,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Home.this,error.toString(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(Home.this, error.toString(),Toast.LENGTH_LONG).show();
                     }
                 }
 
