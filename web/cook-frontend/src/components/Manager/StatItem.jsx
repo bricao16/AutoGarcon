@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
     is desplayed on a seperate card. This data is pulled in the MStats component.
 */
 
-function StatsProp(props) {
+function StatItem(props) {
     return (
         <Card className="text-center m-2" style={itemStyle}>
             <Card.Header style={cardHeaderStyle}>Stats</Card.Header>
@@ -40,4 +40,4 @@ const itemStyle = {
     'width':'200px'
 };
 
-export default StatsProp;
+export default StatItem;

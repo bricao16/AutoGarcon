@@ -1,14 +1,14 @@
 import React from 'react';
 import './App.css';
 import Cook from "./components/Cook/Cook.jsx";
-import MTasks from "./components/MTasks";
+import ManagerPage from "./components/Manager/Manager.jsx";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
 import logoImage from "./assets/AutoGarconLogo.png";
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import {BrowserRouter as Router, Switch, Link, Route} from "react-router-dom";
+import circle from "./assets/circleLanding.png";
+import {BrowserRouter as Router, Switch, Link, Route} from "react-router-dom"; 
+import Background from './assets/background.jpg'
 
  /*
 var req  = new XMLHttpRequest();
@@ -52,24 +52,24 @@ function App() {
             <CLogin/>
           </Route>
           <Route path="/statistics">
-            <MTasks/>
+            <Manager/>
           </Route>
           <Route path="/menu"
-            render={(props) => <MTasks {...props} content={"menu"}/>} />
+            render={(props) => <Manager {...props} content={"menu"}/>} />
           <Route path="/hours"
-            render={(props) => <MTasks {...props} content={"hours"}/>} />
+            render={(props) => <Manager {...props} content={"hours"}/>} />
           <Route path="/customize"
-            render={(props) => <MTasks {...props} content={"customize"}/>} />
+            render={(props) => <Manager {...props} content={"customize"}/>} />
         </Switch>
         {/*    </div>*/}
         {/*  </Col>*/}
         {/*</Row>*/}
-        {/*</div>*/}
+        {/*</div>
+          <footer style={footerStyle}>
+              Powered by Auto Garcon
+              <img src={logoImage} width="auto" height="50vh" alt="waiter" />
+            </footer>*/}
       </main>
-      <footer style={footerStyle}>
-        Powered by Auto Garcon
-        <img src={logoImage} width="auto" height="50vh" alt="waiter" />
-      </footer>
     </Router>      
   );
 }
@@ -78,62 +78,78 @@ export default App;
 
 function Home() {
   return (
-    <Row style={{'minHeight': '90vh', 'width': '100%'}}>
-      <Col className="pt-3 px-3">
+      <React.Fragment >
+
         <div style={homeStyle}>
-          <h2> Welcome to Auto Garcon 
-          <img src={logoImage} width="auto" height="75vw" alt="waiter" />
-          </h2>
-
-          <br/>
-          
-          <div style={{'liststyle':'none'}}>
-            <li><Link to='/login_manager'> 
-              <button type="button" className="btn btn-info btn-lg">
-                  Manager Portal
-              </button>
-            </Link></li>
-            <br/>
-            <li><Link to='/login_cook'>
-              <button type="button" className="btn btn-info btn-lg">
-                  Cook Portal
-              </button>
-            </Link></li>
+          <nav className="navbar navbarInverse bg-light">
+            <div className="container-fluid">
+              <div className="navbar-header">
+                <img src={logoImage} height="80vw"  alt="waiter" style = {{'background': 'transparent', 'paddingRight': '29vw'}} /> 
+                <a className="navbar-brand " style ={{'fontSize': '3em','color':'#102644'}} href="#">Auto Garcon</a>
+                
+              </div>
+              <ul className="nav ">
+                <li ><Link to='/login_manager'> 
+                  <button type="button" className="btn  btn-md">
+                              Login Manager
+                    </button>
+                  </Link></li>
+                  <li ><Link to='/login_cook'> 
+                  <button type="button" className="btn  btn-md">
+                              Login Cook
+                    </button>
+                  </Link></li>
+                  <li><Link to='/sign_up'> 
+                      <button type="button" className="btn btn-md ">
+                          Sign up
+                      </button>
+                  </Link></li>
+              </ul>
+            </div>
+          </nav>
+              <div style={circleStyle}>
+                <div className="container">
+                      <img src={circle} height="600vw"  alt="waiter" className="img-responsive" style = {{'background': 'transparent', 'opacity': '0.7'}} /> 
+                      <div className="carousel-caption">
+                        <i><h4 style = {{'marginTop':'-300px', 'width': '50vw', 'paddingLeft': '20vw'}}> Enhance your resturant experience with Auto Garcon </h4></i>
+                        <br/>
+                        <li><Link to='/sign_up'> 
+                        <button type="button" className="btn btn-secondary btn-lg ">
+                            Sign Up
+                        </button>
+                        </Link></li>
+                  </div>
+              </div>
+              </div>
           </div>
+        </React.Fragment>
 
-        </div>
-      </Col>
-    </Row>
+
   );
 }
 
 function Manager() {
   return (
-      <MTasks/>
+      <ManagerPage/>
   );
 }
 
 var mainStyle = {
-  'backgroundColor': '#ffffff',
   minHeight: 'calc(100vh - 67px)'
 };
 
-// var sectionStyle = {
-//   'backgroundColor': '#ffffff',
-//   'height': '100%'
-// }
-
-var footerStyle = {
-  'backgroundColor': '#ffffff',
-  'paddingBottom': '5px',
-  'paddingRight': '12px',
-  'paddingTop': '12px',
-  'textAlign': 'right',
-  'fontFamily': 'Kefa',
-  height: '67px'
-};
+var circleStyle = {
+'liststyle':'none'
+}
 
 var homeStyle = {
+  backgroundImage:`url(${Background})`,
+  'backgroundPosition': 'center',
+  'backgroundRepeat': 'no-repeat',
+  'backgroundSize': 'cover',
+  'height': '100vh', 
+  'width': '100vw',
+  'margin': 0,
   'fontWeight': '300',
   'textAlign' : 'center',
   'listStyleType': 'none',

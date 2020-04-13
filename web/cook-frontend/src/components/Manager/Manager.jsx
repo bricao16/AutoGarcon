@@ -1,10 +1,10 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
 import Menu from './Menu';
-import Stats from './MStats';
+import Stats from './Stats';
 import StoreInfo from './StoreInfo';
-import MHeader from './MHeader';
-import Customize from './MCustomize';
+import MHeader from './Header';
+import Customize from './Customize';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
@@ -19,7 +19,7 @@ the managers different views (menu, stats, hours...)
 The header is pulled from the database to render the 
 resturant logo and name. The stats page is the landing
 page */
-class MTasks extends React.Component{
+class Manager extends React.Component{
     constructor(props) {
       super(props);
       this.state = {
@@ -123,4 +123,4 @@ const navColStyle = {
 }
 
 
-export default MTasks;
+export default Manager;

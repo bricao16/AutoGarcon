@@ -5,7 +5,7 @@ import Card from 'react-bootstrap/Card';
 /*this is the customize component for the manager
 view. The stats are stored in state and rendered 
 onto cards in by CustomizeProp */
-class MCustomize extends React.Component{
+class Customize extends React.Component{
 
     constructor(props) {
         
@@ -199,4 +199,4 @@ const mainMenuHeaderStyle = {
   'height':'54px',
   'paddingTop':'8px'
 }
-export default MCustomize;
+export default Customize;
