@@ -11,9 +11,7 @@ To create a key pair
 
 2. From the navigation bar, select a Region for the key pair. You can select any Region that's available to you, regardless of your location. However, key pairs are specific to a region; for example, if you plan to launch an instance in the US East (Ohio) Region, you must create a key pair for the instance in the US East (Ohio) Region.
 
-
-						Select a Region
-![test image](/Database/Documentation/DocumentationImages/EC2_select_region.png)
+![test image](/Database/Documentation/DocumentationImages/EC2_select_region.png) Select a region
 					
 3. In the navigation pane, under NETWORK & SECURITY, choose Key Pairs.
 
