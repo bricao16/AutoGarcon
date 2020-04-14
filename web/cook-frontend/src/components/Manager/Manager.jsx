@@ -8,6 +8,8 @@ import Customize from './Customize';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
+import https from 'https';
+import axios from 'axios';
 import {
     Switch,
     Route
@@ -31,23 +33,38 @@ class Manager extends React.Component{
     }
     /* Used for connecting to Resturant in database */
     componentDidMount() {
-    fetch("http://50.19.176.137:8000/restaurant/123")
-      .then(res => res.json())
-      .then(
-        (result) => {
+
+    axios({
+      method: 'get',
+      url: 'https://50.19.176.137:8001/restaurant/123',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+      .then(res => {
+        var finalJson = {
+          'menu': res.data[1].menu,
+          'restaurant': res.data[0].restaurant
+        }
+        return finalJson;
+      })
+      .then((result) => {
           this.setState({
             isLoaded: true,
             restaurantJSON: result
           });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      )
+        })
+      .catch((error) => {
+        this.setState({
+          isLoaded: true,
+          error
+        });
+      })
     }
+    
     render() {
       const { error, isLoaded, restaurantJSON, restaurantInfo } = this.state;
       
@@ -67,7 +84,8 @@ class Manager extends React.Component{
         //map the menu json to an array
         Object.keys(this.state.restaurantJSON).forEach(function(key) {
           restaurantInfo.push([key ,restaurantJSON[key]]);
-        });} 
+        });
+      }
       return (
           <Container>
             <MHeader/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
@@ -89,7 +107,7 @@ class Manager extends React.Component{
                             <Stats/>
                           </Route>
                           <Route path="/menu">
-                            <Menu menu = {restaurantInfo[1][1]}/>
+                            <Menu menu = {restaurantInfo[0][1]}/>
                           </Route>
                           <Route path="/hours">
                             <StoreInfo info = {restaurantInfo[0][1]} />
