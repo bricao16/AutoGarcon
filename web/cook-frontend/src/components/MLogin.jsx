@@ -12,6 +12,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Redirect} from "react-router-dom";
+import Alert from 'react-bootstrap/Alert';
+
 /*this is the login component for the manager
 view. Asks for the email address, password and logs in if the user and correct password
 exists on the database */
@@ -44,10 +46,12 @@ export default class SignIn extends React.Component {
 	  
 	  this.state = {
 	    email: '',
-		passwd:'',
-		redirect: false
+		  passwd:'',
+      redirect: false,
+      show: false
 	  };
 	  
+    this.handleShow = this.handleShow.bind(this);
 	  this.handleSubmit = this.handleSubmit.bind(this);
 	  this.handleEmail = this.handleEmail.bind(this);
 	  this.handlePasswd = this.handlePasswd.bind(this);
@@ -75,18 +79,18 @@ export default class SignIn extends React.Component {
 	  };
 	  fetch('http://50.19.176.137:8000/staff/login', requestOptions)
 		.then(async response => {
-			const data = await response.json();
-			
-			if(!response.ok){
-				const error = (data && data.message) || response.status;
-				return Promise.reject(error);
-			}
-			this.setState({redirect: true});
-		
+      await response;
+      
+      if (response.status !== 200) {this.handleShow(response);}
+      else {
+        this.setState({show: false});
+        this.setState({redirect: true});
+      }
 		})
 		.catch(error =>{
-			
-			this.setState({redirect: false});
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Unknown error"});
+      this.setState({redirect: false});
 			console.error("There was an error!", error);
 		});
   }
@@ -98,6 +102,26 @@ export default class SignIn extends React.Component {
   handlePasswd(event){
 	  this.setState({passwd: event.target.value});
   }
+
+  /* Used to show the correct alert after failing to log in */
+  handleShow(response) {
+    var text;    
+
+    response.text()
+      .then((res) => {
+        text = res;
+        this.setState({alertVariant: 'danger'});
+
+        if (text) {
+          this.setState({response: text});
+        }
+        else {
+          this.setState({response: 'Failed to login for unknown reason'});
+        }
+
+        this.setState({show: true});
+      })
+  }
    
   render(){
 	if(this.state.redirect === true){
@@ -105,17 +129,27 @@ export default class SignIn extends React.Component {
 	}  
 	return (
 		//top of page
-		<Container component="main" maxWidth="xs">
+		<Container component="main" maxWidth="xs" className="p-3">
 		  <CssBaseline />
 		  <div className={useStyles.paper}>
-			{/* Lock icon on top */}
-			<Avatar className={useStyles.avatar}>
-			  <LockOutlinedIcon />
-			</Avatar>
-			{/* Manager Sign In Title */}
-			<Typography component="h1" variant="h5">
-			  Manager Sign In
-			</Typography>
+
+      <Alert show={this.state.show} variant={this.state.alertVariant}>
+        {this.state.response}
+      </Alert>
+
+			<div style={{'text-align':'center'}}>
+        {/* Lock icon on top */}
+        <div style={{'display': 'inline-block'}}>
+          <Avatar className={useStyles.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+        </div>
+        {/* Manager Sign In Title */}
+        <Typography component="h1" variant="h5">
+          Manager Sign In
+        </Typography>
+      </div>
+
 			<form className={useStyles.form} noValidate>
 			  <TextField onChange = {this.handleEmail}
 				value = {this.state.email} /*This is the trouble line */

@@ -5,100 +5,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gray"
     tools:openDrawer="end"
     android:id="@+id/home_main"
-    tools:context="auto_garcon.InitialPages.Home">
+    tools:context="auto_garcon.HomeStuff.Home">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- toolbar that allows side nav bar to open -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/xml_toolbar"
-            android:layout_width="470dp"
-            android:layout_height="56dp"
-            android:background="@color/nav_header_background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_conversion_absoluteHeight="56dp"
-            tools:layout_conversion_absoluteWidth="411dp" />
-
-        <Button
-            android:id="@+id/home_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="291dp"
-            android:onClick="goHome"
-            android:text="@string/home"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_conversion_absoluteHeight="48dp"
-            tools:layout_conversion_absoluteWidth="88dp" />
+            android:background="@color/colorAccent"/>
 
-        <Button
-            android:id="@+id/order_history_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="112dp"
-            android:onClick="goOrderHistory"
-            android:text="@string/order_history"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_conversion_absoluteHeight="48dp"
-            tools:layout_conversion_absoluteWidth="108dp" />
-
-        <Button
-            android:id="@+id/cart_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="25dp"
-            android:onClick="goShoppingCart"
-            android:text="@string/cart"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_conversion_absoluteHeight="48dp"
-            tools:layout_conversion_absoluteWidth="60dp" />
-        <!---
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="400dp"
-            android:layout_height="64dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="40dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-!-->
+        <!-- search bar for restaurants -->
         <SearchView
-            android:layout_width="400dp"
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="68dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginTop="56dp"
+            android:background="@color/white"/>
 
-        <ListView
-            android:id="@+id/androidList"
-            android:layout_width="415dp"
-            android:layout_height="567dp"
-            android:layout_marginTop="117dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!-- list of favorite restaurants -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favorites_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="120dp"
+            android:layout_marginBottom="70dp"
+            />
 
+        <!-- bottom nav bar -->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:itemBackground="@color/colorPrimary"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
+    <!-- side nav bar -->
     <com.google.android.material.navigation.NavigationView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -106,16 +60,6 @@
         app:menu="@menu/nav_menu"
         app:headerLayout="@layout/nav_header"
         android:layout_gravity="start"
-        android:background="@color/white">
-
-
-        <SurfaceView
-            android:id="@+id/surfaceView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </com.google.android.material.navigation.NavigationView>
-
-
-
+        android:background="@color/white"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -1,5 +1,5 @@
 import React from "react";
-import LogoImage from "../assets/AutoGarconLogo.png";
+import LogoImage from "../../assets/AutoGarconLogo.png";
 import AccountDropdown from "./AccountDropdown";
 /*
   This prop is used to render the Header for the manager view. The logo of 
@@ -7,7 +7,7 @@ import AccountDropdown from "./AccountDropdown";
   The person who is logged in will have their name along with a dropdown that will
   take them to their personal settings.
 */
-function mHeader(props) {
+function Header(props) {
     return (
     /*render the logo image, name of resturant and name of manager - this is being sent from
       MTasks component */
@@ -18,7 +18,7 @@ function mHeader(props) {
           </header>
       );
 }
-export default mHeader;
+export default Header;
 
 const headerTitleStyle = {
     'margin': '0',
