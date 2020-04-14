@@ -211,6 +211,7 @@ POST /menu/update
 DELETE /menu/delete
 	Deletes a menu item
 	Inputs (in body of request): item_id
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		If JWT is not valid:
 			Must be authorized!
@@ -224,6 +225,7 @@ DELETE /menu/delete
 POST /customer/update
 	Updates customer info including customer_id, first_name, last_name, email, password
 	Inputs (in body of request): customer_id, first_name, last_name, email, password (optional)
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			{
