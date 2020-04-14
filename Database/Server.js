@@ -2,7 +2,7 @@
 	REST-API Server
 	Tucker Urbanski
 	Date Created: 3/2/2020
-	Last Modified: 4/7/2020
+	Last Modified: 4/14/2020
 */
 
 // Built-in Node.js modules
@@ -10,7 +10,6 @@ var fs = require('fs');
 var path = require('path');
 var cors = require('cors');
 var crypto = require('crypto');
-
 
 // NPM modules
 var express = require('express');
@@ -67,6 +66,7 @@ app.get('/menu/:id', (req, res) => {
 
 			for (let i=0; i<rows.length; i++) {
 				response[rows[i].item_name] =   {
+					'item_id': rows[i].item_id,
 					'restaurant': rows[i].restaurant_id,
 					'calories': rows[i].calorie_num,
 					'price': rows[i].price,
@@ -112,6 +112,7 @@ app.get('/restaurant/:id', (req, res) => {
 			response['menu'] = {};
 			for (let i=0; i<rows.length; i++) {
 				response['menu'][rows[i].item_name] =   {
+					'item_id': rows[i].item_id,
 					'calories': rows[i].calories,
 					'price': rows[i].price,
 					'category': rows[i].category,
@@ -360,23 +361,56 @@ app.put('/staff/register', (req, res) =>
 		}   //if
 		else
 		{
-			let parameters = [req.body.staff_id, req.body.restaurant_id, req.body.first_name, req.body.last_name, req.body.contact_num,req.body.email, req.body.position, req.body.password];
-			let query = '';
-			query = 'INSERT INTO sample.staff(staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password)';
-			query = query + " VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
-
-			//Add new staff member to db:
-			db.query(query, parameters, (err, rows) =>
-			{
-				if (err)
-				{
-					res.status(500).send('Error creating new staff member');
-				}   //if
+			//Create a new salt
+			let salt = genSalt();
+			//Hash supplied password with salt
+			let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+				if (err) {
+					console.log(err);
+				}
 				else
 				{
-					res.status(200).send('Successfully added new staff member!');
+					let parameters = [req.body.staff_id, req.body.restaurant_id, req.body.first_name, req.body.last_name, req.body.contact_num,req.body.email, req.body.position, salt, derivedKey.toString('hex')];
+
+					let query = 'INSERT INTO sample.staff(staff_id, restaurant_id, first_name, last_name, contact_num, email, position, salt, password)';
+					query = query + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+					//Add new customer to db:
+					db.query(query, parameters, (err, rows) =>
+					{
+						if (err)
+						{
+							res.status(500).send('Error creating new customer');
+						}   //if
+						else
+						{
+							//Build staff object:
+							let staff = {
+								'staff_id': req.body.staff_id,
+								'restaurant_id': req.body.restaurant_id,
+								'first_name': req.body.first_name,
+								'last_name': req.body.last_name,
+								'contact_num': req.body.contact_num,
+								'email': req.body.email,
+								'position': req.body.position
+							};  //staff
+
+							//Sign JWT and send token
+							//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+							jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
+								//Build response
+								let response = {
+									'token': token,
+									staff
+								};  //response
+
+								//Send Response:
+								res.type('json').send(response);
+							});	//sign
+						}   //else
+					}); //db.query
 				}   //else
-			}); //db.query
+			}); //hashed
 		}   //else
 	}); //db.query
 });	//app.put
@@ -450,6 +484,125 @@ app.put('/customer/register', (req, res) =>
 		}   //else
 	}); //db.query
 });	//app.put
+
+//POST request handler for updating customer information
+app.post('/customer/update', verifyToken, (req, res) =>
+{
+	//Verify the JWT
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) =>{
+		if (err)
+		{
+			res.status(403).send('Must be authorized!');
+		}   //if
+		else
+		{
+			if (auth.user)
+			{
+				//Make sure right number of parameters are entered:
+				if(!(req.body.customer_id && req.body.first_name && req.body.last_name && req.body.email))
+				{
+					res.status(500).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)');
+					return;
+				}   //if
+
+				let customer_id = auth.user.customer_id;
+				let query = 'UPDATE sample.customers SET customer_id = ?, first_name = ?, last_name = ?, email = ?';
+
+				if (req.body.password)
+				{
+					//Create a new salt
+					let salt = genSalt();
+					//Hash supplied password with salt
+					let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+						if (err) {
+							console.log(err);
+						}
+						else
+						{
+							query = query + ', salt = ?, password = ?';
+							query = query + ' WHERE customer_id = ?';
+							let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex'), customer_id];
+
+							//Add new customer to db:
+							db.query(query, parameters, (err, rows) =>
+							{
+								if (err)
+								{
+									res.status(500).send('Error updating customer info');
+								}   //if
+								else
+								{
+									//Build user object:
+									let user = {
+										'customer_id': req.body.customer_id,
+										'first_name': req.body.first_name,
+										'last_name': req.body.last_name,
+										'email': req.body.email
+									};  //user
+
+									//Sign JWT and send token
+									//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+									jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
+										//Build response
+										let response = {
+											'token': token,
+											user
+										};  //response
+
+										//Send Response:
+										res.type('json').send(response);
+									});	//sign
+								}   //else
+							}); //db.query
+						}   //else
+					}); //hashed
+				}	//if
+
+				else
+				{
+					query = query + ' WHERE customer_id = ?';
+					let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, customer_id];
+
+					//Update customer info in db:
+					db.query(query, parameters, (err, rows) =>
+					{
+						if (err)
+						{
+							res.status(500).send('Error updating customer info');
+						}   //if
+						else
+						{
+							//Build user object:
+							let user = {
+								'customer_id': req.body.customer_id,
+								'first_name': req.body.first_name,
+								'last_name': req.body.last_name,
+								'email': req.body.email
+							};  //user
+
+							//Sign JWT and send token
+							//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+							jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
+								//Build response
+								let response = {
+									'token': token,
+									user
+								};  //response
+
+								//Send Response:
+								res.type('json').send(response);
+							});	//sign
+						}   //else
+					}); //db.query
+				}	//else
+			}	//if
+			else
+			{
+				res.status(403).send('Must be signed in as a customer!');
+			}	//else
+		}   //else
+	});	//verify
+});	//app.post
 
 //PUT request handler for adding a menu item
 app.put('/menu/add', (req, res) =>
@@ -531,6 +684,134 @@ app.post('/menu/update', (req, res) =>
 				else
 				{
 					res.status(200).send('Successfully updated menu item!');
+				}   //else
+			}); //db.query
+		}   //else
+	}); //db.query
+});	//app.post
+
+//DELETE request handler for removing menu item
+app.delete('/menu/delete', verifyToken, (req, res) =>
+{
+	//Make sure the menu item exists:
+	let query = 'Select * FROM sample.menu WHERE item_id = ?';
+	db.query(query, req.body.item_id, (err, rows) =>
+	{
+		if (rows.length == 0)
+		{
+			res.status(500).send('Error: menu item does not exist');
+		}   //if
+		else
+		{
+			//Verify that the person is a manager at the restaurant
+			jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) =>{
+				if (err)
+				{
+					res.status(403).send('Must be authorized!');
+				}   //if
+				else
+				{
+					if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === rows[0].restaurant_id)
+					{
+						let query = 'DELETE FROM sample.menu WHERE item_id = ?';
+
+						//Remove menu item in db:
+						db.query(query, req.body.item_id, (err, rows) =>
+						{
+							if (err)
+							{
+								res.status(500).send('Error deleting menu item');
+							}   //if
+							else
+							{
+								res.status(200).send('Successfully deleted menu item!');
+							}   //else
+						}); //db.query
+					}	//if
+					else
+					{
+						res.status(403).send('Must be the restaurant manager to delete menu items!');
+					}	//else
+				}   //else
+			});	//verify
+		}   //else
+	}); //db.query
+});	//app.delete
+
+//PUT request handler for adding an alexa
+app.put('/alexa/register', (req, res) =>
+{
+	//Make sure right number of parameters are entered:
+	if(!(req.body.alexa_id && req.body.restaurant_id && req.body.table_num))
+	{
+		res.status(500).send('Error: Missing parameter. Required parameters: alexa_id, restaurant_id, table_num');
+		return;
+	}   //if
+
+	//Make sure the alexa_id doesn't exist:
+	let query = "Select * FROM sample.alexas WHERE alexa_id = ?";
+	db.query(query, req.body.alexa_id, (err, rows) =>
+	{
+		if (rows.length > 0)
+		{
+			res.status(500).send('Error: alexa_id already exists');
+		}   //if
+		else
+		{
+			let parameters = [];
+			parameters = [req.body.alexa_id, req.body.restaurant_id, req.body.table_num];
+			let query = 'INSERT INTO sample.alexas(alexa_id, restaurant_id, table_num)';
+			query = query + " VALUES (?, ?, ?)";
+
+			//Add new menu item to db:
+			db.query(query, parameters, (err, rows) =>
+			{
+				if (err)
+				{
+					res.status(500).send('Error adding new alexa');
+				}   //if
+				else
+				{
+					res.status(200).send('Successfully added new alexa!');
+				}   //else
+			}); //db.query
+		}   //else
+	}); //db.query
+});	//app.put
+
+//POST request handler for updating menu item
+app.post('/orders/update', (req, res) =>
+{
+	//Make sure right number of parameters are entered:
+	if(!(req.body.order_num && req.body.order_status))
+	{
+		res.status(500).send('Error: Missing parameter. Required parameters: order_num, order_status');
+		return;
+	}   //if
+
+	//Make sure the order exists:
+	let query = 'Select * FROM sample.orders WHERE order_num = ?';
+	db.query(query, req.body.order_num, (err, rows) =>
+	{
+		if (rows.length == 0)
+		{
+			res.status(500).send('Error: order does not exist');
+		}   //if
+		else
+		{
+			let parameters = [req.body.order_status, req.body.order_num];
+			let query = 'UPDATE sample.orders SET order_status = ? WHERE order_num = ?';
+
+			//Edit menu item in db:
+			db.query(query, parameters, (err, rows) =>
+			{
+				if (err)
+				{
+					res.status(500).send('Error updating order');
+				}   //if
+				else
+				{
+					res.status(200).send('Successfully updated order!');
 				}   //else
 			}); //db.query
 		}   //else
