@@ -141,7 +141,22 @@ PUT /staff/register
 	Inputs (in body of request): staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password
 	Outputs:
 		On success:
-			Successfully added new staff member!
+			{
+				token:
+				{
+					token
+				}
+				staff:
+				{
+					staff_id,
+					restaurant_id,
+					first_name,
+					last_name,
+					contact_num,
+					email,
+					position
+				}
+			}
 		If staff_id exists already:
 			Error: staff_id already exists
 		If any inputs are missing:
@@ -153,16 +168,18 @@ PUT /customer/register
 	Inputs (in body of request): customer_id, first_name, last_name, email, password
 	Outputs: 
 		On success:
-			token:
 			{
-				token
-			}
-			user:
-			{
-				user_id,
-				first_name,
-				last_name,
-				email
+				token:
+				{
+					token
+				}
+				user:
+				{
+					user_id,
+					first_name,
+					last_name,
+					email
+				}
 			}
 		If customer_id exists already:
 			Error: customer_id already exists
@@ -190,6 +207,72 @@ POST /menu/update
 			Error: item does not exist
 		If any inputs are missing:
 			Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price
+
+DELETE /menu/delete
+	Deletes a menu item
+	Inputs (in body of request): item_id
+	Outputs:
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant of the item:
+			Must be the restaurant manager to delete menu items!
+		On success:
+			Successfully deleted menu item!
+		On error: 
+			Error deleting menu item
+
+POST /customer/update
+	Updates customer info including customer_id, first_name, last_name, email, password
+	Inputs (in body of request): customer_id, first_name, last_name, email, password (optional)
+	Outputs:
+		On success:
+			{
+				token:
+				{
+					token
+				}
+				user:
+				{
+					user_id,
+					first_name,
+					last_name,
+					email
+				}
+			}
+		If JWT is not valid: 
+			Must be authorized!
+		If JWT is not a customer token:
+			Must be signed in as a customer!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)
+		On error:
+			Error updating customer info
+
+POST /orders/update
+	Updates the status of an order
+	Inputs (in body of request): order_num, order_status
+	Outputs:
+		On success:
+			Successfully updated order!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: order_num, order_status
+		If the order doesn't exist:
+			Error: order does not exist
+		On error:
+			Error updating order
+
+PUT /alexa/register
+	Registers a new alexa
+	Inputs (in body of request):
+	Outputs:
+		On success:
+			Successfully added new alexa!
+		If the alexa_id already exists:
+			Error: alexa_id already exists
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: alexa_id, restaurant_id, table_num
+		On error:
+			Error adding new alexa
 
 Added testing user for both /staff/login and /customers/login
 	user:password
