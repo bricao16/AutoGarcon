@@ -35,10 +35,8 @@ Make a note of your two subnet identifiers, and which is public and private. You
 	b. Choose Create Security Group.
 
 	c. Type a name and a description for your security group in the corresponding boxes. In the VPC box, choose the identifier for your Amazon VPC.
-
-
-			Image: Create Security Group screen
-		![test image2](/Database/Documentation/DocumentationImages/vpc-02.png)
+	
+	![test image](/Database/Documentation/DocumentationImages/vpc-02.png)
 								
 	d. When the settings are as you want them, choose Yes, Create.
 
