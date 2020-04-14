@@ -5,6 +5,8 @@ import OrdersHeader from "./OrdersHeader.jsx";
 import Alert from "./Alert.jsx";
 import $ from "jquery";
 import Button from 'react-bootstrap/Button';
+import https from 'https';
+import axios from 'axios';
 
 class Cook extends React.Component {
 
@@ -132,9 +134,19 @@ class Cook extends React.Component {
 
   componentDidMount() {
     // Get current orders from database
-    // http://50.19.176.137:8000/orders/123
-    fetch("https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders")
-      .then(res => res.json())
+    axios({
+      method: 'get',
+      // https://50.19.176.137:8001/orders/123
+      // Dummy orders for testing: "https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders"
+      url: 'https://50.19.176.137:8001/orders/123',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+      .then(res => res.data)
       .then(orders => {
         this.configureOrders(orders);
       })
