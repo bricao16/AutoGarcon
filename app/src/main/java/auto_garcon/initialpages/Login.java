@@ -1,4 +1,4 @@
-package auto_garcon.InitialPages;
+package auto_garcon.initialpages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,65 +20,65 @@ import com.example.auto_garcon.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import auto_garcon.Singleton.SharedPreference;
-import auto_garcon.Singleton.UserSingleton;
-import auto_garcon.Singleton.VolleySingleton;
+import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.UserSingleton;
+import auto_garcon.singleton.VolleySingleton;
+/**
+ * This class handles all user login functionality
+ * This class is linked to the Login xml and can send the user to the TwoButton page and
+ */
 
 public class Login extends AppCompatActivity {
     private EditText emailId;// used to extract data from emathe login activtiy xml
     private EditText password; // used to extract data from the password field in the login activity xml
-    private Button buttonSignIn;
-    private TextView textViewSignUp;
-    private SharedPreference pref;
+    private Button buttonSignIn;// used to identify when the user is attempting to sign in
+    private TextView textViewSignUp;// used to identify if the user wants to register
+    private SharedPreference pref;//This object is used to store information about the user that can be used outside of this page
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // this is how we identify an existing user when they've already logged in
-        pref = new SharedPreference(this);
+        pref = new SharedPreference(this);// creating a sharedPrefrence object that access the same file of all other shared prefrences on the app
 
 
-        //send them to the homepage if their already logged in
-        if(pref.getLoginStatus()){
+        if(pref.getLoginStatus()){ // checks if they are already signed in if so we send them to the homepage if their already logged in
             //Todo: check if there token is still valid
             Intent intent  = new Intent(Login.this, twoButtonPage.class);
             startActivity(intent);
-            finish();
+            finish();//prevents them from coming back to this page
         }
 
-        emailId = findViewById(R.id.email);
-        password = findViewById(R.id.password);
-        buttonSignIn = findViewById(R.id.signUp);
-        textViewSignUp = findViewById(R.id.loginLink);
+        emailId = findViewById(R.id.email);// associating xml objects with the java Object equivalent
+        password = findViewById(R.id.password);// associating xml objects with the java Object equivalent
+        buttonSignIn = findViewById(R.id.signUp);// associating xml objects with the java Object equivalent
+        textViewSignUp = findViewById(R.id.loginLink);// associating xml objects with the java Object equivalent
 
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String username = emailId.getText().toString().trim();
-                final String passwd = password.getText().toString().trim();
+                final String username = emailId.getText().toString().trim();//extracted data from xml object and converted into a string
+                final String passwd = password.getText().toString().trim();//extracted data from xml object and converted into a string
 
-                if(username.isEmpty()){
+                if(username.isEmpty()){//checks if the username they are trying to submit is empty
                     emailId.setError("Please enter email id");
                     emailId.requestFocus();
                 }
-                else if (passwd.isEmpty()){
+                else if (passwd.isEmpty()){//checks if the password the user is trying to submit is empty
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
-                else if (!(username.isEmpty() && passwd.isEmpty())) {
+                else if (!(username.isEmpty() && passwd.isEmpty())) {//if everything is good we proceed with the get request
 
                     //post request for logging in
                     String url = "http://50.19.176.137:8000/customer/login";
-                    JSONObject obj = new JSONObject();//for the request parameter
+                    JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
                     try{
                         obj.put("username", username);
                         obj.put("password", passwd);
                     }catch (JSONException e){
+                        //TODO figure out how to handle this other than stack trace
                         e.printStackTrace();
                     }
 
@@ -108,24 +108,24 @@ public class Login extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    // error
+                                    // error if the request fails
                                     error.printStackTrace();
                                     Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG).show();
                                 }
                             }
                     );
 
-                    VolleySingleton.getInstance(Login.this).addToRequestQueue(postRequest);
+                    VolleySingleton.getInstance(Login.this).addToRequestQueue(postRequest);// making the actual request
                 }
                 else{
-                    Toast.makeText(Login.this, "Error Occurred", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this, "Error Occurred", Toast.LENGTH_SHORT).show();// if something fails with our request display error
                 }
             }
         });
 
         textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) {// if user wants to go register page this will send them there
                 Intent signUp = new Intent(Login.this, Register.class);
                 startActivity(signUp);
             }

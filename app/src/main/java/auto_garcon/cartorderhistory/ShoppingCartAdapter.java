@@ -1,14 +1,11 @@
-package auto_garcon.Cart_OrderHistory;
+package auto_garcon.cartorderhistory;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,10 +14,9 @@ import com.example.auto_garcon.R;
 
 import java.util.ArrayList;
 
-import auto_garcon.MenuStuff.Menu;
-import auto_garcon.MenuStuff.MenuItem;
-import auto_garcon.Singleton.SharedPreference;
-import auto_garcon.Singleton.ShoppingCartSingleton;
+import auto_garcon.menustuff.MenuItem;
+import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.ShoppingCartSingleton;
 
 public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapter.ShoppingCartViewHolder>{
 

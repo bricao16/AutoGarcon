@@ -1,75 +1,50 @@
-package auto_garcon.Cart_OrderHistory;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+package auto_garcon.cartorderhistory;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
-import auto_garcon.AccountStuff.Account;
-import auto_garcon.AccountStuff.Settings;
+import auto_garcon.accountstuff.Account;
+import auto_garcon.accountstuff.Settings;
 import auto_garcon.HomeStuff.Home;
-import auto_garcon.InitialPages.Login;
-import auto_garcon.InitialPages.QRcode;
-import auto_garcon.Singleton.SharedPreference;
-import auto_garcon.Singleton.ShoppingCartSingleton;
+import auto_garcon.initialpages.Login;
+import auto_garcon.initialpages.QRcode;
+import auto_garcon.singleton.SharedPreference;
 
-public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+/**
+ * This class pulls data from the database relating to the user's past orders
+ * The class is tied to the order history xml and uses nav bars to navigate other xml's
+ * This class main function is to allow the user to view previous orders  and also click on the previous orders if they want to order again
+ */
+public class OrderHistory extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private SharedPreference pref;
-    private ShoppingCartSingleton shoppingCart;
-    private RecyclerView recyclerView;
+    private SharedPreference pref;// This
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shopping_cart);
-
-        recyclerView = findViewById(R.id.list);
-        pref = new SharedPreference(this);
-
-        if(pref.getShoppingCart() == null ){
-            shoppingCart = new ShoppingCartSingleton();
-            pref.setShoppingCart(shoppingCart);
-        }
-        else{
-            shoppingCart = pref.getShoppingCart();
-        }
-        ShoppingCartAdapter adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        setContentView(R.layout.activity_order_history);
 
         //creating side nav drawer
-        DrawerLayout drawerLayout = findViewById(R.id.shopping_cart_main);
-        Toolbar toolbar = findViewById(R.id.xml_toolbar);
-        NavigationView navigationView = findViewById(R.id.navigationView);
+        DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
+        Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
+        NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        Button PlaceOrderButton = findViewById(R.id.btn_placeorder);
-
-        PlaceOrderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //
-            }
-        });
-
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);// associating xml objects with the java Object equivalent
 
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {

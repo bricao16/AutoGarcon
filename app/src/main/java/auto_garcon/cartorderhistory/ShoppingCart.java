@@ -1,36 +1,57 @@
-package auto_garcon.Cart_OrderHistory;
+package auto_garcon.cartorderhistory;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
-import auto_garcon.AccountStuff.Account;
-import auto_garcon.AccountStuff.Settings;
+import auto_garcon.accountstuff.Account;
+import auto_garcon.accountstuff.Settings;
 import auto_garcon.HomeStuff.Home;
-import auto_garcon.InitialPages.Login;
-import auto_garcon.InitialPages.QRcode;
-import auto_garcon.Singleton.SharedPreference;
+import auto_garcon.initialpages.Login;
+import auto_garcon.initialpages.QRcode;
+import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.ShoppingCartSingleton;
 
-public class OrderHistory extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private SharedPreference pref;
+    private ShoppingCartSingleton shoppingCart;
+    private RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_history);
+        setContentView(R.layout.activity_shopping_cart);
+
+        recyclerView = findViewById(R.id.list);
+        pref = new SharedPreference(this);
+
+        if(pref.getShoppingCart() == null ){
+            shoppingCart = new ShoppingCartSingleton();
+            pref.setShoppingCart(shoppingCart);
+        }
+        else{
+            shoppingCart = pref.getShoppingCart();
+        }
+        ShoppingCartAdapter adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //creating side nav drawer
-        DrawerLayout drawerLayout = findViewById(R.id.order_history_main);
+        DrawerLayout drawerLayout = findViewById(R.id.shopping_cart_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
         NavigationView navigationView = findViewById(R.id.navigationView);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
@@ -38,6 +59,15 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        Button PlaceOrderButton = findViewById(R.id.btn_placeorder);
+
+        PlaceOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //
+            }
+        });
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
 

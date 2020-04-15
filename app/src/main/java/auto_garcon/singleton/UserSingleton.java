@@ -1,8 +1,4 @@
-package auto_garcon.Singleton;
-
-import java.util.ArrayList;
-
-import auto_garcon.MenuStuff.MenuItem;
+package auto_garcon.singleton;
 
 public class UserSingleton {
     private String firstName;

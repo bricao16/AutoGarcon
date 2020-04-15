@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,8 +14,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,14 +32,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import auto_garcon.AccountStuff.Account;
-import auto_garcon.AccountStuff.Settings;
-import auto_garcon.Cart_OrderHistory.OrderHistory;
-import auto_garcon.Cart_OrderHistory.ShoppingCart;
-import auto_garcon.InitialPages.Login;
-import auto_garcon.InitialPages.QRcode;
-import auto_garcon.Singleton.SharedPreference;
-import auto_garcon.Singleton.VolleySingleton;
+import auto_garcon.accountstuff.Account;
+import auto_garcon.accountstuff.Settings;
+import auto_garcon.cartorderhistory.OrderHistory;
+import auto_garcon.cartorderhistory.ShoppingCart;
+import auto_garcon.initialpages.Login;
+import auto_garcon.initialpages.QRcode;
+import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.VolleySingleton;
 
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
 
