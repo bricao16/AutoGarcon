@@ -14,6 +14,9 @@ import Container from '@material-ui/core/Container';
 import {Redirect} from "react-router-dom";
 import Alert from 'react-bootstrap/Alert';
 import Manager from './Manager/Manager';
+import https from 'https';
+import axios from 'axios';
+
 
 /*this is the login component for the manager
 view. Asks for the email address, password and logs in if the user and correct password
@@ -65,28 +68,26 @@ export default class SignIn extends React.Component {
 	  
 	  /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
 	  
-	  console.log(this.state.email);
-	  console.log(this.state.passwd);
-	  
-	  const requestOptions = {
-		method: 'POST',
-		headers: {
-		  'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		/*body: JSON.stringify({
-		  'username': this.state.email,
-		  'password': this.state.passwd
-		})*/
-		body: 'username='+this.state.email+'&password='+this.state.passwd
-		  
-	  };
-	  fetch('http://50.19.176.137:8000/staff/login', requestOptions)
-		.then(async response => {
-      await response;
-      
-      if (response.status !== 200) {this.handleShow(response);}
-      else {
-         response.json()
+	console.log(this.state.email);
+    console.log(this.state.passwd);
+    
+    axios({
+      method: 'post',
+      url: 'https://50.19.176.137:8001/staff/login',
+      data: 'username='+this.state.email+'&password='+this.state.passwd,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+      .then(async response => {
+        await response;
+        
+        if (response.status !== 200) {this.handleShow(response);}
+        else {
+        	response.json()
 		      .then(
 		        (result) => {
 		        	console.log(result);
@@ -98,14 +99,17 @@ export default class SignIn extends React.Component {
 		          });
 		        }
 		        );
-		}
-	})
-	.catch(error =>{
-      this.setState({alertVariant: 'danger'});
-      this.setState({response: "Unknown error"});
-      this.setState({redirect: false});
-			console.error("There was an error!", error);
-		});
+          //this.setState({show: false});
+          //this.setState({redirect: true});
+        }
+      })
+      .catch(error =>{
+        this.setState({alertVariant: 'danger'});
+        this.setState({response: "Unknown error"});
+        this.setState({redirect: false});
+        console.error("There was an error!", error);
+      });
+
   }
   
   handleEmail(event){

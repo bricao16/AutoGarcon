@@ -2,7 +2,8 @@ import React from "react";
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
-
+import https from 'https';
+import axios from 'axios';
 
 /* 
   This component is to allow the manager to 
@@ -47,7 +48,7 @@ class NewItem extends React.Component {
     // Non existent so need to add item
     if (this.state.type === "default") {
       requestMethod = "PUT"
-      endpoint = "http://50.19.176.137:8000/menu/add"
+      endpoint = "https://50.19.176.137:8001/menu/add"
       body = 'restaurant_id='+123
         +'&item_name='+this.state.name
         +'&calorie_num='+this.state.calories
@@ -57,7 +58,7 @@ class NewItem extends React.Component {
     // Item needs to be edited
     else {
       requestMethod = "POST"
-      endpoint = "http://50.19.176.137:8000/menu/update"
+      endpoint = "https://50.19.176.137:8001/menu/update"
       body = 'restaurant_id='+123
         +'&item_id='+this.state.item_id
         +'&item_name='+this.state.name
@@ -75,7 +76,18 @@ class NewItem extends React.Component {
       body: body
     }
     
-    fetch(endpoint, requestOptions)
+    axios({
+      method: requestMethod,
+      url: endpoint,
+      data: body,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+    //fetch(endpoint, requestOptions)
 		.then(async response => {
       await response;
 
