@@ -7,6 +7,7 @@ import $ from "jquery";
 import Button from 'react-bootstrap/Button';
 import https from 'https';
 import axios from 'axios';
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 class Cook extends React.Component {
 
@@ -94,7 +95,7 @@ class Cook extends React.Component {
   deactivateAlert(){
     let state = this.state;
     state.alertActive = false;
-    state.alertContent = <div></div>;
+    state.alertContent = <></>;
     this.setState(state);
   }
 
@@ -121,6 +122,10 @@ class Cook extends React.Component {
         // Create new order with empty items
         ordersState[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
       }
+      // If no category provided, mark as Entree
+      if(!order.category){
+        order.category = 'Entrees';
+      }
       if(!(order.category in ordersState[order.order_num].items)){
         ordersState[order.order_num].items[order.category] = [];
       }
@@ -133,12 +138,12 @@ class Cook extends React.Component {
   }
 
   componentDidMount() {
-    // Get current orders from database
+    // Get active orders from database
     axios({
       method: 'get',
       // https://50.19.176.137:8001/orders/123
       // Dummy orders for testing: "https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders"
-      url: 'https://50.19.176.137:8001/orders/123',
+      url: 'http://50.19.176.137:8000/orders/123', // https not working?
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },

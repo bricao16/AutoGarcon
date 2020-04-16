@@ -4,7 +4,6 @@ import Order from "./Order";
 import Container from 'react-bootstrap/Container';
 // import $ from 'jquery';
 import '../../assets/order.css'
-import {BrowserRouter as Router, Switch, Link, Route} from "react-router-dom";
 
 /*
   This component is used to render the orders for the Cook page.
