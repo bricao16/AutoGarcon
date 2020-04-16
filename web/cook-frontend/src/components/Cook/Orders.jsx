@@ -19,12 +19,7 @@ class Orders extends React.Component{
 
   constructor(props) {
     super(props);
-    this.state = {
-      // confirmDelete: {
-      //   show: false,
-      //   cardId: 0
-      // }
-    };
+    this.state = {};
   }
 
   // Returns an <Order /> component for each order in props.orders
