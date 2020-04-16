@@ -1,7 +1,7 @@
 import React from "react";
 
 
-class OrdersMenu extends React.Component {
+class OrdersNavigation extends React.Component {
 
   constructor(props) {
     super(props);
@@ -43,4 +43,4 @@ const activePageStyle = {
   borderTopRightRadius: '.5em',
 };
 
-export default OrdersMenu;
+export default OrdersNavigation;

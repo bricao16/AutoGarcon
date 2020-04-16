@@ -1,10 +1,12 @@
 import React from "react";
 import Orders from "./Orders"
-import OrdersMenu from "./OrdersMenu.jsx";
+import OrdersNavigation from "./OrdersNavigation.jsx";
 import OrdersHeader from "./OrdersHeader.jsx";
 import Alert from "./Alert.jsx";
 import $ from "jquery";
 import Button from 'react-bootstrap/Button';
+import https from 'https';
+import axios from 'axios';
 
 class Cook extends React.Component {
 
@@ -15,7 +17,7 @@ class Cook extends React.Component {
       orders: {},
       selectedOrder: 0,
       alertActive: false,
-      alertContent: <div></div>,
+      alertContent: <></>,
       currentTab: 0
     };
     this.setupKeyPresses();
@@ -132,9 +134,19 @@ class Cook extends React.Component {
 
   componentDidMount() {
     // Get current orders from database
-    // http://50.19.176.137:8000/orders/123
-    fetch("https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders")
-      .then(res => res.json())
+    axios({
+      method: 'get',
+      // https://50.19.176.137:8001/orders/123
+      // Dummy orders for testing: "https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders"
+      url: 'https://50.19.176.137:8001/orders/123',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false,
+      }),
+    })
+      .then(res => res.data)
       .then(orders => {
         this.configureOrders(orders);
       })
@@ -143,14 +155,26 @@ class Cook extends React.Component {
 
   render() {
     return (
-      <div style={cookPageStyle}>
-        <OrdersMenu currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
-        {this.renderAlert()}
-        <div className="p-3">
-          <OrdersHeader handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
-          <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
-        </div>
-      </div>
+      <Router>
+        <Switch>
+          <Route exact path="/cook">
+            <Redirect to="/cook/active" />
+          </Route>
+          <Route path="/cook/active">
+            <div style={cookPageStyle}>
+              <OrdersNavigation currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
+              {this.renderAlert()}
+              <div className="p-3">
+                <OrdersHeader handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
+                <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
+              </div>
+            </div>
+          </Route>
+          <Route path="/cook/completed">
+            <div>Completed orders</div>
+          </Route>
+        </Switch>
+      </Router>
     )
   }
 }
