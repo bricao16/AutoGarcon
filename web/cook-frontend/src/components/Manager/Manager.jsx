@@ -4,6 +4,8 @@ import Menu from './Menu';
 import Stats from './Stats';
 import StoreInfo from './StoreInfo';
 import MHeader from './Header';
+import Link from '@material-ui/core/Link';
+import { NavLink } from 'react-router-dom'
 import Customize from './Customize';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -19,16 +21,22 @@ the managers different views (menu, stats, hours...)
 The header is pulled from the database to render the 
 resturant logo and name. The stats page is the landing
 page */
+
+
 class Manager extends React.Component{
     constructor(props) {
       super(props);
+      console.log(this.props);
       this.state = {
         error: null,
         isLoaded: false,
         restaurantJSON: [],
-        restaurantInfo:[]
+        restaurantInfo:[],
+        token: null,
+        staff: null 
       };
     }
+
     /* Used for connecting to Resturant in database */
     componentDidMount() {
     fetch("http://50.19.176.137:8000/restaurant/123")
@@ -49,8 +57,13 @@ class Manager extends React.Component{
       )
     }
     render() {
-      const { error, isLoaded, restaurantJSON, restaurantInfo } = this.state;
-      
+      /*if(this.state.staff ==null)
+      {
+        this.setState({ token: this.props.token});
+        this.setState({ staff: this.props.staff});
+      }*/
+      const { error, isLoaded, restaurantJSON, restaurantInfo, staff, token } = this.state;
+      console.log(staff);
       if (error) {
         return <div>Error: {error.message}</div>;
       } 
@@ -76,10 +89,10 @@ class Manager extends React.Component{
                 <Row>
                   <Col sm={4} className="pt-3 px-3" style={navColStyle}>
                     <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
-                      <Nav.Link href="/manager">Statistics</Nav.Link>
-                      <Nav.Link href="/menu" >Menu</Nav.Link>
-                      <Nav.Link href="/hours">General</Nav.Link>
-                      <Nav.Link href="/customize">Customize</Nav.Link>
+                      <NavLink tag={Link} to="/manager">Statistics</NavLink>
+                      <NavLink tag={Link} to="/menu" >Menu</NavLink>
+                      <NavLink tag={Link} to="/hours">General</NavLink>
+                      <NavLink tag={Link} to="/customize">Customize</NavLink>
                     </Nav>
                   </Col>
                   <Col className="pt-3 px-3">

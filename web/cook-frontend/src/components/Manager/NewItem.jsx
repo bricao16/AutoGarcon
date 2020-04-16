@@ -7,8 +7,7 @@ import Alert from 'react-bootstrap/Alert';
 /* 
   This component is to allow the manager to 
   create a new item. It returns a form object that allows
-  for several options and fields to be submitted.  There
-  are no helper functions
+  for several options and fields to be submitted.  
 */
 class NewItem extends React.Component {
   constructor(props) {

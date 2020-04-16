@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Redirect} from "react-router-dom";
 import Alert from 'react-bootstrap/Alert';
+import Manager from './Manager/Manager';
 
 /*this is the login component for the manager
 view. Asks for the email address, password and logs in if the user and correct password
@@ -46,9 +47,11 @@ export default class SignIn extends React.Component {
 	  
 	  this.state = {
 	    email: '',
-		  passwd:'',
-      redirect: false,
-      show: false
+		passwd:'',
+      	redirect: false,
+      	show: false,
+      	staff:null,
+      	token:null
 	  };
 	  
     this.handleShow = this.handleShow.bind(this);
@@ -83,11 +86,21 @@ export default class SignIn extends React.Component {
       
       if (response.status !== 200) {this.handleShow(response);}
       else {
-        this.setState({show: false});
-        this.setState({redirect: true});
-      }
-		})
-		.catch(error =>{
+         response.json()
+		      .then(
+		        (result) => {
+		        	console.log(result);
+		          this.setState({
+		            redirect: true,
+		            show: false,
+		            staff: result.staff,
+		            token:result.token
+		          });
+		        }
+		        );
+		}
+	})
+	.catch(error =>{
       this.setState({alertVariant: 'danger'});
       this.setState({response: "Unknown error"});
       this.setState({redirect: false});
@@ -124,8 +137,15 @@ export default class SignIn extends React.Component {
   }
    
   render(){
+  	/*redirect to manager with the correct state information*/
 	if(this.state.redirect === true){
-		return <Redirect to='/manager'/>
+		return <Manager token = {this.state.token} staff={this.state.staff}/>
+		/*<Redirect
+				  to={{
+				    pathname: "/manager",
+				    state: {token: this.state.token, staff:this.state.staff}
+				  }}
+				/>*/
 	}  
 	return (
 		//top of page
@@ -137,9 +157,9 @@ export default class SignIn extends React.Component {
         {this.state.response}
       </Alert>
 
-			<div style={{'text-align':'center'}}>
+			<div style={{'textAlign':'center'}}>
         {/* Lock icon on top */}
-        <div style={{'display': 'inline-block'}}>
+        <div style={{'display': 'inlineBlock'}}>
           <Avatar className={useStyles.avatar}>
             <LockOutlinedIcon />
           </Avatar>
@@ -177,7 +197,7 @@ export default class SignIn extends React.Component {
 			  />
 			  {/* Remember me check box */}
 			  <FormControlLabel
-				control={<Checkbox value="remember" color ="Primary" />}
+				control={<Checkbox value="remember" color ="primary" />}
 				label="Remember me"
 			  />
 			  {/* Submit button */}

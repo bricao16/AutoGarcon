@@ -140,7 +140,7 @@ export default class SignIn extends React.Component {
           </div>
           {/* Manager Sign In Title */}
           <Typography component="h1" variant="h5">
-            Manager Sign In
+            Cook Sign In
           </Typography>
         </div>
 
