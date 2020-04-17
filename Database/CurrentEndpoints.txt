@@ -265,7 +265,7 @@ POST /orders/update
 
 PUT /alexa/register
 	Registers a new alexa
-	Inputs (in body of request):
+	Inputs (in body of request): alexa_id, restaurant_id, table_num
 	Outputs:
 		On success:
 			Successfully added new alexa!
@@ -275,6 +275,29 @@ PUT /alexa/register
 			Error: Missing parameter. Required parameters: alexa_id, restaurant_id, table_num
 		On error:
 			Error adding new alexa
+
+POST /orders/place
+	Places a new order
+	Inputs (in body of request): restaurant_id, customer_id, table_num, order
+		order format:
+			"order": {
+				"0": {
+					"item": "22",
+					"quantity": "5"
+				},
+				"1": {
+					"item": "1",
+					"quantity": "5"
+				}
+			}
+	Outputs:
+		On success:
+			Successfully placed order!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: restaurant_id, customer_id, table_num, order
+		On error:
+			Error placing order
+
 
 Added testing user for both /staff/login and /customers/login
 	user:password
