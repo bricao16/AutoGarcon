@@ -1,4 +1,4 @@
-package auto_garcon.HomeStuff;
+package auto_garcon.homestuff;
 
 import android.content.Context;
 import android.content.Intent;

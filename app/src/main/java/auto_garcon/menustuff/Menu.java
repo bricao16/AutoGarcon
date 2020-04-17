@@ -31,7 +31,7 @@ import java.util.List;
 
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
-import auto_garcon.HomeStuff.Home;
+import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.initialpages.QRcode;

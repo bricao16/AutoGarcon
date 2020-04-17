@@ -29,7 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import auto_garcon.cartorderhistory.ShoppingCart;
-import auto_garcon.HomeStuff.Home;
+import auto_garcon.homestuff.Home;
 import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.VolleySingleton;
 import github.nisrulz.qreader.QRDataListener;

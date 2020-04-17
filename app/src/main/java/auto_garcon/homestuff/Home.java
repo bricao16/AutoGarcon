@@ -1,4 +1,4 @@
-package auto_garcon.HomeStuff;
+package auto_garcon.homestuff;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;

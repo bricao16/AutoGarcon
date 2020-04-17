@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import com.example.auto_garcon.R;
 
-import auto_garcon.HomeStuff.Home;
+import auto_garcon.homestuff.Home;
 /**
 *This class handles the main functions of the two button page
  * its tied two the TwoButton xml layout
