@@ -1,12 +1,13 @@
 import React from "react";
 import Orders from "./Orders"
-import OrdersMenu from "./OrdersMenu.jsx";
+import OrdersNavigation from "./OrdersNavigation.jsx";
 import OrdersHeader from "./OrdersHeader.jsx";
 import Alert from "./Alert.jsx";
 import $ from "jquery";
 import Button from 'react-bootstrap/Button';
 import https from 'https';
 import axios from 'axios';
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 class Cook extends React.Component {
 
@@ -17,7 +18,7 @@ class Cook extends React.Component {
       orders: {},
       selectedOrder: 0,
       alertActive: false,
-      alertContent: <div></div>,
+      alertContent: <></>,
       currentTab: 0
     };
     this.setupKeyPresses();
@@ -94,7 +95,7 @@ class Cook extends React.Component {
   deactivateAlert(){
     let state = this.state;
     state.alertActive = false;
-    state.alertContent = <div></div>;
+    state.alertContent = <></>;
     this.setState(state);
   }
 
@@ -121,6 +122,10 @@ class Cook extends React.Component {
         // Create new order with empty items
         ordersState[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
       }
+      // If no category provided, mark as Entree
+      if(!order.category){
+        order.category = 'Entrees';
+      }
       if(!(order.category in ordersState[order.order_num].items)){
         ordersState[order.order_num].items[order.category] = [];
       }
@@ -133,16 +138,16 @@ class Cook extends React.Component {
   }
 
   componentDidMount() {
-    // Get current orders from database
+    // Get active orders from database
     axios({
       method: 'get',
       // https://50.19.176.137:8001/orders/123
       // Dummy orders for testing: "https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders"
-      url: 'https://50.19.176.137:8001/orders/123',
+      url: 'http://50.19.176.137:8000/orders/123', // https not working?
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      httpsAgent: new https.Agent({  
+      httpsAgent: new https.Agent({
         rejectUnauthorized: false,
       }),
     })
@@ -155,14 +160,26 @@ class Cook extends React.Component {
 
   render() {
     return (
-      <div style={cookPageStyle}>
-        <OrdersMenu currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
-        {this.renderAlert()}
-        <div className="p-3">
-          <OrdersHeader handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
-          <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
-        </div>
-      </div>
+      <Router>
+        <Switch>
+          <Route exact path="/cook">
+            <Redirect to="/cook/active" />
+          </Route>
+          <Route path="/cook/active">
+            <div style={cookPageStyle}>
+              <OrdersNavigation currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
+              {this.renderAlert()}
+              <div className="p-3">
+                <OrdersHeader handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
+                <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
+              </div>
+            </div>
+          </Route>
+          <Route path="/cook/completed">
+            <div>Completed orders</div>
+          </Route>
+        </Switch>
+      </Router>
     )
   }
 }

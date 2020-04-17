@@ -2,7 +2,7 @@
 	REST-API Server
 	Tucker Urbanski
 	Date Created: 3/2/2020
-	Last Modified: 4/14/2020
+	Last Modified: 4/16/2020
 */
 
 // Built-in Node.js modules
@@ -158,6 +158,68 @@ app.get('/orders/:id', (req, res) => {
 		}   //else
 	}); //db.query
 }); //app.get
+
+//POST request handler for placing an order
+app.post('/orders/place', (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.restaurant_id && req.body.customer_id && req.body.table_num && req.body.order)) {
+		res.status(500).send('Error: Missing parameter. Required parameters: restaurant_id, customer_id, table_num, order');
+		return;
+	}   //if
+
+	//Create timestamp
+	let date = luxon.DateTime.local().setZone('America/Chicago');
+	let timestamp = date.toString();
+
+	let parameters = [req.body.restaurant_id, req.body.customer_id, 'In Progress', timestamp, req.body.table_num];
+
+	//Query to add order to orders table and retrieve the order_num
+	let query = ' INSERT INTO sample.orders(restaurant_id, customer_id, order_status, order_date, table_num)';
+	query = query + ' VALUES (?, ?, ?, ?, ?);';
+
+	//Add order to orders table in db:
+	db.query(query, parameters, (err, rows) => {
+		if (err) {
+			res.status(500).send('Error placing order');
+		}   //if
+		else {
+			//Check to make sure there are items in the order (Necessary for new Alexa orders)
+			if (!isEmptyObject(req.body.order)) {
+				let order_num = rows.insertId;
+				parameters = [];
+				query = 'INSERT INTO sample.orderdetails(order_num, item_id, quantity)';
+				query = query + ' VALUES';
+
+				//Loop through all items in order:
+				for (let key in req.body.order) {
+					if (req.body.order.hasOwnProperty(key)) {
+						parameters.push(order_num);
+						parameters.push(req.body.order[key].item);
+						parameters.push(req.body.order[key].quantity);
+
+						//Check if it is the last item for formatting
+						if (key === Object.keys(req.body.order)[Object.keys(req.body.order).length-1]) {
+							query = query + ' (?,?,?);';
+						}	//if
+						else {
+							query = query + ' (?,?,?),';
+						}	//else]
+					}	//if
+				}	//for
+
+				//Add to orderdetails table
+				db.query(query, parameters, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error placing order');
+					}	//if
+					else {
+						res.status(200).send('Successfully placed order!');
+					}	//else
+				});	//query
+			}	//if
+		}   //else
+	}); //db.query
+});	//app.post
 
 //GET request handler for alexa
 app.get('/alexa/:id', (req, res) => {

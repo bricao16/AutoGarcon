@@ -5,79 +5,22 @@ import Container from 'react-bootstrap/Container';
 // import $ from 'jquery';
 import '../../assets/order.css'
 
-class Orders extends React.Component{
-  /*
-    This component is used to render the orders for the Cook page.
-    The orders are an array of object containing order details.  Look at the Order component for more details on the format of an order object.
+/*
+  This component is used to render the orders for the Cook page.
+  The orders are an array of object containing order details.  Look at the Order component for more details on the format of an order object.
 
-    renderOrders is a helper function which takes all the orders,
-    converts them to Order objects and returns a single JSX object that
-    will be exported as an Orders
-    component.
-  */
+  renderOrders is a helper function which takes all the orders,
+  converts them to Order objects and returns a single JSX object that
+  will be exported as an Orders
+  component.
+*/
+
+class Orders extends React.Component{
+
   constructor(props) {
     super(props);
-    this.state = {
-      // confirmDelete: {
-      //   show: false,
-      //   cardId: 0
-      // }
-    };
+    this.state = {};
   }
-
-
-
-
-  /*
-
-
-  setupClearOrder(){
-    $(document).keypress(this.clearOrder.bind(this));
-  }
-
-  clearOrder(e){
-    // If confirm delete is showing
-    if(this.state.confirmDelete.show){
-      // If Yes
-      let cardId = this.state.confirmDelete.cardId;
-      if(e.key.toLowerCase() === 'y'){
-        // Hide confirm delete dialog
-        this.changeConfirmDelete(false, cardId);
-
-        let ordersArray = Object.entries(this.state.orders);
-        ordersArray.splice(cardId-1, 1);
-        let ordersState = Object.fromEntries(ordersArray);
-        this.setState({orders: ordersState});
-      } else if(e.key.toLowerCase() === 'n'){
-        this.changeConfirmDelete(false, cardId);
-      }
-    } else {
-      // Confirm delete dialog is not showing
-      let cardId = e.keyCode - 48;
-      if(cardId > 0 && cardId <= 9 && cardId <= Object.keys(this.state.orders).length) {
-        this.changeConfirmDelete(true, cardId);
-      }
-    }
-  }
-
-  changeConfirmDelete(show, id){
-    let state = this.state;
-    let key = Object.keys(state.orders)[id-1];
-    state.orders[key].confirmDelete = show;
-    state.confirmDelete.show = show;
-    state.confirmDelete.cardId = id;
-
-    this.setState(state);
-  }
-
-  renderConfirmDelete(){
-    if(this.state.confirmDelete.show){
-      return <OrderDelete cardId={this.state.confirmDelete.cardId}/>
-    }
-  }
-  */
-
-
 
   // Returns an <Order /> component for each order in props.orders
   renderOrders() {

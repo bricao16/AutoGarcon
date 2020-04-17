@@ -1,7 +1,7 @@
 import React from "react";
 
 
-class OrdersMenu extends React.Component {
+class OrdersNavigation extends React.Component {
 
   constructor(props) {
     super(props);
@@ -20,7 +20,7 @@ class OrdersMenu extends React.Component {
     return (
       <div style={menuStyle} className="pt-2">
         <div className="mx-5 d-flex">
-          <p className="m-0 mr-5 p-2" style={this.tabStyle(0)} onClick={() => this.props.handleTabClick(0)}>Current Orders</p>
+          <p className="m-0 mr-5 p-2" style={this.tabStyle(0)} onClick={() => this.props.handleTabClick(0)}>Active Orders</p>
           <p className="m-0 mr-5 p-2" style={this.tabStyle(1)} onClick={() => this.props.handleTabClick(1)}>Completed Orders</p>
         </div>
       </div>
@@ -43,4 +43,4 @@ const activePageStyle = {
   borderTopRightRadius: '.5em',
 };
 
-export default OrdersMenu;
+export default OrdersNavigation;
