@@ -5,13 +5,14 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Redirect} from "react-router-dom";
+import Alert from 'react-bootstrap/Alert';
+import https from 'https';
+import axios from 'axios';
 
 /*this is the login component for the cook
 view. Asks for the email address, password and logs in if the user and correct password
@@ -41,10 +42,12 @@ export default class SignIn extends React.Component {
 	  
 	  this.state = {
 	    email: '',
-		passwd:'',
-		redirect: false
+      passwd:'',
+      redirect: false,
+      show: false
 	  };
-	  
+    
+    this.handleShow = this.handleShow.bind(this);
 	  this.handleSubmit = this.handleSubmit.bind(this);
 	  this.handleEmail = this.handleEmail.bind(this);
 	  this.handlePasswd = this.handlePasswd.bind(this);
@@ -59,35 +62,32 @@ export default class SignIn extends React.Component {
 	  console.log(this.state.email);
 	  console.log(this.state.passwd);
 	  
-	  const requestOptions = {
-		method: 'POST',
-		headers: {
-		  'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		/*body: JSON.stringify({
-		  'username': this.state.email,
-		  'password': this.state.passwd
-		})*/
-		body: 'username='+this.state.email+'&password='+this.state.passwd
-		  
-	  };
-	  fetch('http://50.19.176.137:8000/staff/login', requestOptions)
-		.then(async response => {
-			const data = await response.json();
-			
-			if(!response.ok){
-				const error = (data && data.message) || response.status;
-				return Promise.reject(error);
-			}
-			this.setState({redirect: true});
-			
-		
-		})
-		.catch(error =>{
-			
-			this.setState({redirect: false});
-			console.error("There was an error!", error);	
-		});
+	  axios({
+      method: 'post',
+      url: 'https://50.19.176.137:8001/staff/login',
+      data: 'username='+this.state.email+'&password='+this.state.passwd,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+      .then(async response => {
+        await response;
+        
+        if (response.status !== 200) {this.handleShow(response);}
+        else {
+          this.setState({show: false});
+          this.setState({redirect: true});
+        }
+      })
+      .catch(error =>{
+        this.setState({alertVariant: 'danger'});
+        this.setState({response: "Unknown error"});
+        this.setState({redirect: false});
+        console.error("There was an error!", error);
+      });
   }
   
   handleEmail(event){
@@ -98,22 +98,52 @@ export default class SignIn extends React.Component {
 	  this.setState({passwd: event.target.value});
   }
 
+  /* Used to show the correct alert after failing to log in */
+  handleShow(response) {
+    var text;    
+
+    response.text()
+      .then((res) => {
+        text = res;
+        this.setState({alertVariant: 'danger'});
+
+        if (text) {
+          this.setState({response: text});
+        }
+        else {
+          this.setState({response: 'Failed to login for unknown reason'});
+        }
+
+        this.setState({show: true});
+      })
+  }
+
   render(){
 	if(this.state.redirect === true){
 	  return <Redirect to='/cook'/>
 	}  
 	return (
-  	  <Container component="main" maxWidth="xs">
+  	  <Container component="main" maxWidth="xs" className="p-3">
 		  <CssBaseline />
         <div className={useStyles.paper}>
+
+        <Alert show={this.state.show} variant={this.state.alertVariant}>
+          {this.state.response}
+        </Alert>
+
+        <div style={{'text-align':'center'}}>
           {/* Lock icon on top */}
-          <Avatar className={useStyles.avatar}>
-          <LockOutlinedIcon />
-          </Avatar>
-          {/* Cook Sign In Title on top of page*/}
+          <div style={{'display': 'inline-block'}}>
+            <Avatar className={useStyles.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+          </div>
+          {/* Manager Sign In Title */}
           <Typography component="h1" variant="h5">
-          Cook Sign In
+            Manager Sign In
           </Typography>
+        </div>
+
           <form className={useStyles.form} noValidate>
           <TextField onChange = {this.handleEmail}
             value = {this.state.email}
@@ -155,14 +185,6 @@ export default class SignIn extends React.Component {
           >
             Sign In
           </Button>
-          <Grid container>
-            <Grid item>
-            {/* Create an account link */}
-            <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
-              {"Don't have an account? Sign Up"}
-            </Link>
-            </Grid>
-          </Grid>
           </form>
         </div>
 	  </Container>

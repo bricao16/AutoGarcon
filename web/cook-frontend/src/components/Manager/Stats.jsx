@@ -1,11 +1,11 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
-import StatsProp from './StatsProp';
+import Stat from './StatItem';
 
 /*this is the stats component for the manager
 view. The stats are stored in state and rendered 
 onto cards in by statsProp */
-class MStats extends React.Component{
+class Stats extends React.Component{
 
     constructor(props) {
         super(props);
@@ -19,7 +19,7 @@ class MStats extends React.Component{
     }
     renderStats(){
         return this.state.statistics.map((item, key) =>
-            <StatsProp key={key} id={key} statsType={item}/>
+            <Stat key={key} id={key} statsType={item}/>
         );
     }
     render() {
@@ -41,4 +41,4 @@ const backgroundStyle = {
   'backgroundColor': '#f1f1f1'
 }
 
-export default MStats;
+export default Stats;

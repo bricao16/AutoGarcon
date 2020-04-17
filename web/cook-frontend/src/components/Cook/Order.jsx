@@ -1,25 +1,22 @@
 import React from "react";
 import Card from 'react-bootstrap/Card';
-import moment from "moment";
+import moment from 'moment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faClock } from '@fortawesome/free-regular-svg-icons';
+import  'moment-duration-format';
 
 class Order extends React.Component {
 
   constructor(props) {
     super(props);
     this.props = props;
-    /*2020-03-10T15:52:23.000Z*/
-    // moment('2020-03-10T15:52:23.000Z');
-    let time = '2020-03-10T15:52:23.000Z'.split('.')[0]
-    console.log(moment(time).format('LT'));
+    this.state = {
+      orderTime: null,
+      orderTimeString: null,
+      timeSinceOrder: null
+    };
   }
 
-  /*
-  renderConfirmDelete(){
-    if(this.props.order.confirmDelete) {
-      return <div style={confirmDeleteStyle}></div>;
-    }
-  }
-  */
   renderItems(){
     let allItems = [];
     let key1 = 0;
@@ -29,7 +26,7 @@ class Order extends React.Component {
       this.props.order.items[category].forEach(item => {
         items.push(
           <div key={key2++}>
-            <span className="pr-2">{item.quantity}x</span>
+            <span className="pr-3">{item.quantity}</span>
             <span>{item.title}</span>
           </div>
         );
@@ -47,8 +44,8 @@ class Order extends React.Component {
     return allItems;
   }
 
-  selectedOrder(){
-    let style = {};
+  variableOrderStyles(){
+    let style = Object.assign({}, orderStyle);
     if(this.props.selectedOrder){
       style.background = '#7e7e7e';
     }
@@ -58,22 +55,54 @@ class Order extends React.Component {
     return style;
   }
 
+  initializeTime(){
+    // Make Moment object out of order placed time
+    const orderTime = moment(this.props.order.order_date, 'YYYY-MM-DD HH:mm:ss');
+    // Convert to string that displays as 12 hour time with AM/PM
+    const orderTimeString = orderTime.format('LT');
+    this.setState({orderTime: orderTime, orderTimeString: orderTimeString}, this.setupTimeInterval);
+  }
+
+  setupTimeInterval(){
+    this.updateTime();
+    this.interval = setInterval(() => this.updateTime(), 1000);
+  }
+
+  updateTime(){
+    // Time right now as Moment object
+    let now = moment();
+    // Seconds between now and order placed time
+    const secondsSinceOrder = now.diff(this.state.orderTime, 's');
+    // Formatted time between order placed time and now as hours:minute:seconds
+    const timeSinceOrder = moment.duration(secondsSinceOrder, 's').format('hh:mm:ss');
+    let state = this.state;
+    state.timeSinceOrder = timeSinceOrder;
+    this.setState(state);
+  }
+
   renderTime(){
-    let time = this.props.order.order_date.split('.')[0];
-    time = moment(time);
-    let timePlaced = time.format('LT');
-    let timeSince = time.startOf('minute').fromNow();
     return (
-      <React.Fragment>
-        <span className="pr-2">{timePlaced}</span>
-        <span>{timeSince}</span>
-      </React.Fragment>
+      <>
+        <span className="pr-3">{this.state.orderTimeString}</span>
+        <div className="d-flex" style={{alignItems: 'center'}}>
+          <FontAwesomeIcon icon={faClock}/>
+          <span className="pl-1">{this.state.timeSinceOrder}</span>
+        </div>
+      </>
     );
+  }
+
+  componentDidMount() {
+    this.initializeTime()
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   render() {
     return (
-      <div className="p-1 m-2 order" style={this.selectedOrder()} onClick={() => this.props.handleCardClick(this.props.cardId)}>
+      <div className="p-1 m-2 order" style={this.variableOrderStyles()} onClick={() => this.props.handleCardClick(this.props.cardId)}>
         <Card>
           <Card.Header style={cardHeaderStyle} className="p-0 d-flex">
             <span className="px-2 py-1" style={cardIdStyle}>{this.props.cardId + 1}</span>
@@ -86,9 +115,7 @@ class Order extends React.Component {
             {this.renderItems()}
           </Card.Body>
           <Card.Footer className="py-1 px-2 d-flex" style={cardFooterStyle}>
-            {
-              this.renderTime()
-            }
+            {this.renderTime()}
           </Card.Footer>
         </Card>
       </div>
@@ -96,7 +123,11 @@ class Order extends React.Component {
   }
 }
 
-
+const orderStyle = {
+  borderRadius: '0.25rem',
+  cursor: 'pointer',
+  userSelect: 'none'
+};
 
 const cardHeaderStyle = {
   backgroundColor: '#0b658a',
@@ -125,8 +156,5 @@ const cardFooterStyle = {
   color: '#ffffff',
   justifyContent: 'space-between',
 };
-
-
-
 
 export default Order;

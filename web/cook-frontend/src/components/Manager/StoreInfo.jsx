@@ -1,7 +1,8 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
-
 import Card from 'react-bootstrap/Card';
+import https from 'https';
+import axios from 'axios';
 
 /* This component is used to render the 
 resturant information for the manager view.
@@ -46,20 +47,19 @@ class StoreInfo extends React.Component{
     this.editForm("");
     event.preventDefault();
     
-    /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
-    
-    const requestOptions = {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-
-    body: 'name='+this.state.name+'&address='+this.state.address
-          +'&phone='+this.state.phone+'&open='+this.state.open
-          +'&close='+this.state.close
-      
-    };
-    fetch('http://50.19.176.137:8000/restaurant/123', requestOptions)
+    axios({
+      method: 'put',
+      url: 'https://50.19.176.137:8001/restaurant/123',
+      data: 'name='+this.state.name+'&address='+this.state.address
+      +'&phone='+this.state.phone+'&open='+this.state.open
+      +'&close='+this.state.close,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
     .then(async response => {
       const data = await response.json();
       

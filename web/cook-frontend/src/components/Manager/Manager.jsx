@@ -1,13 +1,15 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
 import Menu from './Menu';
-import Stats from './MStats';
+import Stats from './Stats';
 import StoreInfo from './StoreInfo';
-import MHeader from './MHeader';
-import Customize from './MCustomize';
+import MHeader from './Header';
+import Customize from './Customize';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
+import https from 'https';
+import axios from 'axios';
 import {
     Switch,
     Route
@@ -19,7 +21,7 @@ the managers different views (menu, stats, hours...)
 The header is pulled from the database to render the 
 resturant logo and name. The stats page is the landing
 page */
-class MTasks extends React.Component{
+class Manager extends React.Component{
     constructor(props) {
       super(props);
       this.state = {
@@ -31,23 +33,38 @@ class MTasks extends React.Component{
     }
     /* Used for connecting to Resturant in database */
     componentDidMount() {
-    fetch("http://50.19.176.137:8000/restaurant/123")
-      .then(res => res.json())
-      .then(
-        (result) => {
+
+    axios({
+      method: 'get',
+      url: 'https://50.19.176.137:8001/restaurant/123',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+      .then(res => {
+        var finalJson = {
+          'menu': res.data[1].menu,
+          'restaurant': res.data[0].restaurant
+        }
+        return finalJson;
+      })
+      .then((result) => {
           this.setState({
             isLoaded: true,
             restaurantJSON: result
           });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      )
+        })
+      .catch((error) => {
+        this.setState({
+          isLoaded: true,
+          error
+        });
+      })
     }
+    
     render() {
       const { error, isLoaded, restaurantJSON, restaurantInfo } = this.state;
       
@@ -67,7 +84,9 @@ class MTasks extends React.Component{
         //map the menu json to an array
         Object.keys(this.state.restaurantJSON).forEach(function(key) {
           restaurantInfo.push([key ,restaurantJSON[key]]);
-        });} 
+        });
+      }
+      
       return (
           <Container>
             <MHeader/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
@@ -89,13 +108,13 @@ class MTasks extends React.Component{
                             <Stats/>
                           </Route>
                           <Route path="/menu">
-                            <Menu menu = {restaurantInfo[1][1]}/>
+                            <Menu menu = {restaurantInfo[0][1]}/>
                           </Route>
                           <Route path="/hours">
-                            <StoreInfo info = {restaurantInfo[0][1]} />
+                            <StoreInfo info = {restaurantInfo[1][1]} />
                           </Route>
                           <Route path="/customize">
-                            <Customize info = {restaurantInfo[0][1]}/>
+                            <Customize info = {restaurantInfo[1][1]}/>
                           </Route>
                         </Switch>
                     </Container>
@@ -123,4 +142,4 @@ const navColStyle = {
 }
 
 
-export default MTasks;
+export default Manager;
