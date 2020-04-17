@@ -29,14 +29,14 @@ function StatItem(props) {
 }
 
 const statStyle = {
-    'border-bottom': 'grey solid 1px'
+    'borderBottom': 'grey solid 1px'
 };
 const cardHeaderStyle = {
     'backgroundColor': '#0b658a',
     'color': '#ffffff'
 };
 const itemStyle = {
-    'border-bottom': 'grey solid 1px',
+    'borderBottom': 'grey solid 1px',
     'width':'200px'
 };
 

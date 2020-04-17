@@ -16,6 +16,7 @@ import Alert from 'react-bootstrap/Alert';
 import Manager from './Manager/Manager';
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 
 /*this is the login component for the manager
@@ -41,9 +42,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const cookies = new Cookies();
 
-
-export default class SignIn extends React.Component {
+class MLogin extends React.Component {
 	
   constructor(props){
 	  super(props);
@@ -61,7 +62,9 @@ export default class SignIn extends React.Component {
 	  this.handleSubmit = this.handleSubmit.bind(this);
 	  this.handleEmail = this.handleEmail.bind(this);
 	  this.handlePasswd = this.handlePasswd.bind(this);
+	  
   }
+
   handleSubmit(event){
 	  
 	  event.preventDefault();
@@ -73,7 +76,7 @@ export default class SignIn extends React.Component {
     
     axios({
       method: 'post',
-      url: 'https://50.19.176.137:8001/staff/login',
+      url: 'http://50.19.176.137:8000/staff/login',
       data: 'username='+this.state.email+'&password='+this.state.passwd,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -86,22 +89,27 @@ export default class SignIn extends React.Component {
         await response;
         
         if (response.status !== 200) {this.handleShow(response);}
-        else {
-        	response.json()
+        else 
+        {
+        	console.log(response);
+        	/*response.json()
 		      .then(
 		        (result) => {
-		        	console.log(result);
+		        	console.log(result);*/
 		          this.setState({
 		            redirect: true,
 		            show: false,
-		            staff: result.staff,
-		            token:result.token
+		            staff: response.data.staff,
+		            token:response.data.token
 		          });
-		        }
-		        );
+		          		cookies.set('my-staff', this.state.staff, { path: '/' });
+						cookies.set('my-token', this.state.token, { path: '/' });
+		 }
+		        //);
+
           //this.setState({show: false});
           //this.setState({redirect: true});
-        }
+        
       })
       .catch(error =>{
         this.setState({alertVariant: 'danger'});
@@ -143,11 +151,15 @@ export default class SignIn extends React.Component {
   render(){
   	/*redirect to manager with the correct state information*/
 	if(this.state.redirect === true){
-		return <Manager token = {this.state.token} staff={this.state.staff}/>
-		/*<Redirect
+		cookies.set('mystaff', this.state.staff, { path: '/' });
+		cookies.set('mytoken', this.state.token, { path: '/' });
+		
+		return  <Redirect to='/manager'/> 
+		//return <Manager cookies = {cookies}/>
+		/*return <Redirect
 				  to={{
-				    pathname: "/manager",
-				    state: {token: this.state.token, staff:this.state.staff}
+				    pathname: "/statistic",
+				    state: {cookies : {cookies}}
 				  }}
 				/>*/
 	}  
@@ -228,3 +240,5 @@ export default class SignIn extends React.Component {
 	);
   }
 }
+//const MLoginCookies = withCookies(MLogin);
+export default MLogin; 

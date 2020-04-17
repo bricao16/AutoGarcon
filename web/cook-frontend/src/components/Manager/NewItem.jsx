@@ -68,14 +68,6 @@ class NewItem extends React.Component {
         +'&in_stock='+this.state.in_stock
     }
 	  
-	  const requestOptions = {
-      method: requestMethod,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: body
-    }
-    
     axios({
       method: requestMethod,
       url: endpoint,
@@ -189,7 +181,7 @@ class NewItem extends React.Component {
       );
     }
     else{
-      {/*If editing a item prefill with values*/}
+      /*If editing a item prefill with values*/
       return(
         <Col className="pt-3 px-3">
           <Container>

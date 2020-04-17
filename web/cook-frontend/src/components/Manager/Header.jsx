@@ -13,8 +13,8 @@ function Header(props) {
       MTasks component */
           <header style={headerStyle}>
               <img src={LogoImage} width="auto" height="35px" alt="waiter" /> {/*{logo}*/}
-              <p style={headerTitleStyle}>Auto-Garcon</p> {/*{name}*/}
-              {/* this.props.loggedIn */ true && <AccountDropdown className="px-3"></AccountDropdown>}
+              <p style={headerTitleStyle}>{props.restName}</p> {/*{name}*/}
+              {/* this.props.loggedIn */ true && <AccountDropdown firstName={props.firstName} lastName={props.lastName} className="px-3"></AccountDropdown>}
           </header>
       );
 }

@@ -18,6 +18,9 @@ import Card from 'react-bootstrap/Card';
 class MenuItem extends React.Component {
   constructor(props) {
         super(props);
+        this.state = {
+
+        };
     }
     getStockState(in_stock){
         if(in_stock === 0)

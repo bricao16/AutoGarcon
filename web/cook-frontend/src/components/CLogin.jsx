@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default class SignIn extends React.Component {
+export default class CLogin extends React.Component {
   constructor(props){
 	  super(props);
 	  
@@ -64,7 +64,7 @@ export default class SignIn extends React.Component {
 	  
 	  axios({
       method: 'post',
-      url: 'https://50.19.176.137:8001/staff/login',
+      url: 'http://50.19.176.137:8000/staff/login',
       data: 'username='+this.state.email+'&password='+this.state.passwd,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -152,7 +152,7 @@ export default class SignIn extends React.Component {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Staff ID"
             name="email"
             autoComplete="email"
             autoFocus

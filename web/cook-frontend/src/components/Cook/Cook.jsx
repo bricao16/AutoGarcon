@@ -138,7 +138,24 @@ class Cook extends React.Component {
   }
 
   componentDidMount() {
-    // Get active orders from database
+     axios({
+      method: 'get',
+      // https://50.19.176.137:8001/orders/123
+      // Dummy orders for testing: "https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders"
+      url: 'http://50.19.176.137:8000/orders/124', // https not working?
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false,
+      }),
+    })
+      .then(res => res.data)
+      .then(orders => {
+        this.configureOrders(orders);
+      })
+      .catch(e => console.log(e));
+    /*HTTPS
     axios({
       method: 'get',
       // https://50.19.176.137:8001/orders/123
@@ -155,7 +172,7 @@ class Cook extends React.Component {
       .then(orders => {
         this.configureOrders(orders);
       })
-      .catch(e => console.log(e));
+      .catch(e => console.log(e));*/
   }
 
   render() {
