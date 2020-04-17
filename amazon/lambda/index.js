@@ -8,10 +8,11 @@
 const Alexa = require('ask-sdk-core');
 const http = require('http');
 const api = 'http://50.19.176.137:8000';
+const apissl = 'https://50.19.176.137:8001';
 //Gets the AlexaID, restaurant ID, and table number automatically in the launch request
 var AlexaID = '';
-var restaurantID = '';
-var tableNum = '';
+var restaurantID = null;
+var tableNum = null;
 
 
 // When skill is first invoked, need to find Alexa device ID here to determine which restaurant the Alexa device is currently at.
@@ -26,14 +27,15 @@ const LaunchRequestHandler = {
       const alexaResponse = await getHttp(api+'/alexa/'+AlexaID);
       const alexaResponseJSON = JSON.parse(alexaResponse);
       
-      restaurantID = JSON.stringify(alexaResponseJSON[AlexaID].restaurant_id);
+      restaurantID = alexaResponseJSON[AlexaID].restaurant_id;
       tableNum = alexaResponseJSON[AlexaID].table_num;
       
       const restaurantResponse = await getHttp(api+'/restaurant/'+alexaResponseJSON[AlexaID].restaurant_id);
       const restaurantResponseJSON = JSON.parse(restaurantResponse);
       const restaurantName = restaurantResponseJSON['restaurant'].name;
     
-      speakOutput = "Hi, Welcome to " + restaurantName + "! Thank you for using AutoGarcon Alexa to place your order. How can I help you?";
+    //   speakOutput = "Hi, Welcome to " + restaurantName + "! Thank you for using AutoGarcon Alexa to place your order. How can I help you?";
+    speakOutput = alexaResponse.statusCode.toString();
     
       handlerInput.responseBuilder
         .speak(speakOutput)
@@ -42,11 +44,30 @@ const LaunchRequestHandler = {
       handlerInput.responseBuilder
         .speak(`This Alexa isn't registered. Please add it by saying "add a new device".`);
     }
+    
+    // TODO: check if pending , either helper function or just here
+    
     return handlerInput.responseBuilder
       .reprompt(`speakOutput`)
       .getResponse();
   }//handle
 };//LaunchRequestHandler
+
+//TODO: helper function to push/submit an order that is in DB as pending. I am not sure if orderID will be needed
+// should these be there own intents or should the intents call these helpers?
+const changePendingToInProgress = function(orderID) {
+    // some post/put request once endpoint is up
+}
+
+//TODO: helper function to add menuITem to an order that is in the DB as pending, may need to modify signatures
+const addItemToPendingOrder = function(orderID, menuItem){
+    // some post/put request once teh endpoint is up
+}
+
+//TODO: helper function to remove menuITem to an order that is in the DB as pending, may need to modify signatures
+const removeItemToPendingOrder = function(orderID, menuItem){
+    // some post/put request once teh endpoint is up
+}
 
 // helper function for http calls
 const getHttp = function(url) {
@@ -85,7 +106,7 @@ const ClosingTimeIntentHandler = {
     var speakOutput = '';
     var repromptOutput = 'reprompt';
     try {
-      const response = await getHttp(api+'/restaurant/'+restaurantID);
+      const response = await getHttp(apissl+'/restaurant/'+restaurantID);
       const responseJSON = JSON.parse(response);
       const closingTimeJSON = responseJSON.restaurant.closing%12;
       var ampm = "";
@@ -123,6 +144,7 @@ const MenuCategoryIntentHandler = {
     var speakOutput = "";
     var repromptOutput = "What would you like?";
     //categorySlot grabs the name of the slot, not the synonyms, converts it to a string, and makes it all lowercase in order to compare to the key in the database
+    //////////////////MIGHT NEED TO CHANGE IF MORE CATEGORIES ARE ADDED TO MENU/////////////////////////////
     let categorySlot = handlerInput.requestEnvelope.request.intent.slots.category.resolutions.resolutionsPerAuthority[0].values[0].value.name.toString().toLowerCase();
 
     try {
@@ -197,18 +219,23 @@ const GetPriceIntentHandler = {
   async handle(handlerInput) {
     var speakOutput = "";
     var repromptOutput = "Which item do you want the price of?";
-    let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.resolutions.resolutionsPerAuthority[0].values[0].value.name.toString();
+    //let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.resolutions.resolutionsPerAuthority[0].values[0].value.name.toString().toLowerCase();
+    let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.value.toString().toLowerCase();
 
     try {
       const response = await getHttp(api+'/menu/'+restaurantID);
       const responseJSON = JSON.parse(response);
       
-      //Checks if the requested menu item is in stock. If it is, it will tell the price of the item. It it isn't, it tells the customer we're out            
-      if(responseJSON[menuItemSlot].in_stock > 0){
-        speakOutput = menuItemSlot + " costs $" + responseJSON[menuItemSlot].price;
-      }else if(responseJSON[menuItemSlot].in_stock <= 0){
-        speakOutput = "Sorry, we are out of " + menuItemSlot;
-      }
+      for(var key in responseJSON){
+        if(key.toLowerCase() === menuItemSlot){
+          //Checks if the requested menu item is in stock. If it is, it will tell the price of the item. It it isn't, it tells the customer we're out            
+          if(responseJSON[key].in_stock > 0){
+            speakOutput = menuItemSlot + " costs $" + responseJSON[key].price;
+          }else if(responseJSON[key].in_stock <= 0){
+            speakOutput = "Sorry, we are out of " + menuItemSlot;
+          }
+        }//if equal to selected menu item  
+      }//for each menu item
                 
       handlerInput.responseBuilder
         .speak(speakOutput)
@@ -234,18 +261,22 @@ const GetCaloriesIntentHandler = {
         
         var speakOutput = "";
         var repromptOutput = "Which item do you want to know the calories of?";
-        let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.resolutions.resolutionsPerAuthority[0].values[0].value.name.toString();
-
+        //let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.resolutions.resolutionsPerAuthority[0].values[0].value.name.toString();
+        let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.value.toString().toLowerCase();
             try {
                 const response = await getHttp(api+'/menu/'+restaurantID);
                 
                 const responseJSON = JSON.parse(response);
                 
-                if(responseJSON[menuItemSlot].in_stock > 0){
-                    speakOutput = menuItemSlot + " has " + responseJSON[menuItemSlot].calories + " calories";
-                }else if(responseJSON[menuItemSlot].in_stock <= 0){
-                    speakOutput = "Sorry, we are out of " + menuItemSlot;
-                }
+                for(var key in responseJSON){
+                  if(key.toLowerCase() === menuItemSlot){
+                    if(responseJSON[key].in_stock > 0){
+                      speakOutput = menuItemSlot + " has " + responseJSON[key].calories + " calories";
+                    }else if(responseJSON[key].in_stock <= 0){
+                      speakOutput = "Sorry, we are out of " + menuItemSlot;
+                    }
+                  }//if equal to selected menu item
+                }//for each menu item
                 
                 handlerInput.responseBuilder
                     .speak(speakOutput)
