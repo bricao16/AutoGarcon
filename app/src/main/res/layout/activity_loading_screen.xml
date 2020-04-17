@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/gray"
 
-    tools:context="auto_garcon.InitialPages.LoadingScreen">
+    tools:context="auto_garcon.initialpages.LoadingScreen">
 
     <TextView
         android:id="@+id/editText5"

@@ -15,8 +15,8 @@ import com.example.auto_garcon.R;
 
 import java.util.List;
 
-import auto_garcon.MenuStuff.Menu;
-import auto_garcon.Singleton.SharedPreference;
+import auto_garcon.menustuff.Menu;
+import auto_garcon.singleton.SharedPreference;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 

@@ -1,8 +1,8 @@
-package auto_garcon.Singleton;
+package auto_garcon.singleton;
 
 import java.util.ArrayList;
 
-import auto_garcon.MenuStuff.MenuItem;
+import auto_garcon.menustuff.MenuItem;
 
 public class ShoppingCartSingleton {
     private  ArrayList<MenuItem> items;

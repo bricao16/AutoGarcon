@@ -1,4 +1,4 @@
-package auto_garcon.Singleton;
+package auto_garcon.singleton;
 
 import android.content.Context;
 import android.content.SharedPreferences;

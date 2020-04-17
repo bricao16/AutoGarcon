@@ -1,4 +1,4 @@
-package auto_garcon.AccountStuff;
+package auto_garcon.accountstuff;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.example.auto_garcon.R;
 
-import auto_garcon.Singleton.SharedPreference;
-import auto_garcon.Singleton.UserSingleton;
+import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.UserSingleton;
 
 public class Account extends AppCompatActivity {
 

@@ -1,28 +1,24 @@
-package auto_garcon.MenuStuff;
+package auto_garcon.menustuff;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.auto_garcon.R;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
-import auto_garcon.Singleton.SharedPreference;
-import auto_garcon.Singleton.ShoppingCartSingleton;
+import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.ShoppingCartSingleton;
 
 public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private Context context;

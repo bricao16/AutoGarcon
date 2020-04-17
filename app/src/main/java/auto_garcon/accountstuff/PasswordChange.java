@@ -1,4 +1,4 @@
-package auto_garcon.AccountStuff;
+package auto_garcon.accountstuff;
 
 import androidx.appcompat.app.AppCompatActivity;
 

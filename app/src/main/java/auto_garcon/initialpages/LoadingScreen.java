@@ -1,4 +1,4 @@
-package auto_garcon.InitialPages;
+package auto_garcon.initialpages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
