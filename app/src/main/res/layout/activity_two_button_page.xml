@@ -15,7 +15,6 @@
         app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/logo"/>
 
-
     <Button
         android:id="@+id/scanner_button"
         android:layout_width="match_parent"
