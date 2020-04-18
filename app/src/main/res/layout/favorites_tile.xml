@@ -35,11 +35,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="64dp"
                 android:text="Restaurant Title"
                 android:textColor="@android:color/background_dark"
                 android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/restaurant_location"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/restaurant_picture"
@@ -51,9 +50,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="restuarant location"
+                android:text="restaurant location"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/restaurant_hours"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/restaurant_picture"
@@ -61,16 +60,32 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <TextView
+                android:id="@+id/restaurant_hours"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="restaurant hours"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toTopOf="@+id/restaurant_number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/restaurant_picture"
+                app:layout_constraintTop_toBottomOf="@+id/restaurant_location"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
                 android:id="@+id/restaurant_number"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+
                 android:text="restaurant number"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/restaurant_picture"
-                app:layout_constraintTop_toBottomOf="@+id/restaurant_location"
+                app:layout_constraintTop_toBottomOf="@+id/restaurant_hours"
                 app:layout_constraintVertical_bias="0.43" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

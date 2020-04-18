@@ -47,6 +47,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         holder.textTitle.setText(data.get(position).getName());
         holder.textDescription.setText(data.get(position).getAddress());
         holder.textPhoneNumber.setText(data.get(position).getPhoneNumber());
+        holder.textHours.setText(data.get(position).getOpeningTime() + " - " + data.get(position).getClosingTime());
         holder.restaurantLogo.setImageBitmap(data.get(position).getImageBitmap());
     }
 
@@ -59,6 +60,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         TextView textTitle;
         TextView textDescription;
         TextView textPhoneNumber;
+        TextView textHours;
         ImageView restaurantLogo;
 
         public ViewHolder(@NonNull View itemView) {
@@ -76,6 +78,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             textTitle = itemView.findViewById(R.id.restaurant_title);
             textDescription = itemView.findViewById(R.id.restaurant_location);
             textPhoneNumber = itemView.findViewById(R.id.restaurant_number);
+            textHours = itemView.findViewById(R.id.restaurant_hours);
             restaurantLogo = itemView.findViewById(R.id.restaurant_picture);
         }
     }
