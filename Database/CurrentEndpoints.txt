@@ -298,6 +298,48 @@ POST /orders/place
 		On error:
 			Error placing order
 
+GET /alexa/pending/:id
+	Checks to see if an alexa has a pending order
+	Inputs: alexa_id
+	Outputs:
+		If there is a pending order:
+			{
+				'message': 'Pending order exists',
+				'order_num': order_num
+			}
+		If there is not a pending order:
+			{
+				'message': 'No pending order exists'
+			}
+		On error:
+			Error: could not retrieve data from database
+
+PUT /alexa/order/new
+	Creates a new pending order for an alexa
+	Inputs (in body of request): restaurant_id, alexa_id, table_num
+	Outputs:
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: restaurant_id, alexa_id, table_num
+		On success:
+			{
+				'message': 'Order created',
+				'order_num': order_num
+			}
+		On error:
+			Error placing order
+
+PUT /alexa/order/update
+	Updates an existing pending order for an alexa
+	Inputs (in body of request): order_num, item, quantity
+	Outputs:
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: order_num, item, quantity
+		If order_num does not exist:
+			Error: order does not exist or is not pending
+		On sucess:
+			Successfully updated order!
+		On error:
+			Error updating order
 
 Added testing user for both /staff/login and /customers/login
 	user:password

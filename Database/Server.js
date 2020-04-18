@@ -2,7 +2,7 @@
 	REST-API Server
 	Tucker Urbanski
 	Date Created: 3/2/2020
-	Last Modified: 4/16/2020
+	Last Modified: 4/18/2020
 */
 
 // Built-in Node.js modules
@@ -835,6 +835,118 @@ app.put('/alexa/register', (req, res) =>
 				else
 				{
 					res.status(200).send('Successfully added new alexa!');
+				}   //else
+			}); //db.query
+		}   //else
+	}); //db.query
+});	//app.put
+
+//GET request handler for pending alexa order
+app.get('/alexa/pending/:id', (req, res) => {
+	let query = 'SELECT * FROM sample.orders WHERE customer_id = ? AND order_status like "Pending"';
+	let response = {};
+
+	db.query(query, req.params.id, (err, rows) => {
+		if (err) {
+			res.status(500).send('Error: could not retrieve data from database');
+		}   //if
+		//No pending orders
+		else if (rows.length < 1) {
+			response = {
+				'message': 'No pending order exists'
+			};	//response
+
+			//Send Response:
+			res.type('json').send(response);
+		}   //else if
+		//Pending order exists
+		else {
+			//Send order_num of existing pending order
+			response = {
+				'message': 'Pending order exists',
+				'order_num': rows.order_num
+			};	//response
+
+			//Send Response:
+			res.type('json').send(response);
+		}   //else
+	}); //db.query
+}); //app.get
+
+//PUT request handler for adding new alexa order
+app.put('/alexa/order/new', (req, res) =>
+{
+	//Make sure right number of parameters are entered:
+	if(!(req.body.restaurant_id && req.body.alexa_id && req.body.table_num)) {
+		res.status(500).send('Error: Missing parameter. Required parameters: restaurant_id, alexa_id, table_num');
+		return;
+	}   //if
+
+	//Create timestamp
+	let date = luxon.DateTime.local().setZone('America/Chicago');
+	let timestamp = date.toString();
+
+	let parameters = [req.body.restaurant_id, req.body.alexa_id, 'Pending', timestamp, req.body.table_num];
+
+	//Query to add order to orders table and retrieve the order_num
+	let query = ' INSERT INTO sample.orders(restaurant_id, customer_id, order_status, order_date, table_num)';
+	query = query + ' VALUES (?, ?, ?, ?, ?);';
+
+	//Add order to orders table in db:
+	db.query(query, parameters, (err, rows) => {
+		if (err) {
+			res.status(500).send('Error placing order');
+		}   //if
+		else {
+			let order_num = rows.insertId;
+			let response = {};
+
+			//Send order_num of new order
+			response = {
+				'message': 'Order created',
+				'order_num': order_num
+			};	//response
+
+			//Send Response:
+			res.type('json').send(response);
+		}	//else
+	});	//db.query
+});	//app.put
+
+//PUT request handler for updating alexa order
+app.put('/alexa/order/update', (req, res) =>
+{
+	//Make sure right number of parameters are entered:
+	if(!(req.body.order_num && req.body.item && req.body.quantity))
+	{
+		res.status(500).send('Error: Missing parameter. Required parameters: order_num, item, quantity');
+		return;
+	}   //if
+
+	//Make sure the order exists:
+	let query = 'Select * FROM sample.orders WHERE order_num = ? AND order_status like "Pending"';
+	db.query(query, req.body.order_num, (err, rows) =>
+	{
+		if (rows.length == 0)
+		{
+			res.status(500).send('Error: order does not exist or is not pending');
+		}   //if
+		else
+		{
+			let parameters = [req.body.order_num, req.body.item, req.body.quantity];
+			query = 'INSERT INTO sample.orderdetails (order_num, item_id, quantity)';
+			query = query + ' VALUES (?,?,?)'
+
+			//Update order in db:
+			db.query(query, parameters, (err, rows) =>
+			{
+				if (err)
+				{
+					res.status(500).send('Error updating order');
+				}   //if
+				else
+				{
+					res.status(200).send('Successfully updated order!');
 				}   //else
 			}); //db.query
 		}   //else
