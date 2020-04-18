@@ -13,16 +13,19 @@ function Home() {
   return (
     <div style={homeStyle} className="d-flex flex-column">
       <Container fluid>
+        {/* Logo, title and navigation are each in a column*/}
         <Row style={{alignItems: 'center'}}>
-          {/*className="d-none d-lg-block"*/}
-          <Col lg="4" className="d-none d-lg-block">
+          {/* Only display logo when page is 'large' */}
+          <Col xs="auto" lg="4" className="d-none d-md-block">
             <Image src={logoImage} height="60px" style={logoStyle}/>
           </Col>
+          {/* Title floats left when less than 'large', then goes back to center when 'extra-small' */}
           <Col xs="12" md="auto" lg="4" style={{textAlign: 'center'}}>
-            {/*<a style={{fontSize: '3em',color:'#102644', marginRight: '-50%'}} href="#">Auto Garcon</a>*/}
-            <Link to="/" style={{fontSize: '3em', color:'#102644', textDecoration: 'none'}}>Auto Garcon</Link>
+            <Link to="/" style={titleStyle}>Auto Garcon</Link>
           </Col>
+          {/* When less than 'large' this will separate title and nav. When 'extra-small' this will help center nav. */}
           <Col className="d-lg-none p-0" style={{height: '20px', minWidth: 1}}></Col>
+          {/* Float right until 'extra-small', then center */}
           <Col xs="auto" lg="4" className="p-0">
             <Nav style={{float: 'right'}}>
               <Nav.Item>
@@ -48,6 +51,7 @@ function Home() {
               </Nav.Item>
             </Nav>
           </Col>
+          {/* Used to center nav when 'extra-small' */}
           <Col className="d-md-none p-0" style={{height: '20px', minWidth: 1}}></Col>
         </Row>
       </Container>
@@ -77,11 +81,18 @@ const logoStyle = {
   margin: '10px'
 };
 
+const titleStyle = {
+  fontSize: '3em',
+  color:'#102644',
+  textDecoration: 'none'
+};
+
 const buttonStyle = {
-  textDecoration: 'none',
+  textDecoration: 'none', // no underline on link hover
   color: 'black'
 };
 
+// Image of restaurant
 const backgroundImageStyle = {
   backgroundImage: `url(${Background})`,
   backgroundPosition: 'center',
@@ -100,13 +111,13 @@ const contentStyle = {
 const circleStyle = {
   background: '#112745b3',
   borderRadius: '50%',
-  textAlign: 'center',
+  textAlign: 'center', // horizontal centering
   color: 'white',
-  justifyContent: 'center',
+  justifyContent: 'center', // vertical centering
   height: '400px',
   width: '400px',
   marginTop: '15px',
-  marginBottom: 'calc(15px + 20vh)',
+  marginBottom: 'calc(15px + 20vh)', // offset upward from center
 };
 
 const captionStyle = {
