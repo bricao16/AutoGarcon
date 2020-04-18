@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name="auto_garcon.accountstuff.PasswordChange"></activity>
-        <activity android:name="auto_garcon.initialpages.twoButtonPage" />
+        <activity android:name="auto_garcon.initialpages.TwoButtonPage" />
         <activity android:name="auto_garcon.initialpages.LoadingScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

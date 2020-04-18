@@ -45,7 +45,7 @@ public class Login extends AppCompatActivity {
 
         if(pref.getLoginStatus()){ // checks if they are already signed in if so we send them to the homepage if their already logged in
             //Todo: check if there token is still valid
-            Intent intent  = new Intent(Login.this, twoButtonPage.class);
+            Intent intent  = new Intent(Login.this, TwoButtonPage.class);
             startActivity(intent);
             finish();//prevents them from coming back to this page
         }
@@ -97,7 +97,7 @@ public class Login extends AppCompatActivity {
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 
-                                        Intent twoButton = new Intent(Login.this, twoButtonPage.class);
+                                        Intent twoButton = new Intent(Login.this, TwoButtonPage.class);
                                         startActivity(twoButton);
                                         finish();
                                     } catch (JSONException e) {

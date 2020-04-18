@@ -30,7 +30,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     Dialog addToCartPopup;
     Dialog confirmPopup;
 
-
     public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap) {
         this.context = context;
         this.listDataHeader = listDataHeader;
@@ -113,6 +112,11 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 addToCartPopup.show();
 
+                TextView outOfStock = addToCartPopup.findViewById(R.id.out_of_order);
+                if(getChild(i, j).getAmountInStock() == 0) {
+                    outOfStock.setText("Out of Stock");
+                }
+
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart);
 
                 addToCart.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +139,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                             pref.setShoppingCart(cart);
                         }
-                        else {
+                        else if(pref.getShoppingCart().getRestaurantID() != getChild(i, j).getRestaurantID()) {
                             confirmPopup.setContentView(R.layout.confirm_popup);
 
                             confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

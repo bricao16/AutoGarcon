@@ -15,7 +15,7 @@ import auto_garcon.homestuff.Home;
  * its tied two the TwoButton xml layout
  * This class is also capable of linking the user to the Home page and the QrCode page
 */
-public class twoButtonPage extends AppCompatActivity {
+public class TwoButtonPage extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class twoButtonPage extends AppCompatActivity {
         scannerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {//when the scannerButton is clicked this will send the user to the QrCode page
-                Intent QrCode = new Intent(twoButtonPage.this, QRcode.class);
+                Intent QrCode = new Intent(TwoButtonPage.this, QRcode.class);
                 startActivity(QrCode);
             }
         });
@@ -39,7 +39,7 @@ public class twoButtonPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent home = new Intent(twoButtonPage.this, Home.class);//creating an intent to send the user to homepage
+                Intent home = new Intent(TwoButtonPage.this, Home.class);//creating an intent to send the user to homepage
                 startActivity(home);
             }
         });
