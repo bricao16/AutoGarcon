@@ -1,28 +1,24 @@
-package auto_garcon.MenuStuff;
+package auto_garcon.menustuff;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.auto_garcon.R;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
-import auto_garcon.Singleton.SharedPreference;
-import auto_garcon.Singleton.ShoppingCartSingleton;
+import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.ShoppingCartSingleton;
 
 public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private Context context;
@@ -33,7 +29,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
     Dialog addToCartPopup;
     Dialog confirmPopup;
-
 
     public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap) {
         this.context = context;
@@ -117,6 +112,11 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 addToCartPopup.show();
 
+                TextView outOfStock = addToCartPopup.findViewById(R.id.out_of_order);
+                if(getChild(i, j).getAmountInStock() == 0) {
+                    outOfStock.setText("Out of Stock");
+                }
+
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart);
 
                 addToCart.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +139,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                             pref.setShoppingCart(cart);
                         }
-                        else {
+                        else if(pref.getShoppingCart().getRestaurantID() != getChild(i, j).getRestaurantID()) {
                             confirmPopup.setContentView(R.layout.confirm_popup);
 
                             confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

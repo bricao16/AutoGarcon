@@ -1,4 +1,4 @@
-package auto_garcon.HomeStuff;
+package auto_garcon.homestuff;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -32,14 +32,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import auto_garcon.AccountStuff.Account;
-import auto_garcon.AccountStuff.Settings;
-import auto_garcon.Cart_OrderHistory.OrderHistory;
-import auto_garcon.Cart_OrderHistory.ShoppingCart;
-import auto_garcon.InitialPages.Login;
-import auto_garcon.InitialPages.QRcode;
-import auto_garcon.Singleton.SharedPreference;
-import auto_garcon.Singleton.VolleySingleton;
+import auto_garcon.accountstuff.Account;
+import auto_garcon.accountstuff.Settings;
+import auto_garcon.cartorderhistory.OrderHistory;
+import auto_garcon.cartorderhistory.ShoppingCart;
+import auto_garcon.initialpages.Login;
+import auto_garcon.initialpages.QRcode;
+import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.VolleySingleton;
 
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -59,6 +59,8 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        pref = new SharedPreference(Home.this);
+
 
         // dummy  data for a search box
         search_list = new ArrayList<>();
@@ -72,11 +74,18 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
         NavigationView navigationView = findViewById(R.id.navigationView);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(Home.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(Home.this);
+
+        //TextView sideNavBarName =  findViewById(R.id.side_nav_bar_name);
+
+        //Toast.makeText(this, sideNavBarName.getText().toString(), Toast.LENGTH_SHORT).show();
+
+
+        // sideNavBarName.setText("HI");
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
 
@@ -103,15 +112,15 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-        pref = new SharedPreference(this);
-        Toast.makeText(Home.this, pref.getUserName(), Toast.LENGTH_SHORT).show();
+
+        Toast.makeText(Home.this, pref.getUser().getUsername(), Toast.LENGTH_SHORT).show();
 
         //shake feature
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector shakeDetector = new ShakeDetector(this);
         shakeDetector.start(sensorManager);
 
-        final String url = "http://50.19.176.137:8000/favorites/" + pref.getUserName();
+        final String url = "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername();
 
         items = new ArrayList<>();
 
@@ -184,7 +193,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Home.this,error.toString(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(Home.this, error.toString(),Toast.LENGTH_LONG).show();
                     }
                 }
 

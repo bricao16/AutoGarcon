@@ -1,4 +1,4 @@
-package auto_garcon.MenuStuff;
+package auto_garcon.menustuff;
 
 import java.io.Serializable;
 

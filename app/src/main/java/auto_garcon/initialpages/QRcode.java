@@ -1,4 +1,4 @@
-package auto_garcon.InitialPages;
+package auto_garcon.initialpages;
 
 import android.Manifest;
 import android.content.Intent;
@@ -6,10 +6,8 @@ import android.os.Bundle;
 
 import android.view.MenuItem;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,10 +28,10 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import auto_garcon.Cart_OrderHistory.ShoppingCart;
-import auto_garcon.HomeStuff.Home;
-import auto_garcon.MenuStuff.Menu;
-import auto_garcon.Singleton.VolleySingleton;
+import auto_garcon.cartorderhistory.ShoppingCart;
+import auto_garcon.homestuff.Home;
+import auto_garcon.menustuff.Menu;
+import auto_garcon.singleton.VolleySingleton;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
 

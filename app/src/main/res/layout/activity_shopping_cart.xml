@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="end"
     android:id="@+id/shopping_cart_main"
-    tools:context="auto_garcon.Cart_OrderHistory.ShoppingCart">
+    tools:context="auto_garcon.cartorderhistory.ShoppingCart">
 
     <RelativeLayout
         android:layout_width="match_parent"

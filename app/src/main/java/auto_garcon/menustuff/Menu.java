@@ -1,4 +1,4 @@
-package auto_garcon.MenuStuff;
+package auto_garcon.menustuff;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -29,28 +29,27 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import auto_garcon.AccountStuff.Account;
-import auto_garcon.AccountStuff.Settings;
-import auto_garcon.HomeStuff.Home;
-import auto_garcon.InitialPages.Login;
-import auto_garcon.Cart_OrderHistory.ShoppingCart;
-import auto_garcon.InitialPages.QRcode;
-import auto_garcon.Singleton.SharedPreference;
-import auto_garcon.Singleton.VolleySingleton;
+import auto_garcon.accountstuff.Account;
+import auto_garcon.accountstuff.Settings;
+import auto_garcon.homestuff.Home;
+import auto_garcon.initialpages.Login;
+import auto_garcon.cartorderhistory.ShoppingCart;
+import auto_garcon.initialpages.QRcode;
+import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.VolleySingleton;
 
 public class Menu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private SharedPreference pref;
-
     private ExpandableListView listView;
     private ExpandableListAdapter listAdapter;
     private List<String> listDataHeader;
-    private List<auto_garcon.MenuStuff.MenuItem> appetizer_list;
-    private List<auto_garcon.MenuStuff.MenuItem> entree_list;
-    private List<auto_garcon.MenuStuff.MenuItem> dessert_list;
-    private List<auto_garcon.MenuStuff.MenuItem> drink_list;
-    private List<auto_garcon.MenuStuff.MenuItem> alcohol_list;
-    private HashMap<String, List<auto_garcon.MenuStuff.MenuItem>> listHash;
+    private List<auto_garcon.menustuff.MenuItem> appetizer_list;
+    private List<auto_garcon.menustuff.MenuItem> entree_list;
+    private List<auto_garcon.menustuff.MenuItem> dessert_list;
+    private List<auto_garcon.menustuff.MenuItem> drink_list;
+    private List<auto_garcon.menustuff.MenuItem> alcohol_list;
+    private HashMap<String, List<auto_garcon.menustuff.MenuItem>> listHash;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +57,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         setContentView(R.layout.activity_restaurant_page);
 
         //creating side nav drawer
-        DrawerLayout drawerLayout = findViewById(R.id.restaurant_main);
-        Toolbar toolbar = findViewById(R.id.xml_toolbar);
-        NavigationView navigationView = findViewById(R.id.navigationView);
+        DrawerLayout drawerLayout = findViewById(R.id.restaurant_main);// associating xml objects with the java Object equivalent
+        Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
+        NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
         drawerLayout.addDrawerListener(toggle);
@@ -116,7 +115,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 String key = keys.next();
                                 if (response.get(key) instanceof JSONObject) {
 
-                                    auto_garcon.MenuStuff.MenuItem itemToBeAdded = new auto_garcon.MenuStuff.MenuItem();
+                                    auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
                                     JSONObject item = response.getJSONObject(key.toString());
 
                                     Iterator<String> inner_keys = item.keys();
@@ -187,7 +186,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     //this will filter the json object from get request and place items in correct category
-    private void addToList(auto_garcon.MenuStuff.MenuItem key, String category) {
+    private void addToList(auto_garcon.menustuff.MenuItem key, String category) {
         if(!listDataHeader.contains(category)) {
             listDataHeader.add(category);
 

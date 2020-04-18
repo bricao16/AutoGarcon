@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- xml layout for menu items on the menu activity -->
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <!-- text that gets updated at runtime to display name of the menu item -->
     <TextView
         android:layout_width="245dp"
         android:layout_height="wrap_content"
@@ -14,6 +18,7 @@
         android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
         android:textSize="16sp"/>
 
+    <!-- text that gets updated at runtime to display price of the menu item -->
     <TextView
         android:layout_width="155dp"
         android:layout_height="wrap_content"

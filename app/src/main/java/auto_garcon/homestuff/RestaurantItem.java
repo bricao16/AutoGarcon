@@ -1,7 +1,6 @@
-package auto_garcon.HomeStuff;
+package auto_garcon.homestuff;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import java.io.Serializable;
 
