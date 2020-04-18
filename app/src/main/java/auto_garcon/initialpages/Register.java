@@ -14,13 +14,18 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 
 /**
@@ -92,54 +97,59 @@ public class Register extends AppCompatActivity {
 
                     //put request for registering
                     String url = "http://50.19.176.137:8000/customer/register";
+                    JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
+                    try{
+                        obj.put("customer_id", username);
+                        obj.put("password", passwd);
+                        obj.put("last_name",lastName);
+                        obj.put("first_name",firstName);
+                        obj.put("email",email);
+                    }catch (JSONException e){
+                        //TODO figure out how to handle this other than stack trace
+                        e.printStackTrace();
+                    }
 
-                    StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
-                            new Response.Listener<String>()
+                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.PUT, url, obj,
+                            new Response.Listener<JSONObject>()
                             {
                                 @Override
-                                public void onResponse(String response) {
+                                public void onResponse(JSONObject response) {
                                     // response
-                                    Toast.makeText(Register.this,response.toString(),Toast.LENGTH_LONG).show();
+                                    try {
+                                        JSONObject object = response.getJSONObject("user");
+                                        String token = response.getString("token");
 
-                                    //pref.writeUserName(username);
-                                    //pref.changeLogStatus(true);
+                                        pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
+                                                object.get("customer_id").toString(), object.get("email").toString()));
+                                        pref.setAuthToken(token);
+                                        pref.changeLogStatus(true);
 
-                                    Intent twoButton = new Intent(Register.this, Login.class);// creating an intent to change to the twoButton xml
-                                    startActivity(twoButton);// move to the two button page
-                                    finish();// this prevents the user from coming back to the register page if the successfully register
+                                        Intent twoButton = new Intent(Register.this, Login.class);// goes to two Button Page
+                                        startActivity(twoButton);
+                                        finish();//prevents user from coming back
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             },
                             new Response.ErrorListener() {
                                 @Override
-                                public void onErrorResponse(VolleyError error) {//if our put request is un-successful we want display that there was an error to the user
-                                    // error
+                                public void onErrorResponse(VolleyError error) {
+                                    // error if the request fails
                                     error.printStackTrace();
-                                    Toast.makeText(Register.this, error.toString(),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Register.this,error.toString(),Toast.LENGTH_LONG).show();
                                 }
                             }
-                    ) {
+                    );
 
-                        @Override
-                        protected Map<String, String> getParams() {// inserting parameters for the put request
-                            Map<String, String> params = new HashMap<String, String>();
-                            params.put("customer_id", username);
-                            params.put("first_name", firstName);
-                            params.put("last_name", lastName);
-                            params.put("email", email);
-                            params.put("password", passwd);
-
-                            return params;
-                        }
-                    };
-
-                    VolleySingleton.getInstance(Register.this).addToRequestQueue(putRequest);// sending the request to the database
+                    VolleySingleton.getInstance(Register.this).addToRequestQueue(postRequest);// making the actual request
                 }
-                else {
-                    Toast.makeText(Register.this, "Error Occured", Toast.LENGTH_SHORT).show();//if the request couldn't be made show an error to the user
+                else{
+                    Toast.makeText(Register.this, "Error Occurred", Toast.LENGTH_SHORT).show();// if something fails with our request display error
                 }
-
             }
         });
+
 
         textViewLogin.setOnClickListener(new View.OnClickListener() {// when the user clicks on this link we change to xml to the log in layout
             @Override
