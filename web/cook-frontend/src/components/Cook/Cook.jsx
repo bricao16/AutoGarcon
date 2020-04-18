@@ -1,8 +1,9 @@
 import React from "react";
 import Orders from "./Orders"
-import Navigation from "./Navigation.jsx";
-import Header from "./Header.jsx";
-import Alert from "./Alert.jsx";
+import Navigation from "./Navigation";
+import Header from "./Header";
+import Alert from "./Alert";
+import Footer from "./Footer";
 import $ from "jquery";
 import Button from 'react-bootstrap/Button';
 import https from 'https';
@@ -166,13 +167,14 @@ class Cook extends React.Component {
             <Redirect to="/cook/active" />
           </Route>
           <Route path="/cook/active">
-            <div style={cookPageStyle}>
+            <div style={cookPageStyle} className="d-flex flex-column">
               <Navigation currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
               {this.renderAlert()}
-              <div className="p-3">
+              <div className="p-3" style={ordersStyle}>
                 <Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
                 <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
               </div>
+              <Footer />
             </div>
           </Route>
           <Route path="/cook/completed">
@@ -185,8 +187,12 @@ class Cook extends React.Component {
 }
 
 const cookPageStyle = {
-  backgroundColor: '#f1f1f1',
   width: '100vw'
+};
+
+const ordersStyle = {
+  flex: 1,
+  backgroundColor: '#f1f1f1'
 };
 
 export default Cook;

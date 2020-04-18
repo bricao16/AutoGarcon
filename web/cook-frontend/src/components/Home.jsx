@@ -2,12 +2,7 @@ import React from "react";
 import logoImage from "../assets/AutoGarconLogoHome.png";
 import {Link} from "react-router-dom";
 import Background from "../assets/background.jpg";
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Nav from 'react-bootstrap/Nav';
-import Image from 'react-bootstrap/Image';
-import Button from 'react-bootstrap/Button';
+import { Container, Row, Col, Nav, Image, Button } from 'react-bootstrap';
 
 function Home() {
   return (

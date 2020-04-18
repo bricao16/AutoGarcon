@@ -11,12 +11,12 @@ class Header extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div className="d-flex mb-2" style={headerStyle}>
-          <h2 className="m-0 mx-2">Active Orders</h2>
-          <div style={buttonsContainerStyle}>
-            <Button variant="secondary" size="sm" className="mx-3">In-Progress</Button>
-            <Button variant="secondary" size="sm" className="mx-3" onClick={this.props.handleCompleteClick}>Complete (C)</Button>
-            <Button variant="secondary" size="sm" className="mx-3" onClick={this.props.handleExpandClick}>Expand (E)</Button>
+        <div className="d-flex flex-wrap mb-2" style={headerStyle}>
+          <h2 className="m-0 mx-2 mr-4">Active Orders</h2>
+          <div className="d-flex flex-nowrap" style={buttonsContainerStyle}>
+            <Button variant="secondary" size="sm" className="mr-3">In-Progress</Button>
+            <Button variant="secondary" size="sm" className="mr-3" onClick={this.props.handleCompleteClick}>Complete (C)</Button>
+            <Button variant="secondary" size="sm" className="mr-3" onClick={this.props.handleExpandClick}>Expand (E)</Button>
           </div>
         </div>
         <p className="mb-2 mx-2">Use arrow keys or mouse to select an order</p>
