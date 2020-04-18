@@ -86,6 +86,7 @@ class Manager extends React.Component{
           restaurantInfo.push([key ,restaurantJSON[key]]);
         });
       }
+      
       return (
           <Container>
             <MHeader/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
@@ -110,10 +111,10 @@ class Manager extends React.Component{
                             <Menu menu = {restaurantInfo[0][1]}/>
                           </Route>
                           <Route path="/hours">
-                            <StoreInfo info = {restaurantInfo[0][1]} />
+                            <StoreInfo info = {restaurantInfo[1][1]} />
                           </Route>
                           <Route path="/customize">
-                            <Customize info = {restaurantInfo[0][1]}/>
+                            <Customize info = {restaurantInfo[1][1]}/>
                           </Route>
                         </Switch>
                     </Container>

@@ -1,109 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+
+<!-- xml layout for account activity that allows user to change
+     account information as well as navigate to change password activity -->
+
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/account_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    android:id="@+id/account_main"
-    tools:context="auto_garcon.AccountStuff.Account">
+    tools:context="auto_garcon.accountstuff.Account">
 
+        <!-- first name text -->
         <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="85dp"
             android:layout_marginStart="30dp"
+            android:layout_marginTop="85dp"
             android:text="@string/first_name"
+            android:textColor="@color/white"
             android:textSize="12sp"
-            android:textColor="@color/white"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- first name input -->
         <EditText
             android:id="@+id/first_name_change"
             android:layout_width="355dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="105dp"
             android:layout_marginStart="25dp"
+            android:layout_marginTop="105dp"
             android:inputType="textPersonName"
+            android:textColor="@color/white"
             android:textSize="14sp"
-            android:textColor="@color/white"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- last name text -->
         <TextView
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="165dp"
             android:layout_marginStart="30dp"
+            android:layout_marginTop="165dp"
             android:text="@string/last_name"
+            android:textColor="@color/white"
             android:textSize="12sp"
-            android:textColor="@color/white"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- last name input -->
         <EditText
             android:id="@+id/last_name_change"
             android:layout_width="355dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
             android:layout_marginTop="185dp"
-            android:layout_marginStart="25dp"
             android:inputType="textPersonName"
+            android:textColor="@color/white"
             android:textSize="14sp"
-            android:textColor="@color/white"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- email text -->
         <TextView
+            android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="245dp"
-            android:layout_marginStart="30dp"
             android:text="@string/email"
+            android:textColor="@color/white"
             android:textSize="12sp"
-            android:textColor="@color/white"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- email input -->
         <EditText
-            android:id="@+id/email_change"
+            android:id="@+id/change_email"
             android:layout_width="355dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="265dp"
-            android:layout_marginStart="25dp"
+            android:layout_marginTop="272dp"
             android:inputType="textPersonName"
+            android:textColor="@color/white"
             android:textSize="14sp"
-            android:textColor="@color/white"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.446"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- username text -->
         <TextView
+            android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="325dp"
             android:layout_marginStart="30dp"
+            android:layout_marginTop="325dp"
             android:text="@string/username"
+            android:textColor="@color/white"
             android:textSize="12sp"
-            android:textColor="@color/white"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- username input -->
         <EditText
-            android:id="@+id/username_change"
+            android:id="@+id/change_username"
             android:layout_width="355dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="345dp"
-            android:layout_marginStart="25dp"
+            android:layout_marginTop="48dp"
             android:inputType="textPersonName"
+            android:textColor="@color/white"
             android:textSize="14sp"
-            android:textColor="@color/white"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/change_email" />
 
+        <!-- save button -->
         <Button
             android:id="@+id/save_acct_change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="515dp"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
+            android:layout_marginTop="124dp"
             android:background="@drawable/oval_button"
+            android:gravity="center"
             android:text="@string/save"
+            android:textColor="@color/white"
             android:textSize="16sp"
-            android:textColor="@color/white"/>
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/change_username" />
 
+        <!-- change password text that links to password change activity -->
         <TextView
             android:id="@+id/change_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="605dp"
-            android:layout_centerHorizontal="true"
             android:text="@string/changepasswd"
+            android:textColor="@color/white"
             android:textSize="16sp"
-            android:textColor="@color/white"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/save_acct_change"
+            app:layout_constraintVertical_bias="0.253" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

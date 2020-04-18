@@ -10,15 +10,13 @@ class Order extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
+    this.state = {
+      orderTime: null,
+      orderTimeString: null,
+      timeSinceOrder: null
+    };
   }
 
-  /*
-  renderConfirmDelete(){
-    if(this.props.order.confirmDelete) {
-      return <div style={confirmDeleteStyle}></div>;
-    }
-  }
-  */
   renderItems(){
     let allItems = [];
     let key1 = 0;
@@ -47,38 +45,59 @@ class Order extends React.Component {
   }
 
   variableOrderStyles(){
-    let style = Object. assign({}, orderStyle);
+    let style = Object.assign({}, orderStyle);
     if(this.props.selectedOrder){
       style.background = '#7e7e7e';
     }
     if(this.props.order.expand){
-      style.fontSize = '2em';
+      style.fontSize = '1.6em';
     }
     return style;
   }
 
-  renderTime(){
+  initializeTime(){
     // Make Moment object out of order placed time
-    let orderTime = moment(this.props.order.order_date, 'YYYY-MM-DD HH:mm:ss');
-    orderTime = moment(orderTime).add(27, 'h');
+    const orderTime = moment(this.props.order.order_date, 'YYYY-MM-DD HH:mm:ss');
     // Convert to string that displays as 12 hour time with AM/PM
-    let orderTimeString = orderTime.format('LT');
+    const orderTimeString = orderTime.format('LT');
+    this.setState({orderTime: orderTime, orderTimeString: orderTimeString}, this.setupTimeInterval);
+  }
+
+  setupTimeInterval(){
+    this.updateTime();
+    this.interval = setInterval(() => this.updateTime(), 1000);
+  }
+
+  updateTime(){
     // Time right now as Moment object
     let now = moment();
     // Seconds between now and order placed time
-    const secondsSinceOrder = now.diff(orderTime, 's');
+    const secondsSinceOrder = now.diff(this.state.orderTime, 's');
     // Formatted time between order placed time and now as hours:minute:seconds
-    let formattedTimeSinceOrder = moment.duration(secondsSinceOrder, 's').format('hh:mm:ss');
+    const timeSinceOrder = moment.duration(secondsSinceOrder, 's').format('hh:mm:ss');
+    let state = this.state;
+    state.timeSinceOrder = timeSinceOrder;
+    this.setState(state);
+  }
 
+  renderTime(){
     return (
       <>
-        <span className="pr-3">{orderTimeString}</span>
+        <span className="pr-3">{this.state.orderTimeString}</span>
         <div className="d-flex" style={{alignItems: 'center'}}>
           <FontAwesomeIcon icon={faClock}/>
-          <span className="pl-1">{formattedTimeSinceOrder}</span>
+          <span className="pl-1">{this.state.timeSinceOrder}</span>
         </div>
       </>
     );
+  }
+
+  componentDidMount() {
+    this.initializeTime()
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   render() {
@@ -137,8 +156,5 @@ const cardFooterStyle = {
   color: '#ffffff',
   justifyContent: 'space-between',
 };
-
-
-
 
 export default Order;
