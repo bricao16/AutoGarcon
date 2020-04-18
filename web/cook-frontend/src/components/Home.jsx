@@ -51,7 +51,7 @@ function Home() {
           <Col className="d-md-none p-0" style={{height: '20px', minWidth: 1}}></Col>
         </Row>
       </Container>
-      <Container fluid style={backgroundImageStyle}>
+      <Container fluid style={backgroundImageStyle} className="p-0">
         <Container style={contentStyle}>
           <div style={circleStyle} className="d-flex flex-column">
             <h4 style={captionStyle}>Enhance your restaurant experience with Auto Garcon</h4>
@@ -104,7 +104,9 @@ const circleStyle = {
   color: 'white',
   justifyContent: 'center',
   height: '400px',
-  width: '400px'
+  width: '400px',
+  marginTop: '15px',
+  marginBottom: 'calc(15px + 20vh)',
 };
 
 const captionStyle = {
