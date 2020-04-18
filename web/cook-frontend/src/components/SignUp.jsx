@@ -56,7 +56,7 @@ class SignUp extends React.Component{
         redirect: false,
         show: false,
         restaurant_id:cookies.get('mystaff').restaurant_id,
-        position:cookies.get('mystaff').position,
+        position:"cook",
         token:null
     };
     
