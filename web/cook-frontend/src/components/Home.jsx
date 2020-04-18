@@ -15,7 +15,7 @@ function Home() {
       <Container fluid>
         {/* Logo, title and navigation are each in a column*/}
         <Row style={{alignItems: 'center'}}>
-          {/* Only display logo when page is 'large' */}
+          {/* Only display logo when page is larger than 'medium' */}
           <Col xs="auto" lg="4" className="d-none d-md-block">
             <Image src={logoImage} height="60px" style={logoStyle}/>
           </Col>
@@ -24,10 +24,10 @@ function Home() {
             <Link to="/" style={titleStyle}>Auto Garcon</Link>
           </Col>
           {/* When less than 'large' this will separate title and nav. When 'extra-small' this will help center nav. */}
-          <Col className="d-lg-none p-0" style={{height: '20px', minWidth: 1}}></Col>
+          {/*<Col className="d-lg-none p-0" style={{height: '20px', minWidth: 1}}></Col>*/}
           {/* Float right until 'extra-small', then center */}
-          <Col xs="auto" lg="4" className="p-0">
-            <Nav style={{float: 'right'}}>
+          <Col xs="12" md="auto" className="p-0" style={{marginLeft: 'auto'}}>
+            <Nav style={{justifyContent: 'center'}}>
               <Nav.Item>
                 <Link to="/login_manager">
                   <Button size="md" variant="link" style={buttonStyle}>
@@ -52,7 +52,7 @@ function Home() {
             </Nav>
           </Col>
           {/* Used to center nav when 'extra-small' */}
-          <Col className="d-md-none p-0" style={{height: '20px', minWidth: 1}}></Col>
+          {/*<Col className="d-md-none p-0" style={{height: '20px', minWidth: 1}}></Col>*/}
         </Row>
       </Container>
       <Container fluid style={backgroundImageStyle} className="p-0">
@@ -117,7 +117,7 @@ const circleStyle = {
   height: '400px',
   width: '400px',
   marginTop: '15px',
-  marginBottom: 'calc(15px + 20vh)', // offset upward from center
+  marginBottom: '20vh', // offset upward from center
 };
 
 const captionStyle = {

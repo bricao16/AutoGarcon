@@ -1,7 +1,7 @@
 import React from "react";
 import Button from 'react-bootstrap/Button';
 
-class OrdersHeader extends React.Component {
+class Header extends React.Component {
 
   constructor(props) {
     super(props);
@@ -32,4 +32,4 @@ const buttonsContainerStyle = {
   flex: 1
 };
 
-export default OrdersHeader;
+export default Header;

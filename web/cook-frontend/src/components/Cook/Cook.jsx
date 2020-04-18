@@ -1,7 +1,7 @@
 import React from "react";
 import Orders from "./Orders"
-import OrdersNavigation from "./OrdersNavigation.jsx";
-import OrdersHeader from "./OrdersHeader.jsx";
+import Navigation from "./Navigation.jsx";
+import Header from "./Header.jsx";
 import Alert from "./Alert.jsx";
 import $ from "jquery";
 import Button from 'react-bootstrap/Button';
@@ -143,7 +143,7 @@ class Cook extends React.Component {
       method: 'get',
       // https://50.19.176.137:8001/orders/123
       // Dummy orders for testing: "https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders"
-      url: 'http://50.19.176.137:8000/orders/123', // https not working?
+      url: 'https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders', // https not working
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
@@ -167,10 +167,10 @@ class Cook extends React.Component {
           </Route>
           <Route path="/cook/active">
             <div style={cookPageStyle}>
-              <OrdersNavigation currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
+              <Navigation currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
               {this.renderAlert()}
               <div className="p-3">
-                <OrdersHeader handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
+                <Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
                 <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
               </div>
             </div>

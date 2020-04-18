@@ -3,7 +3,7 @@ import Order from "./Order";
 // import OrderDelete from "./OrderDelete";
 import Container from 'react-bootstrap/Container';
 // import $ from 'jquery';
-import '../../assets/order.css'
+import '../../assets/orders/order.css'
 
 /*
   This component is used to render the orders for the Cook page.

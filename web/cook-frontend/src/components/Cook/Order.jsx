@@ -50,7 +50,7 @@ class Order extends React.Component {
       style.background = '#7e7e7e';
     }
     if(this.props.order.expand){
-      style.fontSize = '2em';
+      style.fontSize = '1.6em';
     }
     return style;
   }
