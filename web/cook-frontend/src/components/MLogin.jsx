@@ -184,7 +184,7 @@ class MLogin extends React.Component {
 				required
 				fullWidth
 				id="email"
-				label="Email Address"
+				label="Staff ID"
 				name="email"
 				autoComplete="email"
 				autoFocus

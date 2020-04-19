@@ -13,6 +13,7 @@ import {Redirect} from "react-router-dom";
 import Alert from 'react-bootstrap/Alert';
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 /*this is the login component for the cook
 view. Asks for the staffID, password and logs in if the user and correct password
@@ -35,6 +36,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+const cookies = new Cookies();
 
 export default class CLogin extends React.Component {
   constructor(props){
@@ -117,6 +119,8 @@ export default class CLogin extends React.Component {
 
   render(){
 	if(this.state.redirect === true){
+    cookies.set('mystaff', this.state.staff, { path: '/' });
+    cookies.set('mytoken', this.state.token, { path: '/' });
 	  return <Redirect to='/cook'/>
 	}  
 	return (
