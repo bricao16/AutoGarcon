@@ -10,64 +10,81 @@ import circle from "./assets/circleLanding.png";
 import {BrowserRouter as Router, Switch, Link, Route} from "react-router-dom"; 
 // from free license at https://www.pexels.com/photo/clear-wine-glass-on-table-67468/
 import Background from './assets/background.jpg'
-
+import { CookiesProvider, withCookies } from 'react-cookie';
  /*
 This is the main page for AutoGarcon. It contains the routing for all the different 
 pages by their components. It also serves as the landing page defined in Home() 
 which is a header that allows for logging into cook, manager or to sign up as 
 well as a stock image with a circle containing a description of the product.*/
 
-function App() {
-  return (
-    <Router>
-      <main style={mainStyle} className="d-flex">
-        {/*<div className="px-4">*/}
-        {/*  <Row style={{'minHeight': '90vh'}}>*/}
-        {/*    <Col className="pt-3 px-3">*/}
-        {/*      <div className="rounded" style={sectionStyle}>*/}
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/cook">
-            <Cook />
-          </Route>
-          <Route path="/manager" component = {Manager}>
-            
-          </Route>
-          <Route path="/sign_up">
-            <SignUp />
-          </Route>
-          <Route path="/login_manager">
-            <MLogin/>
-          </Route>
-          <Route path="/login_cook">
-            <CLogin/>
-          </Route>
-          <Route path="/statistics">
-            <Manager/>
-          </Route>
-          <Route path="/menu"
-            render={(props) => <Manager {...props} content={"menu"}/>} />
-          <Route path="/hours"
-            render={(props) => <Manager {...props} content={"hours"}/>} />
-          <Route path="/customize"
-            render={(props) => <Manager {...props} content={"customize"}/>} />
-        </Switch>
-        {/*    </div>*/}
-        {/*  </Col>*/}
-        {/*</Row>*/}
-        {/*</div>
-          <footer style={footerStyle}>
-              Powered by Auto Garcon
-              <img src={logoImage} width="auto" height="50vh" alt="waiter" />
-            </footer>*/}
-      </main>
-    </Router>      
-  );
-}
+class App extends React.Component{
+    constructor(props) {
+      super(props);
+      
+      this.state = {
+      };
+    }
+  render(){
+    return (
+      <CookiesProvider>
+        <Router>
+          <main style={mainStyle} className="d-flex">
+            {/*<div className="px-4">*/}
+            {/*  <Row style={{'minHeight': '90vh'}}>*/}
+            {/*    <Col className="pt-3 px-3">*/}
+            {/*      <div className="rounded" style={sectionStyle}>*/}
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route path="/cook">
+                <Cook />
+              </Route>
+              <Route 
+                  path="/manager" 
+                  render={() => (<Manager cookies={this.props.cookies}/>)}
+                >
+                
+              </Route>
+              <Route path="/sign_up">
+                <SignUp />
+              </Route>
+             <Route 
+                  path="/login_manager" 
+                  render={() => (<MLogin cookies={this.props.cookies}/>)}
+                >
+              </Route>
+              <Route path="/login_cook">
+                <CLogin/>
+              </Route>
+              <Route path="/statistics">
+                <Manager/>
+              </Route>
+              <Route path="/menu"
+                render={(props) => <Manager {...props} content={"menu"}/>} />
+              <Route path="/general"
+                render={(props) => <Manager {...props} content={"general"}/>} />
+              <Route path="/customize"
+                render={(props) => <Manager {...props} content={"customize"}/>} />
+              <Route path="/cookview"
+                render={(props) => <Manager {...props} content={"cookview"}/>} />
+            </Switch>
+            {/*    </div>*/}
+            {/*  </Col>*/}
+            {/*</Row>*/}
+            {/*</div>
+              <footer style={footerStyle}>
+                  Powered by Auto Garcon
+                  <img src={logoImage} width="auto" height="50vh" alt="waiter" />
+                </footer>*/}
+          </main>
+        </Router>  
+      </CookiesProvider>   
+      );
+    }
+  }
 
-export default App;
+export default withCookies(App);
 
 function Home() {
   return (
