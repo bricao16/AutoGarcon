@@ -13,7 +13,6 @@ section or renders what is there from the database.*/
 class Customize extends React.Component{
 
     constructor(props) {
-        console.log("HERE");
         super(props);
         this.state = {
             customizeInfo: [],
@@ -33,7 +32,6 @@ class Customize extends React.Component{
           state so we can send it to the database.
         */
         this.setState({ [e.target.name]: e.target.value });
-        console.log(this.state);
       }
 
   /* Used for connecting to Menu in database */
@@ -165,7 +163,6 @@ renderInfo(){
         Object.keys(resturantInfo).forEach(function(key) {
             customizeInfo.push([key ,resturantInfo[key]]);
         });
-        console.log(resturantInfo);
         return (
             <Container>
                 <div style={backgroundStyle}>

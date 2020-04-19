@@ -59,9 +59,6 @@ export default class CLogin extends React.Component {
 	  
 	  /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
 	  
-	  console.log(this.state.email);
-	  console.log(this.state.passwd);
-	  
 	  axios({
       method: 'post',
       url: 'http://50.19.176.137:8000/staff/login',

@@ -13,7 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Redirect} from "react-router-dom";
 import Alert from 'react-bootstrap/Alert';
-import Manager from './Manager/Manager';
+//import Manager from './Manager/Manager';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
@@ -71,8 +71,6 @@ class MLogin extends React.Component {
 	  
 	  /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
 	  
-	console.log(this.state.email);
-    console.log(this.state.passwd);
     
     axios({
       method: 'post',
@@ -91,7 +89,6 @@ class MLogin extends React.Component {
         if (response.status !== 200) {this.handleShow(response);}
         else 
         {
-        	console.log(response);
         	/*response.json()
 		      .then(
 		        (result) => {
@@ -102,8 +99,6 @@ class MLogin extends React.Component {
 		            staff: response.data.staff,
 		            token:response.data.token
 		          });
-		          		cookies.set('my-staff', this.state.staff, { path: '/' });
-						cookies.set('my-token', this.state.token, { path: '/' });
 		 }
 		        //);
 

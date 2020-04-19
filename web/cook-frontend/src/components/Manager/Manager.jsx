@@ -5,22 +5,19 @@ import Stats from './Stats';
 import StoreInfo from './StoreInfo';
 import MHeader from './Header';
 import CookView from './CookView';
-import Link from '@material-ui/core/Link';
-import { NavLink } from 'react-router-dom'
 import Customize from './Customize';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
-import https from 'https';
-import axios from 'axios';
+import logoImage from "../../assets/AutoGarconLogo.png";
+//import https from 'https';
+//import axios from 'axios';
 import {
     Switch,
     Route
   } from "react-router-dom";
 import Cookies from 'universal-cookie';
-import {Redirect} from "react-router-dom";
 import MLogin from '../MLogin';
-import { instanceOf } from 'prop-types';
 
 //const cookies = new Cookies();
   
@@ -42,8 +39,8 @@ class Manager extends React.Component{
         isLoaded: false,
         restaurantJSON: [],
         restaurantInfo:[],
-        token: null,
-        staff: null 
+        token: cookies.get('mytoken'),
+        staff: cookies.get('mystaff') 
       };
 
     }
@@ -51,6 +48,23 @@ class Manager extends React.Component{
 
 /* Used for connecting to Resturant in database */
     componentDidMount() {
+      //if user doesnt have access
+      if(this.state.staff === undefined || this.state.token === undefined  || this.state.staff.position !== "manager")
+      {
+        return(
+            <Container>
+                <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
+                      <Nav.Link href="/login_manager"> Session expired please log back in </Nav.Link>
+                </Nav>
+                <Switch>
+                  <Route exact path="/login_manager">
+                    <MLogin/>
+                  </Route>
+                </Switch>
+            </Container>
+        );
+      }
+
     fetch("http://50.19.176.137:8000/restaurant/"+ this.state.staff.restaurant_id)
       .then(res => res.json())
       .then(
@@ -101,11 +115,8 @@ class Manager extends React.Component{
     
     render() 
     {
-      this.state.staff = cookies.get('mystaff');
-      this.state.token = cookies.get('my-token');
-      console.log(this.state.staff);
       //if user doesnt have access
-      if(this.state.staff === undefined || this.state.token === undefined)
+      if(this.state.staff === undefined || this.state.token === undefined  || this.state.staff.position !== "manager")
       {
         return(
             <Container>
@@ -122,7 +133,6 @@ class Manager extends React.Component{
       }
       const { error, isLoaded, restaurantJSON, restaurantInfo,staff } = this.state;
       
-      console.log(staff);
       if (error) {
         return <div>Error: {error.message}</div>;
       } 
@@ -179,73 +189,15 @@ class Manager extends React.Component{
                 </Row>
               </Container> 
             </div>
+                <footer style={footerStyle}>
+                  Powered by Auto Garcon
+                  <img src={logoImage} width="auto" height="50vh" alt="waiter" />
+                </footer>
           </Container>
+
         );
       }
-      /* NEW STUFF
-
-      if (error) {
-        return <div>Error: {error.message}</div>;
-      } 
-
-      else if (!isLoaded) {
-        return (
-          <div className="spinner-border" role="status">
-            <span className="sr-only">Loading...</span>
-          </div>
-        )
-      }
-
-      else {
-        //map the menu json to an array
-        Object.keys(this.state.restaurantJSON).forEach(function(key) {
-          restaurantInfo.push([key ,restaurantJSON[key]]);
-        });
-      }
-      console.log(restaurantJSON);
-      return (
-          <Container>
-            <MHeader/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
-            /*<div style={backgroundStyle}>
-              <Container fluid>
-                <Row>
-                  <Col sm={4} className="pt-3 px-3" style={navColStyle}>
-                    <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
-                      <NavLink tag={Link} to="/manager">Statistics</NavLink>
-                      <NavLink tag={Link} to="/menu" >Menu</NavLink>
-                      <NavLink tag={Link} to="/general">General</NavLink>
-                      <NavLink tag={Link} to="/customize">Customize</NavLink>
-                      <NavLink tag={Link} to="/cookview">Cooks</NavLink>
-                    </Nav>
-                  </Col>
-                  <Col className="pt-3 px-3">
-                    <Container fluid>
-                        <Switch>
-                          <Route exact path="/manager">
-                            <Stats/>
-                          </Route>
-                          <Route path="/menu">
-                            <Menu menu = {restaurantInfo[0][1]}/>
-                          </Route>
-                          <Route path="/general">
-                            <StoreInfo info = {restaurantInfo[1][1]} />
-                          </Route>
-                          <Route path="/customize">
-                            <Customize info = {restaurantInfo[1][1]}/>
-                          </Route>
-                          <Route path="/cookview">
-                            <CookView/>
-                          </Route>
-                        </Switch>
-                    </Container>
-                  </Col>
-                </Row>
-              </Container> 
-            </div>
-          </Container>
-        );
-      }
-    }*/
+    }
 
 const backgroundStyle = {
   'backgroundColor': '#ffffff'
@@ -261,6 +213,15 @@ const navColStyle = {
   'a.link':'black',
   'fontFamily': 'Kefa'
 }
+var footerStyle = {
+  'backgroundColor': '#ffffff',
+  'paddingBottom': '5px',
+  'paddingRight': '12px',
+  'paddingTop': '12px',
+  'textAlign': 'right',
+  'fontFamily': 'Kefa',
+  height: '67px'
+};
 
 
 export default Manager;

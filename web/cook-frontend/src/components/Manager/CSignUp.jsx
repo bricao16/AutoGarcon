@@ -3,18 +3,16 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-//import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {Redirect} from "react-router-dom";
-//import Manager from './Manager/Manager';
-//import https from 'https';
-//import axios from 'axios';
+import https from 'https';
+import axios from 'axios';
 import Cookies from 'universal-cookie';
-/*this sign up will be used to create a manager accout */
+import CookView from './CSignUp';
+
 const cookies = new Cookies();
 
 const useStyles = makeStyles(theme => ({
@@ -35,9 +33,14 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+/*This Sign up page is used for the cook view,
+  a manager is able to register a cook account by inputing
+  staff_id, first_name, last_name, contact_num, 
+  email, password to the sign in page. The posision 
+  is attomatically set to cook and the resturant id is
+  taken from the cookies */
+class CSignUp extends React.Component{
 
-class SignUp extends React.Component{
-    /*staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password */
     constructor(props){
     super(props);
     
@@ -51,7 +54,7 @@ class SignUp extends React.Component{
         redirect: false,
         show: false,
         restaurant_id:cookies.get('mystaff').restaurant_id,
-        position:"manager",
+        position:"cook",
         token:null
     };
     
@@ -65,16 +68,32 @@ class SignUp extends React.Component{
           state so we can send it to the database.
         */
         this.setState({ [e.target.name]: e.target.value });
- 
       }
- /*handleSubmit(event){
+ handleSubmit(event){
     
     event.preventDefault();
-    
+  
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
     
-    /*this.state.restaurant_id = cookies.get('mystaff').restaurant_id;
-    console.log(this.state);
+    //if any of the values necessary are not filled out
+    if(this.state.staff_id=== '' || this.state.restaurant_id=== ''||
+        this.state.first_name===''|| this.state.last_name===''||
+        this.state.contact_num===''|| this.state.email=== ''|| 
+        this.state.password==='')
+    {
+      return alert('All fields are required');
+    }
+    //verify email formatting
+    if (!(/\S+@\S+\.\S+/.test(this.state.email)))
+    {  
+         return alert("You have entered an invalid email address!");
+    } 
+    //verify phone formatting
+    if (!(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.state.contact_num)))
+    {
+      return alert("You have entered an invalid phone number")
+    }
+
     axios({
       method: 'put',
       url: 'http://50.19.176.137:8000/staff/register',
@@ -95,19 +114,15 @@ class SignUp extends React.Component{
         if (response.status !== 200) {this.handleShow(response);}
         else 
         {
-          console.log(response);
           /*response.json()
           .then(
             (result) => {
               console.log(result);*/
-              /*this.setState({
+              this.setState({
                 redirect: true,
                 show: false,
-                staff: response.data.staff,
-                token:response.data.token
+
               });
-                  cookies.set('my-staff', this.state.staff, { path: '/' });
-            cookies.set('my-token', this.state.token, { path: '/' });
      }
             //);
 
@@ -123,12 +138,16 @@ class SignUp extends React.Component{
         console.error("There was an error!", error);
       });
 
-  }*/
+  }
 render() {
   const cookies = new Cookies();
   if(this.state.redirect === true){
     alert("Sucessful Staff Creation");
-    return  <Redirect to='/cookview'/> 
+    return <CookView section=""/> 
+    /*return  <Redirect   to={{
+    pathname: "/cookview",
+    state: { section: "" }
+  }}/> */
   }  
   if(cookies.get('mystaff').position === "manager")
   {
@@ -216,8 +235,7 @@ render() {
               </Grid>
             </Grid>
             <i> Please make note of this information and give to your staff member </i>
-            {/*onClick = {this.handleSubmit}*/}
-            <Button 
+            <Button onClick = {this.handleSubmit}
               type="submit"
               fullWidth
               variant="contained"
@@ -236,4 +254,4 @@ render() {
 
   }
 }
-export default SignUp;
+export default CSignUp;

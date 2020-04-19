@@ -1,8 +1,7 @@
 import React from "react";
-import Cook from "../Cook/Cook";
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
-import SignUp from '../SignUp';
+import CSignUp from './CSignUp';
 import {Redirect} from "react-router-dom";
 
 class CookView extends React.Component{
@@ -44,7 +43,9 @@ class CookView extends React.Component{
                 </button> 
 
                 :   
-                <SignUp/>
+                <div className= "m-3">
+                  <CSignUp/>
+                </div>
             }     
           </Card>
       </React.Fragment>
@@ -59,6 +60,7 @@ class CookView extends React.Component{
                     </div>
                 </Container>
         </Container>
+    
     );
 
 	}
