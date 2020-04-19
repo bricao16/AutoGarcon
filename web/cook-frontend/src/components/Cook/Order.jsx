@@ -50,7 +50,7 @@ class Order extends React.Component {
       style.background = '#7e7e7e';
     }
     if(this.props.order.expand){
-      style.fontSize = '2em';
+      style.fontSize = '1.6em';
     }
     return style;
   }
@@ -92,6 +92,13 @@ class Order extends React.Component {
     );
   }
 
+  statusStyle(){
+    let style = {color: '#fff'};
+    // style.backgroundColor = '#17af29';
+    // style.backgroundColor = '#e2dd26';
+    return style;
+  }
+
   componentDidMount() {
     this.initializeTime()
   }
@@ -117,6 +124,9 @@ class Order extends React.Component {
           <Card.Footer className="py-1 px-2 d-flex" style={cardFooterStyle}>
             {this.renderTime()}
           </Card.Footer>
+          {/*<Card.Footer className="py-1 px-2 d-flex" style={this.statusStyle()}>*/}
+          {/*  Completed*/}
+          {/*</Card.Footer>*/}
         </Card>
       </div>
     )

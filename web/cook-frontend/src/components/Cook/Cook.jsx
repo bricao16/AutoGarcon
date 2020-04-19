@@ -1,14 +1,20 @@
 import React from "react";
-import Orders from "./Orders"
-import OrdersNavigation from "./OrdersNavigation.jsx";
-import OrdersHeader from "./OrdersHeader.jsx";
-import Alert from "./Alert.jsx";
+import Navigation from "./Navigation";
+import Alert from "./Alert";
+import Footer from "./Footer";
+import Body from "./Body";
 import $ from "jquery";
 import Button from 'react-bootstrap/Button';
 import https from 'https';
 import axios from 'axios';
+import Nav from 'react-bootstrap/Nav';
+import Container from 'react-bootstrap/Container';
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import AccountDropdown from '../AccountDropdown';
+import CLogin from '../CLogin';
+import Cookies from 'universal-cookie';
 
+const cookies = new Cookies();
 class Cook extends React.Component {
 
   constructor(props) {
@@ -19,7 +25,9 @@ class Cook extends React.Component {
       selectedOrder: 0,
       alertActive: false,
       alertContent: <></>,
-      currentTab: 0
+      currentTab: "active",
+      token: cookies.get('mytoken'),
+      staff: cookies.get('mystaff') 
     };
     this.setupKeyPresses();
   }
@@ -175,35 +183,59 @@ class Cook extends React.Component {
       .catch(e => console.log(e));*/
   }
 
-  render() {
+  render() 
+  {
+      //if user doesnt have access
+      console.log(this.state.staff);
+      if(this.state.staff == undefined || this.state.token === undefined )
+      {
+        return(
+            <Container>
+                <Nav defaultActiveKey="/" className="flex-column rounded" >
+                      <Nav.Link href="/login_cook"> Session expired please log back in </Nav.Link>
+                </Nav>
+                <Switch>
+                  <Route exact path="/login_cook">
+                    <CLogin/>
+                  </Route>
+                </Switch>
+            </Container>
+        );
+      }
     return (
-      <Router>
-        <Switch>
-          <Route exact path="/cook">
-            <Redirect to="/cook/active" />
-          </Route>
-          <Route path="/cook/active">
-            <div style={cookPageStyle}>
-              <OrdersNavigation currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
-              {this.renderAlert()}
-              <div className="p-3">
-                <OrdersHeader handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
-                <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
-              </div>
-            </div>
-          </Route>
-          <Route path="/cook/completed">
-            <div>Completed orders</div>
-          </Route>
-        </Switch>
-      </Router>
+      <div style={cookStyle} className="d-flex flex-column">
+        {/*{this.renderAlert()}*/}
+        <AccountDropdown firstName={this.state.staff.first_name} lastName={this.state.staff.first_name} className="ml-auto pt-3 pr-3"></AccountDropdown>
+        <Navigation currentTab={this.state.currentTab} />
+
+        <div style={bodyStyle}>
+          <Router>
+            <Switch>
+              <Route exact path="/cook">
+                <Redirect to="/cook/active" />
+              </Route>
+              <Route path="/cook/active">
+                <Body />
+              </Route>
+              <Route path="/cook/completed">
+                <Body />
+              </Route>
+            </Switch>
+          </Router>
+        </div>
+        <Footer />
+      </div>
     )
   }
 }
 
-const cookPageStyle = {
-  backgroundColor: '#f1f1f1',
+const cookStyle = {
   width: '100vw'
+};
+
+const bodyStyle = {
+  flex: 1,
+  backgroundColor: '#f1f1f1'
 };
 
 export default Cook;
