@@ -1,8 +1,8 @@
 import React from "react";
-import Orders from "./Orders"
-import OrdersNavigation from "./OrdersNavigation.jsx";
-import OrdersHeader from "./OrdersHeader.jsx";
-import Alert from "./Alert.jsx";
+import Navigation from "./Navigation";
+import Alert from "./Alert";
+import Footer from "./Footer";
+import Body from "./Body";
 import $ from "jquery";
 import Button from 'react-bootstrap/Button';
 import https from 'https';
@@ -19,7 +19,7 @@ class Cook extends React.Component {
       selectedOrder: 0,
       alertActive: false,
       alertContent: <></>,
-      currentTab: 0
+      currentTab: "active"
     };
     this.setupKeyPresses();
   }
@@ -177,33 +177,37 @@ class Cook extends React.Component {
 
   render() {
     return (
-      <Router>
-        <Switch>
-          <Route exact path="/cook">
-            <Redirect to="/cook/active" />
-          </Route>
-          <Route path="/cook/active">
-            <div style={cookPageStyle}>
-              <OrdersNavigation currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
-              {this.renderAlert()}
-              <div className="p-3">
-                <OrdersHeader handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
-                <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
-              </div>
-            </div>
-          </Route>
-          <Route path="/cook/completed">
-            <div>Completed orders</div>
-          </Route>
-        </Switch>
-      </Router>
+      <div style={cookStyle} className="d-flex flex-column">
+        {/*{this.renderAlert()}*/}
+        <Navigation currentTab={this.state.currentTab} />
+        <div style={bodyStyle}>
+          <Router>
+            <Switch>
+              <Route exact path="/cook">
+                <Redirect to="/cook/active" />
+              </Route>
+              <Route path="/cook/active">
+                <Body />
+              </Route>
+              <Route path="/cook/completed">
+                <Body />
+              </Route>
+            </Switch>
+          </Router>
+        </div>
+        <Footer />
+      </div>
     )
   }
 }
 
-const cookPageStyle = {
-  backgroundColor: '#f1f1f1',
+const cookStyle = {
   width: '100vw'
+};
+
+const bodyStyle = {
+  flex: 1,
+  backgroundColor: '#f1f1f1'
 };
 
 export default Cook;
