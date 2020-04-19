@@ -74,7 +74,7 @@ class MLogin extends React.Component {
     
     axios({
       method: 'post',
-      url: 'http://50.19.176.137:8000/staff/login',
+      url: process.env.REACT_APP_DB + '/staff/login',
       data: 'username='+this.state.email+'&password='+this.state.passwd,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'

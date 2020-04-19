@@ -96,7 +96,7 @@ class CSignUp extends React.Component{
 
     axios({
       method: 'put',
-      url: 'http://50.19.176.137:8000/staff/register',
+      url: process.env.REACT_APP_DB + '/staff/register',
       data: 'staff_id='+this.state.staff_id+'&restaurant_id='+this.state.restaurant_id
               +'&first_name='+this.state.first_name+'&last_name='+this.state.last_name
               +'&contact_num='+this.state.contact_num+'&email='+this.state.email

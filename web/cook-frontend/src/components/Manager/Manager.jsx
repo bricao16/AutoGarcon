@@ -65,7 +65,7 @@ class Manager extends React.Component{
         );
       }
 
-    fetch("http://50.19.176.137:8000/restaurant/"+ this.state.staff.restaurant_id)
+    fetch(process.env.REACT_APP_DB + "/restaurant/"+ this.state.staff.restaurant_id)
       .then(res => res.json())
       .then(
         (result) => {
@@ -84,7 +84,7 @@ class Manager extends React.Component{
     }
     /*axios({
       method: 'get',
-      url: 'https://50.19.176.137:8001/restaurant/123',
+      url: process.env.REACT_APP_DB + '/restaurant/123',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
@@ -96,6 +96,9 @@ class Manager extends React.Component{
         var finalJson = {
           'menu': res.data.menu,
           'restaurant': res.data.restaurant
+          // Https endpoint parsing:
+          //'menu': res.data[1].menu,
+          //'restaurant': res.data[0].restaurant
         }
         return finalJson;
       })
@@ -134,6 +137,7 @@ class Manager extends React.Component{
       const { error, isLoaded, restaurantJSON, restaurantInfo,staff } = this.state;
       
       if (error) {
+        console.log(error)
         return <div>Error: {error.message}</div>;
       } 
 

@@ -48,7 +48,7 @@ class NewItem extends React.Component {
     // Non existent so need to add item
     if (this.state.type === "default") {
       requestMethod = "PUT"
-      endpoint = "https://50.19.176.137:8001/menu/add"
+      endpoint = process.env.REACT_APP_DB + "/menu/add"
       body = 'restaurant_id='+123
         +'&item_name='+this.state.name
         +'&calorie_num='+this.state.calories
@@ -58,7 +58,7 @@ class NewItem extends React.Component {
     // Item needs to be edited
     else {
       requestMethod = "POST"
-      endpoint = "https://50.19.176.137:8001/menu/update"
+      endpoint = process.env.REACT_APP_DB + "/menu/update"
       body = 'restaurant_id='+123
         +'&item_id='+this.state.item_id
         +'&item_name='+this.state.name
