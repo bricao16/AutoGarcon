@@ -1,6 +1,6 @@
 import React from "react";
 import LogoImage from "../../assets/AutoGarconLogo.png";
-import AccountDropdown from "./AccountDropdown";
+import AccountDropdown from "../AccountDropdown";
 /*
   This prop is used to render the Header for the manager view. The logo of 
   the company will be rendered at the top of the page along with the name of the company.

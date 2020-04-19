@@ -93,12 +93,19 @@ class MLogin extends React.Component {
 		      .then(
 		        (result) => {
 		        	console.log(result);*/
-		          this.setState({
-		            redirect: true,
-		            show: false,
-		            staff: response.data.staff,
-		            token:response.data.token
-		          });
+		        if(response.data.staff.position === "manager")
+		        {
+			        this.setState({
+			            redirect: true,
+			            show: false,
+			            staff: response.data.staff,
+			            token:response.data.token
+			          });
+		        }
+		        else{
+		        	alert('Staff ID or Password is incorrect');
+		        }
+
 		 }
 		        //);
 
@@ -146,11 +153,11 @@ class MLogin extends React.Component {
   render(){
   	/*redirect to manager*/
 	if(this.state.redirect === true){
-		//set cookies to use later in manager page
-		cookies.set('mystaff', this.state.staff, { path: '/' });
-		cookies.set('mytoken', this.state.token, { path: '/' });
-		
-		return  <Redirect to='/manager'/> 
+			//set cookies to use later in manager page
+			cookies.set('mystaff', this.state.staff, { path: '/' });
+			cookies.set('mytoken', this.state.token, { path: '/' });
+			
+			return  <Redirect to='/manager'/> 
 
 	}  
 	return (

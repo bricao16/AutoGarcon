@@ -46,7 +46,9 @@ export default class CLogin extends React.Component {
 	    email: '',
       passwd:'',
       redirect: false,
-      show: false
+      show: false,
+      staff:null,
+      token:null
 	  };
     
     this.handleShow = this.handleShow.bind(this);
@@ -77,8 +79,11 @@ export default class CLogin extends React.Component {
         
         if (response.status !== 200) {this.handleShow(response);}
         else {
-          this.setState({show: false});
-          this.setState({redirect: true});
+          this.setState({staff: response.data.staff,
+                        token:response.data.token,
+                        show: false,
+                        redirect: true
+                        });
         }
       })
       .catch(error =>{
@@ -132,7 +137,7 @@ export default class CLogin extends React.Component {
           {this.state.response}
         </Alert>
 
-        <div style={{'text-align':'center'}}>
+        <div style={{'textAlign':'center'}}>
           {/* Lock icon on top */}
           <div style={{'display': 'inline-block'}}>
             <Avatar className={useStyles.avatar}>

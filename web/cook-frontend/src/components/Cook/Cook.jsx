@@ -7,8 +7,14 @@ import $ from "jquery";
 import Button from 'react-bootstrap/Button';
 import https from 'https';
 import axios from 'axios';
+import Nav from 'react-bootstrap/Nav';
+import Container from 'react-bootstrap/Container';
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import AccountDropdown from '../AccountDropdown';
+import CLogin from '../CLogin';
+import Cookies from 'universal-cookie';
 
+const cookies = new Cookies();
 class Cook extends React.Component {
 
   constructor(props) {
@@ -19,7 +25,9 @@ class Cook extends React.Component {
       selectedOrder: 0,
       alertActive: false,
       alertContent: <></>,
-      currentTab: "active"
+      currentTab: "active",
+      token: cookies.get('mytoken'),
+      staff: cookies.get('mystaff') 
     };
     this.setupKeyPresses();
   }
@@ -175,11 +183,31 @@ class Cook extends React.Component {
       .catch(e => console.log(e));*/
   }
 
-  render() {
+  render() 
+  {
+      //if user doesnt have access
+      console.log(this.state.staff);
+      if(this.state.staff == undefined || this.state.token === undefined )
+      {
+        return(
+            <Container>
+                <Nav defaultActiveKey="/" className="flex-column rounded" >
+                      <Nav.Link href="/login_cook"> Session expired please log back in </Nav.Link>
+                </Nav>
+                <Switch>
+                  <Route exact path="/login_cook">
+                    <CLogin/>
+                  </Route>
+                </Switch>
+            </Container>
+        );
+      }
     return (
       <div style={cookStyle} className="d-flex flex-column">
         {/*{this.renderAlert()}*/}
+        <AccountDropdown firstName={this.state.staff.first_name} lastName={this.state.staff.first_name} className="ml-auto pt-3 pr-3"></AccountDropdown>
         <Navigation currentTab={this.state.currentTab} />
+
         <div style={bodyStyle}>
           <Router>
             <Switch>

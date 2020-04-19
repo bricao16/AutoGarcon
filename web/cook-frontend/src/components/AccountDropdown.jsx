@@ -28,6 +28,7 @@ class AccountDropdown extends React.Component {
     //remove the cookies to logout
     cookies.remove('mytoken');
     cookies.remove('mystaff');
+    console.log(cookies.get('mystaff'));
     return <Redirect to='/'/> 
   }
   render() {
