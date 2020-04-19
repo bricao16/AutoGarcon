@@ -1,24 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Container } from 'react-bootstrap';
-import moment from 'moment';
+import React, {useState, useEffect} from 'react';
+import {Container} from 'react-bootstrap';
+import moment from 'moment'; // Used for getting and formatting time
 
 // React hook component
-function Footer(){
-
+function Footer() {
+  // Time is current time formatted like '8:43 PM'
   const [time, setTime] = useState(moment().format('LT'));
 
   useEffect(() => {
-    const interval = setInterval(updateTime, 60000); // after mounting
+    // updates clock every 30 seconds
+    const interval = setInterval(updateTime, 30000); // after mounting
     return () => clearInterval(interval); // after unmounting
   }, []);
 
-  const updateTime = () => {
+  function updateTime() {
     setTime(moment().format('LT'));
-  };
+  }
 
   return (
     <Container fluid style={footerStyle} className="p-2">
-      <h3>{time}</h3>
+      <h1>{time}</h1>
     </Container>
   );
 }

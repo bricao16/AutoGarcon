@@ -1,6 +1,6 @@
 import React from "react";
 import Nav from 'react-bootstrap/Nav';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import '../../assets/orders/nav.css'
 
 class Navigation extends React.Component {
@@ -10,29 +10,21 @@ class Navigation extends React.Component {
     this.props = props;
   }
 
-  tabStyle(tab){
-    let style = tabStyle;
-    if(this.props.currentTab === tab){
-      style = {...style, ...activePageStyle};
-    }
-    return style;
-  }
-
   render() {
     return (
       <div className="pt-2">
-        <Nav variant="tabs" defaultActiveKey="/cook/active" style={navStyle}>
+        <Nav variant="tabs" defaultActiveKey="/active" style={navStyle}>
           <Nav.Item className="ml-4">
-            <Link to="/cook/active" className="nav-link active">Active Orders</Link>
+            <NavLink to="/cook/active" className="nav-link" activeClassName="nav-link active" style={navLinkStyle}>
+              Active Orders
+            </NavLink>
           </Nav.Item>
-          <Nav.Item>
-            <Link to="/cook/completed" className="nav-link" style={navLinkStyle}>Completed Orders</Link>
+          <Nav.Item >
+            <NavLink to="/cook/completed" className="nav-link" activeClassName="nav-link active" style={navLinkStyle}>
+                Completed Orders
+            </NavLink>
           </Nav.Item>
         </Nav>
-        {/*<div className="mx-5 d-flex">*/}
-        {/*  <p className="m-0 mr-5 p-2" style={this.tabStyle(0)} onClick={() => this.props.handleTabClick(0)}>Active Orders</p>*/}
-        {/*  <p className="m-0 mr-5 p-2" style={this.tabStyle(1)} onClick={() => this.props.handleTabClick(1)}>Completed Orders</p>*/}
-        {/*</div>*/}
       </div>
     )
   }
