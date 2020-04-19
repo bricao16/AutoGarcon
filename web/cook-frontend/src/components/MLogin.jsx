@@ -20,7 +20,7 @@ import Cookies from 'universal-cookie';
 
 
 /*this is the login component for the manager
-view. Asks for the email address, password and logs in if the user and correct password
+view. Asks for the staff ID, password and logs in if the user and correct password
 exists on the database */
 
 const useStyles = makeStyles(theme => ({
@@ -144,19 +144,14 @@ class MLogin extends React.Component {
   }
    
   render(){
-  	/*redirect to manager with the correct state information*/
+  	/*redirect to manager*/
 	if(this.state.redirect === true){
+		//set cookies to use later in manager page
 		cookies.set('mystaff', this.state.staff, { path: '/' });
 		cookies.set('mytoken', this.state.token, { path: '/' });
 		
 		return  <Redirect to='/manager'/> 
-		//return <Manager cookies = {cookies}/>
-		/*return <Redirect
-				  to={{
-				    pathname: "/statistic",
-				    state: {cookies : {cookies}}
-				  }}
-				/>*/
+
 	}  
 	return (
 		//top of page

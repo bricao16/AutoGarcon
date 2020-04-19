@@ -15,7 +15,7 @@ import https from 'https';
 import axios from 'axios';
 
 /*this is the login component for the cook
-view. Asks for the email address, password and logs in if the user and correct password
+view. Asks for the staffID, password and logs in if the user and correct password
 exists on the database */
 const useStyles = makeStyles(theme => ({
   paper: {
