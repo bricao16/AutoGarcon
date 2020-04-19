@@ -1,6 +1,7 @@
 import React from "react";
 import logoImage from "../assets/AutoGarconLogoHome.png";
 import {Link} from "react-router-dom";
+// from free license at https://www.pexels.com/photo/clear-wine-glass-on-table-67468/
 import Background from "../assets/background.jpg";
 import { Container, Row, Col, Nav, Image, Button } from 'react-bootstrap';
 

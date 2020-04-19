@@ -5,13 +5,8 @@ import ManagerPage from "./components/Manager/Manager";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
-// import logoImage from "./assets/AutoGarconLogo.png";
-// import circle from "./assets/circleLanding.png";
-import {BrowserRouter as Router, Switch, Link, Route} from "react-router-dom"; 
-// from free license at https://www.pexels.com/photo/clear-wine-glass-on-table-67468/
-// import Background from './assets/background.jpg'
+import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import { CookiesProvider, withCookies } from 'react-cookie';
-// import Background from './assets/background.jpg'
 import Home from "./components/Home"
 
  /*
