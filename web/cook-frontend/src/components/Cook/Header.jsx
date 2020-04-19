@@ -19,7 +19,7 @@ class Header extends React.Component {
             <Button variant="secondary" size="sm" className="mr-3" onClick={this.props.handleExpandClick}>Expand (E)</Button>
           </div>
         </div>
-        <p className="mb-2 mx-2">Use arrow keys or mouse to select an order</p>
+        {/*<p className="mb-2 mx-2">Use arrow keys or mouse to select an order</p>*/}
       </React.Fragment>
     )
   }

@@ -1,9 +1,8 @@
 import React from "react";
-import Orders from "./Orders"
 import Navigation from "./Navigation";
-import Header from "./Header";
 import Alert from "./Alert";
 import Footer from "./Footer";
+import Body from "./Body";
 import $ from "jquery";
 import Button from 'react-bootstrap/Button';
 import https from 'https';
@@ -20,7 +19,7 @@ class Cook extends React.Component {
       selectedOrder: 0,
       alertActive: false,
       alertContent: <></>,
-      currentTab: 0
+      currentTab: "active"
     };
     this.setupKeyPresses();
   }
@@ -112,85 +111,37 @@ class Cook extends React.Component {
     }
   }
 
-  configureOrders(orders){
-    // console.log(orders);
-    let ordersState = {};
-    // Iterate over each order
-    Object.values(orders).forEach(order => {
-      // console.log(order);
-      // Check if that order_num exists
-      if(!(order.order_num in ordersState)){
-        // Create new order with empty items
-        ordersState[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
-      }
-      // If no category provided, mark as Entree
-      if(!order.category){
-        order.category = 'Entrees';
-      }
-      if(!(order.category in ordersState[order.order_num].items)){
-        ordersState[order.order_num].items[order.category] = [];
-      }
-      // Add item to order
-      ordersState[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name});
-    });
-    let newState = this.state;
-    newState.orders = ordersState;
-    this.setState(newState);
-  }
-
-  componentDidMount() {
-    // Get active orders from database
-    axios({
-      method: 'get',
-      // https://50.19.176.137:8001/orders/123
-      // Dummy orders for testing: "https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders"
-      url: 'https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders', // https not working
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      httpsAgent: new https.Agent({
-        rejectUnauthorized: false,
-      }),
-    })
-      .then(res => res.data)
-      .then(orders => {
-        this.configureOrders(orders);
-      })
-      .catch(e => console.log(e));
-  }
-
   render() {
     return (
-      <Router>
-        <Switch>
-          <Route exact path="/cook">
-            <Redirect to="/cook/active" />
-          </Route>
-          <Route path="/cook/active">
-            <div style={cookPageStyle} className="d-flex flex-column">
-              <Navigation currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
-              {this.renderAlert()}
-              <div className="p-3" style={ordersStyle}>
-                <Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
-                <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
-              </div>
-              <Footer />
-            </div>
-          </Route>
-          <Route path="/cook/completed">
-            <div>Completed orders</div>
-          </Route>
-        </Switch>
-      </Router>
+      <div style={cookStyle} className="d-flex flex-column">
+        {/*{this.renderAlert()}*/}
+        <Navigation currentTab={this.state.currentTab} />
+        <div style={bodyStyle}>
+          <Router>
+            <Switch>
+              <Route exact path="/cook">
+                <Redirect to="/cook/active" />
+              </Route>
+              <Route path="/cook/active">
+                <Body />
+              </Route>
+              <Route path="/cook/completed">
+                <Body />
+              </Route>
+            </Switch>
+          </Router>
+        </div>
+        <Footer />
+      </div>
     )
   }
 }
 
-const cookPageStyle = {
+const cookStyle = {
   width: '100vw'
 };
 
-const ordersStyle = {
+const bodyStyle = {
   flex: 1,
   backgroundColor: '#f1f1f1'
 };

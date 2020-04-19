@@ -10,17 +10,15 @@ function Home() {
       <Container fluid>
         {/* Logo, title and navigation are each in a column*/}
         <Row style={{alignItems: 'center'}}>
-          {/* Only display logo when page is larger than 'medium' */}
+          {/* Only display logo when page is larger than 'small' */}
           <Col xs="auto" lg="4" className="d-none d-md-block">
             <Image src={logoImage} height="60px" style={logoStyle}/>
           </Col>
-          {/* Title floats left when less than 'large', then goes back to center when 'extra-small' */}
+          {/* Title is centered, it floats left when less than 'large', then goes back to center when less than 'medium' */}
           <Col xs="12" md="auto" lg="4" style={{textAlign: 'center'}}>
             <Link to="/" style={titleStyle}>Auto Garcon</Link>
           </Col>
-          {/* When less than 'large' this will separate title and nav. When 'extra-small' this will help center nav. */}
-          {/*<Col className="d-lg-none p-0" style={{height: '20px', minWidth: 1}}></Col>*/}
-          {/* Float right until 'extra-small', then center */}
+          {/* Float right until 'small', then center */}
           <Col xs="12" md="auto" className="p-0" style={{marginLeft: 'auto'}}>
             <Nav style={{justifyContent: 'center'}}>
               <Nav.Item>
@@ -46,8 +44,6 @@ function Home() {
               </Nav.Item>
             </Nav>
           </Col>
-          {/* Used to center nav when 'extra-small' */}
-          {/*<Col className="d-md-none p-0" style={{height: '20px', minWidth: 1}}></Col>*/}
         </Row>
       </Container>
       <Container fluid style={backgroundImageStyle} className="p-0">
@@ -79,11 +75,11 @@ const logoStyle = {
 const titleStyle = {
   fontSize: '3em',
   color:'#102644',
-  textDecoration: 'none'
+  textDecoration: 'none' // no underline on link hover
 };
 
 const buttonStyle = {
-  textDecoration: 'none', // no underline on link hover
+  textDecoration: 'none',
   color: 'black'
 };
 
@@ -105,11 +101,11 @@ const contentStyle = {
 
 const circleStyle = {
   background: '#112745b3',
-  borderRadius: '50%',
+  borderRadius: '50%', // what makes background a circle
   textAlign: 'center', // horizontal centering
   color: 'white',
   justifyContent: 'center', // vertical centering
-  height: '400px',
+  height: '400px', // not responsive
   width: '400px',
   marginTop: '15px',
   marginBottom: '20vh', // offset upward from center
