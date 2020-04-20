@@ -1,6 +1,5 @@
 import React from "react";
 import Button from 'react-bootstrap/Button';
-import AccountDropdown from '../AccountDropdown';
 
 class Header extends React.Component {
 

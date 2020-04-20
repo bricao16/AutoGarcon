@@ -21,8 +21,7 @@ function Header(props) {
 export default Header;
 
 const headerTitleStyle = {
-    'margin': '0',
-    'marginLeft': '10px',
+  
     'flex': '1',
     'fontFamily': 'Kefa'
 }

@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Orders from "./Orders";
-
-
-
 import Header from "./Header";
-import Alert from "./Alert";
-import Footer from "./Footer";
-import $ from "jquery";
-import Button from 'react-bootstrap/Button';
 import https from 'https';
 import axios from 'axios';
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 function Body(props){
 
@@ -42,6 +34,7 @@ function Body(props){
 
   useEffect(() => {
     // Get active orders from database
+    let mounted =true;
     axios({
       method: 'get',
       // https://50.19.176.137:8001/orders/123
@@ -57,10 +50,16 @@ function Body(props){
     })
       .then(res => res.data)
       .then(orders => {
-        configureOrders(orders);
+        if(mounted)
+        {
+          configureOrders(orders);
+        }
       })
       .catch(e => console.log(e));
+
   });
+
+
 
   return (
     <div className="p-3">

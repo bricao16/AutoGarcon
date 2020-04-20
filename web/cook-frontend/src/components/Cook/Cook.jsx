@@ -16,7 +16,7 @@ import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
 class Cook extends React.Component {
-
+  _isMounted = false;
   constructor(props) {
     super(props);
     this.props = props;
@@ -146,6 +146,8 @@ class Cook extends React.Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
+    this.axiosCancelSource = axios.CancelToken.source()
      axios({
       method: 'get',
       // https://50.19.176.137:8001/orders/123
@@ -160,7 +162,10 @@ class Cook extends React.Component {
     })
       .then(res => res.data)
       .then(orders => {
-        this.configureOrders(orders);
+        if (this._isMounted) {
+          //abort request if not mounted
+          this.configureOrders(orders);
+        }
       })
       .catch(e => console.log(e));
     /*HTTPS
@@ -182,12 +187,15 @@ class Cook extends React.Component {
       })
       .catch(e => console.log(e));*/
   }
-
+  componentWillUnmount () {
+    this._isMounted = false;
+    console.log('unmount component')
+    this.axiosCancelSource.cancel('Component unmounted.')
+  }
   render() 
   {
       //if user doesnt have access
-      console.log(this.state.staff);
-      if(this.state.staff == undefined || this.state.token === undefined )
+      if(this.state.staff === undefined || this.state.token === undefined )
       {
         return(
             <Container>

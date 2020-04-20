@@ -19,9 +19,13 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 
 
+
 /*this is the login component for the manager
 view. Asks for the staff ID, password and logs in if the user and correct password
-exists on the database */
+exists on the database
+
+Privacy Policy needed 
+https://html.com/resources/cookies-ultimate-guide/#Implementing_Cookies_on_a_Technical_Level */
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -153,12 +157,16 @@ class MLogin extends React.Component {
   render(){
   	/*redirect to manager*/
 	if(this.state.redirect === true){
+
+			console.log(cookies.get('mystaff'));
 			//set cookies to use later in manager page
 			cookies.set('mystaff', this.state.staff, { path: '/' });
 			cookies.set('mytoken', this.state.token, { path: '/' });
-			
-			return  <Redirect to='/manager'/> 
+			console.log(cookies.get('mystaff'));
 
+			return  (
+				<Redirect to='/manager'/> 
+				);
 	}  
 	return (
 		//top of page

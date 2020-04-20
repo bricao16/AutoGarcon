@@ -129,7 +129,8 @@ class Menu extends React.Component {
     });
 
     //create a list of all unique categories of food/drink
-    for (const [index,value] of menu.entries()) {
+    const values = menu.values();
+    for (const value of values) {
         if(categories.indexOf(value[1].category) === -1){
           categories.push( value[1].category)
         }
@@ -149,7 +150,7 @@ class Menu extends React.Component {
                     <Col sm={6} className="p-3"> {/*add a create new category option*/}
                       <Card className="text-center" >
                         <div onClick={() => this.toggleNewItem("default") }>                     
-                          <Card.Header style={cardHeaderStyle, createNewStyle}>Create New Item</Card.Header>
+                          <Card.Header style={createNewStyle}>Create New Item</Card.Header>
                         </div>
                       </Card>
                     </Col>  
