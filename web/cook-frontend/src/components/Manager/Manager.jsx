@@ -10,8 +10,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import logoImage from "../../assets/AutoGarconLogo.png";
-//import https from 'https';
-//import axios from 'axios';
+import https from 'https';
+import axios from 'axios';
 import {
     Switch,
     Route
@@ -65,7 +65,7 @@ class Manager extends React.Component{
         );
       }
 
-    fetch(process.env.REACT_APP_DB + "/restaurant/"+ this.state.staff.restaurant_id)
+    /*fetch(process.env.REACT_APP_DB + "/restaurant/"+ this.state.staff.restaurant_id)
       .then(res => res.json())
       .then(
         (result) => {
@@ -81,8 +81,9 @@ class Manager extends React.Component{
           });
         }
       )
-    }
-    /*axios({
+    } */
+
+    axios({
       method: 'get',
       url: process.env.REACT_APP_DB + '/restaurant/123',
       headers: {
@@ -114,7 +115,7 @@ class Manager extends React.Component{
           error
         });
       })
-    }*/
+    }
     
     render() 
     {
@@ -176,13 +177,13 @@ class Manager extends React.Component{
                             <Stats/>
                           </Route>
                           <Route path="/menu">
-                            <Menu menu = {restaurantInfo[1][1]}/>
+                            <Menu menu = {restaurantInfo[0][1]}/>
                           </Route>
                           <Route path="/general">
-                            <StoreInfo info = {restaurantInfo[0][1]} />
+                            <StoreInfo info = {restaurantInfo[1][1]} />
                           </Route>
                           <Route path="/customize">
-                            <Customize info = {restaurantInfo[0][1]}/>
+                            <Customize info = {restaurantInfo[1][1]}/>
                           </Route>
                           <Route path="/cookview">
                             <CookView/>
