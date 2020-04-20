@@ -25,16 +25,12 @@ class NewItem extends React.Component {
   /* Used for handling changes to the input field */
   handleInputChange(event) {
     const target = event.target;
-
     const value = target.value;
-
     const name = target.name;
 
     this.setState({
       [name]: value
     });
-
-    console.log('input after set state', this.state)
   }
 
   /* Used for connecting to Menu in database */
@@ -86,7 +82,7 @@ class NewItem extends React.Component {
       if (response.status !== 200) {this.handleShow(false);}
       else {this.handleShow(true);}
 		})
-		.catch(error =>{
+		.catch(error => {
       this.handleShow(false);
 			console.error("There was an error!", error);
 		});
@@ -190,7 +186,7 @@ class NewItem extends React.Component {
             {this.state.response}
           </Alert>
 
-            <div class="d-flex flex-row-reverse pb-3">
+            <div className="d-flex flex-row-reverse pb-3">
               <button type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
             </div>
 
