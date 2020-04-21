@@ -50,7 +50,7 @@ public class Login extends AppCompatActivity {
             finish();//prevents them from coming back to this page
         }
 
-        emailId = findViewById(R.id.email);// associating xml objects with the java Object equivalent
+        emailId = findViewById(R.id.username);// associating xml objects with the java Object equivalent
         password = findViewById(R.id.password);// associating xml objects with the java Object equivalent
         buttonSignIn = findViewById(R.id.signUp);// associating xml objects with the java Object equivalent
         textViewSignUp = findViewById(R.id.loginLink);// associating xml objects with the java Object equivalent

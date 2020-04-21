@@ -141,9 +141,10 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                                 break;
                                         }
                                     }
-
+                                    //if conditional filters out erroneous categories
+                                    if(whereToSendItem.equals("Alcohol") || whereToSendItem.equals("Refillable Drink") || whereToSendItem.equals("Dessert") || whereToSendItem.equals("Entree") || whereToSendItem.equals("Appetizer")){
                                     itemToBeAdded.setNameOfItem(key);
-                                    addToList(itemToBeAdded, whereToSendItem);
+                                    addToList(itemToBeAdded, whereToSendItem);}
                                 }
                             }
                         } catch (JSONException e) {
@@ -211,6 +212,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     alcohol_list = new ArrayList<>();
                     listHash.put(listDataHeader.get(listDataHeader.size() - 1), alcohol_list);
                     break;
+                default:
+                    break;
             }
 
         }
@@ -230,6 +233,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 break;
             case "Alcohol":
                 alcohol_list.add(key);
+                break;
+            default:
                 break;
         }
     }
