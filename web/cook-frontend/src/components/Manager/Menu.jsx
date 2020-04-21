@@ -166,7 +166,7 @@ class Menu extends React.Component {
         <Container>
           <div style={backgroundStyle}>
             <h2 style ={categoryHeaderStyle}>
-              <button type="button" onClick={() => this.changeCategory("main") } className="btn btn-outline-light m-2">Back</button>
+              <button type="button" onClick={() => window.location.href="/menu" } className="btn btn-outline-light m-2">Back</button>
               <div style={menuTextStyle}>{renderCategory}</div>
             </h2>
             <Container fluid style={{'minHeight': '70vh'}}>
@@ -190,7 +190,7 @@ class Menu extends React.Component {
       return (
         <div style={backgroundStyle}>
           <h2 style ={categoryHeaderStyle}>
-            <button type="button" onClick={() => {this.changeCategory("main"); this.setState({menu:[]}); this.setNewItem(false);}} className="btn btn-outline-light m-2">Back</button>
+            <button type="button" onClick={() => window.location.href="/menu"} className="btn btn-outline-light m-2">Back</button>
             <div style={menuTextStyle}>Menu Item</div>
           </h2>
           {this.newItemForm()}

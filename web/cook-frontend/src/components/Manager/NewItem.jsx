@@ -20,7 +20,6 @@ class NewItem extends React.Component {
     this.state.item_id = props.prefill.item_id
     this.state.show = false
     this.state.cookies = new Cookies();
-    //this.state.token = new Cookies().get('mytoken'),
     this.handleShow = this.handleShow.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -77,7 +76,8 @@ class NewItem extends React.Component {
       url: endpoint,
       data: body,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
       },
       httpsAgent: new https.Agent({  
         rejectUnauthorized: false,
