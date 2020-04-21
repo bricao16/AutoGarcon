@@ -133,40 +133,6 @@ class NewItem extends React.Component {
 			console.error("There was an error!", error);
 		});
   }
-  handleDelete(event){ //This doesnt work yet; been trying to implement.
-	  
-	let requestMethod;
-	let endpoint;
-	let body;	
-	
-	requestMethod = "DELETE"
-	endpoint = process.env.REACT_APP_DB + "/menu/delete"
-	body = 'item_id='+this.state.item_id
-	
-	console.log("Reaching here.\n");
-	
-	axios({
-		method: requestMethod,
-		url: endpoint,
-		data: body,
-		headers: 'Authorization='+this.state.cookies.get('mytoken'),
-		httpsAgent: new https.Agent({
-		  rejectUnauthorized: false,
-		}),
-	})
-		.then(async response =>{
-	  await response;
-	
-	  if(response.status !== 200){this.handleShow(false);}
-	  else {this.handleShow(true);}
-	    })
-		.catch(error =>{
-	  this.handleShow(false);
-		    console.error("There was an error!", error);
-		});
-	  
-  }
-  
   
 
   /* Used to show the correct alert after hitting save item */
