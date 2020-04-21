@@ -119,7 +119,8 @@ class Menu extends React.Component {
   // Default render method
   render() {
     //clear the menu each time we load
-    this.setState({menu: []})
+    // eslint-disable-next-line
+    this.state.menu = [];
 
     const {menu,categories,renderCategory, newItem} = this.state;
     const menuJSON = this.props.menu;
