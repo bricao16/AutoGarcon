@@ -12,8 +12,8 @@ function Header(props) {
     /*render the logo image, name of resturant and name of manager - this is being sent from
       MTasks component */
           <header style={headerStyle}>
-              <img src={LogoImage} width="auto" height="35px" alt="waiter" /> {/*{logo}*/}
-              <p style={headerTitleStyle}>{props.restName}</p> {/*{name}*/}
+              <img src={LogoImage}  width="auto" height="45px" alt="waiter" /> {/*{logo}*/}
+              <p className ="pl-3" style={headerTitleStyle}>{props.restName}</p> {/*{name}*/}
               {/* this.props.loggedIn */ true && <AccountDropdown firstName={props.firstName} lastName={props.lastName} className="px-3"></AccountDropdown>}
           </header>
       );

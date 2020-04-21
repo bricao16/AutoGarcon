@@ -216,7 +216,7 @@ class Manager extends React.Component{
               </Container> 
             </div>
             <footer style={footerStyle}>
-              Powered by Auto Garcon
+              Powered by AutoGarcon
               <img src={logoImage} width="auto" height="50vh" alt="waiter" />
             </footer> 
           </div>
