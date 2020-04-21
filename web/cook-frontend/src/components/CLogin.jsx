@@ -144,7 +144,7 @@ export default class CLogin extends React.Component {
               <LockOutlinedIcon />
             </Avatar>
           </div>
-          {/* Manager Sign In Title */}
+          {/* Cook Sign In Title */}
           <Typography component="h1" variant="h5">
             Cook Sign In
           </Typography>
@@ -176,11 +176,11 @@ export default class CLogin extends React.Component {
             autoComplete="current-password"
           />
 
-          {/* Remember me checkbox */}
+          {/* Remember me checkbox 
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
-          />
+          />*/}
           {/* Submit button */}
           <Button onClick = {this.handleSubmit}
             type="submit"

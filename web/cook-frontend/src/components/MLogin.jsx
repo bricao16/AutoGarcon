@@ -170,26 +170,26 @@ class MLogin extends React.Component {
 	}  
 	return (
 		//top of page
-		<Container component="main" maxWidth="xs" className="p-3">
-		  <CssBaseline />
-		  <div className={useStyles.paper}>
+	  	  <Container component="main" maxWidth="xs" className="p-3">
+			  <CssBaseline />
+	        <div className={useStyles.paper}>
 
-      <Alert show={this.state.show} variant={this.state.alertVariant}>
-        {this.state.response}
-      </Alert>
+	        <Alert show={this.state.show} variant={this.state.alertVariant}>
+	          {this.state.response}
+	        </Alert>
 
-			<div style={{'textAlign':'center'}}>
-        {/* Lock icon on top */}
-        <div style={{'display': 'inlineBlock'}}>
-          <Avatar className={useStyles.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-        </div>
-        {/* Manager Sign In Title */}
-        <Typography component="h1" variant="h5">
-          Manager Sign In
-        </Typography>
-      </div>
+	        <div style={{'textAlign':'center'}}>
+	          {/* Lock icon on top */}
+	          <div style={{'display': 'inline-block'}}>
+	            <Avatar className={useStyles.avatar}>
+	              <LockOutlinedIcon />
+	            </Avatar>
+	          </div>
+	          {/* Cook Sign In Title */}
+	          <Typography component="h1" variant="h5">
+	            Manager Sign In
+	          </Typography>
+	        </div>
 
 			<form className={useStyles.form} noValidate>
 			  <TextField onChange = {this.handleEmail}
@@ -216,11 +216,11 @@ class MLogin extends React.Component {
 				id="password"
 				autoComplete="current-password"
 			  />
-			  {/* Remember me check box */}
+			  {/* Remember me check box 
 			  <FormControlLabel
 				control={<Checkbox value="remember" color ="primary" />}
 				label="Remember me"
-			  />
+			  />*/}
 			  {/* Submit button */}
 			  <Button onClick = {this.handleSubmit}
 				type="submit"

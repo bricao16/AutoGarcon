@@ -11,8 +11,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Redirect} from "react-router-dom";
 //import Manager from './Manager/Manager';
-//import https from 'https';
-//import axios from 'axios';
+import https from 'https';
+import axios from 'axios';
 import Cookies from 'universal-cookie';
 /*this sign up will be used to create a manager accout */
 const cookies = new Cookies();
@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(1),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -56,7 +56,7 @@ class SignUp extends React.Component{
     };
     
     this.onChange = this.onChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    //this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   onChange = (e) => {
@@ -67,14 +67,12 @@ class SignUp extends React.Component{
         this.setState({ [e.target.name]: e.target.value });
  
       }
- /*handleSubmit(event){
+ handleSubmit(event){
     
     event.preventDefault();
     
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
     
-    /*this.state.restaurant_id = cookies.get('mystaff').restaurant_id;
-    console.log(this.state);
     axios({
       method: 'put',
       url: 'http://50.19.176.137:8000/staff/register',
@@ -96,11 +94,11 @@ class SignUp extends React.Component{
         else 
         {
           console.log(response);
-          /*response.json()
+          response.json()
           .then(
             (result) => {
-              console.log(result);*/
-              /*this.setState({
+              console.log(result);
+              this.setState({
                 redirect: true,
                 show: false,
                 staff: response.data.staff,
@@ -108,12 +106,9 @@ class SignUp extends React.Component{
               });
                   cookies.set('my-staff', this.state.staff, { path: '/' });
             cookies.set('my-token', this.state.token, { path: '/' });
-     }
-            //);
-
-          //this.setState({show: false});
-          //this.setState({redirect: true});
-        
+            }
+          ); 
+        }
       })
       .catch(error =>{
         alert('Unsuccessful Submit');
@@ -123,117 +118,229 @@ class SignUp extends React.Component{
         console.error("There was an error!", error);
       });
 
-  }*/
+  }
 render() {
   const cookies = new Cookies();
   if(this.state.redirect === true){
     alert("Sucessful Staff Creation");
     return  <Redirect to='/cookview'/> 
   }  
+  //if creating cook account in manager page
   if(cookies.get('mystaff').position === "manager")
   {
-    //Registering cook account
     /*staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password */
     return (
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={useStyles.paper}>
-          <Avatar className={useStyles.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
-          <form className={useStyles.form} noValidate>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField onChange = {this.onChange}
-                  autoComplete="fname"
-                  name="first_name"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
+        <Container component="main" maxWidth="xs" className="p-3">
+          <CssBaseline />
+          <div className={useStyles.paper}>
+          <div style={{'textAlign':'center'}}>
+            {/* Lock icon on top */}
+            <div style={{'display': 'inline-block'}}>
+              <Avatar className={useStyles.avatar}>
+                <LockOutlinedIcon />
+              </Avatar>
+              </div>
+              <Typography component="h1" variant="h5">
+                Sign up
+               
+              </Typography>
+               <br/>
+              </div>
+            <form className={useStyles.form} noValidate>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextField onChange = {this.onChange}
+                    autoComplete="fname"
+                    name="first_name"
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="firstName"
+                    label="First Name"
+                    autoFocus
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField onChange = {this.onChange}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="lastName"
+                    label="Last Name"
+                    name="last_name"
+                    autoComplete="lname"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField onChange = {this.onChange}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField onChange = {this.onChange}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="phone"
+                    label="Contact Number"
+                    name="contact_num"
+                    autoComplete="phone"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField onChange = {this.onChange}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="staffid"
+                    label="Staff ID"
+                    name="staff_id"
+                    autoComplete="staffid"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField onChange = {this.onChange}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField onChange = {this.onChange}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="last_name"
-                  autoComplete="lname"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField onChange = {this.onChange}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField onChange = {this.onChange}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="phone"
-                  label="Contact Number"
-                  name="contact_num"
-                  autoComplete="phone"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField onChange = {this.onChange}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="staffid"
-                  label="Staff ID"
-                  name="staff_id"
-                  autoComplete="staffid"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField onChange = {this.onChange}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                />
-              </Grid>
-            </Grid>
-            <i> Please make note of this information and give to your staff member </i>
-            {/*onClick = {this.handleSubmit}*/}
-            <Button 
-              type="submit"
-              fullWidth
-              variant="contained"
-              style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
-              className={useStyles.submit}
-            >
-              Sign Up
-            </Button>
-          </form>
-
+              <i> Please make note of this information and give to your staff member </i>
+              {/*onClick = {this.handleSubmit}*/}
+              <Button onClick = {this.handleSubmit}
+                type="submit"
+                fullWidth
+                variant="contained"
+                style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
+                className={useStyles.submit}
+              >
+                Sign Up
+              </Button>
+            </form>
         </div>
       </Container>
     );
   
     }
+    //if creating a new resturant
+    else{
+      return(
+        <Container component="main" maxWidth="xs" className="p-3">
+          <CssBaseline />
+          <div className={useStyles.paper}>
+          <div style={{'textAlign':'center'}}>
+            {/* Lock icon on top */}
+            <div style={{'display': 'inline-block'}}>
+              <Avatar className={useStyles.avatar}>
+                <LockOutlinedIcon />
+              </Avatar>
+              </div>
+              <Typography component="h1" variant="h5">
+                Sign up
+               
+              </Typography>
+               <br/>
+              </div>
+            <form className={useStyles.form} noValidate>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextField onChange = {this.onChange}
+                    autoComplete="fname"
+                    name="first_name"
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="firstName"
+                    label="First Name"
+                    autoFocus
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField onChange = {this.onChange}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="lastName"
+                    label="Last Name"
+                    name="last_name"
+                    autoComplete="lname"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField onChange = {this.onChange}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField onChange = {this.onChange}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="phone"
+                    label="Contact Number"
+                    name="contact_num"
+                    autoComplete="phone"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField onChange = {this.onChange}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="staffid"
+                    label="Staff ID"
+                    name="staff_id"
+                    autoComplete="staffid"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField onChange = {this.onChange}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                  />
+                </Grid>
+              </Grid>
+              <br/>
+              {/*onClick = {this.handleSubmit}*/}
+              <Button 
+                type="submit"
+                fullWidth
+                variant="contained"
+                style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
+                className={useStyles.submit}
+              >
+                Sign Up
+              </Button>
+            </form>
 
+          </div>
+        </Container>
+      );
+    }
   }
 }
 export default SignUp;

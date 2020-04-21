@@ -84,7 +84,7 @@ class Manager extends React.Component{
 
     axios({
       method: 'get',
-      url: process.env.REACT_APP_DB + '/restaurant/123',
+      url: process.env.REACT_APP_DB + '/restaurant/' + this.state.staff.restaurant_id,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
