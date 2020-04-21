@@ -43,7 +43,7 @@ class Orders extends React.Component{
     return (
       <Container fluid className="p-0 d-flex flex-wrap" id="orders" style={ordersStyle}>
         {this.renderOrders()}
-        {/*{this.renderConfirmDelete()}*/}
+        {/* {this.renderConfirmDelete()} */}
       </Container>
     )
   };
