@@ -1038,6 +1038,7 @@ app.post('/customer/update', verifyToken, (req, res) => {
 			{
 				i =   {
 					order_num,
+					restaurant_id,
 					item_name,
 					quantity,
 					order_date,
@@ -1068,6 +1069,7 @@ app.get('/customer/history/:id', (req, res) => {
 			for (let i=0; i<rows.length; i++) {
 				response[i] =   {
 					'order_num': rows[i].order_num,
+					'restaurant_id': rows[i].restaurant_id,
 					'item_name': rows[i].item_name,
 					'quantity': rows[i].quantity,
 					'order_date': rows[i].order_date,
