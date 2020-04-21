@@ -40,7 +40,6 @@ class Manager extends React.Component{
         restaurantInfo:[],
         token: cookies.get('mytoken'),
         staff: cookies.get('mystaff'),
-       
       };
     }
 

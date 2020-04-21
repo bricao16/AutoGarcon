@@ -7,12 +7,15 @@ import axios from 'axios';
 function Body(props){
 
   const [getUrl, setGetUrl] = useState('/orders/123');
+  const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
     if(props.path === '/active'){
       setGetUrl('/orders/123');
+      setCompleted(false);
     } else if (props.path === '/completed'){
       setGetUrl('/orders/complete/123');
+      setCompleted(true);
     }
   }, [props.path]);
 
@@ -174,7 +177,7 @@ function Body(props){
     <div className="p-3">
       <Header handleStatusChangeClick={changeOrderStatus} path={props.path} />
       {/*<Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={markOrderComplete} />*/}
-      <Orders orders={orders} selectedOrder={selectedOrder} handleCardClick={changeSelectedOrder} />
+      <Orders orders={orders} selectedOrder={selectedOrder} handleCardClick={changeSelectedOrder} completed={completed}/>
     </div>
   )
 }

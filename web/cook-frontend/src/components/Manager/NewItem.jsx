@@ -20,6 +20,8 @@ class NewItem extends React.Component {
     this.state.item_id = props.prefill.item_id
     this.state.show = false
     this.state.cookies = new Cookies();
+    this.state.user = this.state.cookies.get("mystaff")
+    this.parseStock(props.prefill.in_stock)
     this.handleShow = this.handleShow.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,9 +34,17 @@ class NewItem extends React.Component {
     const value = target.value;
     const name = target.name;
 
-    this.setState({
-      [name]: value
-    });
+    if (name === "in_stock") {
+      var val = this.parseStock(target.checked);
+      this.setState({
+        [name]: val
+      });
+    }
+    else {
+      this.setState({
+        [name]: value
+      });
+    }
   }
 
   /* Used for connecting to Menu in database */
@@ -51,18 +61,19 @@ class NewItem extends React.Component {
       message = "added"
       requestMethod = "PUT"
       endpoint = process.env.REACT_APP_DB + "/menu/add"
-      body = 'restaurant_id='+123
+      body = 'restaurant_id='+this.state.user.restaurant_id
         +'&item_name='+this.state.name
         +'&calorie_num='+this.state.calories
         +'&category='+this.state.category
         +'&price='+this.state.price
+        +'&in_stock='+this.state.in_stock
     }
     // Item needs to be edited
     else {
       message = "updated"
       requestMethod = "POST"
       endpoint = process.env.REACT_APP_DB + "/menu/update"
-      body = 'restaurant_id='+123
+      body = 'restaurant_id='+this.state.user.restaurant_id
         +'&item_id='+this.state.item_id
         +'&item_name='+this.state.name
         +'&calorie_num='+this.state.calories
@@ -106,7 +117,7 @@ class NewItem extends React.Component {
 
     requestMethod = "DELETE"
     endpoint = process.env.REACT_APP_DB + "/menu/delete"
-    body = 'item_id='+this.state.item_id  //'restaurant_id='+123
+    body = 'item_id='+this.state.item_id
     message = "deleted"
     
     axios({
@@ -149,8 +160,22 @@ class NewItem extends React.Component {
     this.setState({show: true});
   }
 
+  /* Parsing stock to set correct value */
+  parseStock(value) {
+    if (value === false) {
+      this.setState({in_stock: 0});
+      return 0
+    }
+    else if (value === true) {
+      this.setState({in_stock: 1});
+      return 1
+    }
+  }
 
   render(){
+    // Make sure stock is correctly represented as true or false in the component's state
+    this.parseStock(this.state.in_stock)
+
     if(this.state.type === "default")
     {
       return ( 
@@ -198,8 +223,8 @@ class NewItem extends React.Component {
 
                 <div class="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
-                    <input type="checkbox" defaultChecked/> 
-                    <label class="pl-2" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} placeholder={this.state.in_stock}>In stock</label>
+                    <input type="checkbox" id="in_stock" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} checked={this.state.in_stock}/> 
+                    <label class="pl-2" for="in_stock">In stock</label>
                   </div>
                 </div>
                 
@@ -271,8 +296,8 @@ class NewItem extends React.Component {
 
                 <div class="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
-                    <input type="checkbox" defaultChecked/> 
-                    <label class="pl-2" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} placeholder={this.state.in_stock}>In stock</label>
+                    <input type="checkbox" id="in_stock" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} checked={this.state.in_stock}/> 
+                    <label class="pl-2" for="in_stock">In stock</label>
                   </div>
                 </div>
                 
