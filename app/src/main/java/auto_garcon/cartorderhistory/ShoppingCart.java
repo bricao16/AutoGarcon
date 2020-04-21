@@ -2,9 +2,11 @@ package auto_garcon.cartorderhistory;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -14,23 +16,40 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
+import auto_garcon.initialpages.Register;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
+import auto_garcon.singleton.UserSingleton;
+import auto_garcon.singleton.VolleySingleton;
+
 /*
 This generates a list of restaurants, and
 dealing with the user actions in the activity_shopping_cart layout.
  */
 public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     //data fields
+    private JSONObject obj;
     private SharedPreference pref;//saving user transaction data such as food item chosen by the user.
     private ShoppingCartSingleton shoppingCart;//keeping food item chosen by the user.
     private RecyclerView recyclerView;//generating a list of restaurants
@@ -70,7 +89,63 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         PlaceOrderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //
+                //put request for registering
+                String url = "http://50.19.176.137:8000/orders/place";
+                obj = new JSONObject();//json object that will be sent as the request parameter
+
+                try {
+                    JSONObject order = new JSONObject();//json object that will be sent as the request parameter
+
+
+                        for (int i = 0; i < shoppingCart.getCart().size(); i++) {
+                            JSONObject item = new JSONObject();//json object that will be sent as the request parameter
+
+                            item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
+                            item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
+                            order.put(Integer.toString(i), item);
+                        }
+
+
+
+                    obj.put("restaurant_id", Integer.toString(shoppingCart.getRestaurantID()));
+                    obj.put("customer_id", pref.getUser().getUsername());
+                    obj.put("table_num", Integer.toString(6));
+                    obj.put("order", order);
+                }catch (JSONException e){
+                    //TODO figure out how to handle this other than stack trace
+                    e.printStackTrace();
+                }
+
+                StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                        new Response.Listener<String>()
+                        {
+                            @Override
+                            public void onResponse(String response) {
+                                // response
+                                Toast.makeText(ShoppingCart.this,response,Toast.LENGTH_LONG).show();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // error if the request fails
+                                error.printStackTrace();
+                                Toast.makeText(ShoppingCart.this,error.toString(),Toast.LENGTH_LONG).show();
+                            }
+                        }
+                ) {
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+                        return obj.toString().getBytes();
+                    }
+
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json";
+                    }
+                };
+
+                VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);// making the actual request
             }
         });
 

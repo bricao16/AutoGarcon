@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config>
-        <domain includeSubdomains="true">example.com</domain>
+        <domain includeSubdomains="true">50.19.176.137:8001</domain>
         <trust-anchors>
             <certificates src="@raw/cert"/>
         </trust-anchors>

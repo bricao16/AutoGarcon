@@ -89,7 +89,7 @@ public class Login extends AppCompatActivity {
                                 public void onResponse(JSONObject response) {
                                     // response
                                     try {
-                                        JSONObject object = response.getJSONObject("user");
+                                        JSONObject object = response.getJSONObject("customer");
                                         String token = response.getString("token");
 
                                         pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
