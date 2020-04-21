@@ -133,6 +133,7 @@ class NewItem extends React.Component {
 			console.error("There was an error!", error);
 		});
   }
+  
 
   /* Used to show the correct alert after hitting save item */
   handleShow(success, message) {
