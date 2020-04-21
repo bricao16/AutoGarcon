@@ -46,7 +46,7 @@ class Order extends React.Component {
 
   variableOrderStyles(){
     let style = Object.assign({}, orderStyle);
-    if(this.props.selectedOrder){
+    if(this.props.isSelected){
       style.background = '#7e7e7e';
     }
     if(this.props.order.expand){
