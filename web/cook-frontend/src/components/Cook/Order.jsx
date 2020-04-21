@@ -81,13 +81,19 @@ class Order extends React.Component {
   }
 
   renderTime(){
-    return (
-      <>
-        <span className="pr-3">{this.state.orderTimeString}</span>
+    let timeSince = <></>;
+    if(!this.props.isCompleted) {
+      timeSince = (
         <div className="d-flex" style={{alignItems: 'center'}}>
           <FontAwesomeIcon icon={faClock}/>
           <span className="pl-1">{this.state.timeSinceOrder}</span>
         </div>
+      );
+    }
+    return (
+      <>
+        <span className="pr-3">{this.state.orderTimeString}</span>
+        {timeSince}
       </>
     );
   }

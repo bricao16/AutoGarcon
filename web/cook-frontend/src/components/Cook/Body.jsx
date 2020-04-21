@@ -1,55 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Orders from "./Orders";
 import Header from "./Header";
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 function Body(props){
 
-  const [getUrl, setGetUrl] = useState('/orders/123');
+  const isMounted = useRef(true);
+  // For canceling server request
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const cookies = new Cookies();
+  const restaurant_id = cookies.get("mystaff").restaurant_id;
+
+  const [ordersPath, setGetUrl] = useState(`/orders/${restaurant_id}`);
+
+  const completedOrderUrl = process.env.REACT_APP_DB+'/orders/update';
   const [completed, setCompleted] = useState(false);
+
+  const serverUrl = process.env.REACT_APP_DB; // HTTPS: REACT_APP_HTTPS_DB HTTP: REACT_APP_DB
 
   useEffect(() => {
     if(props.path === '/active'){
-      setGetUrl('/orders/123');
+      setGetUrl(`/orders/${restaurant_id}`);
       setCompleted(false);
     } else if (props.path === '/completed'){
-      setGetUrl('/orders/complete/123');
+      setGetUrl(`/orders/complete/${restaurant_id}`);
       setCompleted(true);
     }
-  }, [props.path]);
+  }, [props.path, restaurant_id]);
 
   useEffect(() => {
-    updateOrders();
-  }, [getUrl]);
+    getOrders();
+  }, [ordersPath]);
 
   useEffect(() => {
     // updates orders every 10 seconds
-    const interval = setInterval(updateOrders, 10000); // start interval after mounting
-    return () => clearInterval(interval); // clear interval after unmounting
-  }, []);
-
-  // Get In Progress orders from database
-  function updateOrders(){
-    console.log('updating orders');
-    serverRequest(
-      'get',
-      getUrl,
-      '',
-      configureOrders
-    );
-  }
+    const interval = setInterval(getOrders, 10000); // start interval after mounting
+    // While unmounting do this
+    return () => {
+      isMounted.current = false;
+      clearInterval(interval); // clear interval after unmounting
+    }
+  });
 
   const [orders, setOrders] = useState({});
 
   function configureOrders(orders){
-    // console.log(orders);
     let ordersState = {};
-    if(orders === undefined){
-      console.log('no orders');
-      return;
-    }
-    orders = orders.data;
     // Iterate over each order
     Object.values(orders).forEach(order => {
       // console.log(order);
@@ -58,9 +58,9 @@ function Body(props){
         // Create new order with empty items
         ordersState[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
       }
-      // If no category provided, mark as Entree
+      // If no category provided
       if(!order.category){
-        order.category = 'Entrees';
+        order.category = 'Category';
       }
       if(!(order.category in ordersState[order.order_num].items)){
         ordersState[order.order_num].items[order.category] = [];
@@ -77,51 +77,46 @@ function Body(props){
     setSelectedOrder(cardId);
   }
 
-  function changeOrderStatus(status){
-    const orderNum = Object.keys(orders)[selectedOrder];
-    serverRequest(
-      'post',
-      '/orders/update',
-      `order_num=${orderNum}&order_status=${status}`,
-      () => {
-        updateOrders(); // grab orders from database
-        changeSelectedOrder(0);
-      }
-    );
-  }
-
-  function serverRequest(method, path, data, responseCallback){
-    // _isMounted = false;
-    // this._isMounted = true;
-    // this.axiosCancelSource = axios.CancelToken.source();
-    axios({
-      method: method,
-      url: process.env.REACT_APP_DB + path,
-      data: data,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      httpsAgent: new https.Agent({
-        rejectUnauthorized: false,
-      }),
+  // Get in progress orders from db
+  function getOrders(){
+    const url = serverUrl + ordersPath;
+    axios.get(url, {
+      cancelToken: source.token
     })
-      .then((res) => {
-        // if (this._isMounted) {
-          // abort request if not mounted
-        responseCallback(res);
+      .then(res => res.data)
+      .then(orders => {
+        if(isMounted) {
+          configureOrders(orders);
+        } else {
+          source.cancel('component unmounted');
+        }
       })
       .catch(error =>{
-        alert('server error');
+      console.log('server request error');
+      console.error(error);
+    });
+  }
+
+  function changeOrderStatus(status){
+    const orderNum = Object.keys(orders)[selectedOrder];
+    axios.post(completedOrderUrl,
+      `order_num=${orderNum}&order_status=${status}`,
+      {
+        cancelToken: source.token
+      })
+      .then(() => {
+        if(isMounted) {
+          getOrders(); // grab orders from database
+          changeSelectedOrder(0);
+        } else {
+          source.cancel('component unmounted');
+        }
+      })
+      .catch(error =>{
+        console.log('post request error');
         console.error(error);
       });
   }
-  /*
-  componentWillUnmount () {
-    this._isMounted = false;
-    console.log('unmount component')
-    this.axiosCancelSource.cancel('Component unmounted.')
-  }
-  */
   /*
   setupKeyPresses(){
     $(document).keydown(key => {
