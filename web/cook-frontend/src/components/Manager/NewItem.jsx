@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import https from 'https';
 import axios from 'axios';
+import cookies from 'universal-cookie';
 
 /* 
   This component is to allow the manager to 
@@ -87,6 +88,41 @@ class NewItem extends React.Component {
 			console.error("There was an error!", error);
 		});
   }
+  handleDelete(event){ //This doesnt work yet; been trying to implement.
+	  
+	let requestMethod;
+	let endpoint;
+	let body;	
+	
+	requestMethod = "DELETE"
+	endpoint = process.env.REACT_APP_DB + "/menu/delete"
+	body = 'item_id='+this.state.item_id
+	
+	console.log("Reaching here.\n");
+	
+	axios({
+		method: requestMethod,
+		url: endpoint,
+		data: body,
+		headers: 'Authorization='+cookies.get('mytoken'),
+		httpsAgent: new https.Agent({
+		  rejectUnauthorized: false,
+		}),
+	})
+		.then(async response =>{
+	  await response;
+	
+	  if(response.status !== 200){this.handleShow(false);}
+	  else {this.handleShow(true);}
+	    })
+		.catch(error =>{
+	  this.handleShow(false);
+		    console.error("There was an error!", error);
+		});
+	  
+  }
+  
+  
 
   /* Used to show the correct alert after hitting save item */
   handleShow(success) {
@@ -115,7 +151,7 @@ class NewItem extends React.Component {
             </Alert>
 
             <div class="d-flex flex-row-reverse pb-3">
-              <button type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
+              <button onClick={this.handleDelete} /*type="delete" */className="btn btn-outline-danger btn-sm">Delete Item</button>
             </div>
             <div>
               <form class="pb-1">
