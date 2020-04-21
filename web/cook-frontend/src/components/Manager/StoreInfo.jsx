@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 /* This component is used to render the 
 resturant information for the manager view.
@@ -17,22 +18,25 @@ created rather than dynamically in aother component because under this section
 each of these cards MUST have all this information. */
 
 class StoreInfo extends React.Component{
-
-    constructor(props) {
-        
-        super(props);
-        this.state = {
-            restaurantInfo: [],
-            sectionEdit: "",
-            name:"",
-            address: "",
-            phone: "",
-            open:"",
-            close:""
+  constructor(props) {     
+    super(props);
+    
+    const cookies = new Cookies();
+    this.state = {
+      restaurantInfo: [],
+      sectionEdit: "",
+      name:"",
+      address: "",
+      phone: "",
+      open:"",
+      close:"",
+      staff: cookies.get("mystaff")
     };
+
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
   onChange = (e) => {
         /*
           Because we named the inputs to match their
@@ -49,7 +53,7 @@ class StoreInfo extends React.Component{
     
     axios({
       method: 'put',
-      url: 'https://50.19.176.137:8001/restaurant/123',
+      url:  process.env.REACT_APP_DB + '/restaurant/' + this.state.staff.restaurant_id,
       data: 'name='+this.state.name+'&address='+this.state.address
       +'&phone='+this.state.phone+'&open='+this.state.open
       +'&close='+this.state.close,

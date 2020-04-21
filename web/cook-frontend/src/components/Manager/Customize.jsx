@@ -3,39 +3,44 @@ import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 /*this is the customize component for the manager
-view. The stats are stored in state and rendered 
-onto cards in by CustomizeProp */
+view. The customization info is prefilled from the pull from
+the database made on Manager. Each field has an eit button
+which when clicked changes the 'sectionEdit' state to that section.
+renderInfo is called which either creates a form to edit for the
+section or renders what is there from the database.*/
 class Customize extends React.Component{
-
     constructor(props) {
-        
-        super(props);
-        this.state = {
-            customizeInfo: [],
-            sectionEdit: "",
-            font:"",
-            primary: "",
-            secondary: "",
-            tertiary:""
+      super(props);
+
+      const cookies = new Cookies();
+      this.state = {
+        customizeInfo: [],
+        sectionEdit: "",
+        font:"",
+        primary: "",
+        secondary: "",
+        tertiary:"",
+        staff: cookies.get("mystaff")
     };
+
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
   onChange = (e) => {
         /*
-          Because we named the inputs to match their
-          corresponding values in state, it's
-          super easy to update the state
+          On change of the edit field- update the field in the
+          state so we can send it to the database.
         */
         this.setState({ [e.target.name]: e.target.value });
-        console.log(this.state);
       }
+
   /* Used for connecting to Menu in database */
   handleSubmit(event) {
-    //const data = new FormData(event.target);
-    //const { name, address, phone, open,close} = this.state;
+  
     this.editForm("");
     event.preventDefault();
     
@@ -43,7 +48,7 @@ class Customize extends React.Component{
     
     axios({
       method: 'post',
-      url: 'https://50.19.176.137:8001/restaurant/123',
+      url: process.env.REACT_APP_DB + '/restaurant/' +this.state.staff.resturant_id,
       data: 'name='+this.state.name+'&address='+this.state.address
       +'&phone='+this.state.phone+'&open='+this.state.open
       +'&close='+this.state.close,
@@ -80,83 +85,81 @@ class Customize extends React.Component{
         sectionEdit: category
     })
   }
-    renderInfo(){
-        return (
-                <React.Fragment>
-                    <Card className="text-center m-2 w-100" style={itemStyle}>
-                        <Card.Header style={cardHeaderStyle}>Font 
-                        </Card.Header>
-                            <Card.Body>
-                                {this.state.sectionEdit !== "Font" ? 
-                                    <p style={{margin: "0", padding: "0.3em"}}>{this.state.customizeInfo[5][1] + " "}
-                                        <button  onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button> 
-                                    </p>
-
-                                    :   <form onSubmit = {this.handleSubmit}>
-                                            <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[5][1]} onChange={this.onChange}></input>
-                                            <div className="row m-2">
-                                                <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                            </div>
-                                        </form>
+renderInfo(){
+    return (
+        <React.Fragment>
+            <Card className="text-center m-2 w-100" style={itemStyle}>
+                <Card.Header style={cardHeaderStyle}>Font 
+                </Card.Header>
+                    <Card.Body>
+                        {/* if Font is not the section to edit render the database info and a button to edit*/}
+                        {this.state.sectionEdit !== "Font" ? 
+                            <p style={{margin: "0", padding: "0.3em"}}>{this.state.customizeInfo[5][1] + " "}
+                                <button  onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button> 
+                            </p>
+                            :   
+                            <form onSubmit = {this.handleSubmit}>
+                            {/* if Font is the section to edit create a form and on submit send to the database*/}
+                                    <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[5][1]} onChange={this.onChange}></input>
+                                    <div className="row m-2">
+                                        <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                    </div>
+                                </form>
+                        }
+                    </Card.Body>
+            </Card>
+            <Card className="text-center m-2 w-100" style={itemStyle}>
+                <Card.Header style={cardHeaderStyle}>Colors</Card.Header>
+                <Card.Body>
+                    <div className = "border-bottom m-3">
+                        <h5 className="card-subtitle mb-2 text-muted float-left">Primary</h5>
+                         {this.state.sectionEdit !== "Primary" ? 
+                                <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[6][1]}
+                                    <button onClick={() => this.editForm("Primary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                                </p>
+                                :  <form onSubmit = {this.handleSubmit}>
+                                    <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[6][1]} onChange={this.onChange}></input>
+                                    <div className="row m-2">
+                                        <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                    </div>
+                                </form>
                             }
-                             
-                            </Card.Body>
-                        
-                    </Card>
-                 
-                    <Card className="text-center m-2 w-100" style={itemStyle}>
-                        <Card.Header style={cardHeaderStyle}>Colors</Card.Header>
-                        <Card.Body>
-                            <div className = "border-bottom m-3">
-                                <h5 className="card-subtitle mb-2 text-muted float-left">Primary</h5>
-                                 {this.state.sectionEdit !== "Primary" ? 
-                                        <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[6][1]}
-                                            <button onClick={() => this.editForm("Primary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                                        </p>
-                                        :  <form onSubmit = {this.handleSubmit}>
-                                            <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[6][1]} onChange={this.onChange}></input>
-                                            <div className="row m-2">
-                                                <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                            </div>
-                                        </form>
-                                    }
-                            </div>
-                            <div className = "border-bottom m-3">
-                                <h5 className="card-subtitle mb-2 text-muted float-left">Secondary</h5>
-                                    {this.state.sectionEdit !== "Secondary" ? 
-                                        <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[7][1]}
-                                            <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                                        </p>
-                                        : <form onSubmit = {this.handleSubmit}>
-                                            <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[7][1]} onChange={this.onChange}></input>
-                                            <div className="row m-2">
-                                                <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                            </div>
-                                        </form>
-                                    }
-                            </div>
-                            <div className = "border-bottom m-3">
-                            <h5 className="card-subtitle mb-2 text-muted float-left">Tertiary</h5>
-                                {this.state.sectionEdit !== "Tertiary" ? 
-                                    <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[8][1]}
-                                        <button  onClick={() => this.editForm("Tertiary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                                    </p>
-                                    : <form onSubmit = {this.handleSubmit}>
-                                            <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[8][1]} onChange={this.onChange}></input>
-                                            <div className="row m-2">
-                                                <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                            </div>
-                                        </form>
-                                }
-                            </div>
-                            
-                        </Card.Body>
-                    </Card>
-                </React.Fragment>
+                    </div>
+                    <div className = "border-bottom m-3">
+                        <h5 className="card-subtitle mb-2 text-muted float-left">Secondary</h5>
+                            {this.state.sectionEdit !== "Secondary" ? 
+                                <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[7][1]}
+                                    <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                                </p>
+                                : <form onSubmit = {this.handleSubmit}>
+                                    <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[7][1]} onChange={this.onChange}></input>
+                                    <div className="row m-2">
+                                        <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                    </div>
+                                </form>
+                            }
+                    </div>
+                    <div className = "border-bottom m-3">
+                    <h5 className="card-subtitle mb-2 text-muted float-left">Tertiary</h5>
+                        {this.state.sectionEdit !== "Tertiary" ? 
+                            <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[8][1]}
+                                <button  onClick={() => this.editForm("Tertiary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                            </p>
+                            : <form onSubmit = {this.handleSubmit}>
+                                    <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[8][1]} onChange={this.onChange}></input>
+                                    <div className="row m-2">
+                                        <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                    </div>
+                                </form>
+                        }
+                    </div> 
+                </Card.Body>
+            </Card>
+        </React.Fragment>
 
-            )
+        )
 
-    }
+}
     render() {
         const {customizeInfo } = this.state;
         const resturantInfo = this.props.info;
