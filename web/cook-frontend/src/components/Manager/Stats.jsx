@@ -26,8 +26,8 @@ class Stats extends React.Component{
         return (
             <Container>
               <div style={backgroundStyle}>
-             <Container fluid style={{'min-height': '70vh'}}>
-                <div class="d-flex flex-wrap">
+             <Container fluid style={{'minHeight': '70vh'}}>
+                <div className="d-flex flex-wrap">
                     {this.renderStats()}
                 </div>
             </Container> 

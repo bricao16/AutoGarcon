@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 
 /*This prop is used to render the stats page for the manager view
     it is the default view when the manager logs in. Each type of statistic
-    is desplayed on a seperate card. This data is pulled in the MStats component.
+    is desplayed on a seperate card. This data is pulled in the Stats component.
 */
 
 function StatItem(props) {
@@ -29,14 +29,14 @@ function StatItem(props) {
 }
 
 const statStyle = {
-    'border-bottom': 'grey solid 1px'
+    'borderBottom': 'grey solid 1px'
 };
 const cardHeaderStyle = {
     'backgroundColor': '#0b658a',
     'color': '#ffffff'
 };
 const itemStyle = {
-    'border-bottom': 'grey solid 1px',
+    'borderBottom': 'grey solid 1px',
     'width':'200px'
 };
 

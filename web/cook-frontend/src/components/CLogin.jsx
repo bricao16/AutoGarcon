@@ -13,9 +13,10 @@ import {Redirect} from "react-router-dom";
 import Alert from 'react-bootstrap/Alert';
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 /*this is the login component for the cook
-view. Asks for the email address, password and logs in if the user and correct password
+view. Asks for the staffID, password and logs in if the user and correct password
 exists on the database */
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -35,8 +36,9 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+const cookies = new Cookies();
 
-export default class SignIn extends React.Component {
+export default class CLogin extends React.Component {
   constructor(props){
 	  super(props);
 	  
@@ -44,7 +46,9 @@ export default class SignIn extends React.Component {
 	    email: '',
       passwd:'',
       redirect: false,
-      show: false
+      show: false,
+      staff:null,
+      token:null
 	  };
     
     this.handleShow = this.handleShow.bind(this);
@@ -59,12 +63,9 @@ export default class SignIn extends React.Component {
 	  
 	  /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
 	  
-	  console.log(this.state.email);
-	  console.log(this.state.passwd);
-	  
 	  axios({
       method: 'post',
-      url: 'https://50.19.176.137:8001/staff/login',
+      url: process.env.REACT_APP_DB + '/staff/login',
       data: 'username='+this.state.email+'&password='+this.state.passwd,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -78,8 +79,11 @@ export default class SignIn extends React.Component {
         
         if (response.status !== 200) {this.handleShow(response);}
         else {
-          this.setState({show: false});
-          this.setState({redirect: true});
+          this.setState({staff: response.data.staff,
+                        token:response.data.token,
+                        show: false,
+                        redirect: true
+                        });
         }
       })
       .catch(error =>{
@@ -120,6 +124,8 @@ export default class SignIn extends React.Component {
 
   render(){
 	if(this.state.redirect === true){
+    cookies.set('mystaff', this.state.staff, { path: '/' });
+    cookies.set('mytoken', this.state.token, { path: '/' });
 	  return <Redirect to='/cook'/>
 	}  
 	return (
@@ -131,16 +137,16 @@ export default class SignIn extends React.Component {
           {this.state.response}
         </Alert>
 
-        <div style={{'text-align':'center'}}>
+        <div style={{'textAlign':'center'}}>
           {/* Lock icon on top */}
           <div style={{'display': 'inline-block'}}>
             <Avatar className={useStyles.avatar}>
               <LockOutlinedIcon />
             </Avatar>
           </div>
-          {/* Manager Sign In Title */}
+          {/* Cook Sign In Title */}
           <Typography component="h1" variant="h5">
-            Manager Sign In
+            Cook Sign In
           </Typography>
         </div>
 
@@ -152,7 +158,7 @@ export default class SignIn extends React.Component {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Staff ID"
             name="email"
             autoComplete="email"
             autoFocus
@@ -170,11 +176,11 @@ export default class SignIn extends React.Component {
             autoComplete="current-password"
           />
 
-          {/* Remember me checkbox */}
+          {/* Remember me checkbox 
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
-          />
+          />*/}
           {/* Submit button */}
           <Button onClick = {this.handleSubmit}
             type="submit"

@@ -46,7 +46,7 @@ class Order extends React.Component {
 
   variableOrderStyles(){
     let style = Object.assign({}, orderStyle);
-    if(this.props.selectedOrder){
+    if(this.props.isSelected){
       style.background = '#7e7e7e';
     }
     if(this.props.order.expand){
@@ -92,6 +92,23 @@ class Order extends React.Component {
     );
   }
 
+  renderCompletedFooter(){
+    if(this.props.isCompleted) {
+      return (
+        <Card.Footer className="py-1 px-2 d-flex" style={this.statusStyle()}>
+          Completed
+        </Card.Footer>
+      )
+    }
+  }
+
+  statusStyle(){
+    let style = {color: '#fff'};
+    style.backgroundColor = '#17af29';
+    // style.backgroundColor = '#e2dd26';
+    return style;
+  }
+
   componentDidMount() {
     this.initializeTime()
   }
@@ -117,6 +134,7 @@ class Order extends React.Component {
           <Card.Footer className="py-1 px-2 d-flex" style={cardFooterStyle}>
             {this.renderTime()}
           </Card.Footer>
+          {this.renderCompletedFooter()}
         </Card>
       </div>
     )

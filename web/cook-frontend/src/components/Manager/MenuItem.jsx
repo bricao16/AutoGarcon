@@ -14,11 +14,13 @@ import Card from 'react-bootstrap/Card';
     button is click for a particular item
 
 
-
 */
 class MenuItem extends React.Component {
   constructor(props) {
         super(props);
+        this.state = {
+
+        };
     }
     getStockState(in_stock){
         if(in_stock === 0)

@@ -13,12 +13,19 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Redirect} from "react-router-dom";
 import Alert from 'react-bootstrap/Alert';
+//import Manager from './Manager/Manager';
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
+
+
 
 /*this is the login component for the manager
-view. Asks for the email address, password and logs in if the user and correct password
-exists on the database */
+view. Asks for the staff ID, password and logs in if the user and correct password
+exists on the database
+
+Privacy Policy needed 
+https://html.com/resources/cookies-ultimate-guide/#Implementing_Cookies_on_a_Technical_Level */
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -39,37 +46,39 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const cookies = new Cookies();
 
-
-export default class SignIn extends React.Component {
+class MLogin extends React.Component {
 	
   constructor(props){
 	  super(props);
 	  
 	  this.state = {
 	    email: '',
-		  passwd:'',
-      redirect: false,
-      show: false
+		passwd:'',
+      	redirect: false,
+      	show: false,
+      	staff:null,
+      	token:null
 	  };
 	  
     this.handleShow = this.handleShow.bind(this);
 	  this.handleSubmit = this.handleSubmit.bind(this);
 	  this.handleEmail = this.handleEmail.bind(this);
 	  this.handlePasswd = this.handlePasswd.bind(this);
+	  
   }
+
   handleSubmit(event){
 	  
 	  event.preventDefault();
 	  
 	  /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
 	  
-	  console.log(this.state.email);
-    console.log(this.state.passwd);
     
     axios({
       method: 'post',
-      url: 'https://50.19.176.137:8001/staff/login',
+      url: process.env.REACT_APP_DB + '/staff/login',
       data: 'username='+this.state.email+'&password='+this.state.passwd,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -82,10 +91,31 @@ export default class SignIn extends React.Component {
         await response;
         
         if (response.status !== 200) {this.handleShow(response);}
-        else {
-          this.setState({show: false});
-          this.setState({redirect: true});
-        }
+        else 
+        {
+        	/*response.json()
+		      .then(
+		        (result) => {
+		        	console.log(result);*/
+		        if(response.data.staff.position === "manager")
+		        {
+			        this.setState({
+			            redirect: true,
+			            show: false,
+			            staff: response.data.staff,
+			            token:response.data.token
+			          });
+		        }
+		        else{
+		        	alert('Staff ID or Password is incorrect');
+		        }
+
+		 }
+		        //);
+
+          //this.setState({show: false});
+          //this.setState({redirect: true});
+        
       })
       .catch(error =>{
         this.setState({alertVariant: 'danger'});
@@ -93,6 +123,7 @@ export default class SignIn extends React.Component {
         this.setState({redirect: false});
         console.error("There was an error!", error);
       });
+
   }
   
   handleEmail(event){
@@ -124,31 +155,41 @@ export default class SignIn extends React.Component {
   }
    
   render(){
+  	/*redirect to manager*/
 	if(this.state.redirect === true){
-		return <Redirect to='/manager'/>
+
+			console.log(cookies.get('mystaff'));
+			//set cookies to use later in manager page
+			cookies.set('mystaff', this.state.staff, { path: '/' });
+			cookies.set('mytoken', this.state.token, { path: '/' });
+			console.log(cookies.get('mystaff'));
+
+			return  (
+				<Redirect to='/manager'/> 
+				);
 	}  
 	return (
 		//top of page
-		<Container component="main" maxWidth="xs" className="p-3">
-		  <CssBaseline />
-		  <div className={useStyles.paper}>
+	  	  <Container component="main" maxWidth="xs" className="p-3">
+			  <CssBaseline />
+	        <div className={useStyles.paper}>
 
-      <Alert show={this.state.show} variant={this.state.alertVariant}>
-        {this.state.response}
-      </Alert>
+	        <Alert show={this.state.show} variant={this.state.alertVariant}>
+	          {this.state.response}
+	        </Alert>
 
-			<div style={{'text-align':'center'}}>
-        {/* Lock icon on top */}
-        <div style={{'display': 'inline-block'}}>
-          <Avatar className={useStyles.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-        </div>
-        {/* Manager Sign In Title */}
-        <Typography component="h1" variant="h5">
-          Manager Sign In
-        </Typography>
-      </div>
+	        <div style={{'textAlign':'center'}}>
+	          {/* Lock icon on top */}
+	          <div style={{'display': 'inline-block'}}>
+	            <Avatar className={useStyles.avatar}>
+	              <LockOutlinedIcon />
+	            </Avatar>
+	          </div>
+	          {/* Cook Sign In Title */}
+	          <Typography component="h1" variant="h5">
+	            Manager Sign In
+	          </Typography>
+	        </div>
 
 			<form className={useStyles.form} noValidate>
 			  <TextField onChange = {this.handleEmail}
@@ -158,7 +199,7 @@ export default class SignIn extends React.Component {
 				required
 				fullWidth
 				id="email"
-				label="Email Address"
+				label="Staff ID"
 				name="email"
 				autoComplete="email"
 				autoFocus
@@ -175,11 +216,11 @@ export default class SignIn extends React.Component {
 				id="password"
 				autoComplete="current-password"
 			  />
-			  {/* Remember me check box */}
+			  {/* Remember me check box 
 			  <FormControlLabel
-				control={<Checkbox value="remember" color ="Primary" />}
+				control={<Checkbox value="remember" color ="primary" />}
 				label="Remember me"
-			  />
+			  />*/}
 			  {/* Submit button */}
 			  <Button onClick = {this.handleSubmit}
 				type="submit"
@@ -204,3 +245,5 @@ export default class SignIn extends React.Component {
 	);
   }
 }
+//const MLoginCookies = withCookies(MLogin);
+export default MLogin; 

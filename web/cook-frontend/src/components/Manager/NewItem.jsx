@@ -4,13 +4,14 @@ import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 /* 
   This component is to allow the manager to 
   create a new item. It returns a form object that allows
-  for several options and fields to be submitted.  There
-  are no helper functions
+  for several options and fields to be submitted.  
 */
+
 class NewItem extends React.Component {
   constructor(props) {
     super(props);
@@ -18,24 +19,32 @@ class NewItem extends React.Component {
     this.state.type = props.prefill.type
     this.state.item_id = props.prefill.item_id
     this.state.show = false
+    this.state.cookies = new Cookies();
+    this.state.user = this.state.cookies.get("mystaff")
+    this.parseStock(props.prefill.in_stock)
     this.handleShow = this.handleShow.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   /* Used for handling changes to the input field */
   handleInputChange(event) {
     const target = event.target;
-
     const value = target.value;
-
     const name = target.name;
 
-    this.setState({
-      [name]: value
-    });
-
-    console.log('input after set state', this.state)
+    if (name === "in_stock") {
+      var val = this.parseStock(target.checked);
+      this.setState({
+        [name]: val
+      });
+    }
+    else {
+      this.setState({
+        [name]: value
+      });
+    }
   }
 
   /* Used for connecting to Menu in database */
@@ -45,22 +54,26 @@ class NewItem extends React.Component {
     let requestMethod;
     let endpoint;
     let body;
+    let message;
 
     // Non existent so need to add item
     if (this.state.type === "default") {
+      message = "added"
       requestMethod = "PUT"
-      endpoint = "https://50.19.176.137:8001/menu/add"
-      body = 'restaurant_id='+123
+      endpoint = process.env.REACT_APP_DB + "/menu/add"
+      body = 'restaurant_id='+this.state.user.restaurant_id
         +'&item_name='+this.state.name
         +'&calorie_num='+this.state.calories
         +'&category='+this.state.category
         +'&price='+this.state.price
+        +'&in_stock='+this.state.in_stock
     }
     // Item needs to be edited
     else {
+      message = "updated"
       requestMethod = "POST"
-      endpoint = "https://50.19.176.137:8001/menu/update"
-      body = 'restaurant_id='+123
+      endpoint = process.env.REACT_APP_DB + "/menu/update"
+      body = 'restaurant_id='+this.state.user.restaurant_id
         +'&item_id='+this.state.item_id
         +'&item_name='+this.state.name
         +'&calorie_num='+this.state.calories
@@ -69,20 +82,13 @@ class NewItem extends React.Component {
         +'&in_stock='+this.state.in_stock
     }
 	  
-	  const requestOptions = {
-      method: requestMethod,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: body
-    }
-    
     axios({
       method: requestMethod,
       url: endpoint,
       data: body,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
       },
       httpsAgent: new https.Agent({  
         rejectUnauthorized: false,
@@ -93,18 +99,57 @@ class NewItem extends React.Component {
       await response;
 
       if (response.status !== 200) {this.handleShow(false);}
-      else {this.handleShow(true);}
+      else {this.handleShow(true, message);}
 		})
-		.catch(error =>{
+		.catch(error => {
       this.handleShow(false);
 			console.error("There was an error!", error);
 		});
   }
 
+  handleDelete(event){
+	  event.preventDefault();
+    
+    let requestMethod;
+    let endpoint;
+    let body;
+    let message;
+
+    requestMethod = "DELETE"
+    endpoint = process.env.REACT_APP_DB + "/menu/delete"
+    body = 'item_id='+this.state.item_id
+    message = "deleted"
+    
+    axios({
+      method: requestMethod,
+      url: endpoint,
+      data: body,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
+      },
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+    //fetch(endpoint, requestOptions)
+		.then(async response => {
+      await response;
+
+      if (response.status !== 200) {this.handleShow(false);}
+      else {this.handleShow(true, message);}
+		})
+		.catch(error => {
+      this.handleShow(false);
+			console.error("There was an error!", error);
+		});
+  }
+  
+
   /* Used to show the correct alert after hitting save item */
-  handleShow(success) {
+  handleShow(success, message) {
     if (success) {
-      this.setState({response: 'Successfully updated item!'});
+      this.setState({response: "Successfully "+message+" item!"});
       this.setState({alertVariant: 'success'});
     }
     else {
@@ -115,8 +160,22 @@ class NewItem extends React.Component {
     this.setState({show: true});
   }
 
+  /* Parsing stock to set correct value */
+  parseStock(value) {
+    if (value === false) {
+      this.setState({in_stock: 0});
+      return 0
+    }
+    else if (value === true) {
+      this.setState({in_stock: 1});
+      return 1
+    }
+  }
 
   render(){
+    // Make sure stock is correctly represented as true or false in the component's state
+    this.parseStock(this.state.in_stock)
+
     if(this.state.type === "default")
     {
       return ( 
@@ -128,7 +187,7 @@ class NewItem extends React.Component {
             </Alert>
 
             <div class="d-flex flex-row-reverse pb-3">
-              <button type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
+              <button onClick={this.handleDelete} type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
             </div>
             <div>
               <form class="pb-1">
@@ -164,8 +223,8 @@ class NewItem extends React.Component {
 
                 <div class="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
-                    <input type="checkbox" defaultChecked/> 
-                    <label class="pl-2" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} placeholder={this.state.in_stock}>In stock</label>
+                    <input type="checkbox" id="in_stock" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} checked={this.state.in_stock}/> 
+                    <label class="pl-2" for="in_stock">In stock</label>
                   </div>
                 </div>
                 
@@ -190,7 +249,7 @@ class NewItem extends React.Component {
       );
     }
     else{
-      {/*If editing a item prefill with values*/}
+      /*If editing a item prefill with values*/
       return(
         <Col className="pt-3 px-3">
           <Container>
@@ -199,8 +258,8 @@ class NewItem extends React.Component {
             {this.state.response}
           </Alert>
 
-            <div class="d-flex flex-row-reverse pb-3">
-              <button type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
+            <div className="d-flex flex-row-reverse pb-3">
+              <button onClick={this.handleDelete} type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
             </div>
 
             <div>
@@ -237,8 +296,8 @@ class NewItem extends React.Component {
 
                 <div class="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
-                    <input type="checkbox" defaultChecked/> 
-                    <label class="pl-2" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} placeholder={this.state.in_stock}>In stock</label>
+                    <input type="checkbox" id="in_stock" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} checked={this.state.in_stock}/> 
+                    <label class="pl-2" for="in_stock">In stock</label>
                   </div>
                 </div>
                 

@@ -1,14 +1,14 @@
 import React from "react";
-import Orders from "./Orders"
 import Navigation from "./Navigation";
-import Header from "./Header";
 import Alert from "./Alert";
 import Footer from "./Footer";
-import $ from "jquery";
-import Button from 'react-bootstrap/Button';
-import https from 'https';
-import axios from 'axios';
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import Body from "./Body";
+import Nav from 'react-bootstrap/Nav';
+import Container from 'react-bootstrap/Container';
+import { Switch, Route, Redirect } from "react-router-dom";
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 class Cook extends React.Component {
 
@@ -18,91 +18,19 @@ class Cook extends React.Component {
     this.state = {
       orders: {},
       selectedOrder: 0,
-      alertActive: false,
-      alertContent: <></>,
-      currentTab: 0
+      // alertActive: false,
+      // alertContent: <></>,
+      currentTab: "active",
+      token: cookies.get('mytoken'),
+      staff: cookies.get('mystaff')
     };
-    this.setupKeyPresses();
   }
 
-  setupKeyPresses(){
-    $(document).keydown(key => {
-      // Arrow keys right and left
-      if(key.which === 37 || key.which === 39){
-        this.handleArrowKeyPress(key);
-      // c
-      } else if(key.which === 67){
-        this.markOrderComplete();
-      // e
-      } else if(key.which === 69){
-        this.toggleExpandOrder();
-      // 0 - 9
-      } else if(key.which >= 49 && key.which <= 57){
-        this.handleNumberKeyPress(key);
-      }
-    });
-  }
-
-  handleArrowKeyPress(key){
-    let newSelectedOrder = this.state.selectedOrder;
-    if(key.which === 37){
-      newSelectedOrder -= 1;
-    } else if (key.which === 39){
-      newSelectedOrder += 1;
-    }
-    const ordersLength = Object.keys(this.state.orders).length;
-    if(newSelectedOrder >= ordersLength){
-      newSelectedOrder = 0;
-    } else if(newSelectedOrder < 0){
-      newSelectedOrder = ordersLength-1;
-    }
-    this.changeSelectedOrder(newSelectedOrder);
-  }
-
-  handleNumberKeyPress(key){
-    const number = key.which - 49;
-    if(number < Object.keys(this.state.orders).length){
-      this.changeSelectedOrder(number);
-    }
-  }
-
-  changeSelectedOrder(cardId){
-    let newState = this.state;
-    newState.selectedOrder = cardId;
-    this.setState(newState);
-  }
-
-  toggleExpandOrder(){
-    const index = this.state.selectedOrder;
-    const orderNum = Object.keys(this.state.orders)[index];
-    let newState = this.state;
-    newState.orders[orderNum].expand = !newState.orders[orderNum].expand;
-    this.setState(newState);
-  }
-
-  markOrderComplete(){
-    const index = this.state.selectedOrder;
-    const orderNum = Object.keys(this.state.orders)[index];
-    let state = this.state;
-    state.alertActive = true;
-    state.alertContent =
-      <div>
-        <div>Order #{orderNum} marked complete. No API yet.</div>
-        <Button variant="secondary" size="sm" className="mt-3" onClick={this.deactivateAlert.bind(this)}>Okay</Button>
-      </div>;
-    this.setState(state);
-  }
-
+  /*
   deactivateAlert(){
     let state = this.state;
     state.alertActive = false;
     state.alertContent = <></>;
-    this.setState(state);
-  }
-
-  changeCurrentTab(tab){
-    let state = this.state;
-    state.currentTab = tab;
     this.setState(state);
   }
 
@@ -111,86 +39,41 @@ class Cook extends React.Component {
       return <Alert alert={this.state.alertContent}/>
     }
   }
-
-  configureOrders(orders){
-    // console.log(orders);
-    let ordersState = {};
-    // Iterate over each order
-    Object.values(orders).forEach(order => {
-      // console.log(order);
-      // Check if that order_num exists
-      if(!(order.order_num in ordersState)){
-        // Create new order with empty items
-        ordersState[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
-      }
-      // If no category provided, mark as Entree
-      if(!order.category){
-        order.category = 'Entrees';
-      }
-      if(!(order.category in ordersState[order.order_num].items)){
-        ordersState[order.order_num].items[order.category] = [];
-      }
-      // Add item to order
-      ordersState[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name});
-    });
-    let newState = this.state;
-    newState.orders = ordersState;
-    this.setState(newState);
-  }
-
-  componentDidMount() {
-    // Get active orders from database
-    axios({
-      method: 'get',
-      // https://50.19.176.137:8001/orders/123
-      // Dummy orders for testing: "https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders"
-      url: 'https://my-json-server.typicode.com/palu3492/fake-rest-apis/orders', // https not working
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      httpsAgent: new https.Agent({
-        rejectUnauthorized: false,
-      }),
-    })
-      .then(res => res.data)
-      .then(orders => {
-        this.configureOrders(orders);
-      })
-      .catch(e => console.log(e));
-  }
+  */
 
   render() {
+    // if user doesnt have access
+    if(this.state.staff === undefined || this.state.token === undefined) {
+      return(
+        <Container>
+          <Nav.Link href="/login_cook"> Session expired please log back in </Nav.Link>
+        </Container>
+      );
+    }
     return (
-      <Router>
-        <Switch>
-          <Route exact path="/cook">
-            <Redirect to="/cook/active" />
-          </Route>
-          <Route path="/cook/active">
-            <div style={cookPageStyle} className="d-flex flex-column">
-              <Navigation currentTab={this.state.currentTab} handleTabClick={this.changeCurrentTab.bind(this)}/>
-              {this.renderAlert()}
-              <div className="p-3" style={ordersStyle}>
-                <Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={this.markOrderComplete.bind(this)} />
-                <Orders orders={this.state.orders} selectedOrder={this.state.selectedOrder} handleCardClick={this.changeSelectedOrder.bind(this)} />
-              </div>
-              <Footer />
-            </div>
-          </Route>
-          <Route path="/cook/completed">
-            <div>Completed orders</div>
-          </Route>
-        </Switch>
-      </Router>
+      <div style={cookStyle} className="d-flex flex-column">
+        {/* {this.renderAlert()} Might add this back*/}
+        <Navigation currentTab={this.state.currentTab} />
+        <div style={bodyStyle}>
+          <Switch>
+            <Route exact path="/cook">
+              <Redirect to="/cook/active" />
+            </Route>
+            <Route exact path="/cook/active" render={(props) => <Body {...props} path="/active" />} />
+            <Route exact path="/cook/completed" render={(props) => <Body {...props} path="/completed" />} />
+          </Switch>
+        </div>
+        <Footer />
+      </div>
     )
   }
 }
 
-const cookPageStyle = {
+const cookStyle = {
   width: '100vw'
 };
 
-const ordersStyle = {
+const bodyStyle = {
   flex: 1,
   backgroundColor: '#f1f1f1'
 };
