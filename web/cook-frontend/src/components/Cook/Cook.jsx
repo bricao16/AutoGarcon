@@ -9,9 +9,7 @@ import https from 'https';
 import axios from 'axios';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
-import AccountDropdown from '../AccountDropdown';
-import CLogin from '../CLogin';
+import { Switch, Route, Redirect } from "react-router-dom";
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
@@ -29,7 +27,6 @@ class Cook extends React.Component {
       token: cookies.get('mytoken'),
       staff: cookies.get('mystaff')
     };
-    this.setupKeyPresses();
   }
 
   /*
@@ -147,10 +144,10 @@ class Cook extends React.Component {
   }
   */
 
-
+  /*
   componentDidMount() {
     this._isMounted = true;
-    this.axiosCancelSource = axios.CancelToken.source()
+    this.axiosCancelSource = axios.CancelToken.source();
      axios({
       method: 'get',
       // https://50.19.176.137:8001/orders/123
@@ -188,53 +185,29 @@ class Cook extends React.Component {
       .then(orders => {
         this.configureOrders(orders);
       })
-      .catch(e => console.log(e));*/
+      .catch(e => console.log(e));
   }
   componentWillUnmount () {
     this._isMounted = false;
-    console.log('unmount component')
+    console.log('unmount component');
     this.axiosCancelSource.cancel('Component unmounted.')
   }
-  render()
-  {
-      //if user doesnt have access
-      if(this.state.staff === undefined || this.state.token === undefined )
-      {
-        return(
-            <Container>
-                <Nav defaultActiveKey="/" className="flex-column rounded" >
-                      <Nav.Link href="/login_cook"> Session expired please log back in </Nav.Link>
-                </Nav>
-                <Switch>
-                  <Route exact path="/login_cook">
-                    <CLogin/>
-                  </Route>
-                </Switch>
-            </Container>
-        );
-      }
+  */
+
+  render() {
+    // if user doesnt have access
+    if(this.state.staff === undefined || this.state.token === undefined) {
+      return(
+          <Container>
+            <Nav.Link href="/login_cook"> Session expired please log back in </Nav.Link>
+          </Container>
+      );
+    }
     return (
       <div style={cookStyle} className="d-flex flex-column">
         {/*{this.renderAlert()}*/}
-        <AccountDropdown firstName={this.state.staff.first_name} lastName={this.state.staff.first_name} className="ml-auto pt-3 pr-3"></AccountDropdown>
         <Navigation currentTab={this.state.currentTab} />
-
         <div style={bodyStyle}>
-          {/*
-          <Router>
-            <Switch>
-              <Route exact path="/cook">
-                <Redirect to="/cook/active" />
-              </Route>
-              <Route path="/cook/active">
-                <Body />
-              </Route>
-              <Route path="/cook/completed">
-                <Body />
-              </Route>
-            </Switch>
-          </Router>
-          */}
           <Switch>
             <Route exact path="/cook">
               <Redirect to="/cook/active" />

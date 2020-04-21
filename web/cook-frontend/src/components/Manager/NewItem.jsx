@@ -149,7 +149,7 @@ class NewItem extends React.Component {
 		method: requestMethod,
 		url: endpoint,
 		data: body,
-		headers: 'Authorization='+cookies.get('mytoken'),
+		headers: 'Authorization='+this.state.cookies.get('mytoken'),
 		httpsAgent: new https.Agent({
 		  rejectUnauthorized: false,
 		}),
