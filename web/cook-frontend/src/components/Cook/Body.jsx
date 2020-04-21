@@ -11,17 +11,17 @@ function Body(props){
   // For canceling server request
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
-
+  // Cookies for getting user info
   const cookies = new Cookies();
   const restaurant_id = cookies.get("mystaff").restaurant_id;
-
-  const [ordersPath, setGetUrl] = useState(`/orders/${restaurant_id}`);
-
-  const completedOrderUrl = process.env.REACT_APP_DB+'/orders/update';
-  const [completed, setCompleted] = useState(false);
-
+  const [ordersPath, setGetUrl] = useState(null); // /orders/123 or /orders/complete/123
+  const completedOrderUrl = process.env.REACT_APP_DB+'/orders/update'; // domain.com/orders/update
+  const [completed, setCompleted] = useState(false); // if on completed tab, adds completed footer to each order
+  // Switch between HTTP and HTTPS
   const serverUrl = process.env.REACT_APP_DB; // HTTPS: REACT_APP_HTTPS_DB HTTP: REACT_APP_DB
 
+  // If path changes (because of switching tabs: active or complete)
+  // or restaurant_id updates for some reason, the correct orders will be pulled from database
   useEffect(() => {
     if(props.path === '/active'){
       setGetUrl(`/orders/${restaurant_id}`);
@@ -32,10 +32,14 @@ function Body(props){
     }
   }, [props.path, restaurant_id]);
 
+  // When orders database url changes, pull orders
+  // Will happen when switching tabs
   useEffect(() => {
     getOrders();
   }, [ordersPath]);
 
+  // Set up things for componentDidMount() componentWillUnmount()
+  // Creates method to re-pull orders from database every 10 seconds
   useEffect(() => {
     // updates orders every 10 seconds
     const interval = setInterval(getOrders, 10000); // start interval after mounting
@@ -46,55 +50,68 @@ function Body(props){
     }
   });
 
+  // Holds orders from database in object
   const [orders, setOrders] = useState({});
 
+  // Converts orders returned from database into object that can easily be turned into Order components
   function configureOrders(orders){
-    let ordersState = {};
-    // Iterate over each order
-    Object.values(orders).forEach(order => {
-      // console.log(order);
-      // Check if that order_num exists
-      if(!(order.order_num in ordersState)){
-        // Create new order with empty items
-        ordersState[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
-      }
-      // If no category provided
-      if(!order.category){
-        order.category = 'Category';
-      }
-      if(!(order.category in ordersState[order.order_num].items)){
-        ordersState[order.order_num].items[order.category] = [];
-      }
-      // Add item to order
-      ordersState[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name});
-    });
-    setOrders(ordersState);
+    if(typeof orders === 'object'){
+      let ordersState = {};
+      // Iterate over each order
+      Object.values(orders).forEach(order => {
+        // Check if that order_num exists
+        if(!(order.order_num in ordersState)){
+          // Create new order with empty items
+          ordersState[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
+        }
+        // If no category provided
+        if(!order.category){
+          order.category = 'Category';
+        }
+        if(!(order.category in ordersState[order.order_num].items)){
+          ordersState[order.order_num].items[order.category] = [];
+        }
+        // Add item to order
+        ordersState[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name});
+      });
+      setOrders(ordersState);
+    } else {
+      setOrders({})
+    }
   }
 
   const [selectedOrder, setSelectedOrder] = useState(0);
 
   function changeSelectedOrder(cardId){
-    setSelectedOrder(cardId);
+    // Check if cardId exists, 0 cards will result in cardId of null
+    if(cardId < Object.keys(orders).length){
+      setSelectedOrder(cardId);
+    } else {
+      cardId = null;
+    }
   }
 
-  // Get in progress orders from db
+  // Get 'in progress' orders from db
   function getOrders(){
-    const url = serverUrl + ordersPath;
-    axios.get(url, {
-      cancelToken: source.token
-    })
-      .then(res => res.data)
-      .then(orders => {
-        if(isMounted) {
-          configureOrders(orders);
-        } else {
-          source.cancel('component unmounted');
-        }
+    // Null until calculated by effect hook
+    if(ordersPath){
+      const url = serverUrl + ordersPath;
+      axios.get(url, {
+        cancelToken: source.token
       })
-      .catch(error =>{
-      console.log('server request error');
-      console.error(error);
-    });
+        .then(res => res.data)
+        .then(orders => {
+          if(isMounted) {
+            configureOrders(orders);
+          } else {
+            source.cancel('component unmounted');
+          }
+        })
+        .catch(error =>{
+        console.log('server request error');
+        console.error(error);
+      });
+    }
   }
 
   function changeOrderStatus(status){
@@ -167,12 +184,21 @@ function Body(props){
     this.setState(newState);
   }
   */
+  function renderOrders(){
+    // Check if there are orders in orders, if not just write 'No orders'
+    if(Object.keys(orders).length) {
+      return <Orders orders={orders} selectedOrder={selectedOrder} handleCardClick={changeSelectedOrder}
+                     completed={completed}/>;
+    }
+    let string = completed ? "No completed orders" : "No active orders";
+    return <p>{string}</p>
+  }
 
   return (
     <div className="p-3">
       <Header handleStatusChangeClick={changeOrderStatus} path={props.path} />
       {/*<Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={markOrderComplete} />*/}
-      <Orders orders={orders} selectedOrder={selectedOrder} handleCardClick={changeSelectedOrder} completed={completed}/>
+      {renderOrders()}
     </div>
   )
 }
