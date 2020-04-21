@@ -8,6 +8,7 @@ import { Container, Row, Col, Nav, Image, Button } from 'react-bootstrap';
 function Home() {
   return (
     <div style={homeStyle} className="d-flex flex-column">
+    
       <Container fluid>
         {/* Logo, title and navigation are each in a column*/}
         <Row style={{alignItems: 'center'}}>

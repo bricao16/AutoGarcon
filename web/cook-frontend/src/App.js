@@ -7,7 +7,8 @@ import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import { CookiesProvider, withCookies } from 'react-cookie';
-import Home from "./components/Home"
+import Home from "./components/Home";
+import PrivacyPolicy from './components/PrivacyPolicy';
 
  /*
 This is the main page for AutoGarcon. It contains the routing for all the different
@@ -18,7 +19,6 @@ well as a stock image with a circle containing a description of the product.*/
 class App extends React.Component{
     constructor(props) {
       super(props);
-
       this.state = {
       };
     }
@@ -50,6 +50,9 @@ class App extends React.Component{
               </Route>
               <Route path="/login_cook">
                 <CLogin/>
+              </Route>
+              <Route path="/privacy_policy">
+                <PrivacyPolicy/>
               </Route>
               <Route path="/statistics">
                 <Manager/>

@@ -32,9 +32,6 @@ class Cook extends React.Component {
     this.setupKeyPresses();
   }
 
-  setupKeyPresses(){
-
-  }
   /*
   setupKeyPresses(){
     $(document).keydown(key => {
@@ -149,6 +146,7 @@ class Cook extends React.Component {
     this.setState(newState);
   }
   */
+
 
   componentDidMount() {
     this._isMounted = true;

@@ -13,9 +13,10 @@ import {Redirect} from "react-router-dom";
 import Alert from 'react-bootstrap/Alert';
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 /*this is the login component for the cook
-view. Asks for the email address, password and logs in if the user and correct password
+view. Asks for the staffID, password and logs in if the user and correct password
 exists on the database */
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -35,6 +36,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+const cookies = new Cookies();
 
 export default class CLogin extends React.Component {
   constructor(props){
@@ -44,7 +46,9 @@ export default class CLogin extends React.Component {
 	    email: '',
       passwd:'',
       redirect: false,
-      show: false
+      show: false,
+      staff:null,
+      token:null
 	  };
     
     this.handleShow = this.handleShow.bind(this);
@@ -61,7 +65,7 @@ export default class CLogin extends React.Component {
 	  
 	  axios({
       method: 'post',
-      url: 'http://50.19.176.137:8000/staff/login',
+      url: process.env.REACT_APP_DB + '/staff/login',
       data: 'username='+this.state.email+'&password='+this.state.passwd,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -75,8 +79,11 @@ export default class CLogin extends React.Component {
         
         if (response.status !== 200) {this.handleShow(response);}
         else {
-          this.setState({show: false});
-          this.setState({redirect: true});
+          this.setState({staff: response.data.staff,
+                        token:response.data.token,
+                        show: false,
+                        redirect: true
+                        });
         }
       })
       .catch(error =>{
@@ -117,6 +124,8 @@ export default class CLogin extends React.Component {
 
   render(){
 	if(this.state.redirect === true){
+    cookies.set('mystaff', this.state.staff, { path: '/' });
+    cookies.set('mytoken', this.state.token, { path: '/' });
 	  return <Redirect to='/cook'/>
 	}  
 	return (
@@ -128,7 +137,7 @@ export default class CLogin extends React.Component {
           {this.state.response}
         </Alert>
 
-        <div style={{'text-align':'center'}}>
+        <div style={{'textAlign':'center'}}>
           {/* Lock icon on top */}
           <div style={{'display': 'inline-block'}}>
             <Avatar className={useStyles.avatar}>

@@ -19,9 +19,13 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 
 
+
 /*this is the login component for the manager
-view. Asks for the email address, password and logs in if the user and correct password
-exists on the database */
+view. Asks for the staff ID, password and logs in if the user and correct password
+exists on the database
+
+Privacy Policy needed 
+https://html.com/resources/cookies-ultimate-guide/#Implementing_Cookies_on_a_Technical_Level */
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -74,7 +78,7 @@ class MLogin extends React.Component {
     
     axios({
       method: 'post',
-      url: 'http://50.19.176.137:8000/staff/login',
+      url: process.env.REACT_APP_DB + '/staff/login',
       data: 'username='+this.state.email+'&password='+this.state.passwd,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -93,12 +97,19 @@ class MLogin extends React.Component {
 		      .then(
 		        (result) => {
 		        	console.log(result);*/
-		          this.setState({
-		            redirect: true,
-		            show: false,
-		            staff: response.data.staff,
-		            token:response.data.token
-		          });
+		        if(response.data.staff.position === "manager")
+		        {
+			        this.setState({
+			            redirect: true,
+			            show: false,
+			            staff: response.data.staff,
+			            token:response.data.token
+			          });
+		        }
+		        else{
+		        	alert('Staff ID or Password is incorrect');
+		        }
+
 		 }
 		        //);
 
@@ -144,19 +155,18 @@ class MLogin extends React.Component {
   }
    
   render(){
-  	/*redirect to manager with the correct state information*/
+  	/*redirect to manager*/
 	if(this.state.redirect === true){
-		cookies.set('mystaff', this.state.staff, { path: '/' });
-		cookies.set('mytoken', this.state.token, { path: '/' });
-		
-		return  <Redirect to='/manager'/> 
-		//return <Manager cookies = {cookies}/>
-		/*return <Redirect
-				  to={{
-				    pathname: "/statistic",
-				    state: {cookies : {cookies}}
-				  }}
-				/>*/
+
+			console.log(cookies.get('mystaff'));
+			//set cookies to use later in manager page
+			cookies.set('mystaff', this.state.staff, { path: '/' });
+			cookies.set('mytoken', this.state.token, { path: '/' });
+			console.log(cookies.get('mystaff'));
+
+			return  (
+				<Redirect to='/manager'/> 
+				);
 	}  
 	return (
 		//top of page
@@ -189,7 +199,7 @@ class MLogin extends React.Component {
 				required
 				fullWidth
 				id="email"
-				label="Email Address"
+				label="Staff ID"
 				name="email"
 				autoComplete="email"
 				autoFocus

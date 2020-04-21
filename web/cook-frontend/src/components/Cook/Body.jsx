@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Orders from "./Orders";
-
-
-
 import Header from "./Header";
-import Alert from "./Alert";
-import Footer from "./Footer";
-import $ from "jquery";
-import Button from 'react-bootstrap/Button';
 import https from 'https';
 import axios from 'axios';
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 function Body(props){
 
@@ -102,6 +94,8 @@ function Body(props){
 
   });
 
+
+
   const [selectedOrder, setSelectedOrder] = useState(0);
 
   function changeSelectedOrder(cardId){
@@ -141,8 +135,6 @@ function Body(props){
         console.error(error);
       });
   }
-
-
 
   return (
     <div className="p-3">

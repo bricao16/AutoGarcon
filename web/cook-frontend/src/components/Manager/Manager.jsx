@@ -10,16 +10,15 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import logoImage from "../../assets/AutoGarconLogo.png";
-//import https from 'https';
-//import axios from 'axios';
+import https from 'https';
+import axios from 'axios';
 import {
     Switch,
     Route
   } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import MLogin from '../MLogin';
-
-//const cookies = new Cookies();
+import CookieConsent from "react-cookie-consent";
   
 /* This is the main component for the manager
 view. This component creates the nav bar with routes to
@@ -40,9 +39,9 @@ class Manager extends React.Component{
         restaurantJSON: [],
         restaurantInfo:[],
         token: cookies.get('mytoken'),
-        staff: cookies.get('mystaff') 
+        staff: cookies.get('mystaff'),
+       
       };
-
     }
 
 
@@ -65,7 +64,7 @@ class Manager extends React.Component{
         );
       }
 
-    fetch("http://50.19.176.137:8000/restaurant/"+ this.state.staff.restaurant_id)
+    /*fetch(process.env.REACT_APP_DB + "/restaurant/"+ this.state.staff.restaurant_id)
       .then(res => res.json())
       .then(
         (result) => {
@@ -81,10 +80,11 @@ class Manager extends React.Component{
           });
         }
       )
-    }
-    /*axios({
+    } */
+
+    axios({
       method: 'get',
-      url: 'https://50.19.176.137:8001/restaurant/123',
+      url: process.env.REACT_APP_DB + '/restaurant/123',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
@@ -96,6 +96,9 @@ class Manager extends React.Component{
         var finalJson = {
           'menu': res.data.menu,
           'restaurant': res.data.restaurant
+          // Https endpoint parsing:
+          //'menu': res.data[1].menu,
+          //'restaurant': res.data[0].restaurant
         }
         return finalJson;
       })
@@ -111,11 +114,11 @@ class Manager extends React.Component{
           error
         });
       })
-    }*/
+    }
     
     render() 
     {
-      //if user doesnt have access
+      //if user doesnt have access take them to login
       if(this.state.staff === undefined || this.state.token === undefined  || this.state.staff.position !== "manager")
       {
         return(
@@ -132,11 +135,12 @@ class Manager extends React.Component{
         );
       }
       const { error, isLoaded, restaurantJSON, restaurantInfo,staff } = this.state;
-      
+      //if error from database 
       if (error) {
+        console.log(error)
         return <div>Error: {error.message}</div>;
       } 
-
+      //spinner while loading
       else if (!isLoaded) {
         return (
           <div className="spinner-border" role="status">
@@ -144,16 +148,37 @@ class Manager extends React.Component{
           </div>
         )
       }
-
+      //on sucessful pull from databse
       else {
         //map the menu json to an array
         Object.keys(this.state.restaurantJSON).forEach(function(key) {
           restaurantInfo.push([key ,restaurantJSON[key]]);
         });} 
       return (
+            //if cookies havent been accepted yet ask them
           <Container>
-            <MHeader restName ={staff.restaurant_id} firstName={staff.first_name} lastName={staff.last_name}/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
+            {cookies.get('cookieAccept') === undefined ? 
+                  <CookieConsent
+                  debug={true}
+                   enableDeclineButton
+                    flipButtons
+                    onAccept={() => {return cookies.set('cookieAccept',true)}}
+                    onDecline={() => {  cookies.remove('mytoken');
+                                        cookies.remove('mystaff');
+                                        cookies.remove('cookieAccept');
+                                        console.log(cookies.get('mystaff'));
+                                       }}
+                    >
+                    This website uses cookies to enhance the user experience.
+                  </CookieConsent>
+            :
+            <p></p>
+            }
+            <div>
+            {/*load the header passing the resturant/staff name*/}
+            <MHeader restName ={restaurantInfo[1][1].name} firstName={staff.first_name} lastName={staff.last_name}/> {/*image={this.state.resturantInfo.logo} restName ={this.state.resturantInfo.name} managerName={this.state.resturantInfo.managerName}/>*/}
             <div style={backgroundStyle}>
+              {/*navigation bar*/}
               <Container fluid>
                 <Row>
                   <Col sm={4} className="pt-3 px-3" style={navColStyle}>
@@ -165,6 +190,7 @@ class Manager extends React.Component{
                       <Nav.Link style={sectionStyle} href="/cookview">Cooks</Nav.Link>
                     </Nav>
                   </Col>
+                {/*what data should be sent to each link*/}
                   <Col className="pt-3 px-3">
                     <Container fluid>
                         <Switch>
@@ -172,13 +198,13 @@ class Manager extends React.Component{
                             <Stats/>
                           </Route>
                           <Route path="/menu">
-                            <Menu menu = {restaurantInfo[1][1]}/>
+                            <Menu menu = {restaurantInfo[0][1]}/>
                           </Route>
                           <Route path="/general">
-                            <StoreInfo info = {restaurantInfo[0][1]} />
+                            <StoreInfo info = {restaurantInfo[1][1]} />
                           </Route>
                           <Route path="/customize">
-                            <Customize info = {restaurantInfo[0][1]}/>
+                            <Customize info = {restaurantInfo[1][1]}/>
                           </Route>
                           <Route path="/cookview">
                             <CookView/>
@@ -189,15 +215,15 @@ class Manager extends React.Component{
                 </Row>
               </Container> 
             </div>
-                <footer style={footerStyle}>
-                  Powered by Auto Garcon
-                  <img src={logoImage} width="auto" height="50vh" alt="waiter" />
-                </footer>
-          </Container>
-
-        );
-      }
+            <footer style={footerStyle}>
+              Powered by Auto Garcon
+              <img src={logoImage} width="auto" height="50vh" alt="waiter" />
+            </footer> 
+          </div>
+        </Container> 
+      );
     }
+  }
 
 const backgroundStyle = {
   'backgroundColor': '#ffffff'

@@ -49,7 +49,7 @@ class StoreInfo extends React.Component{
     
     axios({
       method: 'put',
-      url: 'https://50.19.176.137:8001/restaurant/123',
+      url:  process.env.REACT_APP_DB + '/restaurant/123',
       data: 'name='+this.state.name+'&address='+this.state.address
       +'&phone='+this.state.phone+'&open='+this.state.open
       +'&close='+this.state.close,
