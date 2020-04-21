@@ -119,13 +119,14 @@ class Menu extends React.Component {
   // Default render method
   render() {
     //clear the menu each time we load
-    this.state.menu = [];
+    this.setState({menu: []})
+
     const {menu,categories,renderCategory, newItem} = this.state;
     const menuJSON = this.props.menu;
 
     //map the menu json from Mtasks to an array
     Object.keys(menuJSON).forEach(function(key) {
-          menu.push([key ,menuJSON[key]]);
+      menu.push([key ,menuJSON[key]]);
     });
 
     //create a list of all unique categories of food/drink
@@ -166,7 +167,7 @@ class Menu extends React.Component {
         <Container>
           <div style={backgroundStyle}>
             <h2 style ={categoryHeaderStyle}>
-              <button type="button" onClick={() => this.changeCategory("main") } className="btn btn-outline-light m-2">Back</button>
+              <button type="button" onClick={() => window.location.href="/menu" } className="btn btn-outline-light m-2">Back</button>
               <div style={menuTextStyle}>{renderCategory}</div>
             </h2>
             <Container fluid style={{'minHeight': '70vh'}}>
@@ -190,7 +191,7 @@ class Menu extends React.Component {
       return (
         <div style={backgroundStyle}>
           <h2 style ={categoryHeaderStyle}>
-            <button type="button" onClick={() => {this.changeCategory("main"); this.setState({menu:[]}); this.setNewItem(false);}} className="btn btn-outline-light m-2">Back</button>
+            <button type="button" onClick={() => window.location.href="/menu"} className="btn btn-outline-light m-2">Back</button>
             <div style={menuTextStyle}>Menu Item</div>
           </h2>
           {this.newItemForm()}
