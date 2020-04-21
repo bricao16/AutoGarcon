@@ -7,10 +7,16 @@ import $ from "jquery";
 import Button from 'react-bootstrap/Button';
 import https from 'https';
 import axios from 'axios';
+import Nav from 'react-bootstrap/Nav';
+import Container from 'react-bootstrap/Container';
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import AccountDropdown from '../AccountDropdown';
+import CLogin from '../CLogin';
+import Cookies from 'universal-cookie';
 
+const cookies = new Cookies();
 class Cook extends React.Component {
-
+  _isMounted = false;
   constructor(props) {
     super(props);
     this.props = props;
@@ -19,11 +25,17 @@ class Cook extends React.Component {
       selectedOrder: 0,
       alertActive: false,
       alertContent: <></>,
-      currentTab: "active"
+      currentTab: "active",
+      token: cookies.get('mytoken'),
+      staff: cookies.get('mystaff')
     };
     this.setupKeyPresses();
   }
 
+  setupKeyPresses(){
+
+  }
+  /*
   setupKeyPresses(){
     $(document).keydown(key => {
       // Arrow keys right and left
@@ -136,8 +148,11 @@ class Cook extends React.Component {
     newState.orders = ordersState;
     this.setState(newState);
   }
+  */
 
   componentDidMount() {
+    this._isMounted = true;
+    this.axiosCancelSource = axios.CancelToken.source()
      axios({
       method: 'get',
       // https://50.19.176.137:8001/orders/123
@@ -152,7 +167,10 @@ class Cook extends React.Component {
     })
       .then(res => res.data)
       .then(orders => {
-        this.configureOrders(orders);
+        if (this._isMounted) {
+          //abort request if not mounted
+          this.configureOrders(orders);
+        }
       })
       .catch(e => console.log(e));
     /*HTTPS
@@ -174,13 +192,37 @@ class Cook extends React.Component {
       })
       .catch(e => console.log(e));*/
   }
-
-  render() {
+  componentWillUnmount () {
+    this._isMounted = false;
+    console.log('unmount component')
+    this.axiosCancelSource.cancel('Component unmounted.')
+  }
+  render()
+  {
+      //if user doesnt have access
+      if(this.state.staff === undefined || this.state.token === undefined )
+      {
+        return(
+            <Container>
+                <Nav defaultActiveKey="/" className="flex-column rounded" >
+                      <Nav.Link href="/login_cook"> Session expired please log back in </Nav.Link>
+                </Nav>
+                <Switch>
+                  <Route exact path="/login_cook">
+                    <CLogin/>
+                  </Route>
+                </Switch>
+            </Container>
+        );
+      }
     return (
       <div style={cookStyle} className="d-flex flex-column">
         {/*{this.renderAlert()}*/}
+        <AccountDropdown firstName={this.state.staff.first_name} lastName={this.state.staff.first_name} className="ml-auto pt-3 pr-3"></AccountDropdown>
         <Navigation currentTab={this.state.currentTab} />
+
         <div style={bodyStyle}>
+          {/*
           <Router>
             <Switch>
               <Route exact path="/cook">
@@ -194,12 +236,30 @@ class Cook extends React.Component {
               </Route>
             </Switch>
           </Router>
+          */}
+          <Switch>
+            <Route exact path="/cook">
+              <Redirect to="/cook/active" />
+            </Route>
+            <Route exact path="/cook/active" render={(props) => <Body {...props} path="/active" />} />
+            <Route exact path="/cook/completed" render={(props) => <Body {...props} path="/completed" />} />
+          </Switch>
         </div>
         <Footer />
       </div>
     )
   }
 }
+/*
+changeCurrentTab(tab){
+    console.log('tab change');
+    let state = this.state;
+    state.currentTab = tab;
+    this.setState(state);
+  }
+
+  render() {
+ */
 
 const cookStyle = {
   width: '100vw'

@@ -31,7 +31,7 @@ class Orders extends React.Component{
       if(i === this.props.selectedOrder){
         isSelected = true;
       }
-      orderComponents.push(<Order key={i} cardId={i} order={order} selectedOrder={isSelected} handleCardClick={this.props.handleCardClick}/>);
+      orderComponents.push(<Order key={i} cardId={i} order={order} isSelected={isSelected} handleCardClick={this.props.handleCardClick}/>);
       i++;
     });
     return orderComponents;

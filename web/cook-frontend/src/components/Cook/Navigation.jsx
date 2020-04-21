@@ -36,7 +36,7 @@ const navStyle = {
 const navLinkStyle = {
   color: '#495057'
 };
-const tabStyle = {
+/*const tabStyle = {
   cursor: 'pointer'
 };
 const activePageStyle = {
@@ -45,6 +45,6 @@ const activePageStyle = {
   backgroundColor: 'rgb(241, 241, 241)',
   borderTopLeftRadius: '.5em',
   borderTopRightRadius: '.5em',
-};
+};*/
 
 export default Navigation;
