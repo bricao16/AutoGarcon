@@ -17,13 +17,15 @@ import java.util.List;
 
 import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
-
+/*
+This is a container for restaurant pages that the user can see.
+ */
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
-
-    private LayoutInflater layoutInflater;
-    private List<RestaurantItem> data;
-    private Context context;
-    private SharedPreference pref;
+    //data fields
+    private LayoutInflater layoutInflater;//Instantiates a layout XML file into its corresponding View objects
+    private List<RestaurantItem> data;//an container of restaurant page items
+    private Context context;//It allows access to application-specific resources and classes
+    private SharedPreference pref;//a file to keep data of the user
 
 
     HomeAdapter(Context context, List<RestaurantItem> data) {
@@ -57,15 +59,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView textTitle;
-        TextView textDescription;
-        TextView textPhoneNumber;
-        TextView textHours;
-        ImageView restaurantLogo;
+        TextView textTitle;//restaurant name
+        TextView textDescription;//restaurant description
+        TextView textPhoneNumber;//restaurant phone number
+        TextView textHours;//opening and closing hours
+        ImageView restaurantLogo;//a image of restaurant
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            //set action listener for restaurant page (menu)
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -74,7 +76,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                     context.startActivity(menu);
                 }
             });
-
+            //set each item in the xml layout
             textTitle = itemView.findViewById(R.id.restaurant_title);
             textDescription = itemView.findViewById(R.id.restaurant_location);
             textPhoneNumber = itemView.findViewById(R.id.restaurant_number);

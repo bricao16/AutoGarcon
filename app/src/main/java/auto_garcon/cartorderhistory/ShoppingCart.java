@@ -25,20 +25,24 @@ import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
-
+/*
+This generates a list of restaurants, and
+dealing with the user actions in the activity_shopping_cart layout.
+ */
 public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private SharedPreference pref;
-    private ShoppingCartSingleton shoppingCart;
-    private RecyclerView recyclerView;
+    //data fields
+    private SharedPreference pref;//saving user transaction data such as food item chosen by the user.
+    private ShoppingCartSingleton shoppingCart;//keeping food item chosen by the user.
+    private RecyclerView recyclerView;//generating a list of restaurants
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
-
+        //set recyclerView on the list
         recyclerView = findViewById(R.id.list);
+        //create a file to keep track of the data
         pref = new SharedPreference(this);
-
+        //if it's not created yet
         if(pref.getShoppingCart() == null ){
             shoppingCart = new ShoppingCartSingleton();
             pref.setShoppingCart(shoppingCart);
@@ -46,6 +50,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         else{
             shoppingCart = pref.getShoppingCart();
         }
+        //create an adapter to deal with user interactions, and set it on the recyclerView.
         ShoppingCartAdapter adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -55,11 +60,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
         NavigationView navigationView = findViewById(R.id.navigationView);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-
+        //create drawer listener for toolbar
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
+        //create and set a confirm button for order
         Button PlaceOrderButton = findViewById(R.id.btn_placeorder);
 
         PlaceOrderButton.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +75,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         });
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-
+        //toolbar
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {

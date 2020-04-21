@@ -40,18 +40,21 @@ import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
-
+/*
+This show a list of restaurant pages, and
+dealing with user actions such as searching.
+This retrieve data of restaurant pages from database by using JASON with https connection.
+ */
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
-
-    private SharedPreference pref;
-    RecyclerView recyclerView;
-    HomeAdapter adapter;
-    private ArrayList<RestaurantItem> items;
-
+    //data fields
+    private SharedPreference pref;//a file to keep track of user data as long as it's logged in.
+    RecyclerView recyclerView;//showing a list of restaurant pages
+    HomeAdapter adapter;//generating a list of restaurant pages
+    private ArrayList<RestaurantItem> items;//RestaurantItem generated through the database connection.
     //Here is for Search box
-    SearchView searchView;
-    ArrayList<String> search_list;
-    ArrayAdapter<String> list_adapter;
+    SearchView searchView;//a object for searching
+    ArrayList<String> search_list;//keeping restaurant page through the database connection.
+    ArrayAdapter<String> list_adapter;//to check user input match items in the database.
     //End of Search Box
 
     @Override
