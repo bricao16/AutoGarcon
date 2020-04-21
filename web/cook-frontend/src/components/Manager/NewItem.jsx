@@ -11,7 +11,7 @@ import Cookies from 'universal-cookie';
   create a new item. It returns a form object that allows
   for several options and fields to be submitted.  
 */
-const cookies = new Cookies();
+
 class NewItem extends React.Component {
   constructor(props) {
     super(props);

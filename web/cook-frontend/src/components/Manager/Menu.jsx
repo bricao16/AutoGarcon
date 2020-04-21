@@ -119,13 +119,14 @@ class Menu extends React.Component {
   // Default render method
   render() {
     //clear the menu each time we load
-    this.state.menu = [];
+    this.setState({menu: []})
+
     const {menu,categories,renderCategory, newItem} = this.state;
     const menuJSON = this.props.menu;
 
     //map the menu json from Mtasks to an array
     Object.keys(menuJSON).forEach(function(key) {
-          menu.push([key ,menuJSON[key]]);
+      menu.push([key ,menuJSON[key]]);
     });
 
     //create a list of all unique categories of food/drink
