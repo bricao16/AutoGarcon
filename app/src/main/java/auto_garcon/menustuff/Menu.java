@@ -139,6 +139,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                             case "restaurant":
                                                 itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
                                                 break;
+                                            case "item_id":
+                                                itemToBeAdded.setItemID(Integer.parseInt(item.get(inner_key).toString()));
+                                                break;
                                         }
                                     }
 

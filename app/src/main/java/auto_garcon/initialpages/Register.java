@@ -137,7 +137,6 @@ public class Register extends AppCompatActivity {
                 else {
                     Toast.makeText(Register.this, "Error Occured", Toast.LENGTH_SHORT).show();//if the request couldn't be made show an error to the user
                 }
-
             }
         });
 
