@@ -40,7 +40,6 @@ class Manager extends React.Component{
         restaurantInfo:[],
         token: cookies.get('mytoken'),
         staff: cookies.get('mystaff'),
-       
       };
     }
 
@@ -84,7 +83,7 @@ class Manager extends React.Component{
 
     axios({
       method: 'get',
-      url: process.env.REACT_APP_DB + '/restaurant/123',
+      url: process.env.REACT_APP_DB + '/restaurant/' + this.state.staff.restaurant_id,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },

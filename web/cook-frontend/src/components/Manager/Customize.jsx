@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 /*this is the customize component for the manager
 view. The customization info is prefilled from the pull from
@@ -11,17 +12,20 @@ which when clicked changes the 'sectionEdit' state to that section.
 renderInfo is called which either creates a form to edit for the
 section or renders what is there from the database.*/
 class Customize extends React.Component{
-
     constructor(props) {
-        super(props);
-        this.state = {
-            customizeInfo: [],
-            sectionEdit: "",
-            font:"",
-            primary: "",
-            secondary: "",
-            tertiary:""
+      super(props);
+
+      const cookies = new Cookies();
+      this.state = {
+        customizeInfo: [],
+        sectionEdit: "",
+        font:"",
+        primary: "",
+        secondary: "",
+        tertiary:"",
+        staff: cookies.get("mystaff")
     };
+
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -44,7 +48,7 @@ class Customize extends React.Component{
     
     axios({
       method: 'post',
-      url: process.env.REACT_APP_DB + '/restaurant/123',
+      url: process.env.REACT_APP_DB + '/restaurant/' +this.state.staff.resturant_id,
       data: 'name='+this.state.name+'&address='+this.state.address
       +'&phone='+this.state.phone+'&open='+this.state.open
       +'&close='+this.state.close,

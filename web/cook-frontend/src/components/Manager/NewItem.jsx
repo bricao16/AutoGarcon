@@ -20,6 +20,7 @@ class NewItem extends React.Component {
     this.state.item_id = props.prefill.item_id
     this.state.show = false
     this.state.cookies = new Cookies();
+    this.state.user = this.state.cookies.get("mystaff")
     this.parseStock(props.prefill.in_stock)
     this.handleShow = this.handleShow.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -60,7 +61,7 @@ class NewItem extends React.Component {
       message = "added"
       requestMethod = "PUT"
       endpoint = process.env.REACT_APP_DB + "/menu/add"
-      body = 'restaurant_id='+123
+      body = 'restaurant_id='+this.state.user.restaurant_id
         +'&item_name='+this.state.name
         +'&calorie_num='+this.state.calories
         +'&category='+this.state.category
@@ -72,7 +73,7 @@ class NewItem extends React.Component {
       message = "updated"
       requestMethod = "POST"
       endpoint = process.env.REACT_APP_DB + "/menu/update"
-      body = 'restaurant_id='+123
+      body = 'restaurant_id='+this.state.user.restaurant_id
         +'&item_id='+this.state.item_id
         +'&item_name='+this.state.name
         +'&calorie_num='+this.state.calories
@@ -116,7 +117,7 @@ class NewItem extends React.Component {
 
     requestMethod = "DELETE"
     endpoint = process.env.REACT_APP_DB + "/menu/delete"
-    body = 'item_id='+this.state.item_id  //'restaurant_id='+123
+    body = 'item_id='+this.state.item_id
     message = "deleted"
     
     axios({
