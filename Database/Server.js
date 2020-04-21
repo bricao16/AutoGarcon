@@ -94,6 +94,9 @@ app.get('/restaurant/:id', (req, res) => {
 		if (err) {
 			res.status(500).send('Error retrieving restaurant information');
 		}   //if
+		else if (rows.length < 1) {
+			res.status(409).send('Invalid restaurant_id');
+		}	//else if
 		else {
 			//Build JSON object:
 			let response = {};
@@ -118,7 +121,7 @@ app.get('/restaurant/:id', (req, res) => {
 				//Add each menu item to response:
 				response['menu'][rows[i].item_name] =   {
 					'item_id': rows[i].item_id,
-					'calories': rows[i].calories,
+					'calories': rows[i].calorie_num,
 					'price': rows[i].price,
 					'category': rows[i].category,
 					'picture': 'No picture yet',
@@ -173,6 +176,69 @@ app.get('/restaurants', (req, res) => {
 		}   //else
 	}); //db.query
 }); //app.get
+
+/*
+	Updates restaurant information
+	Inputs: restaurant_id, name, address, phone, opening, closing
+	Outputs:
+		On success:
+			Successfully updated restaurant information!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing
+		If restaurant does not exist:
+			Error: restaurant does not exist
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant of the item:
+			Must be the restaurant manager to update restaurant information!
+		On error: 
+			Error updating restaurant information
+*/
+app.post('/restaurant/update', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.restaurant_id && req.body.name && req.body.address && req.body.phone && req.body.opening && req.body.closing)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing');
+		return;
+	}   //if
+
+	//Make sure the restaurant exists:
+	let query = 'Select * FROM sample.restaurants WHERE restaurant_id = ?';
+	db.query(query, req.body.restaurant_id, (err, rows) => {
+		if (rows.length == 0) {
+			res.status(409).send('Error: restaurant does not exist');
+		}   //if
+		else {
+			//Verify that the person is a manager at the restaurant
+			jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+				if (err) {
+					res.status(401).send('Must be authorized!');
+				}   //if
+				else {
+					//Check to make sure person is a manager at the restaurant:
+					if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === rows[0].restaurant_id) {
+						//Build query and parameters:
+						query = 'UPDATE sample.restaurants SET restaurant_name = ?, restaurant_addr = ?, phone_number = ?, opening_time = ?, closing_time = ?';
+						query = query + ' WHERE restaurant_id = ?';
+						let parameters = [req.body.name, req.body.address, req.body.phone, req.body.opening, req.body.closing, req.body.restaurant_id];
+
+						//Update restaurant information in db:
+						db.query(query, parameters, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error updating restaurant information');
+							}	//if
+							else {
+								res.status(200).send('Successfully updated restaurant information!');
+							}   //else
+						});	//db.query
+					}	//if
+					else {
+						res.status(401).send('Must be the restaurant manager to update restaurant information!');
+					}	//else
+				}	//else
+			});	//verify
+		}   //else
+	}); //db.query
+});	//app.post
 
 
 //==================================================================================//
@@ -681,8 +747,8 @@ app.put('/staff/register', (req, res) => {
 				token: {
 					token
 				}
-				user: {
-					user_id,
+				customer: {
+					customer_id,
 					first_name,
 					last_name,
 					email
@@ -701,7 +767,7 @@ app.post('/customer/login', (req, res) => {
 			res.status(500).send('Error logging in');
 		}   //if
 		else if (rows.length < 1) {
-			res.status(401).send('No user with that username/password');
+			res.status(401).send('No customer with that username/password');
 		}   //else if
 		else {
 			//Store user's salt
@@ -713,8 +779,8 @@ app.post('/customer/login', (req, res) => {
 				}	//if
 				else {
 					if (derivedKey.toString('hex') === rows[0].password) {
-						//Build user object:
-						let user = {
+						//Build customer object:
+						let customer = {
 							'customer_id': rows[0].customer_id,
 							'first_name': rows[0].first_name,
 							'last_name': rows[0].last_name,
@@ -723,11 +789,11 @@ app.post('/customer/login', (req, res) => {
 
 						//Sign JWT and send token
 						//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-						jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
+						jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
 							//Build response
 							let response = {
 								'token': token,
-								user
+								customer
 							};  //response
 
 							//Send Response:
@@ -735,7 +801,7 @@ app.post('/customer/login', (req, res) => {
 						});	//sign
 					}   //if
 					else {
-						res.status(401).send('No user with that username/password');
+						res.status(401).send('No customer with that username/password');
 					}   //else
 				}   //else
 			}); //hashed
@@ -746,14 +812,14 @@ app.post('/customer/login', (req, res) => {
 /*
 	Creates a new customer
 	Inputs (in body of request): customer_id, first_name, last_name, email, password
-	Outputs: 
+	Outputs:
 		On success:
 			{
 				token: {
 					token
 				}
-				user: {
-					user_id,
+				customer: {
+					customer_id,
 					first_name,
 					last_name,
 					email
@@ -800,12 +866,12 @@ app.put('/customer/register', (req, res) => {
 						}   //if
 						else {
 							//Build user object:
-							let user = {
+							let customer = {
 								'customer_id': req.body.customer_id,
 								'first_name': req.body.first_name,
 								'last_name': req.body.last_name,
 								'email': req.body.email
-							};  //user
+							};  //customer
 
 							//Sign JWT and send token
 							//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
@@ -813,7 +879,7 @@ app.put('/customer/register', (req, res) => {
 								//Build response
 								let response = {
 									'token': token,
-									user
+									customer
 								};  //response
 
 								//Send Response:
@@ -837,9 +903,9 @@ app.put('/customer/register', (req, res) => {
 				{
 					token
 				}
-				user:
+				customer:
 				{
-					user_id,
+					customer_id,
 					first_name,
 					last_name,
 					email
@@ -895,20 +961,20 @@ app.post('/customer/update', verifyToken, (req, res) => {
 								}   //if
 								else {
 									//Build user object:
-									let user = {
+									let customer = {
 										'customer_id': req.body.customer_id,
 										'first_name': req.body.first_name,
 										'last_name': req.body.last_name,
 										'email': req.body.email
-									};  //user
+									};  //customer
 
 									//Sign JWT and send token
 									//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-									jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
+									jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
 										//Build response
 										let response = {
 											'token': token,
-											user
+											customer
 										};  //response
 
 										//Send Response:
@@ -933,20 +999,20 @@ app.post('/customer/update', verifyToken, (req, res) => {
 						}   //if
 						else {
 							//Build user object:
-							let user = {
+							let customer = {
 								'customer_id': req.body.customer_id,
 								'first_name': req.body.first_name,
 								'last_name': req.body.last_name,
 								'email': req.body.email
-							};  //user
+							};  //customer
 
 							//Sign JWT and send token
 							//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-							jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
+							jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
 								//Build response
 								let response = {
 									'token': token,
-									user
+									customer
 								};  //response
 
 								//Send Response:
@@ -972,6 +1038,7 @@ app.post('/customer/update', verifyToken, (req, res) => {
 			{
 				i =   {
 					order_num,
+					restaurant_id,
 					item_name,
 					quantity,
 					order_date,
@@ -1002,6 +1069,7 @@ app.get('/customer/history/:id', (req, res) => {
 			for (let i=0; i<rows.length; i++) {
 				response[i] =   {
 					'order_num': rows[i].order_num,
+					'restaurant_id': rows[i].restaurant_id,
 					'item_name': rows[i].item_name,
 					'quantity': rows[i].quantity,
 					'order_date': rows[i].order_date,
@@ -1442,34 +1510,73 @@ app.put('/alexa/order/new', (req, res) => {
 		On error:
 			Error updating order
 */
-app.put('/alexa/order/update', (req, res) => {
+app.put('/alexa/order/update', (req, res) =>
+{
 	//Make sure right number of parameters are entered:
-	if(!(req.body.order_num && req.body.item && req.body.quantity)) {
+	if(!(req.body.order_num && req.body.item && req.body.quantity))
+	{
 		res.status(500).send('Error: Missing parameter. Required parameters: order_num, item, quantity');
 		return;
 	}   //if
 
 	//Make sure the order exists:
 	let query = 'Select * FROM sample.orders WHERE order_num = ? AND order_status like "Pending"';
-	db.query(query, req.body.order_num, (err, rows) => {
-		if (rows.length == 0) {
-			res.status(409).send('Error: order does not exist or is not pending');
+	db.query(query, req.body.order_num, (err, rows) =>
+	{
+		if (rows.length == 0)
+		{
+			res.status(500).send('Error: order does not exist or is not pending');
 		}   //if
-		else {
-			//Build query and parameters:
-			let parameters = [req.body.order_num, req.body.item, req.body.quantity];
-			query = 'INSERT INTO sample.orderdetails (order_num, item_id, quantity)';
-			query = query + ' VALUES (?,?,?)'
-
-			//Update order in db:
+		else
+		{
+			//Check to see if that item is already in the order:
+			query = 'Select * FROM sample.orderdetails WHERE order_num = ? AND item_id = ?';
+			let parameters = [req.body.order_num, req.body.item];
 			db.query(query, parameters, (err, rows) => {
-				if (err) {
-					res.status(500).send('Error updating order');
-				}   //if
+				//Item does not exist in order:
+				if (rows.length < 1) {
+					parameters = [req.body.order_num, req.body.item, req.body.quantity];
+					query = 'INSERT INTO sample.orderdetails (order_num, item_id, quantity)';
+					query = query + ' VALUES (?,?,?)'
+
+					//Update order in db:
+					db.query(query, parameters, (err, rows) =>
+					{
+						if (err)
+						{
+							res.status(500).send('Error updating order');
+						}   //if
+						else
+						{
+							res.status(200).send('Successfully updated order!');
+						}   //else
+					}); //db.query
+				}	//if
+				//Item exists in order:
 				else {
-					res.status(200).send('Successfully updated order!');
-				}   //else
-			}); //db.query
+					//Updated quantity:
+					let quantity = parseInt(rows[0].quantity);
+					let updated = quantity + parseInt(req.body.quantity);
+
+					//Build query and parameters:
+					query = 'UPDATE sample.orderdetails SET quantity = ?';
+					query = query + ' WHERE order_num = ? AND item_id = ?';
+					parameters = [updated, req.body.order_num, req.body.item];
+
+					//Update quantity in db:
+					db.query(query, parameters, (err, rows) =>
+					{
+						if (err)
+						{
+							res.status(500).send('Error updating order');
+						}   //if
+						else
+						{
+							res.status(200).send('Successfully updated order!');
+						}   //else
+					}); //db.query
+				}	//else
+			});	//db.query
 		}   //else
 	}); //db.query
 });	//app.put
@@ -1545,3 +1652,23 @@ function genSalt() {
 	//Generate random string
 	return crypto.randomBytes(64).toString('hex');
 }   //genSalt
+
+/*
+	Helper function used to see if an object is empty
+	Inputs: object
+	Outputs:
+		If object is empty:
+			true
+		If object is not empty:
+			false
+*/
+function isEmptyObject(obj) {
+	for (let key in obj)
+	{
+		if (obj.hasOwnProperty(key))
+		{
+			return false;
+		}	//if
+	}	//for
+	return true;
+}	//isEmptyObject
