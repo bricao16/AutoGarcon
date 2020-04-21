@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -37,7 +38,7 @@ public class Account extends AppCompatActivity {
     /**
      * This methods occurs when the user is brought to the Account xml
      * It defines the constraint for the xml objects when they are interacted with
-     * It also handles the put request that updates a users information on the AutoGarcon databse
+     * It also handles the put request that updates a users information on the AutoGarcon database
      * @param savedInstanceState contains the data that has been most recently supplied on the register xml after the creation of the app
      */
     @Override
@@ -87,7 +88,7 @@ public class Account extends AppCompatActivity {
                     //put request for updating Account Information
                     String url = "http://50.19.176.137:8000/customer/update";
 
-                    StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                    StringRequest putRequest = new StringRequest(Request.Method.POST, url,
                             new Response.Listener<String>()
                             {
                                 @Override
@@ -120,9 +121,16 @@ public class Account extends AppCompatActivity {
                             params.put("first_name", firstName);
                             params.put("last_name", lastName);
                             params.put("email", email);
-                            params.put("password", passwd);
 
                             return params;
+                        }
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {//i
+
+                            HashMap<String,String> headers = new HashMap<String,String>();
+                            headers.put("Authorization","Bearer "+pref.getAuth());
+                            return headers;
                         }
                     };
                     VolleySingleton.getInstance(Account.this).addToRequestQueue(putRequest);// sending the request to the database

@@ -10,21 +10,31 @@ import android.widget.Button;
 import com.example.auto_garcon.R;
 
 import auto_garcon.homestuff.Home;
+import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.ShoppingCartSingleton;
+
 /**
 *This class handles the main functions of the two button page
  * its tied two the TwoButton xml layout
  * This class is also capable of linking the user to the Home page and the QrCode page
 */
 public class TwoButtonPage extends AppCompatActivity {
-
+    private SharedPreference pref;//saving user transaction data such as food item chosen by the user.
+    private ShoppingCartSingleton shoppingCart;//keeping food item chosen by the user.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_two_button_page);
+        pref = new SharedPreference(this);//file for keeping track of cart
 
         Button scannerButton = findViewById(R.id.scanner_button);// associating xml objects with the java Object equivalent
         Button favButton = findViewById(R.id.fav_button);// associating xml objects with the java Object equivalent
 
+        //if it's not created yet
+        if(pref.getShoppingCart() == null ){
+            shoppingCart = new ShoppingCartSingleton();
+            pref.setShoppingCart(shoppingCart);
+        }
         /*
         When one of these buttons is clicked it will take the users onto either the QRcode or the Favorite Page
          */

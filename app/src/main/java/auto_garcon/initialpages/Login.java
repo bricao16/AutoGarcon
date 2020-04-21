@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +20,6 @@ import com.example.auto_garcon.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
@@ -31,7 +29,7 @@ import auto_garcon.singleton.VolleySingleton;
  */
 
 public class Login extends AppCompatActivity {
-    private EditText usernm;// used to extract data from emathe login activtiy xml
+    private EditText emailId;// used to extract data from emathe login activtiy xml
     private EditText password; // used to extract data from the password field in the login activity xml
     private Button buttonSignIn;// used to identify when the user is attempting to sign in
     private TextView textViewSignUp;// used to identify if the user wants to register
@@ -52,7 +50,7 @@ public class Login extends AppCompatActivity {
             finish();//prevents them from coming back to this page
         }
 
-        usernm = findViewById(R.id.username);// associating xml objects with the java Object equivalent
+        emailId = findViewById(R.id.username);// associating xml objects with the java Object equivalent
         password = findViewById(R.id.password);// associating xml objects with the java Object equivalent
         buttonSignIn = findViewById(R.id.signUp);// associating xml objects with the java Object equivalent
         textViewSignUp = findViewById(R.id.loginLink);// associating xml objects with the java Object equivalent
@@ -60,12 +58,12 @@ public class Login extends AppCompatActivity {
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String username = usernm.getText().toString().trim();//extracted data from xml object and converted into a string
+                final String username = emailId.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String passwd = password.getText().toString().trim();//extracted data from xml object and converted into a string
 
                 if(username.isEmpty()){//checks if the username they are trying to submit is empty
-                    usernm.setError("Please enter username");
-                    usernm.requestFocus();
+                    emailId.setError("Please enter your username");
+                    emailId.requestFocus();
                 }
                 else if (passwd.isEmpty()){//checks if the password the user is trying to submit is empty
                     password.setError("Please enter your password");
@@ -98,8 +96,6 @@ public class Login extends AppCompatActivity {
                                                 object.get("customer_id").toString(), object.get("email").toString()));
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
-
-                                        Log.d("HI", response.toString());
 
                                         Intent twoButton = new Intent(Login.this, TwoButtonPage.class);
                                         startActivity(twoButton);
