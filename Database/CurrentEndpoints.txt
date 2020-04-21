@@ -35,6 +35,8 @@ GET /restaurant/:id
 					}
 				}
 			}
+		If restaurant is invalid:
+			Invalid restaurant_id
 		On error:
 			Error retrieving restaurant information
 
@@ -52,6 +54,23 @@ GET /restaurants
 			}
 		On error:
 			Error retrieving restaurants
+
+POST /restaurant/update
+	Updates restaurant information
+	Inputs (in body of request): restaurant_id, name, address, phone, opening, closing
+	Outputs:
+		On success:
+			Successfully updated restaurant information!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing
+		If restaurant does not exist:
+			Error: restaurant does not exist
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant of the item:
+			Must be the restaurant manager to update restaurant information!
+		On error: 
+			Error updating restaurant information
 
 
 //==================================================================================//
@@ -122,6 +141,11 @@ PUT /orders/place
 POST /orders/update
 	Updates the status of an order
 	Inputs (in body of request): order_num, order_status
+		Valid order_status:
+			"Complete"
+			"In Progress"
+			"Pending"
+			"Cancelled"
 	Outputs:
 		On success:
 			Successfully updated order!
@@ -238,8 +262,8 @@ POST /customer/login
 				token: {
 					token
 				}
-				user: {
-					user_id,
+				customer: {
+					customer_id,
 					first_name,
 					last_name,
 					email
@@ -248,7 +272,7 @@ POST /customer/login
 		On error:
 			Error logging in
 		If username/password is wrong:
-			No user with that username/password
+			No customer with that username/password
 
 PUT /customer/register
 	Creates a new customer
@@ -259,8 +283,8 @@ PUT /customer/register
 				token: {
 					token
 				}
-				user: {
-					user_id,
+				customer: {
+					customer_id,
 					first_name,
 					last_name,
 					email
@@ -284,9 +308,9 @@ POST /customer/update
 				{
 					token
 				}
-				user:
+				customer:
 				{
-					user_id,
+					customer_id,
 					first_name,
 					last_name,
 					email
