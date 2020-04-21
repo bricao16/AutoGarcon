@@ -62,7 +62,7 @@ public class Login extends AppCompatActivity {
                 final String passwd = password.getText().toString().trim();//extracted data from xml object and converted into a string
 
                 if(username.isEmpty()){//checks if the username they are trying to submit is empty
-                    emailId.setError("Please enter email id");
+                    emailId.setError("Please enter your username");
                     emailId.requestFocus();
                 }
                 else if (passwd.isEmpty()){//checks if the password the user is trying to submit is empty
