@@ -4,59 +4,144 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import auto_garcon.initialpages.Login;
+import auto_garcon.initialpages.Register;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
+import auto_garcon.singleton.VolleySingleton;
 
 public class Account extends AppCompatActivity {
-
-    private SharedPreference pref;
-
+    EditText changeFirstName;//used to extract data from xml page of the Account Activity
+    EditText changeLastName;//used to extract data from xml page of the Account Activity
+    EditText changeUsername;//used to extract data from xml page of the Account Activity
+    EditText changeEmail;//used to extract data from xml page of the Account Activity
+    Button saveAccountChanges;//used to identify when user wants to register
+    TextView changePassword;//used to send user into Sign in Activity
+    private SharedPreference pref;//This object is used to store information about the user that can be used outside of this page
+    /**
+     * This methods occurs when the user is brought to the Account xml
+     * It defines the constraint for the xml objects when they are interacted with
+     * It also handles the put request that updates a users information on the AutoGarcon databse
+     * @param savedInstanceState contains the data that has been most recently supplied on the register xml after the creation of the app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
         pref = new SharedPreference(this);
+        changeFirstName = findViewById(R.id.first_name_change);
+        changeLastName = findViewById(R.id.last_name_change);
+        changeUsername = findViewById(R.id.change_username);
+        changeEmail = findViewById(R.id.change_email);
+        saveAccountChanges = findViewById(R.id.save_acct_change);
+        changePassword = findViewById(R.id.change_password);
 
-        final EditText changeFirstName = findViewById(R.id.first_name_change);
-        final EditText changeLastName = findViewById(R.id.last_name_change);
-        final EditText changeUsername = findViewById(R.id.change_username);
-        final EditText changeEmail = findViewById(R.id.change_email);
-        Button saveAccountChanges = findViewById(R.id.save_acct_change);
-        TextView changePassword = findViewById(R.id.change_password);
+        /**/
+        saveAccountChanges.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                final String firstName = changeFirstName.getText().toString().trim();//extracted data from xml object and converted into a string
+                final String lastName = changeLastName.getText().toString().trim();//extracted data from xml object and converted into a string
+                final String email = changeEmail.getText().toString().trim();//extracted data from xml object and converted into a string
+                final String passwd = changePassword.getText().toString().trim();//extracted data from xml object and converted into a string
+                final String username = changeUsername.getText().toString().trim();//extracted data from xml object and converted into a string
 
-        changeFirstName.setText(pref.getUser().getFirstName());
-        changeLastName.setText(pref.getUser().getLastName());
-        changeEmail.setText(pref.getUser().getEmail());
-        changeUsername.setText(pref.getUser().getUsername());
+                if(TextUtils.isEmpty(firstName)){//checking if user entered there firstName
+                    changeFirstName.setError("Please enter first name");
+                    changeFirstName.requestFocus();
+                }
+                else if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
+                    changeLastName.setError("Please enter last name");
+                    changeLastName.requestFocus();
+                }
+                else if(TextUtils.isEmpty(email)){//checking if user entered their email
+                    changeEmail.setError("Please enter email ");
+                    changeEmail.requestFocus();
+                }
+                else if(TextUtils.isEmpty(passwd)){//checking if user entered their password
+                    changePassword.setError("Please enter password");
+                    changePassword.requestFocus();
+                }
+                else if(passwd.length()<6){//checks if the user entered a password lass than 6 characters
+                    changePassword.setError("Password Must be Greater than 6 Characters");
+                }
+                else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email)
+                        && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirments are met than we can send our put request to the database
 
-        saveAccountChanges.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String newFirstName = changeFirstName.getText().toString().trim();
-                String newLastName = changeLastName.getText().toString().trim();
-                String newUsername = changeUsername.getText().toString().trim();
-                String newEmail = changeEmail.getText().toString().trim();
+                    //put request for updating Account Information
+                    String url = "http://50.19.176.137:8000/customer/update";
 
-                pref.setUser(new UserSingleton(newFirstName, newLastName, newUsername, newEmail));
+                    StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                            new Response.Listener<String>()
+                            {
+                                @Override
+                                public void onResponse(String response) {
+                                    // response
+                                    Toast.makeText(Account.this,response.toString(),Toast.LENGTH_LONG).show();
 
-                //still need request to change this in the database
+                                    //pref.writeUserName(username);
+                                    //pref.changeLogStatus(true);
+
+                                    Intent twoButton = new Intent(Account.this, Login.class);// creating an intent to change to the twoButton xml
+                                    startActivity(twoButton);// move to the two button page
+                                    finish();// this prevents the user from coming back to the Account page if they successfully updated the page
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {//if our put request is un-successful we want display that there was an error to the user
+                                    // error
+                                    error.printStackTrace();
+                                    Toast.makeText(Account.this, error.toString(),Toast.LENGTH_LONG).show();
+                                }
+                            }
+                    ) {
+
+                        @Override
+                        protected Map<String, String> getParams() {// inserting parameters for the put request
+                            Map<String, String> params = new HashMap<String, String>();
+                            params.put("customer_id", username);
+                            params.put("first_name", firstName);
+                            params.put("last_name", lastName);
+                            params.put("email", email);
+                            params.put("password", passwd);
+
+                            return params;
+                        }
+                    };
+                    VolleySingleton.getInstance(Account.this).addToRequestQueue(putRequest);// sending the request to the database
+                }
+                else {
+                    Toast.makeText(Account.this, "Error Occured", Toast.LENGTH_SHORT).show();//if the request couldn't be made show an error to the user
+                }
+
             }
         });
 
-        changePassword.setOnClickListener(new View.OnClickListener() {
+        changePassword.setOnClickListener(new View.OnClickListener() {// when the user clicks on this link we change to xml to the log in layout
             @Override
-            public void onClick(View v) {
-                Intent passwordChange = new Intent(Account.this, PasswordChange.class);
-                startActivity(passwordChange);
+            public void onClick(View view) {
+                Intent intent = new Intent(Account.this, Login.class);
+                startActivity(intent);
             }
         });
     }
 }
+
+//---------------------------------------------------------------------------
