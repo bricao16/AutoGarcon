@@ -11,8 +11,17 @@ import android.widget.Toast;
 
 import com.example.auto_garcon.R;
 
+/**
+ * This class will change the password for the user
+ * This will be done by sending a get request to the database
+ */
 public class PasswordChange extends AppCompatActivity {
 
+
+    /**
+     * This method will lay the constraints for the xml objects for this page
+     * @param savedInstanceState contains the data that has been most recently supplied on the register xml after the creation of the app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

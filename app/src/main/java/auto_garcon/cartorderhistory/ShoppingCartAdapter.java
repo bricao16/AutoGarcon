@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import auto_garcon.menustuff.MenuItem;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
-/*
-    This class stores a list of ordered menus, and
-    let the user allow change a quantity of each menu, and remove each menu.
+/**
+ *The class represents the format for how are our shopping list will act and work
+ * the class also let the user allow change a quantity of each menu, and remove each menu.
  */
 public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapter.ShoppingCartViewHolder>{
     //data fields
@@ -28,6 +28,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     private SharedPreference preference;
     private ShoppingCartSingleton cart;
     //A constructor to listen the user actions (add, decrement, and remove)
+
+    /**
+     * This constructor initializes our variables passed in from the shopping cart page
+     * @param context
+     * @param items
+     */
     public ShoppingCartAdapter(Context context, ArrayList<MenuItem> items) {
         ct= context;
         menuItemArrayList = items;

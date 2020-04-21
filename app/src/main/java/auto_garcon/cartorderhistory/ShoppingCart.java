@@ -25,15 +25,21 @@ import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
-/*
-This generates a list of restaurants, and
-dealing with the user actions in the activity_shopping_cart layout.
+/**
+ *
+ * This class loads in the favorite restaurants of the user when the class is instantaited
+ * the class also allows user to search for other restaurants as well as navigate to pages allowed by the navbar and the menu page for a selected restaurant
  */
 public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     //data fields
     private SharedPreference pref;//saving user transaction data such as food item chosen by the user.
     private ShoppingCartSingleton shoppingCart;//keeping food item chosen by the user.
     private RecyclerView recyclerView;//generating a list of restaurants
+
+    /**
+     * in this method we constraint our xml objects assoicated with the shopping cart page and also construct our shopping cart list page
+     * @param savedInstanceState  contains the data that has been most recently supplied on the register xml after the creation of the app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,19 +112,19 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
-            case R.id.account:
+            case R.id.account://switch to account page
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
                 break;
-            case R.id.order_history:
+            case R.id.order_history://switch to order history
                 Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
                 startActivity(orderHistory);
                 break;
-            case R.id.settings:
+            case R.id.settings://switch to settings page
                 Intent settings = new Intent(getBaseContext(),   Settings.class);
                 startActivity(settings);
                 break;
-            case R.id.log_out:
+            case R.id.log_out://logs user out
                 pref.changeLogStatus(false);
                 pref.logOut();
 
