@@ -16,11 +16,19 @@ class Header extends React.Component {
     }
   }
 
+  renderTitle(){
+    if(this.props.path === '/active'){
+      return <h2 className="m-0 mx-2 mr-4">Active Orders</h2>;
+    } else if(this.props.path === '/completed') {
+      return <h2 className="m-0 mx-2 mr-4">Completed Orders</h2>;
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
         <div className="d-flex flex-wrap mb-2" style={headerStyle}>
-          <h2 className="m-0 mx-2 mr-4">Active Orders</h2>
+          { this.renderTitle() }
           <div className="d-flex flex-nowrap" style={buttonsContainerStyle}>
             {/*<Button variant="secondary" size="sm" className="mr-3">In-Progress</Button>*/}
             { this.renderTabs() }

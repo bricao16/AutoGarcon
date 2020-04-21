@@ -92,9 +92,19 @@ class Order extends React.Component {
     );
   }
 
+  renderCompletedFooter(){
+    if(this.props.isCompleted) {
+      return (
+        <Card.Footer className="py-1 px-2 d-flex" style={this.statusStyle()}>
+          Completed
+        </Card.Footer>
+      )
+    }
+  }
+
   statusStyle(){
     let style = {color: '#fff'};
-    // style.backgroundColor = '#17af29';
+    style.backgroundColor = '#17af29';
     // style.backgroundColor = '#e2dd26';
     return style;
   }
@@ -124,9 +134,7 @@ class Order extends React.Component {
           <Card.Footer className="py-1 px-2 d-flex" style={cardFooterStyle}>
             {this.renderTime()}
           </Card.Footer>
-          {/*<Card.Footer className="py-1 px-2 d-flex" style={this.statusStyle()}>*/}
-          {/*  Completed*/}
-          {/*</Card.Footer>*/}
+          {this.renderCompletedFooter()}
         </Card>
       </div>
     )
