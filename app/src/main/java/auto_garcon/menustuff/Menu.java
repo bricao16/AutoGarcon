@@ -88,14 +88,13 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         boolean inFavorites = false;
         Button addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
-        for(int i = 0; i < pref.getUser().getFavorites().size(); i++) {
-            if(pref.getUser().getFavorites().get(i) == getIntent().getIntExtra("restaurant id", 0)) {
-                inFavorites = true;
-            }
+        if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
+            inFavorites = true;
         }
 
-        if(!inFavorites) {
+        if(inFavorites) {
             addOrRemoveFavorite.setText("Remove from favorites");
+            pref.removeFromFavorites(getIntent().getIntExtra("restaurant id", 0));
 
             addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,9 +112,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                         e.printStackTrace();
                     }
 
-                    StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, removeFavoriteURL,
-                            new Response.Listener<String>()
-                            {
+                    StringRequest deleteRequest = new StringRequest(Request.Method.POST, removeFavoriteURL,
+                            new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
                                     Toast.makeText(Menu.this, response, Toast.LENGTH_LONG).show();
@@ -153,6 +151,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         }
         else {
             addOrRemoveFavorite.setText("Add to favorites");
+            pref.addToFavorites(getIntent().getIntExtra("restaurant id", 0));
 
             addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -202,8 +201,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 }
             });
         }
-
-
 
         final String url = "http://50.19.176.137:8000/menu/" + getIntent().getIntExtra("restaurant id", 0);
 

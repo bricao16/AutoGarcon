@@ -23,6 +23,7 @@ import java.util.Map;
 
 import auto_garcon.initialpages.Login;
 import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 
 public class Account extends AppCompatActivity {
@@ -78,16 +79,11 @@ public class Account extends AppCompatActivity {
                     changeEmail.setError("Please enter email ");
                     changeEmail.requestFocus();
                 }
-                else if(TextUtils.isEmpty(passwd)){//checking if user entered their password
-                    changePassword.setError("Please enter password");
-                    changePassword.requestFocus();
+                else if(TextUtils.isEmpty(username)){//checking if user entered their email
+                    changeEmail.setError("Please enter username ");
+                    changeEmail.requestFocus();
                 }
-                else if(passwd.length()<6){//checks if the user entered a password lass than 6 characters
-                    changePassword.setError("Password Must be Greater than 6 Characters");
-                }
-                else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email)
-                        && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirements are met than we can send our put request to the database
-
+                else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email) && TextUtils.isEmpty(username))) {// if all the requirements are met than we can send our put request to the database
                     //put request for updating Account Information
                     String url = "http://50.19.176.137:8000/customer/update";
 
@@ -99,8 +95,7 @@ public class Account extends AppCompatActivity {
                                     // response
                                     Toast.makeText(Account.this,response.toString(),Toast.LENGTH_LONG).show();
 
-                                    //pref.writeUserName(username);
-                                    //pref.changeLogStatus(true);
+                                    pref.setUser(new UserSingleton(firstName,  lastName, username, email));
 
                                     Intent twoButton = new Intent(Account.this, Login.class);// creating an intent to change to the twoButton xml
                                     startActivity(twoButton);// move to the two button page
@@ -128,8 +123,7 @@ public class Account extends AppCompatActivity {
                         }
 
                         @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {//i
-
+                        public Map<String, String> getHeaders() throws AuthFailureError {
                             HashMap<String,String> headers = new HashMap<String,String>();
                             headers.put("Authorization","Bearer " + pref.getAuth());
                             return headers;
