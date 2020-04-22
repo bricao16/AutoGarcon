@@ -1,12 +1,14 @@
 import React from "react";
 import logoImage from "../assets/AutoGarconLogoHome.png";
 import {Link} from "react-router-dom";
+// from free license at https://www.pexels.com/photo/clear-wine-glass-on-table-67468/
 import Background from "../assets/background.jpg";
 import { Container, Row, Col, Nav, Image, Button } from 'react-bootstrap';
 
 function Home() {
   return (
     <div style={homeStyle} className="d-flex flex-column">
+    
       <Container fluid>
         {/* Logo, title and navigation are each in a column*/}
         <Row style={{alignItems: 'center'}}>
@@ -16,7 +18,7 @@ function Home() {
           </Col>
           {/* Title is centered, it floats left when less than 'large', then goes back to center when less than 'medium' */}
           <Col xs="12" md="auto" lg="4" style={{textAlign: 'center'}}>
-            <Link to="/" style={titleStyle}>Auto Garcon</Link>
+            <Link to="/" style={titleStyle}>AutoGarcon</Link>
           </Col>
           {/* Float right until 'small', then center */}
           <Col xs="12" md="auto" className="p-0" style={{marginLeft: 'auto'}}>
@@ -49,7 +51,7 @@ function Home() {
       <Container fluid style={backgroundImageStyle} className="p-0">
         <Container style={contentStyle}>
           <div style={circleStyle} className="d-flex flex-column">
-            <h4 style={captionStyle}>Enhance your restaurant experience with Auto Garcon</h4>
+            <h4 style={captionStyle}>Enhance your restaurant experience with AutoGarcon</h4>
             <Link to='/sign_up'>
               <Button variant="secondary" size="lg">
                 Sign Up

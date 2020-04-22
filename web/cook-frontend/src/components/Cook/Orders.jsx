@@ -1,8 +1,6 @@
 import React from "react";
 import Order from "./Order";
-// import OrderDelete from "./OrderDelete";
 import Container from 'react-bootstrap/Container';
-// import $ from 'jquery';
 import '../../assets/orders/order.css'
 
 /*
@@ -31,7 +29,7 @@ class Orders extends React.Component{
       if(i === this.props.selectedOrder){
         isSelected = true;
       }
-      orderComponents.push(<Order key={i} cardId={i} order={order} selectedOrder={isSelected} handleCardClick={this.props.handleCardClick}/>);
+      orderComponents.push(<Order key={i} cardId={i} order={order} isSelected={isSelected} handleCardClick={this.props.handleCardClick} isCompleted={this.props.completed} />);
       i++;
     });
     return orderComponents;
@@ -43,7 +41,7 @@ class Orders extends React.Component{
     return (
       <Container fluid className="p-0 d-flex flex-wrap" id="orders" style={ordersStyle}>
         {this.renderOrders()}
-        {/*{this.renderConfirmDelete()}*/}
+        {/* {this.renderConfirmDelete()} */}
       </Container>
     )
   };
