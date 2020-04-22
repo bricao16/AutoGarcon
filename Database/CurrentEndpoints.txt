@@ -183,15 +183,34 @@ GET /favorites/:id
 			Error retrieving favorites
 
 PUT /favorites/add
-	Adds a restaurant to a user's favorites
+	Adds a restaurant to a customer's favorites
 	Inputs (in body of request): customer_id, restaurant_id
 	Outputs:
-		If any inputs are missing:
-			Error: Missing parameter. Required parameters: customer_id, restaurant_id
 		On success:
 			Error adding restaurant to favorites
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: customer_id, restaurant_id
 		On error:
 			Succesfully added restaurant to favorites!
+
+DELETE /favorites/delete
+	Deletes a restaurant from a customer's favorites
+	Inputs (in body of request): customer_id, restaurant_id
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			Successfully deleted favorite!
+		If JWT is not valid or not supplied: 
+			Must be authorized!
+		If JWT is for a different customer:
+			Can't delete other customer's favorites!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: customer_id, restaurant_id
+		If favorite does not exist:
+			Error: favorite does not exist
+		On error:
+			Error deleting favorite
+
 
 
 //==============================================================================//
