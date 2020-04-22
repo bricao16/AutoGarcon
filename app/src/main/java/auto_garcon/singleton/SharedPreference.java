@@ -135,7 +135,9 @@ public class SharedPreference {
             converter = gson.fromJson(stringJson, type);
         }
 
-        converter.add(newFavorite);
+        if(!converter.contains(newFavorite)) {
+            converter.add(newFavorite);
+        }
 
         String returnJSONString = gson.toJson(converter);
 
