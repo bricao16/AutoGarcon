@@ -1,5 +1,6 @@
 package auto_garcon.cartorderhistory;
 
+import android.accounts.Account;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -27,9 +28,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.auto_garcon.R;
-import auto_garcon.accountstuff.Account;
+import auto_garcon.homestuff.*;
 import auto_garcon.accountstuff.Settings;
-import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
@@ -182,7 +182,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                 startActivity(QRcode);
                                 return true;
                             case R.id.action_home:
-                                Intent home = new Intent(getBaseContext(), Home.class);
+                                Intent home = new Intent(getBaseContext(),Home.class);
                                 startActivity(home);
                                 return true;
                             case R.id.action_cart:

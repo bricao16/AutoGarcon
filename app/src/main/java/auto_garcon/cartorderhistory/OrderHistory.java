@@ -9,17 +9,33 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.JsonObject;
 
-import auto_garcon.accountstuff.Account;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import auto_garcon.accountstuff.*;
+import auto_garcon.homestuff.*;
 import auto_garcon.accountstuff.Settings;
-import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
+import auto_garcon.initialpages.TwoButtonPage;
 import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.UserSingleton;
+import auto_garcon.singleton.VolleySingleton;
 
 /**
  * This class pulls data from the database relating to the user's past orders
@@ -29,10 +45,46 @@ import auto_garcon.singleton.SharedPreference;
 public class OrderHistory extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private SharedPreference pref;// This
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pref = new SharedPreference(this);
         setContentView(R.layout.activity_order_history);
+
+        String temp;
+        final String url = "http://50.19.176.137:8000/customer/history";
+        JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
+        try{
+            obj.put("customer_id", pref.getUser());
+        }catch (JSONException e){
+            //TODO figure out how to handle this other than stack trace
+            e.printStackTrace();
+        }
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, obj,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Iterator iterator = response.keys();
+
+                        List<String> keyList = new ArrayList<String >();
+                        while (iterator.hasNext()){
+                            String key = (String) iterator.next();
+                            keyList.add(key);
+                        }
+                        Toast.makeText(OrderHistory.this,keyList.get(0),Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(OrderHistory.this,error.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+                }
+
+        );
+
+
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
@@ -68,8 +120,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                 };
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-
-        pref = new SharedPreference(this);
     }
 
     //onClick for side nav bar
