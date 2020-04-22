@@ -485,8 +485,8 @@ app.post('/orders/update', (req, res) => {
 					logo
 				}
 			}
-		If user has no favorites:
-			User has no favorites
+		If customer has no favorites:
+			Customer has no favorites
 		On error:
 			Error retrieving favorites
 */
@@ -499,7 +499,7 @@ app.get('/favorites/:id', (req, res) => {
 			res.status(500).send('Error retrieving favorites');
 		}   //if
 		else if (rows.length < 1) {
-			res.status(200).send('User has no favorites');
+			res.status(200).send('Customer has no favorites');
 		}	//else if
 		else {
 			//Build JSON object:
@@ -526,7 +526,7 @@ app.get('/favorites/:id', (req, res) => {
 }); //app.get
 
 /*
-	Adds a restaurant to a user's favorites
+	Adds a restaurant to a customer's favorites
 	Inputs: customer_id, restaurant_id
 	Outputs:
 		If any inputs are missing:
@@ -558,6 +558,67 @@ app.put('/favorites/add', (req, res) => {
 		}   //else
 	}); //db.query
 }); //app.put
+
+/*
+	Deletes a restaurant from a customer's favorites
+	Inputs: customer_id, restaurant_id, JWT
+	Outputs:
+		On success:
+			Successfully deleted favorite!
+		If JWT is not valid or not supplied: 
+			Must be authorized!
+		If JWT is for a different customer:
+			Can't delete other customer's favorites!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: customer_id, restaurant_id
+		If favorite does not exist:
+			Error: favorite does not exist
+		On error:
+			Error deleting favorite
+*/
+app.delete('/favorites/delete', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.customer_id && req.body.restaurant_id)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, restaurant_id');
+		return;
+	}   //if
+
+	//Verify that the person is the customer with the favorite
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(403).send('Must be authorized!');
+		}   //if
+		else if (auth.customer && auth.customer.customer_id === req.body.customer_id) {
+			//Make sure the favorite exists:
+			let query = 'Select * FROM sample.favorites WHERE customer_id = ? AND restaurant_id = ?';
+			let parameters = [req.body.customer_id, req.body.restaurant_id];
+			db.query(query, parameters, (err, rows) => {
+				if (err) {
+					res.status(500).send('Error deleting favorite')
+				}	//if
+				else if (rows.length == 0) {
+					res.status(500).send('Error: favorite does not exist');
+				}   //else if
+				else {
+					let query = 'DELETE FROM sample.favorites WHERE customer_id = ? AND restaurant_id = ?';
+
+					//Remove favorite in db:
+					db.query(query, parameters, (err, rows) => {
+						if (err) {
+							res.status(500).send('Error deleting favorite');
+						}   //if
+						else {
+							res.status(200).send('Successfully deleted favorite!');
+						}   //else
+					}); //db.query
+				}	//else
+			}); //db.query
+		}	//else if
+		else {
+			res.status(403).send('Can\'t delete other customer\'s favorites!');
+		}	//else
+	});	//verify
+});	//app.delete
 
 
 //==============================================================================//
@@ -928,7 +989,7 @@ app.post('/customer/update', verifyToken, (req, res) => {
 		}   //if
 		else {
 			//Make sure the JWT is for a customer:
-			if (auth.user) {
+			if (auth.customer) {
 				//Make sure right number of parameters are entered:
 				if(!(req.body.customer_id && req.body.first_name && req.body.last_name && req.body.email)) {
 					res.status(500).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)');
@@ -936,7 +997,7 @@ app.post('/customer/update', verifyToken, (req, res) => {
 				}   //if
 
 				//Build query and store customer_id:
-				let customer_id = auth.user.customer_id;
+				let customer_id = auth.customer.customer_id;
 				let query = 'UPDATE sample.customers SET customer_id = ?, first_name = ?, last_name = ?, email = ?';
 
 				//Check if the user wants to change their password:

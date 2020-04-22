@@ -177,8 +177,8 @@ GET /favorites/:id
 					logo
 				}
 			}
-		If user has no favorites:
-			User has no favorites
+		If customer has no favorites:
+			Customer has no favorites
 		On error:
 			Error retrieving favorites
 
