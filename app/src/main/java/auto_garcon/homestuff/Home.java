@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import auto_garcon.NukeSSLCerts;
@@ -65,16 +66,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         setContentView(R.layout.activity_home);
 
         pref = new SharedPreference(Home.this);
-
-
-
-        // dummy  data for a search box
-        search_list = new ArrayList<>();
-        search_list.add("French");
-        search_list.add("Chinese");
-        search_list.add("Italian");
-        search_list.add("Nigerian");
-        search_list.add("Thai");
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
@@ -115,12 +106,12 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         ShakeDetector shakeDetector = new ShakeDetector(this);
         shakeDetector.start(sensorManager);
 
-        final String url = "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername();
+        final String FavoritesURL = "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername();
 
         items = new ArrayList<>();
         recyclerView = findViewById(R.id.favorites_list);
 
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+        JsonObjectRequest getRequestForFavorites = new JsonObjectRequest(Request.Method.GET, FavoritesURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -143,7 +134,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                         switch(inner_key){
                                             case "restaurant_id":
                                                 itemToBeAdded.setID(Integer.parseInt(item.get(inner_key).toString()));
-                                                pref.getUser().addToFavorites(Integer.parseInt(item.get(inner_key).toString()));
+                                                pref.addToFavorites(Integer.parseInt(item.get(inner_key).toString()));
                                                 break;
                                             case "restaurant_name":
                                                 itemToBeAdded.setName(item.get(inner_key).toString());
@@ -198,36 +189,66 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         );
 
-        VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequest);
+        VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForFavorites);
+
+        final String allRestaurantsURL = "http://50.19.176.137:8000/restaurants";
+
+        JsonObjectRequest getRequestForSearch = new JsonObjectRequest(Request.Method.GET, allRestaurantsURL, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            //parsing through json from get request to add them to menu
+                            HashMap<Integer, String> allRestaurantList = new HashMap<Integer, String>();
+
+                            Iterator<String> keys = response.keys();
+                            while(keys.hasNext()) {
+                                String key = keys.next();
+
+                                if (response.get(key) instanceof JSONObject) {
+                                    JSONObject item = response.getJSONObject(key);
+
+                                    int restaurantID = 0;
+                                    String restaurantName = "";
+
+                                    Iterator<String> inner_keys = item.keys();
+
+                                    while(inner_keys.hasNext()) {
+                                        String inner_key = inner_keys.next();
 
 
+                                        switch(inner_key){
+                                            case "restaurant_id":
+                                                restaurantID = Integer.parseInt(item.get(inner_key).toString());
+                                                break;
+                                            case "restaurant_name":
+                                                restaurantName = item.get(inner_key).toString();
+                                                break;
+                                        }
+                                    }
 
-        //Here is for Search box
-        searchView = (SearchView) findViewById(R.id.searchView);
-        list_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,search_list);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
+                                    allRestaurantList.put(restaurantID, restaurantName);
 
-                //here we search restaurant by name, type of cuisine, etc...
-                //and possibly re:render the table.
-                if( search_list.contains(query) ){
-                    list_adapter.getFilter().filter(query);
-                    Toast.makeText(Home.this, "Yes Match found",Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            Log.d("sdf", allRestaurantList.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(Home.this, error.toString(),Toast.LENGTH_LONG).show();
+                    }
                 }
-                else {
-                    Toast.makeText(Home.this, "No Match found",Toast.LENGTH_LONG).show();
-                }
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                //    adapter.getFilter().filter(newText);
-                return false;
-            }
-        });
-        //Here is for End Search box
+        );
+
+        VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForSearch);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package auto_garcon.singleton;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,14 +10,12 @@ public class UserSingleton {
     private String lastName;
     private String username;
     private String email;
-    private List<Integer> favorites;
 
     public UserSingleton(String firstName, String lastName, String username, String email){
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
-        this.favorites = new ArrayList<Integer>();
     }
 
     public void setFirstName(String firstName) {
@@ -48,17 +48,5 @@ public class UserSingleton {
 
     public String getEmail() {
         return email;
-    }
-
-    public void addToFavorites(int restaurauntID) {
-        favorites.add(restaurauntID);
-    }
-
-    public void removeFromFavorites(int restaurantID) {
-        favorites.remove(restaurantID);
-    }
-
-    public List<Integer> getFavorites() {
-        return favorites;
     }
 }
