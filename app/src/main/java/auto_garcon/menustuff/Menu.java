@@ -9,14 +9,20 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -50,51 +56,82 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private List<auto_garcon.menustuff.MenuItem> drink_list;
     private List<auto_garcon.menustuff.MenuItem> alcohol_list;
     private HashMap<String, List<auto_garcon.menustuff.MenuItem>> listHash;
+    private JSONObject obj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_page);
 
-        //creating side nav drawer
+        pref = new SharedPreference(this);
+
+        /**
+         * Ties the side navigation bar xml elements to Java objects and setting listeners for the
+         * side navigation drawer as well as the elements within it.
+         */
         DrawerLayout drawerLayout = findViewById(R.id.restaurant_main);// associating xml objects with the java Object equivalent
         Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
         NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        ImageView restaurantLogo = findViewById(R.id.restaurant_logo);
+        TextView restaurantName = findViewById(R.id.restaurant_name);
+        listDataHeader = new ArrayList<>();
+        listHash = new HashMap<>();
+        restaurantName.setText(getIntent().getStringExtra("restaurant name"));
 
-        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_scan:
-                                Intent home = new Intent(getBaseContext(),   QRcode.class);
-                                startActivity(home);
-                                return true;
-                            case R.id.action_home:
-                                Intent qrcode = new Intent(getBaseContext(),   Home.class);
-                                startActivity(qrcode);
-                                return true;
-                            case R.id.action_cart:
-                                Intent shoppingCart = new Intent(getBaseContext(),   ShoppingCart.class);
-                                startActivity(shoppingCart);
-                                return true;
+        Button addToFavorites = findViewById(R.id.add_restaurant);
+
+        addToFavorites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String addToFavoritesURL = "http://50.19.176.137:8000/favorities/add";
+
+                obj = new JSONObject();//json object that will be sent as the request parameter
+
+                try {
+                    obj.put("customer_id", pref.getUser().getUsername());
+                    obj.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0));
+                }catch (JSONException e){
+                    //TODO figure out how to handle this other than stack trace
+                    e.printStackTrace();
+                }
+
+                StringRequest putRequest = new StringRequest(Request.Method.PUT, addToFavoritesURL,
+                        new Response.Listener<String>()
+                        {
+                            @Override
+                            public void onResponse(String response) {
+                                // response
+                                Toast.makeText(Menu.this,response,Toast.LENGTH_LONG).show();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // error if the request fails
+                                error.printStackTrace();
+                                Toast.makeText(Menu.this,error.toString(),Toast.LENGTH_LONG).show();
+                            }
                         }
-                        return false;
+                ) {
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+                        return obj.toString().getBytes();
+                    }
+
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json";
                     }
                 };
 
-        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-
-        pref = new SharedPreference(this);
-
-        listDataHeader = new ArrayList<>();
-        listHash = new HashMap<>();
+                VolleySingleton.getInstance(Menu.this).addToRequestQueue(putRequest);// making the actual request
+            }
+        });
 
         final String url = "http://50.19.176.137:8000/menu/" + getIntent().getIntExtra("restaurant id", 0);
 
@@ -139,6 +176,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                             case "restaurant":
                                                 itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
                                                 break;
+                                            case "item_id":
+                                                itemToBeAdded.setItemID(Integer.parseInt(item.get(inner_key).toString()));
+                                                break;
                                         }
                                     }
                                     //if conditional filters out erroneous categories
@@ -161,9 +201,40 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         );
 
         VolleySingleton.getInstance(Menu.this).addToRequestQueue(getRequest);
+
+        /**
+         * It ties the bottom navigation bar xml element to a Java object and provides it with its
+         * onClick functionality to other activities and sets the listener.
+         */
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_scan:
+                                Intent home = new Intent(getBaseContext(),   QRcode.class);
+                                startActivity(home);
+                                return true;
+                            case R.id.action_home:
+                                Intent qrcode = new Intent(getBaseContext(),   Home.class);
+                                startActivity(qrcode);
+                                return true;
+                            case R.id.action_cart:
+                                Intent shoppingCart = new Intent(getBaseContext(),   ShoppingCart.class);
+                                startActivity(shoppingCart);
+                                return true;
+                        }
+                        return false;
+                    }
+                };
+
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
 
-    //onClick for side nav bar
+    /**
+     * This method is what provides the side navigation bar with its onClick functionality to
+     * other activities.
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
@@ -186,11 +257,14 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         return false;
     }
 
-    //this will filter the json object from get request and place items in correct category
+    /**
+     * The method is what filters the restaurant items that are displayed on the menu. If the
+     * current menu does not have a category for the item being added it will add that category.
+     * It then adds the actual item to the category it belongs in.
+     * */
     private void addToList(auto_garcon.menustuff.MenuItem key, String category) {
         if(!listDataHeader.contains(category)) {
             listDataHeader.add(category);
-
             switch(category){
                 case "Appetizer":
                     appetizer_list = new ArrayList<>();
@@ -215,7 +289,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 default:
                     break;
             }
-
         }
 
         switch(category){

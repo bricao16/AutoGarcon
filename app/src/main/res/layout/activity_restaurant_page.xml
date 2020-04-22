@@ -26,12 +26,34 @@
             android:layout_height="wrap_content"
             android:background="@color/colorAccent" />
 
+        <!-- logo of restaurant -->
+        <ImageView
+            android:id="@+id/restaurant_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="65dp" />
+
+        <!-- name of restaurant -->
+        <TextView
+            android:id="@+id/restaurant_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="65dp" />
+
+        <Button
+            android:id="@+id/add_restaurant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="65dp"
+            android:layout_alignParentEnd="true"
+            android:text="@string/add_to_favorites"/>
+
         <!-- list of menu items -->
         <ExpandableListView
             android:id="@+id/menu_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="115dp"
             android:layout_marginBottom="70dp" />
 
         <!-- bottom nav bar -->

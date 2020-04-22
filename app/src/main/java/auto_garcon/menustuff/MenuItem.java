@@ -11,12 +11,13 @@ public class MenuItem implements Serializable{
     private double price;
     private double cost;
     private int quantity;
+    private int itemID;
 
     public MenuItem() {
         this.quantity = 1;
     }
 
-    public MenuItem(String category, String nameOfItem,  int amountInStock,  int calories, int restaurantID, double price) {
+    public MenuItem(String category, String nameOfItem,  int amountInStock,  int calories, int restaurantID, double price, int itemID) {
         this.nameOfItem = nameOfItem;
         this.restaurantID = restaurantID;
         this.calories = calories;
@@ -24,6 +25,7 @@ public class MenuItem implements Serializable{
         this.category = category;
         this.amountInStock = amountInStock;
         this.quantity = 1;
+        this.itemID = itemID;
     }
 
     public void setNameOfItem(String nameOfItem) {
@@ -80,6 +82,14 @@ public class MenuItem implements Serializable{
 
     public int getAmountInStock() {
         return this.amountInStock;
+    }
+
+    public void setItemID(int itemID) {
+        this.itemID = itemID;
+    }
+
+    public int getItemID() {
+        return this.itemID;
     }
 
     public int getQuantity() {

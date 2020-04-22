@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config>
+        <domain includeSubdomains="true">https://50.19.176.137:8001/</domain>
+        <pin-set>
+            <pin digest="SHA-256">47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=</pin>
+            <pin digest="SHA-256">21f0de2229bf508f2cb05b7d295b20d948e89bab1d1152beec69c5b23cb9a972</pin>
+        </pin-set>
+    </domain-config>
+</network-security-config>

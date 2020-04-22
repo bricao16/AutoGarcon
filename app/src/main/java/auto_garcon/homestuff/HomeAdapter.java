@@ -32,7 +32,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         this.layoutInflater = LayoutInflater.from(context);
         this.data = data;
         this.context = context;
-
         this.pref = new SharedPreference(context);
     }
 
@@ -73,6 +72,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 public void onClick(View v) {
                     Intent menu = new Intent(v.getContext(), Menu.class);
                     menu.putExtra("restaurant id", data.get(getAdapterPosition()).getID());
+                    menu.putExtra("restaurant name", data.get(getAdapterPosition()).getName());
+
                     context.startActivity(menu);
                 }
             });

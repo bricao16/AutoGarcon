@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.cartorderhistory.OrderHistory;
@@ -59,6 +61,8 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //NukeSSLCerts.nuke();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
