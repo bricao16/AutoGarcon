@@ -81,7 +81,7 @@ public class Account extends AppCompatActivity {
                     changePassword.setError("Password Must be Greater than 6 Characters");
                 }
                 else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email)
-                        && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirments are met than we can send our put request to the database
+                        && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirements are met than we can send our put request to the database
 
                     //put request for updating Account Information
                     String url = "http://50.19.176.137:8000/customer/update";

@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
@@ -61,7 +62,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_restaurant_page);
+        setContentView(R.layout.activity_menu);
 
         pref = new SharedPreference(this);
 
@@ -83,55 +84,128 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         listHash = new HashMap<>();
         restaurantName.setText(getIntent().getStringExtra("restaurant name"));
 
-        Button addToFavorites = findViewById(R.id.add_restaurant);
+        boolean inFavorites = false;
+        Button addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
-        addToFavorites.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String addToFavoritesURL = "http://50.19.176.137:8000/favorities/add";
-
-                obj = new JSONObject();//json object that will be sent as the request parameter
-
-                try {
-                    obj.put("customer_id", pref.getUser().getUsername());
-                    obj.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0));
-                }catch (JSONException e){
-                    //TODO figure out how to handle this other than stack trace
-                    e.printStackTrace();
-                }
-
-                StringRequest putRequest = new StringRequest(Request.Method.PUT, addToFavoritesURL,
-                        new Response.Listener<String>()
-                        {
-                            @Override
-                            public void onResponse(String response) {
-                                // response
-                                Toast.makeText(Menu.this,response,Toast.LENGTH_LONG).show();
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // error if the request fails
-                                error.printStackTrace();
-                                Toast.makeText(Menu.this,error.toString(),Toast.LENGTH_LONG).show();
-                            }
-                        }
-                ) {
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        return obj.toString().getBytes();
-                    }
-
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json";
-                    }
-                };
-
-                VolleySingleton.getInstance(Menu.this).addToRequestQueue(putRequest);// making the actual request
+        for(int i = 0; i < pref.getUser().getFavorites().size(); i++) {
+            if(pref.getUser().getFavorites().get(i) == getIntent().getIntExtra("restaurant id", 0)) {
+                inFavorites = true;
             }
-        });
+        }
+
+        if(!inFavorites) {
+            addOrRemoveFavorite.setText("Remove from favorites");
+
+            addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String addToFavoritesURL = "http://50.19.176.137:8000/favorites/delete";
+
+                    obj = new JSONObject();//json object that will be sent as the request parameter
+
+                    try {
+                        obj.put("customer_id", pref.getUser().getUsername());
+                        obj.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0));
+                    }
+                    catch (JSONException e) {
+                        //TODO figure out how to handle this other than stack trace
+                        e.printStackTrace();
+                    }
+
+                    StringRequest putRequest = new StringRequest(Request.Method.DELETE, addToFavoritesURL,
+                            new Response.Listener<String>()
+                            {
+                                @Override
+                                public void onResponse(String response) {
+                                    // response
+                                    Toast.makeText(Menu.this,response,Toast.LENGTH_LONG).show();
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    // error if the request fails
+                                    error.printStackTrace();
+                                    Toast.makeText(Menu.this,error.toString(),Toast.LENGTH_LONG).show();
+                                }
+                            }
+                    ) {
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            return obj.toString().getBytes();
+                        }
+
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json";
+                        }
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {//i
+
+                            HashMap<String,String> headers = new HashMap<String,String>();
+                            headers.put("Authorization", "Bearer " + pref.getAuth());
+                            return headers;
+                        }
+                    };
+
+                    VolleySingleton.getInstance(Menu.this).addToRequestQueue(putRequest);// making the actual request
+                }
+            });
+        }
+        else {
+            addOrRemoveFavorite.setText("Add to favorites");
+
+            addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String addToFavoritesURL = "http://50.19.176.137:8000/favorites/add";
+
+                    obj = new JSONObject();//json object that will be sent as the request parameter
+
+                    try {
+                        obj.put("customer_id", pref.getUser().getUsername());
+                        obj.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0));
+                    }catch (JSONException e){
+                        //TODO figure out how to handle this other than stack trace
+                        e.printStackTrace();
+                    }
+
+                    StringRequest putRequest = new StringRequest(Request.Method.PUT, addToFavoritesURL,
+                            new Response.Listener<String>()
+                            {
+                                @Override
+                                public void onResponse(String response) {
+                                    // response
+                                    Toast.makeText(Menu.this,response,Toast.LENGTH_LONG).show();
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    // error if the request fails
+                                    error.printStackTrace();
+                                    Toast.makeText(Menu.this,error.toString(),Toast.LENGTH_LONG).show();
+                                }
+                            }
+                    ) {
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            return obj.toString().getBytes();
+                        }
+
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json";
+                        }
+                    };
+
+                    VolleySingleton.getInstance(Menu.this).addToRequestQueue(putRequest);// making the actual request
+                }
+            });
+        }
+
+
 
         final String url = "http://50.19.176.137:8000/menu/" + getIntent().getIntExtra("restaurant id", 0);
 

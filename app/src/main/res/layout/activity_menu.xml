@@ -45,8 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="65dp"
-            android:layout_alignParentEnd="true"
-            android:text="@string/add_to_favorites"/>
+            android:layout_alignParentEnd="true" />
 
         <!-- list of menu items -->
         <ExpandableListView

@@ -56,19 +56,34 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shopping_cart);
 
         /**
          *  Get the current shopping cart from what is currently being stored in shared
-         *  preferences, otherwise it will create a new empty cart.
+         *  preferences, otherwise it will create a new empty cart. Sets layout depending on if
+         *  the cart is empty or not.
          */
         pref = new SharedPreference(this);
-        if(pref.getShoppingCart() != null ){
+        if(pref.getShoppingCart().getCart().size() == 0) {
+            setContentView(R.layout.empty_shopping_cart);
             shoppingCart = pref.getShoppingCart();
         }
-        else{
+        else if(pref.getShoppingCart() == null){
             shoppingCart = new ShoppingCartSingleton();
+            setContentView(R.layout.empty_shopping_cart);
             pref.setShoppingCart(shoppingCart);
+        }
+        else {
+            setContentView(R.layout.activity_shopping_cart);
+            shoppingCart = pref.getShoppingCart();
+
+            /**
+             * Ties the cart xml to a Java object and sets the adapter, which will manage each
+             * individual item in the cart.
+             */
+            recyclerView = findViewById(R.id.list);
+            ShoppingCartAdapter adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
 
         /**
@@ -82,15 +97,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
-        /**
-         * Ties the cart xml to a Java object and sets the adapter, which will manage each
-         * individual item in the cart.
-         */
-        recyclerView = findViewById(R.id.list);
-        ShoppingCartAdapter adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         /**
          * Ties xml element to a Java object and where to onClick functionality is provided,

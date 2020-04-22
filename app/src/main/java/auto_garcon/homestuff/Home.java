@@ -61,12 +61,11 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //NukeSSLCerts.nuke();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         pref = new SharedPreference(Home.this);
+
 
 
         // dummy  data for a search box
@@ -87,15 +86,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(Home.this);
 
-        //TextView sideNavBarName =  findViewById(R.id.side_nav_bar_name);
-
-        //Toast.makeText(this, sideNavBarName.getText().toString(), Toast.LENGTH_SHORT).show();
-
-
-        // sideNavBarName.setText("HI");
-
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -119,9 +110,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-
-        Toast.makeText(Home.this, pref.getUser().getUsername(), Toast.LENGTH_SHORT).show();
-
         //shake feature
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector shakeDetector = new ShakeDetector(this);
@@ -130,6 +118,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         final String url = "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername();
 
         items = new ArrayList<>();
+        recyclerView = findViewById(R.id.favorites_list);
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -154,6 +143,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                         switch(inner_key){
                                             case "restaurant_id":
                                                 itemToBeAdded.setID(Integer.parseInt(item.get(inner_key).toString()));
+                                                pref.getUser().addToFavorites(Integer.parseInt(item.get(inner_key).toString()));
                                                 break;
                                             case "restaurant_name":
                                                 itemToBeAdded.setName(item.get(inner_key).toString());
@@ -184,10 +174,12 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                     }
 
                                     items.add(itemToBeAdded);
+                                    if(items.size() == 0) {
+                                        setContentView(R.layout.no_favorites_home);
+                                    }
                                 }
                             }
 
-                            recyclerView = findViewById(R.id.favorites_list);
                             recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
                             adapter = new HomeAdapter(Home.this, items);
                             recyclerView.setAdapter(adapter);
@@ -207,6 +199,8 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         );
 
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequest);
+
+
 
         //Here is for Search box
         searchView = (SearchView) findViewById(R.id.searchView);
