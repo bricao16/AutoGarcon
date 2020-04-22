@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -53,10 +54,10 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_order_history);
 
         String temp;
-        final String url = "http://50.19.176.137:8000/customer/history";
+        final String url = "http://50.19.176.137:8000/customer/history/";
         JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
         try{
-            obj.put("customer_id", pref.getUser());
+            obj.put("customer_id", pref.getUser().getUsername());
         }catch (JSONException e){
             //TODO figure out how to handle this other than stack trace
             e.printStackTrace();
@@ -72,6 +73,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             String key = (String) iterator.next();
                             keyList.add(key);
                         }
+                        Log.d("sdff", keyList.get(0));
+
                         Toast.makeText(OrderHistory.this,keyList.get(0),Toast.LENGTH_LONG).show();
                     }
                 },
@@ -82,7 +85,9 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     }
                 }
 
+
         );
+        VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
 
 
 
