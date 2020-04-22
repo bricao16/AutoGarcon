@@ -22,9 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import auto_garcon.initialpages.Login;
-import auto_garcon.initialpages.Register;
 import auto_garcon.singleton.SharedPreference;
-import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 
 public class Account extends AppCompatActivity {
@@ -151,5 +149,3 @@ public class Account extends AppCompatActivity {
         });
     }
 }
-
-//---------------------------------------------------------------------------
