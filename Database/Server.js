@@ -1497,7 +1497,7 @@ app.get('/alexa/pending/:id', (req, res) => {
 			//Send order_num of existing pending order
 			response = {
 				'message': 'Pending order exists',
-				'order_num': rows.order_num
+				'order_num': rows[0].order_num
 			};	//response
 
 			//Send Response:
