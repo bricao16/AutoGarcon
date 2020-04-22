@@ -353,6 +353,7 @@ GET /customer/history/:id
 				i =   {
 					order_num,
 					restaurant_id,
+					logo,
 					item_name,
 					quantity,
 					order_date,

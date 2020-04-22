@@ -1112,7 +1112,7 @@ app.post('/customer/update', verifyToken, (req, res) => {
 			Error retrieving order history
 */
 app.get('/customer/history/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.menu natural join sample.orders natural join sample.orderdetails WHERE customer_id = ? and order_status like "Complete" ORDER BY order_date desc';
+	let query = 'SELECT * FROM sample.menu natural join sample.orders natural join sample.orderdetails natural join sample.restaurants WHERE customer_id = ? and order_status like "Complete" ORDER BY order_date desc';
 
 	//Query database:
 	db.query(query, req.params.id, (err, rows) => {
@@ -1131,6 +1131,7 @@ app.get('/customer/history/:id', (req, res) => {
 				response[i] =   {
 					'order_num': rows[i].order_num,
 					'restaurant_id': rows[i].restaurant_id,
+					'logo': rows[i].logo,
 					'item_name': rows[i].item_name,
 					'quantity': rows[i].quantity,
 					'order_date': rows[i].order_date,
