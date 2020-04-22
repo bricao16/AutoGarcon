@@ -63,9 +63,15 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
         pref = new SharedPreference(Home.this);
+
+        if(pref.getFavorites() == null || pref.getFavorites().size() == 0) {
+            setContentView(R.layout.no_favorites_home);
+        }
+        else {
+            setContentView(R.layout.activity_home);
+        }
+
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
@@ -228,7 +234,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                     }
 
                                     allRestaurantList.put(restaurantID, restaurantName);
-
                                 }
                             }
 

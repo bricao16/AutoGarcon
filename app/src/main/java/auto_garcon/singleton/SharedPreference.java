@@ -97,9 +97,14 @@ public class SharedPreference {
     public List<Integer> getFavorites(){
         Gson gson = new Gson();
         String stringJson = sharedPreferences.getString("favorite restaurants", null);
-
-        Type type = new TypeToken<List<Integer>>() {}.getType();
-        List<Integer> toBeReturned = gson.fromJson(stringJson, type);
+        List<Integer> toBeReturned;
+        if(stringJson == null) {
+            toBeReturned = new ArrayList<Integer>();
+        }
+        else {
+            Type type = new TypeToken<List<Integer>>() {}.getType();
+            toBeReturned = gson.fromJson(stringJson, type);
+        }
         return toBeReturned;
     }
 
