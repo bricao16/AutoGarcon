@@ -13,19 +13,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Redirect} from "react-router-dom";
 import Alert from 'react-bootstrap/Alert';
-//import Manager from './Manager/Manager';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 
-
-
-/*this is the login component for the manager
-view. Asks for the staff ID, password and logs in if the user and correct password
-exists on the database
-
-Privacy Policy needed 
-https://html.com/resources/cookies-ultimate-guide/#Implementing_Cookies_on_a_Technical_Level */
+/*login component for the manager view.
+Asks for the staff ID, password and logs in if the user and correct password
+exists on the database cookies are set to use persistant state once logged in.
+ */
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -54,7 +49,7 @@ class MLogin extends React.Component {
 	  super(props);
 	  
 	  this.state = {
-	    email: '',
+	    ID: '',
 		passwd:'',
       	redirect: false,
       	show: false,
@@ -64,22 +59,19 @@ class MLogin extends React.Component {
 	  
     this.handleShow = this.handleShow.bind(this);
 	  this.handleSubmit = this.handleSubmit.bind(this);
-	  this.handleEmail = this.handleEmail.bind(this);
+	  this.handleID = this.handleID.bind(this);
 	  this.handlePasswd = this.handlePasswd.bind(this);
 	  
   }
-
+  //on submit send form info to the database
   handleSubmit(event){
-	  
-	  event.preventDefault();
-	  
-	  /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
-	  
-    
+	 event.preventDefault();
+	 /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
+	 
     axios({
       method: 'post',
       url: process.env.REACT_APP_DB + '/staff/login',
-      data: 'username='+this.state.email+'&password='+this.state.passwd,
+      data: 'username='+this.state.ID+'&password='+this.state.passwd,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
@@ -89,33 +81,24 @@ class MLogin extends React.Component {
     })
       .then(async response => {
         await response;
-        
+        //if a bad response alert the user
         if (response.status !== 200) {this.handleShow(response);}
         else 
         {
-        	/*response.json()
-		      .then(
-		        (result) => {
-		        	console.log(result);*/
-		        if(response.data.staff.position === "manager")
-		        {
-			        this.setState({
-			            redirect: true,
-			            show: false,
-			            staff: response.data.staff,
-			            token:response.data.token
-			          });
-		        }
-		        else{
-		        	alert('Staff ID or Password is incorrect');
-		        }
-
-		 }
-		        //);
-
-          //this.setState({show: false});
-          //this.setState({redirect: true});
-        
+    		//confirm to be a manager account
+	        if(response.data.staff.position === "manager")
+	        {
+		        this.setState({
+		            redirect: true,
+		            show: false,
+		            staff: response.data.staff,
+		            token:response.data.token
+		          });
+	        }
+	        else{
+	        	alert('Staff ID or Password is incorrect');
+	        }
+		 }     
       })
       .catch(error =>{
         this.setState({alertVariant: 'danger'});
@@ -123,11 +106,10 @@ class MLogin extends React.Component {
         this.setState({redirect: false});
         console.error("There was an error!", error);
       });
-
   }
   
-  handleEmail(event){
-	  this.setState({email: event.target.value});
+  handleID(event){
+	  this.setState({ID: event.target.value});
   }
   
   handlePasswd(event){
@@ -157,91 +139,85 @@ class MLogin extends React.Component {
   render(){
   	/*redirect to manager*/
 	if(this.state.redirect === true){
-
-			console.log(cookies.get('mystaff'));
-			//set cookies to use later in manager page
-			cookies.set('mystaff', this.state.staff, { path: '/' });
-			cookies.set('mytoken', this.state.token, { path: '/' });
-			console.log(cookies.get('mystaff'));
-
-			return  (
-				<Redirect to='/manager'/> 
-				);
+    	//set the cookies and redirect to the cook page
+		cookies.set('mystaff', this.state.staff, { path: '/' });
+		cookies.set('mytoken', this.state.token, { path: '/' });
+		return  <Redirect to='/manager'/> 		
 	}  
 	return (
-		//top of page
-	  	  <Container component="main" maxWidth="xs" className="p-3">
-			  <CssBaseline />
-	        <div className={useStyles.paper}>
+	//top of page
+  	  <Container component="main" maxWidth="xs" className="p-3">
+		  <CssBaseline />
+        <div className={useStyles.paper}>
 
-	        <Alert show={this.state.show} variant={this.state.alertVariant}>
-	          {this.state.response}
-	        </Alert>
+        <Alert show={this.state.show} variant={this.state.alertVariant}>
+          {this.state.response}
+        </Alert>
 
-	        <div style={{'textAlign':'center'}}>
-	          {/* Lock icon on top */}
-	          <div style={{'display': 'inline-block'}}>
-	            <Avatar className={useStyles.avatar}>
-	              <LockOutlinedIcon />
-	            </Avatar>
-	          </div>
-	          {/* Cook Sign In Title */}
-	          <Typography component="h1" variant="h5">
-	            Manager Sign In
-	          </Typography>
-	        </div>
-
-			<form className={useStyles.form} noValidate>
-			  <TextField onChange = {this.handleEmail}
-				value = {this.state.email} /*This is the trouble line */
-				variant="outlined"
-				margin="normal"
-				required
-				fullWidth
-				id="email"
-				label="Staff ID"
-				name="email"
-				autoComplete="email"
-				autoFocus
-			  />
-			  <TextField onChange = {this.handlePasswd}
-				value = {this.state.passwd}
-				variant="outlined"
-				margin="normal"
-				required
-				fullWidth
-				name="password"
-				label="Password"
-				type="password"
-				id="password"
-				autoComplete="current-password"
-			  />
-			  {/* Remember me check box 
-			  <FormControlLabel
-				control={<Checkbox value="remember" color ="primary" />}
-				label="Remember me"
-			  />*/}
-			  {/* Submit button */}
-			  <Button onClick = {this.handleSubmit}
-				type="submit"
-				fullWidth
-				variant="contained"
-				style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
-				className={useStyles.submit}
-			  >
-				Sign In
-			  </Button>
-			  <Grid container>
-				<Grid item>
-				  {/* Create an account link */}
-				  <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
-					{"Don't have an account? Sign Up"}
-				  </Link>
-				</Grid>
-			  </Grid>
-			</form>
-		  </div>		
-		</Container>
+        <div style={{'textAlign':'center'}}>
+          {/* Lock icon on top */}
+          <div style={{'display': 'inline-block'}}>
+            <Avatar className={useStyles.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+          </div>
+          {/* Cook Sign In Title */}
+          <Typography component="h1" variant="h5">
+            Manager Sign In
+          </Typography>
+        </div>
+        {/* Form for putting in user id and password */}
+		<form className={useStyles.form} noValidate>
+		  <TextField onChange = {this.handleID}
+			value = {this.state.ID} /*This is the trouble line */
+			variant="outlined"
+			margin="normal"
+			required
+			fullWidth
+			id="ID"
+			label="Staff ID"
+			name="ID"
+			autoComplete="ID"
+			autoFocus
+		  />
+		  <TextField onChange = {this.handlePasswd}
+			value = {this.state.passwd}
+			variant="outlined"
+			margin="normal"
+			required
+			fullWidth
+			name="password"
+			label="Password"
+			type="password"
+			id="password"
+			autoComplete="current-password"
+		  />
+		  {/* Remember me check box no functionality yet
+		  <FormControlLabel
+			control={<Checkbox value="remember" color ="primary" />}
+			label="Remember me"
+		  />*/}
+		  {/* Submit button */}
+		  <Button onClick = {this.handleSubmit}
+			type="submit"
+			fullWidth
+			variant="contained"
+			style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
+			className={useStyles.submit}
+		  >
+			Sign In
+		  </Button>
+		  <Grid container>
+			<Grid item>
+			  {/* Create an account link */}
+			  <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
+				{"Don't have an account? Sign Up"}
+			  </Link>
+			</Grid>
+		  </Grid>
+		</form>
+	  </div>		
+	</Container>
 	);
   }
 }
