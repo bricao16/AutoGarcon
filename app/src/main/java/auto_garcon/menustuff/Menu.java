@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -99,7 +100,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String addToFavoritesURL = "http://50.19.176.137:8000/favorites/delete";
+                    String removeFavoriteURL = "http://50.19.176.137:8000/favorites/delete";
 
                     obj = new JSONObject();//json object that will be sent as the request parameter
 
@@ -112,21 +113,19 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                         e.printStackTrace();
                     }
 
-                    StringRequest putRequest = new StringRequest(Request.Method.DELETE, addToFavoritesURL,
+                    StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, removeFavoriteURL,
                             new Response.Listener<String>()
                             {
                                 @Override
                                 public void onResponse(String response) {
-                                    // response
-                                    Toast.makeText(Menu.this,response,Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Menu.this, response, Toast.LENGTH_LONG).show();
                                 }
                             },
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    // error if the request fails
                                     error.printStackTrace();
-                                    Toast.makeText(Menu.this,error.toString(),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Menu.this, error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             }
                     ) {
@@ -141,15 +140,14 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                         }
 
                         @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {//i
-
+                        public Map<String, String> getHeaders() throws AuthFailureError {
                             HashMap<String,String> headers = new HashMap<String,String>();
                             headers.put("Authorization", "Bearer " + pref.getAuth());
                             return headers;
                         }
                     };
 
-                    VolleySingleton.getInstance(Menu.this).addToRequestQueue(putRequest);// making the actual request
+                    VolleySingleton.getInstance(Menu.this).addToRequestQueue(deleteRequest);// making the actual request
                 }
             });
         }
@@ -159,7 +157,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String addToFavoritesURL = "http://50.19.176.137:8000/favorites/add";
+                    String addFavoriteURL = "http://50.19.176.137:8000/favorites/add";
 
                     obj = new JSONObject();//json object that will be sent as the request parameter
 
@@ -171,7 +169,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                         e.printStackTrace();
                     }
 
-                    StringRequest putRequest = new StringRequest(Request.Method.PUT, addToFavoritesURL,
+                    StringRequest putRequest = new StringRequest(Request.Method.PUT, addFavoriteURL,
                             new Response.Listener<String>()
                             {
                                 @Override

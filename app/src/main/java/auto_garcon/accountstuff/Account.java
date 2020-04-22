@@ -126,7 +126,7 @@ public class Account extends AppCompatActivity {
                         public Map<String, String> getHeaders() throws AuthFailureError {//i
 
                             HashMap<String,String> headers = new HashMap<String,String>();
-                            headers.put("Authorization","Bearer "+pref.getAuth());
+                            headers.put("Authorization","Bearer " + pref.getAuth());
                             return headers;
                         }
                     };
