@@ -204,19 +204,19 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
-            case R.id.account:
+            case R.id.account://switch to account page
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
                 break;
-            case R.id.order_history:
+            case R.id.order_history://switch to order history
                 Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
                 startActivity(orderHistory);
                 break;
-            case R.id.settings:
+            case R.id.settings://switch to settings page
                 Intent settings = new Intent(getBaseContext(),   Settings.class);
                 startActivity(settings);
                 break;
-            case R.id.log_out:
+            case R.id.log_out://logs user out
                 pref.changeLogStatus(false);
                 pref.logOut();
 

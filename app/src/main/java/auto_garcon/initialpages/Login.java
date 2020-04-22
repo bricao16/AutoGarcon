@@ -35,6 +35,11 @@ public class Login extends AppCompatActivity {
     private TextView textViewSignUp;// used to identify if the user wants to register
     private SharedPreference pref;//This object is used to store information about the user that can be used outside of this page
 
+    /**
+     * This method instantiates and constraints the xml object assoiciated to the login java class.
+     *
+     * @param savedInstanceState  contains the data that has been most recently supplied on the register xml after the creation of the app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
