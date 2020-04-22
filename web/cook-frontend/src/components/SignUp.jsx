@@ -8,17 +8,17 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {Redirect} from "react-router-dom";
+//import {Redirect} from "react-router-dom";
 import https from 'https';
 import axios from 'axios';
-import Cookies from 'universal-cookie';
+//import Cookies from 'universal-cookie';
 
 /*this sign up will be used to create a 
 restuarant. 
 It currently has no functionality other
 than a outline of a form to be submitted*/
 
-const cookies = new Cookies();
+//const cookies = new Cookies();
 
 const useStyles = makeStyles(theme => ({
   paper: {
