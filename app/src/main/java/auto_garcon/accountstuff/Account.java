@@ -52,6 +52,11 @@ public class Account extends AppCompatActivity {
         saveAccountChanges = findViewById(R.id.save_acct_change);
         changePassword = findViewById(R.id.change_password);
 
+        changeFirstName.setText(pref.getUser().getFirstName());
+        changeLastName.setText(pref.getUser().getLastName());
+        changeUsername.setText(pref.getUser().getUsername());
+        changeEmail.setText(pref.getUser().getEmail());
+
         /**/
         saveAccountChanges.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
