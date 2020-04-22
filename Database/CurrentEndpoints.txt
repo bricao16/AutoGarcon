@@ -193,7 +193,7 @@ PUT /favorites/add
 		On error:
 			Succesfully added restaurant to favorites!
 
-DELETE /favorites/delete
+POST /favorites/delete
 	Deletes a restaurant from a customer's favorites
 	Inputs (in body of request): customer_id, restaurant_id
 	Inputs (in headers of request): Authorization: Bearer <token>

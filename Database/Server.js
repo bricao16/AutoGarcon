@@ -576,7 +576,7 @@ app.put('/favorites/add', (req, res) => {
 		On error:
 			Error deleting favorite
 */
-app.delete('/favorites/delete', verifyToken, (req, res) => {
+app.post('/favorites/delete', verifyToken, (req, res) => {
 	//Make sure right number of parameters are entered:
 	if(!(req.body.customer_id && req.body.restaurant_id)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, restaurant_id');
@@ -618,7 +618,7 @@ app.delete('/favorites/delete', verifyToken, (req, res) => {
 			res.status(403).send('Can\'t delete other customer\'s favorites!');
 		}	//else
 	});	//verify
-});	//app.delete
+});	//app.post
 
 
 //==============================================================================//
@@ -1497,7 +1497,7 @@ app.get('/alexa/pending/:id', (req, res) => {
 			//Send order_num of existing pending order
 			response = {
 				'message': 'Pending order exists',
-				'order_num': rows.order_num
+				'order_num': rows[0].order_num
 			};	//response
 
 			//Send Response:
