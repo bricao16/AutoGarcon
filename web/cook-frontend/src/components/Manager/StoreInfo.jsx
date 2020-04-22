@@ -90,101 +90,97 @@ class StoreInfo extends React.Component{
         sectionEdit: category
     })
   }
-    renderInfo(){
-        return (
+  renderInfo(){
+    return (
+        <Card className="text-center m-2 w-100" style={itemStyle}>
+          <Card.Header style={cardHeaderStyle}>General</Card.Header>
+          <Card.Body>
+              <div className = "border-bottom m-3">
+                  {/*If edit was clicked on this part open form otherwise render just the name */}
+                  <h5 className="card-subtitle mb-2 text-muted float-left">Restaurant Name</h5>
+                   {this.state.sectionEdit !== "Name" ? 
+                          <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[0][1]}
+                              <button  onClick={() => this.editForm("Name") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                          </p>
+                          : 
+                            <form onSubmit = {this.handleSubmit}>
+                                  <input  className="form-control" type="text" name = "name" defaultValue={this.state.restaurantInfo[0][1]} onChange={this.onChange}></input>
+                                  <div className="row m-2">
+                                      <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                  </div>
+                              </form>
+                       
+                      }
+                  
+              </div>
+              <div className = "border-bottom m-3">
+                  <h5 className="card-subtitle mb-2 text-muted float-left">Address</h5>
+                      {this.state.sectionEdit !== "Address" ? 
+                          <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[1][1]}
+                              <button  onClick={() => this.editForm("Address") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                          </p>
+                          : 
+                               <form onSubmit = {this.handleSubmit}>
+                                  <input  className="form-control" type="text" name = "address" defaultValue={this.state.restaurantInfo[1][1]} onChange={this.onChange}></input>
+                                  <div className="row m-2">
+                                      <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                  </div>
+                              </form>
 
-                      <Card className="text-center m-2 w-100" style={itemStyle}>
-                        <Card.Header style={cardHeaderStyle}>General</Card.Header>
-                        <Card.Body>
-                            <div className = "border-bottom m-3">
-                                {/*If edit was clicked on this part open form otherwise render just the name */}
-                                <h5 className="card-subtitle mb-2 text-muted float-left">Restaurant Name</h5>
-                                 {this.state.sectionEdit !== "Name" ? 
-                                        <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[0][1]}
-                                            <button  onClick={() => this.editForm("Name") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                                        </p>
-                                        : 
-                                          <form onSubmit = {this.handleSubmit}>
-                                                <input  className="form-control" type="text" name = "name" defaultValue={this.state.restaurantInfo[0][1]} onChange={this.onChange}></input>
-                                                <div className="row m-2">
-                                                    <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                                </div>
-                                            </form>
-                                     
-                                    }
-                                
-                            </div>
-                            <div className = "border-bottom m-3">
-                                <h5 className="card-subtitle mb-2 text-muted float-left">Address</h5>
-                                    {this.state.sectionEdit !== "Address" ? 
-                                        <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[1][1]}
-                                            <button  onClick={() => this.editForm("Address") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                                        </p>
-                                        : 
-                                             <form onSubmit = {this.handleSubmit}>
-                                                <input  className="form-control" type="text" name = "address" defaultValue={this.state.restaurantInfo[1][1]} onChange={this.onChange}></input>
-                                                <div className="row m-2">
-                                                    <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                                </div>
-                                            </form>
-        
-                                    }
-                            </div>
-                            <div className = "border-bottom m-3">
-                            <h5 className="card-subtitle mb-2 text-muted float-left">Phone Number</h5>
-                                {this.state.sectionEdit !== "Phone" ? 
-                                    <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[2][1]}
-                                        <button onClick={() => this.editForm("Phone") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                                    </p>
-                                    : 
-                                        <form onSubmit = {this.handleSubmit}>
-                                            <input  className="form-control" type="text" name = "phone" defaultValue={this.state.restaurantInfo[2][1]} onChange={this.onChange}></input>
-                                            <div className="row m-2">
-                                                <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                            </div>
-                                        </form>
-           
-                                }
-                            </div>
-                            <div className = "border-bottom m-3">
-                            <h5 className="card-subtitle mb-2 text-muted float-left">Opening Time</h5>
-                                {this.state.sectionEdit !== "Open" ? 
-                                    <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[3][1]}
-                                        <button onClick={() => this.editForm("Open") }className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                                    </p>
-                                    : 
-                                        <form onSubmit = {this.handleSubmit}>
-                                            <input  className="form-control" type="text" name = "open" defaultValue={this.state.restaurantInfo[3][1]} onChange={this.onChange}></input>
-                                            <div className="row m-2">
-                                                <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                            </div>
-                                        </form>
-                                   
-                                }
-                            </div>
-                            <div className = "border-bottom m-3">
-                            <h5 className="card-subtitle mb-2 text-muted float-left">Closing Time</h5>
-                                {this.state.sectionEdit !== "Close" ? 
-                                    <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[4][1]}
-                                        <button onClick={() => this.editForm("Close") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                                    </p>
-                                    : 
-                                        <form onSubmit = {this.handleSubmit}>
-                                            <input  className="form-control" type="text" name = "close" defaultValue={this.state.restaurantInfo[4][1]} onChange={this.onChange}></input>
-                                            <div className="row m-2">
-                                                <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                            </div>
-                                        </form>
-                                     
-                                }
-                            </div>
-                            
-                        </Card.Body>
-                    </Card>
-           
+                      }
+              </div>
+              <div className = "border-bottom m-3">
+              <h5 className="card-subtitle mb-2 text-muted float-left">Phone Number</h5>
+                  {this.state.sectionEdit !== "Phone" ? 
+                      <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[2][1]}
+                          <button onClick={() => this.editForm("Phone") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                      </p>
+                      : 
+                          <form onSubmit = {this.handleSubmit}>
+                              <input  className="form-control" type="text" name = "phone" defaultValue={this.state.restaurantInfo[2][1]} onChange={this.onChange}></input>
+                              <div className="row m-2">
+                                  <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                              </div>
+                          </form>
 
-            )
-
+                  }
+              </div>
+              <div className = "border-bottom m-3">
+              <h5 className="card-subtitle mb-2 text-muted float-left">Opening Time</h5>
+                  {this.state.sectionEdit !== "Open" ? 
+                      <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[3][1]}
+                          <button onClick={() => this.editForm("Open") }className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                      </p>
+                      : 
+                          <form onSubmit = {this.handleSubmit}>
+                              <input  className="form-control" type="text" name = "open" defaultValue={this.state.restaurantInfo[3][1]} onChange={this.onChange}></input>
+                              <div className="row m-2">
+                                  <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                              </div>
+                          </form>
+                     
+                  }
+              </div>
+              <div className = "border-bottom m-3">
+              <h5 className="card-subtitle mb-2 text-muted float-left">Closing Time</h5>
+                  {this.state.sectionEdit !== "Close" ? 
+                      <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[4][1]}
+                          <button onClick={() => this.editForm("Close") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                      </p>
+                      : 
+                          <form onSubmit = {this.handleSubmit}>
+                              <input  className="form-control" type="text" name = "close" defaultValue={this.state.restaurantInfo[4][1]} onChange={this.onChange}></input>
+                              <div className="row m-2">
+                                  <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                              </div>
+                          </form>
+                       
+                  }
+              </div>
+              
+          </Card.Body>
+      </Card>
+      )
     }
     render() {
         const {restaurantInfo } = this.state;

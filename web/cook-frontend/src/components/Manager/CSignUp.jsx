@@ -114,21 +114,12 @@ class CSignUp extends React.Component{
         if (response.status !== 200) {this.handleShow(response);}
         else 
         {
-          /*response.json()
-          .then(
-            (result) => {
-              console.log(result);*/
               this.setState({
                 redirect: true,
                 show: false,
 
               });
-     }
-            //);
-
-          //this.setState({show: false});
-          //this.setState({redirect: true});
-        
+        }
       })
       .catch(error =>{
         alert('Unsuccessful Submit');
@@ -140,14 +131,10 @@ class CSignUp extends React.Component{
 
   }
 render() {
-  const cookies = new Cookies();
+    //if sucessful submit redirect to cook view
   if(this.state.redirect === true){
     alert("Sucessful Staff Creation");
     return <CookView section=""/> 
-    /*return  <Redirect   to={{
-    pathname: "/cookview",
-    state: { section: "" }
-  }}/> */
   }  
   if(cookies.get('mystaff').position === "manager")
   {

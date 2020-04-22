@@ -4,7 +4,8 @@ import Stat from './StatItem';
 
 /*this is the stats component for the manager
 view. The stats are stored in state and rendered 
-onto cards in by statsProp */
+onto cards in by statsProp
+Currently not displaying any real info */
 class Stats extends React.Component{
 
     constructor(props) {

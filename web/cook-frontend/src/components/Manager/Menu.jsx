@@ -7,7 +7,7 @@ import NewItem from './NewItem';
 
 /*
   This component is used to render menu information which
-  is pulled from the database in MTasks. 
+  is pulled from the database in Manager. 
 
   The menu and unique categories are put into arrays.
     If we are on the main menu we just display the categories.

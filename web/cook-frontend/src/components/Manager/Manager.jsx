@@ -62,57 +62,38 @@ class Manager extends React.Component{
             </Container>
         );
       }
-
-    /*fetch(process.env.REACT_APP_DB + "/restaurant/"+ this.state.staff.restaurant_id)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-            restaurantJSON: result
-          });
+      axios({
+        method: 'get',
+        url: process.env.REACT_APP_DB + '/restaurant/' + this.state.staff.restaurant_id,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        (error) => {
+        httpsAgent: new https.Agent({  
+          rejectUnauthorized: false,
+        }),
+      })
+        .then(res => {
+          var finalJson = {
+            'menu': res.data.menu,
+            'restaurant': res.data.restaurant
+            // Https endpoint parsing:
+            //'menu': res.data[1].menu,
+            //'restaurant': res.data[0].restaurant
+          }
+          return finalJson;
+        })
+        .then((result) => {
+            this.setState({
+              isLoaded: true,
+              restaurantJSON: result
+            });
+          })
+        .catch((error) => {
           this.setState({
             isLoaded: true,
             error
           });
-        }
-      )
-    } */
-
-    axios({
-      method: 'get',
-      url: process.env.REACT_APP_DB + '/restaurant/' + this.state.staff.restaurant_id,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      httpsAgent: new https.Agent({  
-        rejectUnauthorized: false,
-      }),
-    })
-      .then(res => {
-        var finalJson = {
-          'menu': res.data.menu,
-          'restaurant': res.data.restaurant
-          // Https endpoint parsing:
-          //'menu': res.data[1].menu,
-          //'restaurant': res.data[0].restaurant
-        }
-        return finalJson;
-      })
-      .then((result) => {
-          this.setState({
-            isLoaded: true,
-            restaurantJSON: result
-          });
         })
-      .catch((error) => {
-        this.setState({
-          isLoaded: true,
-          error
-        });
-      })
     }
     
     render() 

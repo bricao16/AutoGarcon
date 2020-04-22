@@ -5,10 +5,12 @@ import {Link} from "react-router-dom";
 import Background from "../assets/background.jpg";
 import { Container, Row, Col, Nav, Image, Button } from 'react-bootstrap';
 
+/*Landing page for AutoGarcon with header for sign up,login manager
+login cook. Contains a background image of retuarant with some 
+promotional text*/
 function Home() {
   return (
     <div style={homeStyle} className="d-flex flex-column">
-    
       <Container fluid>
         {/* Logo, title and navigation are each in a column*/}
         <Row style={{alignItems: 'center'}}>

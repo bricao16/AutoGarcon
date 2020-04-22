@@ -7,8 +7,11 @@ import Cookies from 'universal-cookie';
 
 /*this is the customize component for the manager
 view. The customization info is prefilled from the pull from
-the database made on Manager. Each field has an eit button
-which when clicked changes the 'sectionEdit' state to that section.
+the database made on Manager. 
+
+Each field has an edit button  when clicked changes 
+the 'sectionEdit' state to that section.
+
 renderInfo is called which either creates a form to edit for the
 section or renders what is there from the database.*/
 class Customize extends React.Component{
@@ -75,16 +78,14 @@ class Customize extends React.Component{
       this.setState({redirect: false});
       console.error("There was an error!", error);
     });
-
-
 }
 
-  //change the category of which is being edited
-  editForm = (category) => {
-      this.setState({
-        sectionEdit: category
-    })
-  }
+//change the category of which is being edited
+editForm = (category) => {
+    this.setState({
+      sectionEdit: category
+  })
+}
 renderInfo(){
     return (
         <React.Fragment>
