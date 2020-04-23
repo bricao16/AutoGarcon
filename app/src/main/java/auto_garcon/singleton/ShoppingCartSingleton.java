@@ -68,4 +68,12 @@ public class ShoppingCartSingleton {
     public int getRestaurantID() {
         return this.restaurantID;
     }
+
+    public String toString(){
+        String toReturn ="";
+        for(int i= 0; i<items.size();i++){
+            toReturn= items.get(i).getNameOfItem()+ " Qty("+items.get(i).getQuantity()+")"+"\n";
+        }
+        return toReturn;
+    }
 }

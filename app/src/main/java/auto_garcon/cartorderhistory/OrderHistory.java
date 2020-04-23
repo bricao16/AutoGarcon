@@ -5,6 +5,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,6 +39,7 @@ import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.initialpages.TwoButtonPage;
 import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 
@@ -47,36 +50,61 @@ import auto_garcon.singleton.VolleySingleton;
  */
 public class OrderHistory extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private SharedPreference pref;// This
+    RecyclerView recyclerView;// for the adapter class to be used as a non final
+    private SharedPreference pref;// used to refrence user information
+    private ArrayList<String> order;// used to capture user order number
+    private ArrayList<ShoppingCartSingleton> carts;// used to handle items returned from the recent order history
+    private ArrayList<String> date;// used to capture time for all orders
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        order = new ArrayList<String>();
+        date = new ArrayList<String >();
+        carts = new ArrayList<ShoppingCartSingleton>();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
+        recyclerView = findViewById(R.id.order_list);
+
 
         pref = new SharedPreference(this);
 
-        String temp;
-        final String url = "http://50.19.176.137:8000/customer/history/"+pref.getUser().getUsername();
+        final String url = "http://50.19.176.137:8000/customer/history/" + pref.getUser().getUsername();
         JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
         final StringRequest getRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
-                @Override
-                public void onResponse(String response) {
+            @Override
+            public void onResponse(String response) {
 
-                    if(response.equals("No order history for this customer")){
-                        setContentView(R.layout.emptyorders);
+                if (response.equals("No order history for this customer")) {
+                    setContentView(R.layout.emptyorders);
+
+                } else {
+                    JsonParser parser = new JsonParser();
+                    JsonObject json = (JsonObject) parser.parse(response);
+
+                    setContentView(R.layout.activity_order_history);
+                    Log.d("213", json.toString());
+
+                    /*--------------------------------------------------------------*/
+                    //parsing through json from get request to add them to menu
+                    for(int i = 0;i<json.size();i++){
+                        auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
+                        item.setNameOfItem(json.getAsJsonObject(""+i).get("item_name").getAsString());
+                        item.setQuantity(json.getAsJsonObject(""+i).get("quantity").getAsInt());
+                        order.add(json.getAsJsonObject(""+i).get("order_num").getAsString());
+                        carts.add(new ShoppingCartSingleton(json.getAsJsonObject(""+i).get("restaurant_id").getAsInt()));
+                        carts.get(i).addToCart(item);
+                        date.add(json.getAsJsonObject(""+i).get("order_date").getAsString());
+                        Log.d("asdff", ""+order.get(i));
 
                     }
-                    else {
-                        JsonParser parser = new JsonParser();
-                        JsonObject json =(JsonObject) parser.parse(response);
+                    OrderHistoryAdapter adapter;// used to hold to allow recent orders to show up as cards for xml layout
 
+                    recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
+                    adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date);//values that will be needed to input data into our xml objects that is handled in our adapter class
+                    recyclerView.setAdapter(adapter);
 
-                        Log.d("213",json.toString());
-                        setContentView(R.layout.activity_order_history);
-                    }
-                    Log.d("asdff",response);
                     //creating side nav drawer
                     DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
                     Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
@@ -91,7 +119,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
                     BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                             new BottomNavigationView.OnNavigationItemSelectedListener() {
-                                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                                @Override
+                                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                                     switch (item.getItemId()) {
                                         case R.id.action_scan:
                                             Intent QRcode = new Intent(getBaseContext(), QRcode.class);
@@ -115,19 +144,25 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
 
                 }
-            },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(OrderHistory.this, error.getMessage() + "hmmmm", Toast.LENGTH_LONG).show();
+            }
+        },
+                new Response.ErrorListener()
 
-                    }
+            {
+                @Override
+                public void onErrorResponse (VolleyError error){
+                Toast.makeText(OrderHistory.this, error.getMessage(), Toast.LENGTH_LONG).show();
+
                 }
+            }
 
 
-        );
-        VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
+            );
+        VolleySingleton.getInstance(OrderHistory .this).
+
+            addToRequestQueue(getRequest);// sending the request to the database
     }
+
 
     //onClick for side nav bar
     @Override

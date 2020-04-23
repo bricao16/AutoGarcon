@@ -38,6 +38,7 @@
             app:menu="@menu/bottom_nav_menu" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/order_list"
             android:layout_width="wrap_content"
             android:layout_height="156dp"
             android:layout_above="@+id/bottom_navigation"
