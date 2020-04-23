@@ -89,6 +89,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         Button addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
         if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
+            Log.d("SDFSDF", "SDFSDF");
             inFavorites = true;
         }
 
@@ -202,7 +203,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             });
         }
 
-        final String url = "http://50.19.176.137:8000/menu/" + getIntent().getIntExtra("restaurant id", 0);
+        final String url = "http://50.19.176.137:8000/menu/124";
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {

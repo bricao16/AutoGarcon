@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -54,77 +55,65 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_order_history);
 
         String temp;
-        final String url = "http://50.19.176.137:8000/customer/history/";
+        final String url = "http://50.19.176.137:8000/customer/history/" + pref.getUser().getUsername();
         JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
-        try{
-            obj.put("customer_id", pref.getUser().getUsername());
-        }catch (JSONException e){
-            //TODO figure out how to handle this other than stack trace
-            e.printStackTrace();
-        }
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, obj,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Iterator iterator = response.keys();
+        final StringRequest getRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
 
-                        List<String> keyList = new ArrayList<String >();
-                        while (iterator.hasNext()){
-                            String key = (String) iterator.next();
-                            keyList.add(key);
-                        }
-                        Log.d("sdff", keyList.get(0));
-
-                        Toast.makeText(OrderHistory.this,keyList.get(0),Toast.LENGTH_LONG).show();
+                    if(response.equals("No order history for this customer")){
+                        setContentView(R.layout.emptyorders);
                     }
-                },
+                    else {
+                        setContentView(R.layout.activity_order_history);
+                    }
+                    Toast.makeText(OrderHistory.this,response+"hmmmm",Toast.LENGTH_LONG).show();
+
+                    //creating side nav drawer
+                    DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
+                    Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
+                    NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
+                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(OrderHistory.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+
+                    drawerLayout.addDrawerListener(toggle);
+                    toggle.syncState();
+                    navigationView.setNavigationItemSelectedListener(OrderHistory.this);
+
+                    BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);// associating xml objects with the java Object equivalent
+
+                    BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                                    switch (item.getItemId()) {
+                                        case R.id.action_scan:
+                                            Intent QRcode = new Intent(getBaseContext(), QRcode.class);
+                                            startActivity(QRcode);
+                                            return true;
+                                        case R.id.action_home:
+                                            Intent home = new Intent(getBaseContext(), Home.class);
+                                            startActivity(home);
+                                            return true;
+                                        case R.id.action_cart:
+                                            Intent shoppingCart = new Intent(getBaseContext(), ShoppingCart.class);
+                                            startActivity(shoppingCart);
+                                            return true;
+                                    }
+                                    return false;
+                                }
+                            };
+
+                    bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+                }
+            },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(OrderHistory.this,error.getMessage(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(OrderHistory.this,error.getMessage()+"hmmmm",Toast.LENGTH_LONG).show();
                     }
                 }
 
-
         );
         VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
-
-
-
-        //creating side nav drawer
-        DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
-        Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
-        NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);// associating xml objects with the java Object equivalent
-
-        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_scan:
-                                Intent QRcode = new Intent(getBaseContext(), QRcode.class);
-                                startActivity(QRcode);
-                                return true;
-                            case R.id.action_home:
-                                Intent home = new Intent(getBaseContext(), Home.class);
-                                startActivity(home);
-                                return true;
-                            case R.id.action_cart:
-                                Intent shoppingCart = new Intent(getBaseContext(), ShoppingCart.class);
-                                startActivity(shoppingCart);
-                                return true;
-                        }
-                        return false;
-                    }
-                };
-
-        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
 
     //onClick for side nav bar

@@ -75,19 +75,19 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         });
         //If the user pushes the remove button on the item view, then the action is taken.
         holder.remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Getting a item that the user pushed the add button
-                //Decrementing the quantity and recalculating the total cost of the item.
-                if(menuItemArrayList.get(position).getQuantity() != 1){
-                    menuItemArrayList.get(position).decrementQuantity();
-                    menuItemArrayList.get(position).setCost();
-                    //Set its view again to show the updated quantity.
-                    holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
-                    holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
-                    cart.cartContainsItem(menuItemArrayList.get(position)).decrementQuantity();
-                    preference.setShoppingCart(cart);
-                }
+                    @Override
+                    public void onClick(View v) {
+                        //Getting a item that the user pushed the add button
+                        //Decrementing the quantity and recalculating the total cost of the item.
+                        if(menuItemArrayList.get(position).getQuantity() != 1){
+                            menuItemArrayList.get(position).decrementQuantity();
+                            menuItemArrayList.get(position).setCost();
+                            //Set its view again to show the updated quantity.
+                            holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
+                            holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
+                            cart.cartContainsItem(menuItemArrayList.get(position)).decrementQuantity();
+                            preference.setShoppingCart(cart);
+                        }
             }
         });
         //If the user pushes the removeItem button on the item view, then the action is taken.
@@ -95,10 +95,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             @Override
             public void onClick(View v) {
                 //Deleting the item from a list
+
+
                 menuItemArrayList.remove(position);
-                notifyItemChanged(position);
                 cart.setItems(menuItemArrayList);
                 preference.setShoppingCart(cart);
+                notifyDataSetChanged();
             }
         });
     }

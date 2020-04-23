@@ -29,6 +29,7 @@
     <string name="adding_item_confirmation_text">Adding this item will remove the other items currently in cart.</string>
 
     <string name="cart_is_empty">The cart is currently empty. Add items to spend money.</string>
+    <string name ="no_Orders">You have no recent Orders</string>
 
     <string name="no_favorites">No favorite restaurants, add restaurants to fill this page.</string>
 

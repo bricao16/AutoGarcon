@@ -6,6 +6,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -18,10 +19,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -41,6 +44,7 @@ import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
+import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
 /*
@@ -50,6 +54,7 @@ This retrieve data of restaurant pages from database by using JASON with https c
  */
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     //data fields
+    private JSONObject obj;
     private SharedPreference pref;//a file to keep track of user data as long as it's logged in.
     RecyclerView recyclerView;//showing a list of restaurant pages
     HomeAdapter adapter;//generating a list of restaurant pages
@@ -63,10 +68,12 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
         pref = new SharedPreference(Home.this);
+
+        super.onCreate(savedInstanceState);
+
+
+        setContentView(R.layout.activity_home);
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
@@ -175,6 +182,10 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                             recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
                             adapter = new HomeAdapter(Home.this, items);
                             recyclerView.setAdapter(adapter);
+
+                            if(pref.getFavorites().size() == 0 || pref.getFavorites() == null) {
+                                setContentView(R.layout.no_favorites_home);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -189,6 +200,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 }
 
         );
+        Log.d("asdfasdfasdf, ", pref.getFavorites().toString());
 
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForFavorites);
 
@@ -229,7 +241,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                     }
 
                                     allRestaurantList.put(restaurantID, restaurantName);
-
                                 }
                             }
 
