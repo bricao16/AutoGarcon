@@ -74,8 +74,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         setContentView(R.layout.activity_home);
 
-
-
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
