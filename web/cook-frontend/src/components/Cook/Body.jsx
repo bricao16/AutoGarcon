@@ -6,7 +6,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 
 function Body(props){
-
+  // says where react is in lifecycle
   const isMounted = useRef(true);
   // For canceling server request
   const CancelToken = axios.CancelToken;
@@ -14,20 +14,21 @@ function Body(props){
   // Cookies for getting user info
   const cookies = new Cookies();
   const restaurant_id = cookies.get("mystaff").restaurant_id;
-  const [ordersPath, setGetUrl] = useState(null); // /orders/123 or /orders/complete/123
-  const completedOrderUrl = process.env.REACT_APP_DB+'/orders/update'; // domain.com/orders/update
-  const [completed, setCompleted] = useState(false); // if on completed tab, adds completed footer to each order
   // Switch between HTTP and HTTPS
-  const serverUrl = process.env.REACT_APP_DB; // HTTPS: REACT_APP_HTTPS_DB HTTP: REACT_APP_DB
+  const serverUrl = process.env.REACT_APP_HTTPS_DB; // HTTPS: REACT_APP_HTTPS_DB HTTP: REACT_APP_DB
+  const [ordersPath, setOrdersPath] = useState(null); // /orders/123 or /orders/complete/123
+  const completedOrderUrl = serverUrl + '/orders/update'; // domain.com/orders/update
+  const [completed, setCompleted] = useState(false); // if on completed tab, adds completed footer to each order
+
 
   // If path changes (because of switching tabs: active or complete)
   // or restaurant_id updates for some reason, the correct orders will be pulled from database
   useEffect(() => {
     if(props.path === '/active'){
-      setGetUrl(`/orders/${restaurant_id}`);
+      setOrdersPath(`/orders/${restaurant_id}`);
       setCompleted(false);
     } else if (props.path === '/completed'){
-      setGetUrl(`/orders/complete/${restaurant_id}`);
+      setOrdersPath(`/orders/complete/${restaurant_id}`);
       setCompleted(true);
     }
   }, [props.path, restaurant_id]);
@@ -36,6 +37,7 @@ function Body(props){
   // Will happen when switching tabs
   useEffect(() => {
     getOrders();
+    changeSelectedOrder(0);
   }, [ordersPath]);
 
   // Set up things for componentDidMount() componentWillUnmount()
@@ -96,7 +98,11 @@ function Body(props){
     // Null until calculated by effect hook
     if(ordersPath){
       const url = serverUrl + ordersPath;
+      console.log(url);
       axios.get(url, {
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false,
+        }),
         cancelToken: source.token
       })
         .then(res => res.data)
@@ -119,6 +125,12 @@ function Body(props){
     axios.post(completedOrderUrl,
       `order_num=${orderNum}&order_status=${status}`,
       {
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false,
+        }),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
         cancelToken: source.token
       })
       .then(() => {
