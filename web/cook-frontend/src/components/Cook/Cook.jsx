@@ -1,14 +1,12 @@
 import React from "react";
 import Navigation from "./Navigation";
-import Alert from "./Alert";
+// import Alert from "./Alert";
 import Footer from "./Footer";
 import Body from "./Body";
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import { Switch, Route, Redirect } from "react-router-dom";
 import Cookies from 'universal-cookie';
-
-const cookies = new Cookies();
 
 class Cook extends React.Component {
 
@@ -68,6 +66,9 @@ class Cook extends React.Component {
     )
   }
 }
+
+// Cookies used for getting login and user info
+const cookies = new Cookies();
 
 const cookStyle = {
   width: '100vw'
