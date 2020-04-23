@@ -16,7 +16,6 @@ that contains the actual information. So this.props.info[0][1].
 This is mapped to an array and then rendered into cards. The cards are manually
 created rather than dynamically in aother component because under this section
 each of these cards MUST have all this information. */
-
 class StoreInfo extends React.Component{
   constructor(props) {     
     super(props);
@@ -30,7 +29,8 @@ class StoreInfo extends React.Component{
       phone: "",
       open:"",
       close:"",
-      staff: cookies.get("mystaff")
+      restaurant_id :cookies.get("mystaff").restaurant_id,
+      token: cookies.get("token")
     };
 
     this.onChange = this.onChange.bind(this);
@@ -50,10 +50,9 @@ class StoreInfo extends React.Component{
   handleSubmit(event) {
     this.editForm("");
     event.preventDefault();
-    
     axios({
-      method: 'put',
-      url:  process.env.REACT_APP_DB + '/restaurant/' + this.state.staff.restaurant_id,
+      method: 'post',
+      url:  process.env.REACT_APP_DB +'/restaurant/update' + this.state.restaurant_id,
       data: 'name='+this.state.name+'&address='+this.state.address
       +'&phone='+this.state.phone+'&open='+this.state.open
       +'&close='+this.state.close,
