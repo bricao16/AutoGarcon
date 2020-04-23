@@ -58,6 +58,7 @@ GET /restaurants
 POST /restaurant/update
 	Updates restaurant information
 	Inputs (in body of request): restaurant_id, name, address, phone, opening, closing
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			Successfully updated restaurant information!
@@ -193,7 +194,7 @@ PUT /favorites/add
 		On error:
 			Succesfully added restaurant to favorites!
 
-DELETE /favorites/delete
+POST /favorites/delete
 	Deletes a restaurant from a customer's favorites
 	Inputs (in body of request): customer_id, restaurant_id
 	Inputs (in headers of request): Authorization: Bearer <token>
@@ -353,6 +354,7 @@ GET /customer/history/:id
 				i =   {
 					order_num,
 					restaurant_id,
+					logo,
 					item_name,
 					quantity,
 					order_date,

@@ -179,7 +179,7 @@ app.get('/restaurants', (req, res) => {
 
 /*
 	Updates restaurant information
-	Inputs: restaurant_id, name, address, phone, opening, closing
+	Inputs: restaurant_id, name, address, phone, opening, closing, JWT
 	Outputs:
 		On success:
 			Successfully updated restaurant information!
@@ -448,6 +448,11 @@ app.post('/orders/update', (req, res) => {
 			res.status(409).send('Error: order does not exist');
 		}   //if
 		else {
+			//Make sure valid status is entered:
+			if (!(req.body.order_status === 'Complete' || req.body.order_status === 'In Progress' || req.body.order_status === 'Pending' || req.body.order_status === 'Cancelled')) {
+				res.status(409).send('Error: Invalid status. Valid statuses: Complete, In Progress, Pending, Cancelled');
+				return;
+			}	//if
 			let parameters = [req.body.order_status, req.body.order_num];
 			query = 'UPDATE sample.orders SET order_status = ? WHERE order_num = ?';
 
@@ -576,7 +581,7 @@ app.put('/favorites/add', (req, res) => {
 		On error:
 			Error deleting favorite
 */
-app.delete('/favorites/delete', verifyToken, (req, res) => {
+app.post('/favorites/delete', verifyToken, (req, res) => {
 	//Make sure right number of parameters are entered:
 	if(!(req.body.customer_id && req.body.restaurant_id)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, restaurant_id');
@@ -618,7 +623,7 @@ app.delete('/favorites/delete', verifyToken, (req, res) => {
 			res.status(403).send('Can\'t delete other customer\'s favorites!');
 		}	//else
 	});	//verify
-});	//app.delete
+});	//app.post
 
 
 //==============================================================================//
@@ -1112,7 +1117,7 @@ app.post('/customer/update', verifyToken, (req, res) => {
 			Error retrieving order history
 */
 app.get('/customer/history/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.menu natural join sample.orders natural join sample.orderdetails WHERE customer_id = ? and order_status like "Complete" ORDER BY order_date desc';
+	let query = 'SELECT * FROM sample.menu natural join sample.orders natural join sample.orderdetails natural join sample.restaurants WHERE customer_id = ? and order_status like "Complete" ORDER BY order_date desc';
 
 	//Query database:
 	db.query(query, req.params.id, (err, rows) => {
@@ -1131,6 +1136,7 @@ app.get('/customer/history/:id', (req, res) => {
 				response[i] =   {
 					'order_num': rows[i].order_num,
 					'restaurant_id': rows[i].restaurant_id,
+					'logo': rows[i].logo,
 					'item_name': rows[i].item_name,
 					'quantity': rows[i].quantity,
 					'order_date': rows[i].order_date,
