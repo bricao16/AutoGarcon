@@ -68,7 +68,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         pref = new SharedPreference(Home.this);
-
         super.onCreate(savedInstanceState);
 
 
