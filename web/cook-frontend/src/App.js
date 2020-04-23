@@ -1,142 +1,81 @@
 import React from 'react';
 import './App.css';
-import Cook from "./components/Cook/Cook.jsx";
-import MTasks from "./components/MTasks";
+import Cook from "./components/Cook/Cook";
+import ManagerPage from "./components/Manager/Manager";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
-import logoImage from "./assets/AutoGarconLogo.png";
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import {BrowserRouter as Router, Switch, Link, Route} from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
+
+import Home from "./components/Home";
+import PrivacyPolicy from './components/PrivacyPolicy';
 
  /*
-var req  = new XMLHttpRequest();
+This is the main page for AutoGarcon. It contains the routing for all the different
+pages by their components. It also serves as the landing page defined in Home()
+which is a header that allows for logging into cook, manager or to sign up as
+well as a stock image with a circle containing a description of the product.*/
 
-var menu;
-
-req.open("GET", "http://50.19.176.137:8000/menu", true);
-req.send();
-
-req.onload = function(){
-	//console.log(JSON.parse(req.response));
-	menu = JSON.parse(req.response);
-	console.log(menu);
-}*/
-
-function App() {
-  return (
-    <Router>
-      <main style={mainStyle} className="d-flex">
-        {/*<div className="px-4">*/}
-        {/*  <Row style={{'minHeight': '90vh'}}>*/}
-        {/*    <Col className="pt-3 px-3">*/}
-        {/*      <div className="rounded" style={sectionStyle}>*/}
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/cook">
-            <Cook />
-          </Route>
-          <Route path="/manager">
-            <Manager />
-          </Route>
-          <Route path="/sign_up">
-            <SignUp />
-          </Route>
-          <Route path="/login_manager">
-            <MLogin/>
-          </Route>
-          <Route path="/login_cook">
-            <CLogin/>
-          </Route>
-          <Route path="/statistics">
-            <MTasks/>
-          </Route>
-          <Route path="/menu"
-            render={(props) => <MTasks {...props} content={"menu"}/>} />
-          <Route path="/hours"
-            render={(props) => <MTasks {...props} content={"hours"}/>} />
-          <Route path="/customize"
-            render={(props) => <MTasks {...props} content={"customize"}/>} />
-        </Switch>
-        {/*    </div>*/}
-        {/*  </Col>*/}
-        {/*</Row>*/}
-        {/*</div>*/}
-      </main>
-      <footer style={footerStyle}>
-        Powered by Auto Garcon
-        <img src={logoImage} width="auto" height="50vh" alt="waiter" />
-      </footer>
-    </Router>      
-  );
-}
+class App extends React.Component{
+    constructor(props) {
+      super(props);
+      this.state = {
+      };
+    }
+  render(){
+    return (
+        <Router>
+          <main style={mainStyle} className="d-flex">
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route path="/cook">
+                <Cook />
+              </Route>
+              <Route path="/manager"
+                  render={() => (<Manager />)}
+                >
+                </Route>
+              <Route path="/sign_up">
+                <SignUp />
+              </Route>
+              <Route path="/login_manager"
+                render={() => (<MLogin />)}
+              >
+              </Route>
+              <Route path="/login_cook">
+                <CLogin/>
+              </Route>
+              <Route path="/privacy_policy">
+                <PrivacyPolicy/>
+              </Route>
+              <Route path="/statistics">
+                <Manager/>
+              </Route>
+              <Route path="/menu"
+                render={(props) => <Manager {...props} content={"menu"}/>} />
+              <Route path="/general"
+                render={(props) => <Manager {...props} content={"general"}/>} />
+              <Route path="/customize"
+                render={(props) => <Manager {...props} content={"customize"}/>} />
+              <Route path="/cookview"
+                render={(props) => <Manager {...props} content={"cookview"}/>} />
+            </Switch>
+          </main>
+        </Router>
+      );
+    }
+  }
 
 export default App;
 
-function Home() {
-  return (
-    <Row style={{'minHeight': '90vh', 'width': '100%'}}>
-      <Col className="pt-3 px-3">
-        <div style={homeStyle}>
-          <h2> Welcome to Auto Garcon 
-          <img src={logoImage} width="auto" height="75vw" alt="waiter" />
-          </h2>
-
-          <br/>
-          
-          <div style={{'liststyle':'none'}}>
-            <li><Link to='/login_manager'> 
-              <button type="button" className="btn btn-info btn-lg">
-                  Manager Portal
-              </button>
-            </Link></li>
-            <br/>
-            <li><Link to='/login_cook'>
-              <button type="button" className="btn btn-info btn-lg">
-                  Cook Portal
-              </button>
-            </Link></li>
-          </div>
-
-        </div>
-      </Col>
-    </Row>
-  );
-}
-
 function Manager() {
   return (
-      <MTasks/>
+      <ManagerPage/>
   );
 }
 
-var mainStyle = {
-  'backgroundColor': '#ffffff',
-  minHeight: 'calc(100vh - 67px)'
-};
-
-// var sectionStyle = {
-//   'backgroundColor': '#ffffff',
-//   'height': '100%'
-// }
-
-var footerStyle = {
-  'backgroundColor': '#ffffff',
-  'paddingBottom': '5px',
-  'paddingRight': '12px',
-  'paddingTop': '12px',
-  'textAlign': 'right',
-  'fontFamily': 'Kefa',
-  height: '67px'
-};
-
-var homeStyle = {
-  'fontWeight': '300',
-  'textAlign' : 'center',
-  'listStyleType': 'none',
-  'textSize': '90pt',
-  'fontFamily': 'Kefa'
+const mainStyle = {
+  minHeight: '100vh'
 };

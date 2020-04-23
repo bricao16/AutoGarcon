@@ -1,8 +1,0 @@
-.order{
-    border-radius: 0.25rem;
-    cursor: pointer;
-    user-select: none;
-}
-.order:hover{
-    background: rgba(126, 126, 126, 0.4);
-}

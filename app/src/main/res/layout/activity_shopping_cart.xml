@@ -7,80 +7,54 @@
     android:layout_height="match_parent"
     tools:openDrawer="end"
     android:id="@+id/shopping_cart_main"
-    tools:context="auto_garcon.Cart_OrderHistory.ShoppingCart">
+    tools:context="auto_garcon.cartorderhistory.ShoppingCart">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btn_placeorder"
-            android:layout_gravity="center"
-            android:layout_alignParentBottom="true"
-            android:layout_height="60dp"
-            android:layout_width="match_parent"
-            android:text="Place Order"
-            android:background="@color/colorAccent"
-            android:textColor="@android:color/black"
-            >
-        </Button>
-
+        <!-- toolbar that allows side nav bar to open -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/xml_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/nav_header_background"/>
+            android:background="@color/colorAccent" />
 
-        <Button
-            android:id="@+id/home_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="70dp"
-            android:layout_toStartOf="@+id/order_history_button"
-            android:text="@string/home"
-            android:textSize="14sp"
-            android:textColor="@color/white"
-            style="?android:attr/borderlessButtonStyle"
-            android:onClick="goHome"/>
+        <!-- list of cart items -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="65dp"
+            android:layout_marginBottom="135dp"
+            ></androidx.recyclerview.widget.RecyclerView>
 
+        <!-- button that places order -->
         <Button
-            android:id="@+id/order_history_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_toStartOf="@id/cart_button"
-            android:text="@string/order_history"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            style="?android:attr/borderlessButtonStyle"
-            android:onClick="goOrderHistory"/>
+            android:id="@+id/btn_placeorder"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_above="@+id/bottom_navigation"
+            android:layout_marginBottom="4dp"
+            android:background="@color/colorAccent"
+            android:text="Place Order"
+            android:textColor="@android:color/black"></Button>
 
-        <Button
-            android:id="@+id/cart_button"
-            android:layout_width="60dp"
+        <!-- bottom nav bar -->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
-            android:text="@string/cart"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            style="?android:attr/borderlessButtonStyle"
-            android:onClick="goShoppingCart"/>
+            android:layout_alignParentBottom="true"
+            app:itemBackground="@color/colorPrimary"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
 
     </RelativeLayout>
 
-    <ExpandableListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="65dp"
-        android:id="@+id/menu_list">
-
-    </ExpandableListView>
-
-
-
+    <!-- side nav bar -->
     <com.google.android.material.navigation.NavigationView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -89,7 +63,6 @@
         app:headerLayout="@layout/nav_header"
         android:layout_gravity="start"
         android:background="@color/white"/>
-
 
 </androidx.drawerlayout.widget.DrawerLayout>
 

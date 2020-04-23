@@ -9,9 +9,11 @@ const Alexa = require('ask-sdk-core');
 const http = require('http');
 const api = 'http://50.19.176.137:8000';
 const apissl = 'https://50.19.176.137:8001';
+//Gets the AlexaID, restaurant ID, and table number automatically in the launch request
 var AlexaID = '';
 var restaurantID = null;
 var tableNum = null;
+
 
 // When skill is first invoked, need to find Alexa device ID here to determine which restaurant the Alexa device is currently at.
 const LaunchRequestHandler = {
@@ -42,6 +44,9 @@ const LaunchRequestHandler = {
       handlerInput.responseBuilder
         .speak(`This Alexa isn't registered. Please add it by saying "register this device".`);
     }
+    
+    // TODO: check if pending , either helper function or just here
+    
     return handlerInput.responseBuilder
       .reprompt(`speakOutput`)
       .getResponse();

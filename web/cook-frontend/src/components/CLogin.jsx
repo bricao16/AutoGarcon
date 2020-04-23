@@ -3,19 +3,19 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Redirect} from "react-router-dom";
+import Alert from 'react-bootstrap/Alert';
+import https from 'https';
+import axios from 'axios';
+import Cookies from 'universal-cookie';
 
-/*this is the login component for the cook
-view. Asks for the email address, password and logs in if the user and correct password
-exists on the database */
+/*login component for the cook
+view. Asks for the staffID, password and logs in if the user and correct password
+exists on the database cookies are set to use persistant state once logged in.*/
 const useStyles = makeStyles(theme => ({
   paper: {
     display: 'flex',
@@ -35,96 +35,132 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default class SignIn extends React.Component {
+const cookies = new Cookies();
+
+export default class CLogin extends React.Component {
   constructor(props){
 	  super(props);
 	  
 	  this.state = {
-	    email: '',
-		passwd:'',
-		redirect: false
+	    staffID: '',
+      passwd:'',
+      redirect: false,
+      show: false,
+      staff:null,
+      token:null
 	  };
-	  
+    
+    this.handleShow = this.handleShow.bind(this);
 	  this.handleSubmit = this.handleSubmit.bind(this);
-	  this.handleEmail = this.handleEmail.bind(this);
+	  this.handleID = this.handleID.bind(this);
 	  this.handlePasswd = this.handlePasswd.bind(this);
   }
-
+  //on submit send form info to the database
   handleSubmit(event){
-	  
 	  event.preventDefault();
-	  
 	  /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
 	  
-	  console.log(this.state.email);
-	  console.log(this.state.passwd);
-	  
-	  const requestOptions = {
-		method: 'POST',
-		headers: {
-		  'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		/*body: JSON.stringify({
-		  'username': this.state.email,
-		  'password': this.state.passwd
-		})*/
-		body: 'username='+this.state.email+'&password='+this.state.passwd
-		  
-	  };
-	  fetch('http://50.19.176.137:8000/staff/login', requestOptions)
-		.then(async response => {
-			const data = await response.json();
-			
-			if(!response.ok){
-				const error = (data && data.message) || response.status;
-				return Promise.reject(error);
-			}
-			this.setState({redirect: true});
-			
-		
-		})
-		.catch(error =>{
-			
-			this.setState({redirect: false});
-			console.error("There was an error!", error);	
-		});
+	  axios({
+      method: 'post',
+      url: process.env.REACT_APP_DB + '/staff/login',
+      data: 'username='+this.state.staffID+'&password='+this.state.passwd,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+      .then(async response => {
+        await response;
+        //if a bad response alert the user
+        if (response.status !== 200) {this.handleShow(response);}
+        else {
+          //if good response set the state to returned info
+          this.setState({staff: response.data.staff,
+                        token:response.data.token,
+                        show: false,
+                        redirect: true
+                        });
+        }
+      })
+      .catch(error =>{
+        this.setState({alertVariant: 'danger'});
+        this.setState({response: "Unknown error"});
+        this.setState({redirect: false});
+        console.error("There was an error!", error);
+      });
   }
-  
-  handleEmail(event){
-	  this.setState({email: event.target.value});
+  //on change of ID update state
+  handleID(event){
+	  this.setState({staffID: event.target.value});
   }
-  
+  //on change of password update state
   handlePasswd(event){
 	  this.setState({passwd: event.target.value});
   }
 
+  /* Used to show the correct alert after failing to log in */
+  handleShow(response) {
+    var text;    
+
+    response.text()
+      .then((res) => {
+        text = res;
+        this.setState({alertVariant: 'danger'});
+
+        if (text) {
+          this.setState({response: text});
+        }
+        else {
+          this.setState({response: 'Failed to login for unknown reason'});
+        }
+
+        this.setState({show: true});
+      })
+  }
+
   render(){
 	if(this.state.redirect === true){
+    /*set the cookies and redirect to the cook page- no validation need
+    cook and manager can log in to cook page*/
+    cookies.set('mystaff', this.state.staff, { path: '/' });
+    cookies.set('mytoken', this.state.token, { path: '/' });
 	  return <Redirect to='/cook'/>
 	}  
 	return (
-  	  <Container component="main" maxWidth="xs">
+  	  <Container component="main" maxWidth="xs" className="p-3">
 		  <CssBaseline />
         <div className={useStyles.paper}>
+
+        <Alert show={this.state.show} variant={this.state.alertVariant}>
+          {this.state.response}
+        </Alert>
+
+        <div style={{'textAlign':'center'}}>
           {/* Lock icon on top */}
-          <Avatar className={useStyles.avatar}>
-          <LockOutlinedIcon />
-          </Avatar>
-          {/* Cook Sign In Title on top of page*/}
+          <div style={{'display': 'inline-block'}}>
+            <Avatar className={useStyles.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+          </div>
+          {/* Cook Sign In Title */}
           <Typography component="h1" variant="h5">
-          Cook Sign In
+            Cook Sign In
           </Typography>
+        </div>
+          {/* Form for putting in user id and password */}
           <form className={useStyles.form} noValidate>
-          <TextField onChange = {this.handleEmail}
-            value = {this.state.email}
+          <TextField onChange = {this.handleID}
+            value = {this.state.staffID}
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="staffID"
+            label="Staff ID"
+            name="staffID"
+            autoComplete="staffID"
             autoFocus
           />
           <TextField onChange = {this.handlePasswd}
@@ -139,12 +175,11 @@ export default class SignIn extends React.Component {
             id="password"
             autoComplete="current-password"
           />
-
-          {/* Remember me checkbox */}
+          {/* Remember me checkbox No functionality yet
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
-          />
+          />*/}
           {/* Submit button */}
           <Button onClick = {this.handleSubmit}
             type="submit"
@@ -155,17 +190,9 @@ export default class SignIn extends React.Component {
           >
             Sign In
           </Button>
-          <Grid container>
-            <Grid item>
-            {/* Create an account link */}
-            <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
-              {"Don't have an account? Sign Up"}
-            </Link>
-            </Grid>
-          </Grid>
           </form>
         </div>
 	  </Container>
-	);
+	 );
   }
 }

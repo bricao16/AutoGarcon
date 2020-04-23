@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="end"
     android:id="@+id/settings_main"
-    tools:context="auto_garcon.AccountStuff.Settings">
+    tools:context="auto_garcon.accountstuff.Settings">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,45 +17,7 @@
             android:id="@+id/xml_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/nav_header_background" />
-
-        <Button
-            android:id="@+id/home_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="70dp"
-            android:layout_toStartOf="@+id/order_history_button"
-            android:onClick="goHome"
-            android:text="@string/home"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/order_history_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_toStartOf="@id/cart_button"
-            android:onClick="goOrderHistory"
-            android:text="@string/order_history"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/cart_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
-            android:onClick="goShoppingCart"
-            android:text="@string/cart"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:background="@color/colorAccent" />
 
         <EditText
             android:id="@+id/editText"
