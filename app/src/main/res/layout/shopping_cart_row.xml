@@ -81,7 +81,7 @@
         <TextView
             android:id="@+id/removeItem"
             android:layout_width="75dp"
-            android:layout_height="15dp"
+            android:layout_height="20dp"
             app:layout_constraintStart_toEndOf="@+id/imageView3"
             app:layout_constraintBottom_toBottomOf="@id/imageView3"
             android:textSize="12sp"
@@ -93,7 +93,7 @@
         <TextView
             android:id="@+id/edit"
             android:layout_width="0dp"
-            android:layout_height="15dp"
+            android:layout_height="20dp"
             app:layout_constraintStart_toEndOf="@+id/removeItem"
             app:layout_constraintEnd_toStartOf="@+id/frame_for_price"
             app:layout_constraintBottom_toBottomOf="@id/imageView3"
@@ -105,7 +105,7 @@
         <FrameLayout
             android:id="@+id/frame_for_price"
             android:layout_width="85dp"
-            android:layout_height="15dp"
+            android:layout_height="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/imageView3">
 
@@ -114,7 +114,7 @@
             <TextView
                 android:id="@+id/price"
                 android:layout_width="85dp"
-                android:layout_height="15dp"
+                android:layout_height="20dp"
                 android:background="@color/transparent_gray"
                 android:text="Cost"
                 android:textSize="14sp"
