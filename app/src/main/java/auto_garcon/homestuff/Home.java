@@ -33,9 +33,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
-import auto_garcon.NukeSSLCerts;
-import auto_garcon.accountstuff.*;
+import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
@@ -59,6 +59,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     ArrayList<String> search_list;//keeping restaurant page through the database connection.
     ArrayAdapter<String> list_adapter;//to check user input match items in the database.
     //End of Search Box
+    HashMap<Integer, String> allRestaurantList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,7 +200,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                     public void onResponse(JSONObject response) {
                         try {
                             //parsing through json from get request to add them to menu
-                            HashMap<Integer, String> allRestaurantList = new HashMap<Integer, String>();
+                            allRestaurantList = new HashMap<Integer, String>();
 
                             Iterator<String> keys = response.keys();
                             while(keys.hasNext()) {
@@ -247,6 +248,51 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 }
 
         );
+
+        //Here is for Search box
+        searchView = (SearchView) findViewById(R.id.searchView);
+        list_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,search_list);
+        items.clear();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                if(allRestaurantList.containsValue(query)){
+                    Toast.makeText(Home.this, "Yes Match found "+query,Toast.LENGTH_LONG).show();
+                    RestaurantItem itemToBeAdded = new RestaurantItem();
+
+                    //go through all restaurants
+                    for (Map.Entry mapElement : allRestaurantList.entrySet()) {
+                        int id = (int) mapElement.getKey();
+                        String name = (String) mapElement.getValue();
+                        itemToBeAdded = new RestaurantItem();
+                        //if name is same as the input
+                        if( name.equalsIgnoreCase(query) ){
+                            itemToBeAdded.setName( query );
+                            itemToBeAdded.setID( id );
+                            items.add( itemToBeAdded );
+                        }
+                    }
+                    recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
+                    adapter = new HomeAdapter(Home.this, items);
+                    recyclerView.setAdapter(adapter);
+                }
+                else{
+                    Toast.makeText(Home.this, "No Match found "+query,Toast.LENGTH_LONG).show();
+                }
+
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                return false;
+            }
+
+        });
 
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForSearch);
     }
