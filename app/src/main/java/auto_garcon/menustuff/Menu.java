@@ -47,7 +47,10 @@ import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
-
+/**
+ * Class setting up the menu
+ * Also sets up favorites
+ */
 public class Menu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private SharedPreference pref;
