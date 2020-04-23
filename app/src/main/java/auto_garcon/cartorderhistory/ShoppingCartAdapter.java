@@ -95,11 +95,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             @Override
             public void onClick(View v) {
                 //Deleting the item from a list
-                notifyItemChanged(position);
+
 
                 menuItemArrayList.remove(position);
                 cart.setItems(menuItemArrayList);
                 preference.setShoppingCart(cart);
+                notifyDataSetChanged();
             }
         });
     }
