@@ -179,7 +179,7 @@ app.get('/restaurants', (req, res) => {
 
 /*
 	Updates restaurant information
-	Inputs: restaurant_id, name, address, phone, opening, closing
+	Inputs: restaurant_id, name, address, phone, opening, closing, JWT
 	Outputs:
 		On success:
 			Successfully updated restaurant information!
@@ -448,6 +448,11 @@ app.post('/orders/update', (req, res) => {
 			res.status(409).send('Error: order does not exist');
 		}   //if
 		else {
+			//Make sure valid status is entered:
+			if (!(req.body.order_status === 'Complete' || req.body.order_status === 'In Progress' || req.body.order_status === 'Pending' || req.body.order_status === 'Cancelled')) {
+				res.status(409).send('Error: Invalid status. Valid statuses: Complete, In Progress, Pending, Cancelled');
+				return;
+			}	//if
 			let parameters = [req.body.order_status, req.body.order_num];
 			query = 'UPDATE sample.orders SET order_status = ? WHERE order_num = ?';
 
