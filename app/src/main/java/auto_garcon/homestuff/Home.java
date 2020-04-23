@@ -71,12 +71,9 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         super.onCreate(savedInstanceState);
 
-        if(pref.getFavorites() == null || pref.getFavorites().size() == 0) {
-            setContentView(R.layout.no_favorites_home);
-        }
-        else {
-            setContentView(R.layout.activity_home);
-        }
+
+        setContentView(R.layout.activity_home);
+
 
 
         //creating side nav drawer
@@ -186,6 +183,10 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                             recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
                             adapter = new HomeAdapter(Home.this, items);
                             recyclerView.setAdapter(adapter);
+
+                            if(pref.getFavorites().size() == 0 || pref.getFavorites() == null) {
+                                setContentView(R.layout.no_favorites_home);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
