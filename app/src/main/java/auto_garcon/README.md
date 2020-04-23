@@ -4,7 +4,7 @@ Account.java
 * activity to change account information
 
 ExpandableMenuAdapter.java
-* activity for menu nav bar
+* This is a container for menu pages that the user can see.
 
 Home.java
 * This show a list of restaurant pages, and dealing with user actions such as searching.
@@ -28,6 +28,9 @@ Menu.java
 MenuItem.java
 * activity which handles menu items
 
+NukeSSLCerts
+* helps with SSL Certificates 
+
 OrderHistory.java
 * This class pulls data from the database relating to the user's past orders
  * The class is tied to the order history xml and uses nav bars to navigate other xml's
@@ -35,9 +38,6 @@ OrderHistory.java
 
 OrderHistoryAdapter.java
 * This is a container for history pages that the user can see.
-
-Popup.java
-Aitivity for displaying pop up
 
 Preference.java
 * Holds user state/date while a user is logged in
@@ -58,6 +58,9 @@ RestaurantItem.java
 Settings.java
 * Activity for user to customize their view of the app.
 
+SharedPreferences.java
+* Holds current state.
+
 ShoppingCart.java
 * This class is the Java code for activity_shopping_cart.xml. It displays the users
 * current shopping cart and allows them to submit the order or make any modifications
@@ -66,9 +69,15 @@ ShoppingCart.java
 ShoppingCartAdapter.java
 * The class represents the format for how are our shopping list will act and work
 * The class also lets the user allow change in quantity of each menu item, and remove each menu item.
- 
+
+ShoppingCartSingleton.java
+* Class for viewing and modifying shopping cart.
+
 VolleySinglton.java
-* Activity to assist with GET requests.
+* Activity to assist with database requests.
+
+UserSingelton.java
+* Holds User information
 
 twoButtonPage.java
 * activity which gives option for QR Code or restaurant main page list.
