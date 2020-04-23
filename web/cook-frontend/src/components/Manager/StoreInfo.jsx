@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import Alert from 'react-bootstrap/Alert';
 
 /* This component is used to render the 
 resturant information for the manager view.
@@ -24,17 +25,19 @@ class StoreInfo extends React.Component{
     this.state = {
       restaurantInfo: [],
       sectionEdit: "",
-      name:"",
-      address: "",
-      phone: "",
-      open:"",
-      close:"",
+      show:false,
+      name:this.props.info.name,
+      address: this.props.info.address,
+      phone: this.props.info.phone,
+      open:this.props.info.opening,
+      close:this.props.info.closing,
       restaurant_id :cookies.get("mystaff").restaurant_id,
-      token: cookies.get("token")
+      token:cookies.get('mytoken')
     };
 
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleShow = this.handleShow.bind(this);
   }
 
   onChange = (e) => {
@@ -48,40 +51,49 @@ class StoreInfo extends React.Component{
       }
   /* Used for connecting to Menu in database */
   handleSubmit(event) {
+    console.log(this.state);
     this.editForm("");
     event.preventDefault();
     axios({
-      method: 'post',
-      url:  process.env.REACT_APP_DB +'/restaurant/update' + this.state.restaurant_id,
-      data: 'name='+this.state.name+'&address='+this.state.address
-      +'&phone='+this.state.phone+'&open='+this.state.open
-      +'&close='+this.state.close,
+      method: 'POST',
+      url:  process.env.REACT_APP_DB +'/restaurant/update/',
+      data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
+      '&address='+this.state.address+'&phone='+this.state.phone+
+      '&opening='+this.state.open+'&closing='+this.state.close,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.state.token
       },
       httpsAgent: new https.Agent({  
         rejectUnauthorized: false,
       }),
     })
     .then(async response => {
-      const data = await response.json();
-      
-      if(!response.ok){
-        alert('Successful submit');
-        const error = (data && data.message) || response.status;
-        return Promise.reject(error);
-      }
-      this.setState({redirect: true});
-    
+      await response;
+
+      if (response.status !== 200) {this.handleShow(false);}
+      else {this.handleShow(true, "changed");}
     })
-    .catch(error =>{
-        alert('Unsuccessful submit');
-      this.setState({redirect: false});
+    .catch(error => {
+      this.handleShow(false);
       console.error("There was an error!", error);
     });
 
 
 }
+  /* Used to show the correct alert after hitting save item */
+  handleShow(success, message) {
+    if (success) {
+      this.setState({response: "Successfully "+message+"!"});
+      this.setState({alertVariant: 'success'});
+    }
+    else {
+      this.setState({response: 'Failed to update'})
+      this.setState({alertVariant: 'danger'});
+    }
+
+    this.setState({show: true});
+  }
 
   //change the category of which is being edited
   editForm = (category) => {
@@ -91,6 +103,7 @@ class StoreInfo extends React.Component{
   }
   renderInfo(){
     return (
+
         <Card className="text-center m-2 w-100" style={itemStyle}>
           <Card.Header style={cardHeaderStyle}>General</Card.Header>
           <Card.Body>
@@ -188,9 +201,13 @@ class StoreInfo extends React.Component{
         Object.keys(fullResturantInfo.info).forEach(function(key) {
             restaurantInfo.push([key ,fullResturantInfo.info[key]]);
         });
+
         return (
             <Container>
                 <div style={backgroundStyle}>
+                <Alert show={this.state.show} variant={this.state.alertVariant}>
+                  {this.state.response}
+                </Alert>
                 <h2 style={mainMenuHeaderStyle}>
                   Restaurant Information
                 </h2>
