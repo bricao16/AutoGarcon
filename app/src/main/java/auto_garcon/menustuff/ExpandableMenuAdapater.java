@@ -113,7 +113,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 addToCartPopup.show();
 
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart);
-                TextView outOfStock = addToCartPopup.findViewById(R.id.out_of_order);
+                TextView outOfStock = addToCartPopup.findViewById(R.id.order_items);
 
                 //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
                 if(getChild(i, j).getAmountInStock() == 0) {

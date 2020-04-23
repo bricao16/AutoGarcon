@@ -55,6 +55,9 @@ public class MenuItem implements Serializable{
     public void setPrice(double price) {
         this.price = price;
     }
+    public void setQuantity(int quantity){
+        this.quantity=quantity;
+    }
 
     public double getPrice() {
         return this.price;
