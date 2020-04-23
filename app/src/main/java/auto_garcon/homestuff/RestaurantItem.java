@@ -67,7 +67,7 @@ public class RestaurantItem implements Serializable {
     }
     //set restaurant phone number
     public void setPhoneNumber(long phoneNumber){
-        if(phoneNumber!=0){
+        if(Long.toString(phoneNumber).length() == 10){
             String fullNumber = Long.toString(phoneNumber);
             this.phoneNumber = "(" + fullNumber.substring(0, 3) + ") " + fullNumber.substring(3, 6) + "-" + fullNumber.substring(6);
         }
