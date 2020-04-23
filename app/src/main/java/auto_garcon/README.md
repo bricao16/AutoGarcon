@@ -28,6 +28,9 @@ Menu.java
 MenuItem.java
 * activity which handles menu items
 
+NukeSSLCerts
+* helps with SSL Certificates 
+
 OrderHistory.java
 * This class pulls data from the database relating to the user's past orders
  * The class is tied to the order history xml and uses nav bars to navigate other xml's
