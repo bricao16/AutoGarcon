@@ -16,7 +16,9 @@ import com.example.auto_garcon.R;
 
 import java.util.HashMap;
 import java.util.List;
-
+/*
+This is a container for menu pages that the user can see.
+ */
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 
@@ -112,14 +114,16 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 addToCartPopup.show();
 
-                TextView outOfStock = addToCartPopup.findViewById(R.id.out_of_order);
+                Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart);
+                TextView outOfStock = addToCartPopup.findViewById(R.id.order_items);
+
+                //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
                 if(getChild(i, j).getAmountInStock() == 0) {
                     outOfStock.setText("Out of Stock");
+                    addToCart.setVisibility(View.GONE);
                 }
 
-                Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart);
-
-                addToCart.setOnClickListener(new View.OnClickListener() {
+                    addToCart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if(pref.getShoppingCart().getCart().size() == 0) {

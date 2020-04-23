@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import auto_garcon.menustuff.MenuItem;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
-/*
-    This class stores a list of ordered menus, and
-    let the user allow change a quantity of each menu, and remove each menu.
+/**
+ *The class represents the format for how are our shopping list will act and work
+ * the class also let the user allow change a quantity of each menu, and remove each menu.
  */
 public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapter.ShoppingCartViewHolder>{
     //data fields
@@ -28,6 +28,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     private SharedPreference preference;
     private ShoppingCartSingleton cart;
     //A constructor to listen the user actions (add, decrement, and remove)
+
+    /**
+     * This constructor initializes our variables passed in from the shopping cart page
+     * @param context
+     * @param items
+     */
     public ShoppingCartAdapter(Context context, ArrayList<MenuItem> items) {
         ct= context;
         menuItemArrayList = items;
@@ -69,19 +75,19 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         });
         //If the user pushes the remove button on the item view, then the action is taken.
         holder.remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Getting a item that the user pushed the add button
-                //Decrementing the quantity and recalculating the total cost of the item.
-                if(menuItemArrayList.get(position).getQuantity() != 1){
-                    menuItemArrayList.get(position).decrementQuantity();
-                    menuItemArrayList.get(position).setCost();
-                    //Set its view again to show the updated quantity.
-                    holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
-                    holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
-                    cart.cartContainsItem(menuItemArrayList.get(position)).decrementQuantity();
-                    preference.setShoppingCart(cart);
-                }
+                    @Override
+                    public void onClick(View v) {
+                        //Getting a item that the user pushed the add button
+                        //Decrementing the quantity and recalculating the total cost of the item.
+                        if(menuItemArrayList.get(position).getQuantity() != 1){
+                            menuItemArrayList.get(position).decrementQuantity();
+                            menuItemArrayList.get(position).setCost();
+                            //Set its view again to show the updated quantity.
+                            holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
+                            holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
+                            cart.cartContainsItem(menuItemArrayList.get(position)).decrementQuantity();
+                            preference.setShoppingCart(cart);
+                        }
             }
         });
         //If the user pushes the removeItem button on the item view, then the action is taken.
@@ -89,10 +95,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             @Override
             public void onClick(View v) {
                 //Deleting the item from a list
+
+
                 menuItemArrayList.remove(position);
-                notifyItemChanged(position);
                 cart.setItems(menuItemArrayList);
                 preference.setShoppingCart(cart);
+                notifyDataSetChanged();
             }
         });
     }
@@ -113,7 +121,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         //set the above variables to each tag on the xml file.
         public ShoppingCartViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.itemText);
+            name = itemView.findViewById(R.id.item_name);
             quantity = itemView.findViewById(R.id.item_quantity);
             add = itemView.findViewById(R.id.addButton);
             remove = itemView.findViewById(R.id.removeButton);

@@ -10,23 +10,23 @@
     },
     "manifestVersion": "1.0",
     "publishingInformation": {
+      "category": "KNOWLEDGE_AND_TRIVIA",
+      "distributionCountries": [],
+      "isAvailableWorldwide": true,
       "locales": {
         "en-US": {
-          "name": "Auto Garcon",
-          "summary": "Sample Short Description",
           "description": "Sample Full Description",
           "examplePhrases": [
             "Alexa open hello world",
             "hello",
             "help"
           ],
-          "keywords": []
+          "keywords": [],
+          "name": "Auto Garcon",
+          "summary": "Sample Short Description"
         }
       },
-      "isAvailableWorldwide": true,
-      "testingInstructions": "Sample Testing Instructions.",
-      "category": "KNOWLEDGE_AND_TRIVIA",
-      "distributionCountries": []
+      "testingInstructions": "Sample Testing Instructions."
     }
   }
 }
