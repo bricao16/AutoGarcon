@@ -40,13 +40,17 @@ import java.util.Map;
 
 import auto_garcon.accountstuff.*;
 import auto_garcon.accountstuff.Settings;
+import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.homestuff.*;
 import auto_garcon.initialpages.Login;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
-
+/**
+ * Class setting up the menu
+ * Also sets up favorites
+ */
 public class Menu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private SharedPreference pref;
@@ -334,6 +338,10 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 Intent account = new Intent(getBaseContext(),   Account.class);
                 startActivity(account);
                 break;
+            case R.id.order_history:
+                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
+                startActivity(orderHistory);
+                break;
             case R.id.settings:
                 Intent settings = new Intent(getBaseContext(),   Settings.class);
                 startActivity(settings);
@@ -341,7 +349,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
-
                 Intent login = new Intent(getBaseContext(),   Login.class);
                 startActivity(login);
                 break;

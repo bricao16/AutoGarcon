@@ -16,7 +16,9 @@ import com.example.auto_garcon.R;
 
 import java.util.HashMap;
 import java.util.List;
-
+/*
+This is a container for menu pages that the user can see.
+ */
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 

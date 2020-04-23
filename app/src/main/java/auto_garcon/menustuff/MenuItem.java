@@ -1,7 +1,10 @@
 package auto_garcon.menustuff;
 
 import java.io.Serializable;
-
+/**
+ * Sorts out information for menu items
+ *
+ */
 public class MenuItem implements Serializable{
     private String category;
     private String nameOfItem;
