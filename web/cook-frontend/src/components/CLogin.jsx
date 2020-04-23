@@ -86,8 +86,9 @@ export default class CLogin extends React.Component {
       })
       .catch(error =>{
         this.setState({alertVariant: 'danger'});
-        this.setState({response: "Unknown error"});
+        this.setState({response: error.response.data});
         this.setState({redirect: false});
+        this.setState({show: true});
         console.error("There was an error!", error);
       });
   }

@@ -83,18 +83,67 @@ class CSignUp extends React.Component{
         this.state.contact_num===''|| this.state.email=== ''|| 
         this.state.password==='')
     {
-      return alert('All fields are required');
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "All fields are required"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return null;
     }
+    //verify staff ID
+    if (this.state.staff_id.length<6 || this.state.staff_id.length>50 )
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Staff ID must be between 6 and 50 characters"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
+    //verify first name length / no non-letters
+    if (this.state.first_name.length>50 ||   !/[a-z]/.test(this.state.first_name.toLowerCase()) )
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Invalid first name"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
+    //verify last name length / no non-letters
+    if ( this.state.last_name.length>50  || !/[a-z]/.test(this.state.last_name.toLowerCase()) )
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Invalid last name"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
+
     //verify email formatting
     if (!(/\S+@\S+\.\S+/.test(this.state.email)))
     {  
-         return alert("You have entered an invalid email address!");
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Invalid email address"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
     } 
     //verify phone formatting
     if (!(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.state.contact_num)))
     {
-      return alert("You have entered an invalid phone number")
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Invalid phone number"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
     }
+    //verify password
+    if (this.state.password.length<6 || !/[A-Z]/.test(this.state.password) || !/[0-9]/.test(this.state.password) ||  this.state.password.length>50 )
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Password must contain an uppercase letter, a digit and be between 6 and 50 characters"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
 
     axios({
       method: 'put',
@@ -113,13 +162,13 @@ class CSignUp extends React.Component{
       .then(async response => {
         await response;
         
-        if (response.status !== 200) {this.handleShow(false);}
+        if (response.status !== 200) {this.handleShow(false,"");}
         else 
         {
-            this.handleShow(true);
+            this.handleShow(true,"");
               this.setState({
                 redirect: true,
-                show: false,
+                show: true,
               });
         }
       })
@@ -148,7 +197,14 @@ class CSignUp extends React.Component{
 render() {
     //if sucessful submit redirect to cook view
   if(this.state.redirect === true){
-    return <CookView section=""/> 
+    return(
+      <React.Fragment>
+        <Alert show={this.state.show} variant={this.state.alertVariant}>
+        {this.state.response}
+        </Alert>
+        <CookView section=""/> 
+      </React.Fragment>
+      );
   }  
   if(cookies.get('mystaff').position === "manager")
   {
