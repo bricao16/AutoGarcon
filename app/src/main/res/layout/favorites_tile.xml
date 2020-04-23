@@ -18,12 +18,12 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="85dp">
 
             <ImageView
                 android:id="@+id/restaurant_picture"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -34,10 +34,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="Restaurant Title"
                 android:textColor="@android:color/background_dark"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toTopOf="@id/restaurant_location"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="restaurant location"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toTopOf="@+id/restaurant_hours"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -78,8 +78,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
-
+                android:layout_marginBottom="8dp"
                 android:text="restaurant number"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toBottomOf="parent"

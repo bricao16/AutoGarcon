@@ -114,8 +114,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
         );
         VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
-
-
     }
 
     //onClick for side nav bar
