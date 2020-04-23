@@ -26,33 +26,39 @@
             android:layout_height="30dp"
             android:background="@color/colorAccent" />
 
-        <!-- logo of restaurant -->
-        <ImageView
-            android:id="@+id/restaurant_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp" />
 
-        <!-- name of restaurant -->
-        <TextView
-            android:id="@+id/restaurant_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp" />
+            <!-- logo of restaurant -->
+            <ImageView
+                android:id="@+id/restaurant_logo"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="24dp"
+                android:layout_alignParentStart="true"/>
+            <!-- name of restaurant -->
 
-        <Button
-            android:id="@+id/add_restaurant"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_alignParentEnd="true" />
+            <TextView
+                android:id="@+id/restaurant_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:gravity="center"
+                android:textSize="18sp"/>
+
+            <Button
+                android:id="@+id/add_restaurant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_alignParentEnd="true"
+                android:textSize="8sp"/>
+
 
         <!-- list of menu items -->
         <ExpandableListView
             android:id="@+id/menu_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="85dp"
+            android:layout_marginTop="95dp"
             android:layout_marginBottom="70dp" />
 
         <!-- bottom nav bar -->

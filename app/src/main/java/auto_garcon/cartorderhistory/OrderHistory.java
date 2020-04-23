@@ -64,7 +64,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
-        recyclerView = findViewById(R.id.order_list);
 
 
         pref = new SharedPreference(this);
@@ -84,6 +83,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     JsonObject json = (JsonObject) parser.parse(response);
 
                     setContentView(R.layout.activity_order_history);
+                    recyclerView = findViewById(R.id.order_list);
+
                     Log.d("213", json.toString());
 
                     /*--------------------------------------------------------------*/
@@ -97,13 +98,13 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                         carts.get(i).addToCart(item);
                         date.add(json.getAsJsonObject(""+i).get("order_date").getAsString());
                         Log.d("asdff", ""+order.get(i));
-
                     }
+
                     OrderHistoryAdapter adapter;// used to hold to allow recent orders to show up as cards for xml layout
 
-                    recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
                     adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date);//values that will be needed to input data into our xml objects that is handled in our adapter class
                     recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
 
                     //creating side nav drawer
                     DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent

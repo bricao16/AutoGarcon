@@ -39,8 +39,8 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/order_list"
-            android:layout_width="wrap_content"
-            android:layout_height="156dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_above="@+id/bottom_navigation"
             android:layout_below="@+id/xml_toolbar"
             android:layout_alignParentStart="true"
@@ -48,7 +48,7 @@
             android:layout_marginStart="3dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="458dp" />
+            android:layout_marginBottom="5dp" />
 
     </RelativeLayout>
 

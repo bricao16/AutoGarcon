@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -59,6 +60,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private List<auto_garcon.menustuff.MenuItem> alcohol_list;
     private HashMap<String, List<auto_garcon.menustuff.MenuItem>> listHash;
     private JSONObject obj;
+    private TextView restaurantName;
+    private ImageView restaurantLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,17 +82,15 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        ImageView restaurantLogo = findViewById(R.id.restaurant_logo);
-        TextView restaurantName = findViewById(R.id.restaurant_name);
+        restaurantLogo = findViewById(R.id.restaurant_logo);
+        restaurantName = findViewById(R.id.restaurant_name);
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
-        restaurantName.setText(getIntent().getStringExtra("restaurant name"));
 
         boolean inFavorites = false;
         Button addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
         if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
-            Log.d("SDFSDF", "SDFSDF");
             inFavorites = true;
         }
 
@@ -203,27 +204,48 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             });
         }
 
-        final String url = "http://50.19.176.137:8000/menu/" + getIntent().getIntExtra("restaurant id", 0);
+        final String url = "http://50.19.176.137:8000/restaurant/" + getIntent().getIntExtra("restaurant id", 0);
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-
                             listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash);
                             listView = findViewById(R.id.menu_list);
                             listView.setAdapter(listAdapter);
                             String whereToSendItem = "";
 
                             //parsing through json from get request to add them to menu
-                            Iterator<String> keys = response.keys();
+                            JSONObject restaurant = response.getJSONObject("restaurant");
+                            restaurantName.setText(restaurant.getString("name"));
+
+                            restaurant.getString("address");
+                            restaurant.getInt("phone_number");
+                            restaurant.getInt("opening");
+                            restaurant.getInt("closing");
+                            restaurant.getString("font");
+                            restaurant.getString("primary_color");
+                            restaurant.getString("secondary_color");
+                            restaurant.getString("tertiary_color");
+
+                            byte[] temp = new byte[restaurant.getJSONObject("logo").getJSONArray("data").length()];
+
+                            for(int i = 0; i < restaurant.getJSONObject("logo").getJSONArray("data").length(); i++) {
+                                temp[i] = (byte) (((int) restaurant.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
+                            }
+
+                            restaurantLogo.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
+
+                            JSONObject menu = response.getJSONObject("menu");
+
+                            Iterator<String> keys = menu.keys();
                             while(keys.hasNext()) {
                                 String key = keys.next();
-                                if (response.get(key) instanceof JSONObject) {
+                                if (menu.get(key) instanceof JSONObject) {
 
                                     auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
-                                    JSONObject item = response.getJSONObject(key.toString());
+                                    JSONObject item = menu.getJSONObject(key.toString());
 
                                     Iterator<String> inner_keys = item.keys();
                                     while(inner_keys.hasNext()) {

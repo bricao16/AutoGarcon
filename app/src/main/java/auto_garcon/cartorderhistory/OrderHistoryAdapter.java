@@ -64,7 +64,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     @Override
     public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderViewHolder holder, final int position) {
         holder.order_num.setText(order.get(position));
-        holder.resturant_num.setText(carts.get(position).getRestaurantID());
+        holder.resturant_num.setText(Integer.toString(carts.get(position).getRestaurantID()));
         holder.date.setText(date.get(position));
         holder.items.setOnClickListener(new View.OnClickListener() {
             @Override

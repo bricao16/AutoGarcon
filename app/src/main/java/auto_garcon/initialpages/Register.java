@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -96,16 +97,17 @@ public class Register extends AppCompatActivity {
                     JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
                     try{
                         obj.put("customer_id", username);
-                        obj.put("password", passwd);
-                        obj.put("last_name",lastName);
                         obj.put("first_name",firstName);
+                        obj.put("last_name",lastName);
                         obj.put("email",email);
-                    }catch (JSONException e){
+                        obj.put("password", passwd);
+                    }
+                    catch (JSONException e){
                         //TODO figure out how to handle this other than stack trace
                         e.printStackTrace();
                     }
 
-                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.PUT, url, obj,
+                    JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, url, obj,
                             new Response.Listener<JSONObject>()
                             {
                                 @Override
@@ -120,7 +122,7 @@ public class Register extends AppCompatActivity {
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 
-                                        Intent twoButton = new Intent(Register.this, Login.class);// goes to two Button Page
+                                        Intent twoButton = new Intent(Register.this, TwoButtonPage.class);// goes to two Button Page
                                         startActivity(twoButton);
                                         finish();//prevents user from coming back
                                     } catch (JSONException e) {
@@ -133,19 +135,18 @@ public class Register extends AppCompatActivity {
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
                                     error.printStackTrace();
-                                    Toast.makeText(Register.this,error.toString(),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Register.this, error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             }
                     );
 
-                    VolleySingleton.getInstance(Register.this).addToRequestQueue(postRequest);// making the actual request
+                    VolleySingleton.getInstance(Register.this).addToRequestQueue(putRequest);// making the actual request
                 }
                 else{
                     Toast.makeText(Register.this, "Error Occurred", Toast.LENGTH_SHORT).show();// if something fails with our request display error
                 }
             }
         });
-
 
         textViewLogin.setOnClickListener(new View.OnClickListener() {// when the user clicks on this link we change to xml to the log in layout
             @Override
