@@ -940,8 +940,8 @@ app.put('/customer/register', (req, res) => {
 							};  //customer
 
 							//Sign JWT and send token
-							//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-							jwt.sign({user}, process.env.JWT_SECRET, (err, token) => {
+							//To add expiration date: jwt.sign({customer}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+							jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
 								//Build response
 								let response = {
 									'token': token,
@@ -1035,7 +1035,7 @@ app.post('/customer/update', verifyToken, (req, res) => {
 									};  //customer
 
 									//Sign JWT and send token
-									//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+									//To add expiration date: jwt.sign({customer}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
 									jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
 										//Build response
 										let response = {
