@@ -34,7 +34,12 @@ import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.VolleySingleton;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
-
+/**
+ * Class for Using QR code
+ * Gets permission for using camera
+ * Reads QR code and handles the request
+ *
+ */
 public class QRcode extends AppCompatActivity {
     private TextView txt_result;
     private SurfaceView surfaceView;

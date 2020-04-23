@@ -123,7 +123,7 @@ public class Account extends AppCompatActivity {
                         }
 
                         @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
+                        public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
                             HashMap<String,String> headers = new HashMap<String,String>();
                             headers.put("Authorization","Bearer " + pref.getAuth());
                             return headers;

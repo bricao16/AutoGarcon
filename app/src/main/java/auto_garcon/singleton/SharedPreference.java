@@ -11,6 +11,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Holds users current state
+ *
+ */
 public class SharedPreference {
     private SharedPreferences sharedPreferences;
     private Context context;

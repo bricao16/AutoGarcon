@@ -1,6 +1,7 @@
 package auto_garcon.homestuff;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.io.Serializable;
 /*
@@ -66,9 +67,11 @@ public class RestaurantItem implements Serializable {
     }
     //set restaurant phone number
     public void setPhoneNumber(long phoneNumber){
-        String fullNumber = Long.toString(phoneNumber);
+        if(phoneNumber!=0){
+            String fullNumber = Long.toString(phoneNumber);
+            this.phoneNumber = "(" + fullNumber.substring(0, 3) + ") " + fullNumber.substring(3, 6) + "-" + fullNumber.substring(6);
+        }
 
-        this.phoneNumber = "(" + fullNumber.substring(0, 3) + ") " + fullNumber.substring(3, 6) + "-" + fullNumber.substring(6);
     }
     //get restaurant phone number
     public String getPhoneNumber(){

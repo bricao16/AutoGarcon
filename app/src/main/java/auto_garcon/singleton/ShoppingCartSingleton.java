@@ -3,7 +3,10 @@ package auto_garcon.singleton;
 import java.util.ArrayList;
 
 import auto_garcon.menustuff.MenuItem;
-
+/**
+ * Class for viewing and modifying shopping cart.
+ *
+ */
 public class ShoppingCartSingleton {
     private  ArrayList<MenuItem> items;
     private int restaurantID;
