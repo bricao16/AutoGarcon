@@ -66,12 +66,24 @@
             app:layout_constraintVertical_bias="0.586" />
 
         <TextView
-            android:id="@+id/textView8"
+            android:id="@+id/resturant_num"
             android:layout_width="100dp"
             android:layout_height="32dp"
             android:text="TextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/items"
+            android:layout_width="85dp"
+            android:layout_height="16dp"
+            android:text="View order"
+            app:layout_constraintBottom_toTopOf="@+id/ReOrderButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.992"
+            app:layout_constraintStart_toEndOf="@+id/Date"
+            app:layout_constraintTop_toBottomOf="@+id/resturant_num"
+            app:layout_constraintVertical_bias="0.606" />
 
         <!-- '-' image button -->
 
