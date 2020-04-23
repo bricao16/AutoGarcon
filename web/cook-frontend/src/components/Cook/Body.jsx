@@ -10,29 +10,33 @@ import Cookies from 'universal-cookie';
 
  */
 function Body(props){
-  // says where react is in lifecycle
+  // says where react is in lifecycle, mounted or not
   const isMounted = useRef(true);
   // For canceling server request
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
   // Cookies for getting user info
   const cookies = new Cookies();
-  const restaurant_id = cookies.get("mystaff").restaurant_id;
+  // restaurant id obtained from logged in user's cookies
+  const restaurant_id = cookies.get('mystaff').restaurant_id;
   // Switch between HTTP and HTTPS
-  const serverUrl = process.env.REACT_APP_HTTPS_DB; // HTTPS: REACT_APP_HTTPS_DB HTTP: REACT_APP_DB
-  const [ordersPath, setOrdersPath] = useState(null); // /orders/123 or /orders/complete/123
-  const completedOrderUrl = serverUrl + '/orders/update'; // domain.com/orders/update
-  const [completed, setCompleted] = useState(false); // if on completed tab, adds completed footer to each order
-
+  const serverUrl = process.env.REACT_APP_DB;
+  // either /orders/ or /orders/complete/
+  // const [ordersPath, setOrdersPath] = useState(null);
+  const ordersPath = useRef(null);
+  // server_url concatenated with /orders/update
+  const completedOrderUrl = serverUrl + '/orders/update';
+  // if on completed tab
+  const [completed, setCompleted] = useState(false);
 
   // If path changes (because of switching tabs: active or complete)
   // or restaurant_id updates for some reason, the correct orders will be pulled from database
   useEffect(() => {
     if(props.path === '/active'){
-      setOrdersPath(`/orders/${restaurant_id}`);
+      ordersPath.current = '/orders/' + restaurant_id;
       setCompleted(false);
     } else if (props.path === '/completed'){
-      setOrdersPath(`/orders/complete/${restaurant_id}`);
+      ordersPath.current = '/orders/complete/' + restaurant_id;
       setCompleted(true);
     }
   }, [props.path, restaurant_id]);
@@ -42,7 +46,7 @@ function Body(props){
   useEffect(() => {
     getOrders();
     changeSelectedOrder(0);
-  }, [ordersPath]);
+  }, [ordersPath.current]);
 
   // Set up things for componentDidMount() componentWillUnmount()
   // Creates method to re-pull orders from database every 10 seconds
@@ -103,9 +107,9 @@ function Body(props){
   // Get 'in progress' orders from db
   function getOrders(){
     // Null until calculated by effect hook
-    if(ordersPath){
-      const url = serverUrl + ordersPath;
-      console.log(`Fetching ${url}`);
+    if(ordersPath.current){
+      const url = serverUrl + ordersPath.current;
+      console.log('Fetching ' + url);
       axios.get(url, {
         httpsAgent: new https.Agent({
           rejectUnauthorized: false,
@@ -130,9 +134,10 @@ function Body(props){
   function changeOrderStatus(status){
     if(selectedOrder !== null){
       const orderNum = Object.keys(orders)[selectedOrder];
-      console.log(`Changing order ${orderNum} to ${status}, post to ${completedOrderUrl}`);
+      console.log('Changing order ' + orderNum + ' to ' + status + ', post to ' + completedOrderUrl);
+      const data = 'order_num=' + '&order_status=' + status;
       axios.post(completedOrderUrl,
-        `order_num=${orderNum}&order_status=${status}`,
+        data,
         {
           httpsAgent: new https.Agent({
             rejectUnauthorized: false,
