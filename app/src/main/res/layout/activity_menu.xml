@@ -23,7 +23,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/xml_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:background="@color/colorAccent" />
 
         <!-- logo of restaurant -->
@@ -31,20 +31,20 @@
             android:id="@+id/restaurant_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="65dp" />
+            android:layout_marginTop="30dp" />
 
         <!-- name of restaurant -->
         <TextView
             android:id="@+id/restaurant_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="65dp" />
+            android:layout_marginTop="30dp" />
 
         <Button
             android:id="@+id/add_restaurant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="30dp"
             android:layout_alignParentEnd="true" />
 
         <!-- list of menu items -->
@@ -52,7 +52,7 @@
             android:id="@+id/menu_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="115dp"
+            android:layout_marginTop="85dp"
             android:layout_marginBottom="70dp" />
 
         <!-- bottom nav bar -->
