@@ -1,10 +1,5 @@
 package auto_garcon.singleton;
 
-import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class UserSingleton {
     private String firstName;
     private String lastName;

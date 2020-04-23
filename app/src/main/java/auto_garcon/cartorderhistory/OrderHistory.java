@@ -84,8 +84,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         );
         VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
 
-
-
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
         Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
