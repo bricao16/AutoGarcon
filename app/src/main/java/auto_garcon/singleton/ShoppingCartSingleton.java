@@ -75,7 +75,7 @@ public class ShoppingCartSingleton {
     public String toString(){
         String toReturn ="";
         for(int i= 0; i<items.size();i++){
-            toReturn= items.get(i).getNameOfItem()+ " Qty("+items.get(i).getQuantity()+")"+"\n";
+            toReturn= toReturn+items.get(i).getNameOfItem()+ " Qty("+items.get(i).getQuantity()+")"+"\n";
         }
         return toReturn;
     }

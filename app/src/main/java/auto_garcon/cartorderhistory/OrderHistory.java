@@ -89,15 +89,39 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
                     /*--------------------------------------------------------------*/
                     //parsing through json from get request to add them to menu
+                    int tracker =0;
+
                     for(int i = 0;i<json.size();i++){
-                        auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
-                        item.setNameOfItem(json.getAsJsonObject(""+i).get("item_name").getAsString());
-                        item.setQuantity(json.getAsJsonObject(""+i).get("quantity").getAsInt());
-                        order.add(json.getAsJsonObject(""+i).get("order_num").getAsString());
-                        carts.add(new ShoppingCartSingleton(json.getAsJsonObject(""+i).get("restaurant_id").getAsInt()));
-                        carts.get(i).addToCart(item);
-                        date.add(json.getAsJsonObject(""+i).get("order_date").getAsString());
-                        Log.d("asdff", ""+order.get(i));
+                        if(i!=0){//first item check
+                            if(order.get(tracker-1).equals(json.getAsJsonObject(""+i).get("order_num").getAsString())){//if there is an order that has the same id
+
+                                auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();// get the item for that order
+                                item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
+                                item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
+                                carts.get(tracker-1).addToCart(item);
+                            }
+                            else{
+                                auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();//create the new item
+                                item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
+                                item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
+                                order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());//get the new order number and add it to the item arraylsit
+                                carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));//get the new restaurant id and create a new shopping cart
+                                carts.get(tracker).addToCart(item);//ad the new item to the cart
+                                date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());//add the date
+                                tracker=tracker+1;
+                            }
+                        }
+                        else {
+                            auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
+                            item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());
+                            item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());
+                            order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());
+                            carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));
+                            carts.get(i).addToCart(item);
+                            date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());
+                            Log.d("asdff", "" + order.get(i));
+                            tracker=tracker+1;
+                        }
                     }
 
                     OrderHistoryAdapter adapter;// used to hold to allow recent orders to show up as cards for xml layout
