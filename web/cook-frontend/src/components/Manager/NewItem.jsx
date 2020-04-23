@@ -94,7 +94,7 @@ class NewItem extends React.Component {
         rejectUnauthorized: false,
       }),
     })
-    //fetch(endpoint, requestOptions)
+    /* fetch(endpoint, requestOptions) and await response */
 		.then(async response => {
       await response;
 
@@ -106,7 +106,7 @@ class NewItem extends React.Component {
 			console.error("There was an error!", error);
 		});
   }
-
+  /* item needs to be deleted */
   handleDelete(event){
 	  event.preventDefault();
     
@@ -132,11 +132,12 @@ class NewItem extends React.Component {
         rejectUnauthorized: false,
       }),
     })
-    //fetch(endpoint, requestOptions)
+    /*fetch(endpoint, requestOptions) and await response */
 		.then(async response => {
       await response;
-
+	  /* Unsuccessfull deletion from database */
       if (response.status !== 200) {this.handleShow(false);}
+	  /* Successfull deletion from database */
       else {this.handleShow(true, message);}
 		})
 		.catch(error => {
@@ -145,7 +146,6 @@ class NewItem extends React.Component {
 		});
   }
   
-
   /* Used to show the correct alert after hitting save item */
   handleShow(success, message) {
     if (success) {
