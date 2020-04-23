@@ -89,10 +89,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         Button addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
         if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
+            Log.d("SDFSDF", "SDFSDF");
             inFavorites = true;
         }
-
-        Log.d("asdfasdfasdfasdf", pref.getFavorites().toString());
 
         if(inFavorites) {
             addOrRemoveFavorite.setText("Remove from favorites");
