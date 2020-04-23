@@ -68,7 +68,7 @@ class StoreInfo extends React.Component{
       const data = await response.json();
       
       if(!response.ok){
-        alert('Sucessful sumbit');
+        alert('Successful submit');
         const error = (data && data.message) || response.status;
         return Promise.reject(error);
       }
@@ -76,7 +76,7 @@ class StoreInfo extends React.Component{
     
     })
     .catch(error =>{
-        alert('Unsucessful sumbit');
+        alert('Unsuccessful submit');
       this.setState({redirect: false});
       console.error("There was an error!", error);
     });
