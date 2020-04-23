@@ -12,6 +12,7 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import CookView from './CSignUp';
+import Alert from 'react-bootstrap/Alert';
 
 const cookies = new Cookies();
 
@@ -60,6 +61,7 @@ class CSignUp extends React.Component{
     
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleShow = this.handleShow.bind(this);
   }
 
   onChange = (e) => {
@@ -111,29 +113,41 @@ class CSignUp extends React.Component{
       .then(async response => {
         await response;
         
-        if (response.status !== 200) {this.handleShow(response);}
+        if (response.status !== 200) {this.handleShow(false);}
         else 
         {
+            this.handleShow(true);
               this.setState({
                 redirect: true,
                 show: false,
-
               });
         }
       })
       .catch(error =>{
-        alert('Unsuccessful Submit');
-        this.setState({alertVariant: 'danger'});
-        this.setState({response: "Unknown error"});
+        this.handleShow(false,error.response.data);
+        //this.setState({alertVariant: 'danger'});
+        //this.setState({response: "Unknown error"});
         this.setState({redirect: false});
         console.error("There was an error!", error);
       });
 
   }
+    /* Used to show the correct alert after hitting save item */
+  handleShow(success,message) {
+    if (success) {
+      this.setState({response: "Successfully created staff member: " + this.state.first_name});
+      this.setState({alertVariant: 'success'});
+    }
+    else {
+      this.setState({response:  message} )
+      this.setState({alertVariant: 'danger'});
+    }
+
+    this.setState({show: true});
+  }
 render() {
     //if sucessful submit redirect to cook view
   if(this.state.redirect === true){
-    alert("Sucessful Staff Creation");
     return <CookView section=""/> 
   }  
   if(cookies.get('mystaff').position === "manager")
@@ -142,6 +156,10 @@ render() {
     /*staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password */
     return (
       <Container component="main" maxWidth="xs">
+        {/*alert if successful or unsuccessful*/}
+        <Alert show={this.state.show} variant={this.state.alertVariant}>
+        {this.state.response}
+        </Alert>
         <CssBaseline />
         <div className={useStyles.paper}>
           <Avatar className={useStyles.avatar}>
