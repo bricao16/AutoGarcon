@@ -56,7 +56,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         pref = new SharedPreference(this);
 
         String temp;
-        final String url = "http://50.19.176.137:8000/customer/history/"+pref.getUser().getUsername();
+        final String url = "http://50.19.176.137:8000/customer/history/" + pref.getUser().getUsername();
         JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
         final StringRequest getRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
@@ -64,7 +64,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
                     if(response.equals("No order history for this customer")){
                         setContentView(R.layout.emptyorders);
-
                     }
                     else {
                         setContentView(R.layout.activity_order_history);
@@ -106,14 +105,46 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
                     //Toast.makeText(OrderHistory.this,response,Toast.LENGTH_LONG).show();
 
+                    //creating side nav drawer
+                    DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
+                    Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
+                    NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
+                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(OrderHistory.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
+                    drawerLayout.addDrawerListener(toggle);
+                    toggle.syncState();
+                    navigationView.setNavigationItemSelectedListener(OrderHistory.this);
+
+                    BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);// associating xml objects with the java Object equivalent
+
+                    BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                                    switch (item.getItemId()) {
+                                        case R.id.action_scan:
+                                            Intent QRcode = new Intent(getBaseContext(), QRcode.class);
+                                            startActivity(QRcode);
+                                            return true;
+                                        case R.id.action_home:
+                                            Intent home = new Intent(getBaseContext(), Home.class);
+                                            startActivity(home);
+                                            return true;
+                                        case R.id.action_cart:
+                                            Intent shoppingCart = new Intent(getBaseContext(), ShoppingCart.class);
+                                            startActivity(shoppingCart);
+                                            return true;
+                                    }
+                                    return false;
+                                }
+                            };
+
+                    bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
                 }
             },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(OrderHistory.this,error.getMessage()+"hmmmm",Toast.LENGTH_LONG).show();
-
                     }
                 }
 
