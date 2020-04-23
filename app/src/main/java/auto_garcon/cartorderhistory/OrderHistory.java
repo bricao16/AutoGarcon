@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -54,37 +55,31 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_order_history);
 
         String temp;
-        final String url = "http://50.19.176.137:8000/customer/history/";
+        final String url = "http://50.19.176.137:8000/customer/history/"+pref.getUser().getUsername();
         JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
-        try{
-            obj.put("customer_id", pref.getUser().getUsername());
-        }catch (JSONException e){
-            //TODO figure out how to handle this other than stack trace
-            e.printStackTrace();
-        }
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, obj,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Iterator iterator = response.keys();
+        final StringRequest getRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
 
-                        List<String> keyList = new ArrayList<String >();
-                        while (iterator.hasNext()){
-                            String key = (String) iterator.next();
-                            keyList.add(key);
-                        }
-                        Log.d("sdff", keyList.get(0));
+                    if(response.equals("No order history for this customer")){
+                        setContentView(R.layout.emptyorders);
 
-                        Toast.makeText(OrderHistory.this,keyList.get(0),Toast.LENGTH_LONG).show();
                     }
-                },
+                    else {
+                        setContentView(R.layout.activity_order_history);
+                    }
+                    Toast.makeText(OrderHistory.this,response+"hmmmm",Toast.LENGTH_LONG).show();
+
+
+                }
+            },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(OrderHistory.this,error.getMessage(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(OrderHistory.this,error.getMessage()+"hmmmm",Toast.LENGTH_LONG).show();
+
                     }
                 }
-
 
         );
         VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
