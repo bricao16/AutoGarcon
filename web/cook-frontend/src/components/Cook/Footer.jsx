@@ -21,12 +21,14 @@ function Footer() {
   return (
     <Container fluid style={footerStyle} className="py-2">
       <Row>
-        <Col className="d-flex" style={logoContainerStyle}>
-            <Image src={logoImage} height="30px"/>
+        <Col>
+          <div className="d-flex mt-2" style={logoContainerStyle}>
+            <p className="m-0">Powered by</p>
             <h1 style={titleStyle} className="mb-0 ml-2">AutoGarcon</h1>
+          </div>
         </Col>
         <Col>
-          <h1 style={timeStyle}>{time}</h1>
+          <h1 style={timeStyle} className="m-0">{time}</h1>
         </Col>
         <Col className="d-none d-md-block">
         </Col>
@@ -40,12 +42,12 @@ const footerStyle = {
 };
 
 const logoContainerStyle = {
-  alignItems: 'center'
+  alignItems: 'baseline'
 };
 
 const titleStyle = {
   fontFamily: 'Kefa',
-  fontSize: '2em'
+  fontSize: '1.8em'
 };
 
 const timeStyle = {

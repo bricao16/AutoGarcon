@@ -119,6 +119,7 @@ function Body(props){
         .then(res => res.data)
         .then(orders => {
           if(isMounted) {
+            setOrders({});
             configureOrders(orders);
           } else {
             source.cancel('component unmounted');
@@ -231,7 +232,7 @@ function Body(props){
                      completed={completed}/>;
     }
     let string = completed ? "No completed orders" : "No active orders";
-    return <p>{string}</p>
+    return <p className="px-2">{string}</p>
   }
 
   return (
