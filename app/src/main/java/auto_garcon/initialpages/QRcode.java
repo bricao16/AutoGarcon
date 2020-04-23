@@ -129,7 +129,7 @@ public class QRcode extends AppCompatActivity {
                                             String restaurant = response.getJSONObject("restaurant").getString("name");
                                             txt_result.setText("Continue to " + restaurant);
                                             txt_result = (TextView) findViewById(R.id.code_info);
-                                            onPause();
+                                            //onPause();
                                             Intent Menu = new Intent(QRcode.this, Menu.class);
                                             Menu.putExtra("restaurant id",Integer.parseInt(data));
                                             startActivity(Menu);

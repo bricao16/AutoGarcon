@@ -6,7 +6,6 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -19,12 +18,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -44,7 +41,6 @@ import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
-import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
 /*
@@ -69,7 +65,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         pref = new SharedPreference(Home.this);
-
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home);
@@ -261,6 +256,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         //Here is for Search box
         searchView = (SearchView) findViewById(R.id.searchView);
+        searchView.onActionViewExpanded();
         list_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,search_list);
         items.clear();
 
@@ -268,7 +264,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-
+                items.clear();
                 if(allRestaurantList.containsValue(query)){
                     Toast.makeText(Home.this, "Yes Match found "+query,Toast.LENGTH_LONG).show();
                     RestaurantItem itemToBeAdded = new RestaurantItem();
