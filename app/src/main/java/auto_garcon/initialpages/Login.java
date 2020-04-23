@@ -35,6 +35,11 @@ public class Login extends AppCompatActivity {
     private TextView textViewSignUp;// used to identify if the user wants to register
     private SharedPreference pref;//This object is used to store information about the user that can be used outside of this page
 
+    /**
+     * This method instantiates and constraints the xml object assoiciated to the login java class.
+     *
+     * @param savedInstanceState  contains the data that has been most recently supplied on the register xml after the creation of the app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +55,7 @@ public class Login extends AppCompatActivity {
             finish();//prevents them from coming back to this page
         }
 
-        emailId = findViewById(R.id.email);// associating xml objects with the java Object equivalent
+        emailId = findViewById(R.id.username);// associating xml objects with the java Object equivalent
         password = findViewById(R.id.password);// associating xml objects with the java Object equivalent
         buttonSignIn = findViewById(R.id.signUp);// associating xml objects with the java Object equivalent
         textViewSignUp = findViewById(R.id.loginLink);// associating xml objects with the java Object equivalent
@@ -62,7 +67,7 @@ public class Login extends AppCompatActivity {
                 final String passwd = password.getText().toString().trim();//extracted data from xml object and converted into a string
 
                 if(username.isEmpty()){//checks if the username they are trying to submit is empty
-                    emailId.setError("Please enter email id");
+                    emailId.setError("Please enter your username");
                     emailId.requestFocus();
                 }
                 else if (passwd.isEmpty()){//checks if the password the user is trying to submit is empty
@@ -89,7 +94,7 @@ public class Login extends AppCompatActivity {
                                 public void onResponse(JSONObject response) {
                                     // response
                                     try {
-                                        JSONObject object = response.getJSONObject("user");
+                                        JSONObject object = response.getJSONObject("customer");
                                         String token = response.getString("token");
 
                                         pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
