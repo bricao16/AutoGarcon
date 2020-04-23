@@ -252,6 +252,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                     while(inner_keys.hasNext()) {
                                         String inner_key = inner_keys.next();
 
+                                        itemToBeAdded.setRestaurantID(getIntent().getIntExtra("restaurant id", 0));
+
                                         switch(inner_key){
                                             case "calories":
                                                 itemToBeAdded.setCalories(Integer.parseInt(item.get(inner_key).toString()));
@@ -266,9 +268,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                             case "in_stock":
                                                 itemToBeAdded.setAmountInStock(Integer.parseInt(item.get(inner_key).toString()));
                                                 break;
-                                            case "restaurant":
-                                                itemToBeAdded.setRestaurantID(Integer.parseInt(item.get(inner_key).toString()));
-                                                break;
+
                                             case "item_id":
                                                 itemToBeAdded.setItemID(Integer.parseInt(item.get(inner_key).toString()));
                                                 break;

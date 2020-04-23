@@ -3,6 +3,7 @@ package auto_garcon.cartorderhistory;
 import android.accounts.Account;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -123,8 +124,10 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                     obj.put("restaurant_id", Integer.toString(shoppingCart.getRestaurantID()));
                     obj.put("customer_id", pref.getUser().getUsername());
-                    obj.put("table_num", Integer.toString(6));
+                    obj.put("table_num", 6);
                     obj.put("order", order);
+
+                    Log.d("SDFSDF", obj.toString());
                 }catch (JSONException e){
                     //TODO figure out how to handle this other than stack trace
                     e.printStackTrace();
