@@ -74,7 +74,7 @@ class Order extends React.Component {
     // Seconds between now and order placed time
     const secondsSinceOrder = now.diff(this.state.orderTime, 's');
     // Formatted time between order placed time and now as hours:minute:seconds
-    const timeSinceOrder = moment.duration(secondsSinceOrder, 's').format('hh:mm:ss');
+    const timeSinceOrder = moment.duration(secondsSinceOrder, 's').format('hh:*mm:ss');
     let state = this.state;
     state.timeSinceOrder = timeSinceOrder;
     this.setState(state);
