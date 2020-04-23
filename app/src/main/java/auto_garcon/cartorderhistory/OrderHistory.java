@@ -51,8 +51,9 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pref = new SharedPreference(this);
         setContentView(R.layout.activity_order_history);
+
+        pref = new SharedPreference(this);
 
         String temp;
         final String url = "http://50.19.176.137:8000/customer/history/"+pref.getUser().getUsername();
@@ -68,7 +69,42 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     else {
                         setContentView(R.layout.activity_order_history);
                     }
-                    Toast.makeText(OrderHistory.this,response+"hmmmm",Toast.LENGTH_LONG).show();
+                    Log.d("asdff",response);
+                    //creating side nav drawer
+                    DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
+                    Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
+                    NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
+                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+
+                    drawerLayout.addDrawerListener(toggle);
+                    toggle.syncState();
+                    navigationView.setNavigationItemSelectedListener(this);
+
+                    BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);// associating xml objects with the java Object equivalent
+
+                    BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                                    switch (item.getItemId()) {
+                                        case R.id.action_scan:
+                                            Intent QRcode = new Intent(getBaseContext(), QRcode.class);
+                                            startActivity(QRcode);
+                                            return true;
+                                        case R.id.action_home:
+                                            Intent home = new Intent(getBaseContext(), Home.class);
+                                            startActivity(home);
+                                            return true;
+                                        case R.id.action_cart:
+                                            Intent shoppingCart = new Intent(getBaseContext(), ShoppingCart.class);
+                                            startActivity(shoppingCart);
+                                            return true;
+                                    }
+                                    return false;
+                                }
+                            };
+
+                    bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+                    //Toast.makeText(OrderHistory.this,response,Toast.LENGTH_LONG).show();
 
 
                 }
@@ -84,40 +120,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         );
         VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
 
-        //creating side nav drawer
-        DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
-        Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
-        NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);// associating xml objects with the java Object equivalent
-
-        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_scan:
-                                Intent QRcode = new Intent(getBaseContext(), QRcode.class);
-                                startActivity(QRcode);
-                                return true;
-                            case R.id.action_home:
-                                Intent home = new Intent(getBaseContext(), Home.class);
-                                startActivity(home);
-                                return true;
-                            case R.id.action_cart:
-                                Intent shoppingCart = new Intent(getBaseContext(), ShoppingCart.class);
-                                startActivity(shoppingCart);
-                                return true;
-                        }
-                        return false;
-                    }
-                };
-
-        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
 
     //onClick for side nav bar
