@@ -121,7 +121,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         //set the above variables to each tag on the xml file.
         public ShoppingCartViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.order_num2);
+            name = itemView.findViewById(R.id.item_name);
             quantity = itemView.findViewById(R.id.item_quantity);
             add = itemView.findViewById(R.id.addButton);
             remove = itemView.findViewById(R.id.removeButton);
