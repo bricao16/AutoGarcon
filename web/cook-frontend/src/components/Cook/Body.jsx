@@ -135,7 +135,7 @@ function Body(props){
     if(selectedOrder !== null){
       const orderNum = Object.keys(orders)[selectedOrder];
       console.log('Changing order ' + orderNum + ' to ' + status + ', post to ' + completedOrderUrl);
-      const data = 'order_num=' + '&order_status=' + status;
+      const data = 'order_num=' + orderNum + '&order_status=' + status;
       axios.post(completedOrderUrl,
         data,
         {

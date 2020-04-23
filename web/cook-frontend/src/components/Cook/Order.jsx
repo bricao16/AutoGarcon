@@ -34,7 +34,7 @@ class Order extends React.Component {
       allItems.push(
         // Category with children items
         <div key={key1++}>
-          <p style={itemCategoryStyle} className="m-0">{category}</p>
+          {/*<p style={itemCategoryStyle} className="m-0">{category}</p>*/}
           <div className="px-2">
             {items}
           </div>
