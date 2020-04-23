@@ -71,7 +71,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.activity_home);
 
         //creating side nav drawer
