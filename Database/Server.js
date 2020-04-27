@@ -413,7 +413,7 @@ app.put('/orders/place', (req, res) => {
 						res.status(500).send('Error placing order');
 					}	//if
 					else {
-						res.status(201).send('Successfully placed order!');
+						res.status(200).send('Successfully placed order!');
 					}	//else
 				});	//query
 			}	//if
@@ -549,7 +549,7 @@ app.put('/favorites/add', (req, res) => {
 	//Make sure right number of parameters are entered:
 	if(!(req.body.customer_id && req.body.restaurant_id))
 	{
-		res.status(500).send('Error: Missing parameter. Required parameters: customer_id, restaurant_id');
+		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, restaurant_id');
 		return;
 	}   //if
 
@@ -559,7 +559,7 @@ app.put('/favorites/add', (req, res) => {
 		}   //if
 		else {
 			//Send Response:
-			res.status(201).send('Successfully added restaurant to favorites!');
+			res.status(200).send('Successfully added restaurant to favorites!');
 		}   //else
 	}); //db.query
 }); //app.put
@@ -591,7 +591,7 @@ app.post('/favorites/delete', verifyToken, (req, res) => {
 	//Verify that the person is the customer with the favorite
 	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
-			res.status(403).send('Must be authorized!');
+			res.status(401).send('Must be authorized!');
 		}   //if
 		else if (auth.customer && auth.customer.customer_id === req.body.customer_id) {
 			//Make sure the favorite exists:
@@ -602,7 +602,7 @@ app.post('/favorites/delete', verifyToken, (req, res) => {
 					res.status(500).send('Error deleting favorite')
 				}	//if
 				else if (rows.length == 0) {
-					res.status(500).send('Error: favorite does not exist');
+					res.status(409).send('Error: favorite does not exist');
 				}   //else if
 				else {
 					let query = 'DELETE FROM sample.favorites WHERE customer_id = ? AND restaurant_id = ?';
@@ -620,7 +620,7 @@ app.post('/favorites/delete', verifyToken, (req, res) => {
 			}); //db.query
 		}	//else if
 		else {
-			res.status(403).send('Can\'t delete other customer\'s favorites!');
+			res.status(401).send('Can\'t delete other customer\'s favorites!');
 		}	//else
 	});	//verify
 });	//app.post
@@ -1582,7 +1582,7 @@ app.put('/alexa/order/update', (req, res) =>
 	//Make sure right number of parameters are entered:
 	if(!(req.body.order_num && req.body.item && req.body.quantity))
 	{
-		res.status(500).send('Error: Missing parameter. Required parameters: order_num, item, quantity');
+		res.status(400).send('Error: Missing parameter. Required parameters: order_num, item, quantity');
 		return;
 	}   //if
 
@@ -1592,7 +1592,7 @@ app.put('/alexa/order/update', (req, res) =>
 	{
 		if (rows.length == 0)
 		{
-			res.status(500).send('Error: order does not exist or is not pending');
+			res.status(409).send('Error: order does not exist or is not pending');
 		}   //if
 		else
 		{
