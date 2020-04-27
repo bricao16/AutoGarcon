@@ -48,7 +48,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         holder.textTitle.setText(data.get(position).getName());
         holder.textDescription.setText(data.get(position).getAddress());
         holder.textPhoneNumber.setText(data.get(position).getPhoneNumber());
-        holder.textHours.setText(data.get(position).getOpeningTime() + " - " + data.get(position).getClosingTime());
+        String textTime = data.get(position).getOpeningTime() + data.get(position).getOpeningTimeDay() + " - " + data.get(position).getClosingTime() + data.get(position).getClosingTimeDay();
+        holder.textHours.setText(textTime);
         holder.restaurantLogo.setImageBitmap(data.get(position).getImageBitmap());
     }
 

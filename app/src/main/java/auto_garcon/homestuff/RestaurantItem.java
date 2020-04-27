@@ -10,7 +10,9 @@ This is an object of restaurant page.
 public class RestaurantItem implements Serializable {
     private int ID;//restaurant id
     private int openingTime;//restaurant opening hour
+    private String openingTimeDay; //am or pm opening
     private int closingTime;//restaurant closing hour
+    private String closingTimeDay; //am or pm closing
     private Bitmap image;//restaurant image for the page
     private String address;//restaurant address
     private String name;//restaurant name
@@ -27,19 +29,40 @@ public class RestaurantItem implements Serializable {
     }
     //set restaurant opening hour
     public void setOpeningTime(int openingTime){
+        setOpeningTimeDay(openingTime);
         this.openingTime = openingTime % 12;
     }
+    //set restaurant closing hour
+    public void setOpeningTimeDay(int openingTime){
+        if(openingTime>12){this.openingTimeDay = "pm";}
+        else{this.openingTimeDay = "am";}
+    }
+
     //get restaurant opening hour
     public int getOpeningTime(){
         return this.openingTime;
     }
+    //get restaurant opening hour day
+    public String getOpeningTimeDay(){
+        return this.openingTimeDay;
+    }
     //set restaurant closing hour
     public void setClosingTime(int closingTime){
+        setCloseDayNight(closingTime);
         this.closingTime = closingTime % 12;
+    }
+    //set restaurant closing hour
+    public void setCloseDayNight(int closingTime){
+        if(closingTime>12){this.closingTimeDay = "pm";}
+        else{this.closingTimeDay = "am";}
     }
     //get restaurant closing hour
     public int getClosingTime(){
         return this.closingTime;
+    }
+    //get restaurant closing hour day
+    public String getClosingTimeDay(){
+        return this.closingTimeDay;
     }
     //set restaurant image
     public void setImageBitmap(Bitmap image){
