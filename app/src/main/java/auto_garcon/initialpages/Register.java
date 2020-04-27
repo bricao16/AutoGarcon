@@ -83,11 +83,12 @@ public class Register extends AppCompatActivity {
                     emailId.setError("Please enter email id");
                     emailId.requestFocus();
                 }
-                else if(Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
+                else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
                     emailId.setError("Please enter a valid email");
                     emailId.requestFocus();
                 }
                 else if(TextUtils.isEmpty(passwd)){//checking if user entered their password
+                    Log.d("Tag","test:"+Patterns.EMAIL_ADDRESS.matcher(email).matches());
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
@@ -156,7 +157,7 @@ public class Register extends AppCompatActivity {
                                     // error if the request fails
 
                                     if(error.networkResponse.statusCode==409){
-                                        Toast.makeText(Register.this, "Customer username already exist", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(Register.this, "Customer username already exist please enter a different username", Toast.LENGTH_LONG).show();
 
                                     }
                                     else{
