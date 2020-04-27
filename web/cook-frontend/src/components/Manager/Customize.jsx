@@ -24,11 +24,10 @@ class Customize extends React.Component{
           fonts: [ 'Arial', 'Roboto','Times New Roman', 'Courier New', 'Courier', 'Verdana'],
           sectionEdit: "",
           show:false,
-          name:this.props.info.name,
-          address: this.props.info.address,
-          phone: this.props.info.phone,
-          open:this.props.info.opening,
-          close:this.props.info.closing,
+          font: this.props.info.font,
+          primary: this.props.info.primary ,
+          secondary: this.props.info.secondary,
+          tertiary: this.props.info.tertiary,
           restaurant_id :cookies.get("mystaff").restaurant_id,
           token:cookies.get('mytoken')
         };
