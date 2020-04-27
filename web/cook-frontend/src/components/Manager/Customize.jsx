@@ -15,70 +15,86 @@ the 'sectionEdit' state to that section.
 renderInfo is called which either creates a form to edit for the
 section or renders what is there from the database.*/
 class Customize extends React.Component{
-    constructor(props) {
-      super(props);
-
-      const cookies = new Cookies();
-      this.state = {
-        customizeInfo: [],
-        sectionEdit: "",
-        font:"",
-        primary: "",
-        secondary: "",
-        tertiary:"",
-        staff: cookies.get("mystaff")
-    };
+    constructor(props) {     
+        super(props);
+        
+        const cookies = new Cookies();
+        this.state = {
+          customizeInfo: [],
+          fonts: [ 'Arial', 'Roboto','Times New Roman', 'Courier New', 'Courier', 'Verdana'],
+          sectionEdit: "",
+          show:false,
+          name:this.props.info.name,
+          address: this.props.info.address,
+          phone: this.props.info.phone,
+          open:this.props.info.opening,
+          close:this.props.info.closing,
+          restaurant_id :cookies.get("mystaff").restaurant_id,
+          token:cookies.get('mytoken')
+        };
 
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleShow = this.handleShow.bind(this);
+
   }
 
   onChange = (e) => {
-        /*
-          On change of the edit field- update the field in the
-          state so we can send it to the database.
-        */
-        this.setState({ [e.target.name]: e.target.value });
-      }
+    /*
+      Because we named the inputs to match their
+      corresponding values in state, it's
+      super easy to update the state
+    */
+    this.setState({ [e.target.name]: e.target.value });
+    console.log(this.state);
+  }
 
-  /* Used for connecting to Menu in database */
+  /* Used for connecting to Customization in database */
   handleSubmit(event) {
-  
+    console.log(this.state);
     this.editForm("");
     event.preventDefault();
-    
-    /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
-    
     axios({
-      method: 'post',
-      url: process.env.REACT_APP_DB + '/restaurant/' +this.state.staff.resturant_id,
-      data: 'name='+this.state.name+'&address='+this.state.address
-      +'&phone='+this.state.phone+'&open='+this.state.open
-      +'&close='+this.state.close,
+      method: 'POST',
+      url:  process.env.REACT_APP_DB +'/restaurant/update/',
+      data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
+      '&address='+this.state.address+'&phone='+this.state.phone+
+      '&opening='+this.state.open+'&closing='+this.state.close,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.state.token
       },
       httpsAgent: new https.Agent({  
         rejectUnauthorized: false,
       }),
     })
     .then(async response => {
-      const data = await response.json();
-      
-      if(!response.ok){
-        alert('Sucessful sumbit');
-        const error = (data && data.message) || response.status;
-        return Promise.reject(error);
-      }
-      this.setState({redirect: true});
-    
+      await response;
+
+      if (response.status !== 200) {this.handleShow(false);}
+      else {this.handleShow(true, "changed");}
     })
-    .catch(error =>{
-        alert('Unsucessful sumbit');
-      this.setState({redirect: false});
+    .catch(error => {
+      this.handleShow(false);
       console.error("There was an error!", error);
     });
+
+
 }
+
+  /* Used to show the correct alert after hitting save item */
+  handleShow(success, message) {
+    if (success) {
+      this.setState({response: "Successfully "+message+"!"});
+      this.setState({alertVariant: 'success'});
+    }
+    else {
+      this.setState({response: 'Failed to update'})
+      this.setState({alertVariant: 'danger'});
+    }
+
+    this.setState({show: true});
+  }
 
 //change the category of which is being edited
 editForm = (category) => {
@@ -86,6 +102,11 @@ editForm = (category) => {
       sectionEdit: category
   })
 }
+
+change(event){
+  this.setState({value: event.target.value});
+}
+
 renderInfo(){
     return (
         <React.Fragment>
@@ -95,14 +116,31 @@ renderInfo(){
                     <Card.Body>
                         {/* if Font is not the section to edit render the database info and a button to edit*/}
                         {this.state.sectionEdit !== "Font" ? 
-                            <p style={{margin: "0", padding: "0.3em"}}>{this.state.customizeInfo[5][1] + " "}
+
+                            <p style={{margin: "0", padding: "0.3em"}}>{this.state.customizeInfo[5][1] + ""}
+                            
                                 <button  onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button> 
                             </p>
                             :   
                             <form onSubmit = {this.handleSubmit}>
                             {/* if Font is the section to edit create a form and on submit send to the database*/}
-                                    <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[5][1]} onChange={this.onChange}></input>
-                                    <div className="row m-2">
+                            {/* choose font and submit to change font */}
+                            <div style= {{float: 'left'}}>
+                                <select id="lang" onChange={this.change.bind(this)} value={this.state.value}>
+                                    {/* <option value="Selected">{this.state.customizeInfo[5][1]}</option> */}
+                                    
+                                    {/* dropdown menu options */}
+                                    <option value="Arial">{this.state.fonts[0]}</option>
+                                    <option value="Roboto">{this.state.fonts[1]}</option>
+                                    <option value="Times New Roman">{this.state.fonts[2]}</option>
+                                    <option value="Courier New">{this.state.fonts[3]}</option>
+                                    <option value="Courier">{this.state.fonts[4]}</option>
+                                    <option value="Verdana">{this.state.fonts[5]}</option>
+
+                                </select>
+                            </div>
+                            <br></br>
+                            <div className="row m-2">
                                         <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
                                     </div>
                                 </form>
