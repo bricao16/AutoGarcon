@@ -154,8 +154,15 @@ public class Register extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
+
+                                    if(error.networkResponse.statusCode==409){
+                                        Toast.makeText(Register.this, "Customer username already exist", Toast.LENGTH_LONG).show();
+
+                                    }
+                                    else{
+                                        Toast.makeText(Register.this,"User could not be created",Toast.LENGTH_LONG).show();
+                                    }
                                     error.printStackTrace();
-                                    Toast.makeText(Register.this, error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             }
                     );

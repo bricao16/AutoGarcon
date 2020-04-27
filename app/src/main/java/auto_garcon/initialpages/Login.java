@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -122,7 +123,12 @@ public class Login extends AppCompatActivity {
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
                                     error.printStackTrace();
-                                    Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG).show();
+                                    if(error.networkResponse.statusCode==401){
+                                        Toast.makeText(Login.this,"Could not Sign in",Toast.LENGTH_LONG).show();
+                                    }
+                                    else{
+                                        Toast.makeText(Login.this,"Invalid username or password",Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }
                     );
