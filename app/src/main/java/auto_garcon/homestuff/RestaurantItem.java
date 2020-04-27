@@ -27,7 +27,7 @@ public class RestaurantItem implements Serializable {
     }
     //set restaurant opening hour
     public void setOpeningTime(int openingTime){
-        this.openingTime = openingTime;
+        this.openingTime = openingTime % 12;
     }
     //get restaurant opening hour
     public int getOpeningTime(){
@@ -35,7 +35,7 @@ public class RestaurantItem implements Serializable {
     }
     //set restaurant closing hour
     public void setClosingTime(int closingTime){
-        this.closingTime = closingTime;
+        this.closingTime = closingTime % 12;
     }
     //get restaurant closing hour
     public int getClosingTime(){
