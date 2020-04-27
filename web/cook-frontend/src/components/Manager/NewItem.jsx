@@ -55,6 +55,11 @@ class NewItem extends React.Component {
     let endpoint;
     let body;
     let message;
+	
+	if(this.state.name.length > 40){
+		
+		
+	}
 
     // Non existent so need to add item
     if (this.state.type === "default") {
@@ -159,6 +164,10 @@ class NewItem extends React.Component {
 
     this.setState({show: true});
   }
+  handleValidation(message){
+	  this.state({response: message});
+  }
+  
 
   /* Parsing stock to set correct value */
   parseStock(value) {
