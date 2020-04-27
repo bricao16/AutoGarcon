@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,15 +72,19 @@ public class Register extends AppCompatActivity {
                 final String username = userID.getText().toString().trim();//extracted data from xml object and converted into a string
 
                 if(TextUtils.isEmpty(firstName)){//checking if user entered there firstName
-                    emailId.setError("Please enter first name");
-                    emailId.requestFocus();
+                    userFirst.setError("Please enter first name");
+                    userFirst.requestFocus();
                 }
                 else if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
-                    password.setError("Please enter last name");
-                    password.requestFocus();
+                    userLast.setError("Please enter last name");
+                    userLast.requestFocus();
                 }
                 else if(TextUtils.isEmpty(email)){//checking if user entered their email
                     emailId.setError("Please enter email id");
+                    emailId.requestFocus();
+                }
+                else if(Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
+                    emailId.setError("Please enter a valid email");
                     emailId.requestFocus();
                 }
                 else if(TextUtils.isEmpty(passwd)){//checking if user entered their password
@@ -88,6 +93,21 @@ public class Register extends AppCompatActivity {
                 }
                 else if(passwd.length()<6){//checks if the user entered a password lass than 6 characters
                     password.setError("Password Must be Greater than 6 Characters");
+                    password.requestFocus();
+
+                }
+                else if(passwd.equals(passwd.toLowerCase())){//checks if the password contains one uppercase
+                    password.setError("Password Must contain at least one uppercase");
+                    password.requestFocus();
+                }
+                else if(passwd.equals(passwd.toUpperCase())){//checkis if password contains one lowercase
+                    password.setError("Password Must contain at least one lowercase");
+                    password.requestFocus();
+                }
+                else if(username.length()>50){
+                    userID.setError("Please enter a username with less than 50 characters");
+                    userID.requestFocus();
+
                 }
                 else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email)
                         && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirments are met than we can send our put request to the database
