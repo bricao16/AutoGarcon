@@ -38,6 +38,7 @@ class StoreInfo extends React.Component{
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
+		this.handleValidation = this.handleValidation.bind(this);
   }
 
   onChange = (e) => {
@@ -51,36 +52,58 @@ class StoreInfo extends React.Component{
       }
   /* Used for connecting to restaurantInfo in database */
   handleSubmit(event) {
-    console.log(this.state);
-    this.editForm("");
-    event.preventDefault();
-    axios({
-      method: 'POST',
-      url:  process.env.REACT_APP_DB +'/restaurant/update/',
-      data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
-      '&address='+this.state.address+'&phone='+this.state.phone+
-      '&opening='+this.state.open+'&closing='+this.state.close,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Bearer ' + this.state.token
-      },
-      httpsAgent: new https.Agent({  
-        rejectUnauthorized: false,
-      }),
-    })
-    .then(async response => {
-      await response;
+		
+		if(this.state.name.length > 40){
+			this.handleValidation("Restaurant name is too long.  Please reduce to 40 characters or less.");
+		} else if (this.state.address.length > 40){
+			this.handleValidation("Restaurant address is too long.  Please reduce to 40 characters or less.");
+			
+		} else if (this.state.open < 0 || this.state.open > 2400){
+			this.handleValidation("Valid opening time not entered.  Please enter a time between 0 and 2400.");
+		} else if (isNaN(this.state.open)){
+			this.handleValidation("No number entered for opening time.  Please enter a time between 0 and 2400.");		
+		} else if (!Number(this.state.open).isInteger){
+			this.handleValidation("No integer entered for opening time.  Please enter a time between 0 and 2400.");
+			
+			
+		} else if (this.state.close < 0 || this.state.close > 2400){
+			this.handleValidation("Valid closing time not entered.  Please enter a time between 0 and 2400.");
+		} else if (isNaN(this.state.close)){
+			this.handleValidation("No number entered for closing time.  Please enter a time between 0 and 2400.");
+			} else if (!this.state.close.isInteger){
+			this.handleValidation("No integer entered for closing time.  Please enter a time between 0 and 2400.");
+		} else {
+			
+			console.log(this.state);
+			this.editForm("");
+			event.preventDefault();
+			axios({
+				method: 'POST',
+				url:  process.env.REACT_APP_DB +'/restaurant/update/',
+				data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
+				'&address='+this.state.address+'&phone='+this.state.phone+
+				'&opening='+this.state.open+'&closing='+this.state.close,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+					'Authorization': 'Bearer ' + this.state.token
+				},
+				httpsAgent: new https.Agent({  
+					rejectUnauthorized: false,
+				}),
+			})
+			.then(async response => {
+				await response;
 
-      if (response.status !== 200) {this.handleShow(false);}
-      else {this.handleShow(true, "changed");}
-    })
-    .catch(error => {
-      this.handleShow(false);
-      console.error("There was an error!", error);
-    });
-
-
-}
+				if (response.status !== 200) {this.handleShow(false);}
+				else {this.handleShow(true, "changed");}
+			})
+			.catch(error => {
+				this.handleShow(false);
+				console.error("There was an error!", error);
+			});
+		}
+	}
+	
   /* Used to show the correct alert after hitting save item */
   handleShow(success, message) {
     if (success) {
@@ -89,7 +112,7 @@ class StoreInfo extends React.Component{
 
       setTimeout(function () {	
         window.location.reload(1);	
-    }, 3000);
+    }, 2000);
     }
     else {
       this.setState({response: 'Failed to update'})
@@ -104,6 +127,18 @@ class StoreInfo extends React.Component{
       this.setState({
         sectionEdit: category
     })
+  }
+	
+	handleValidation(message){
+		this.setState({response: message});
+		this.setState({alertVariant: 'danger'});
+		this.setState({show: true});
+		
+		setTimeout(() => {
+			this.setState({
+			show:false
+			});
+		}, 50000)
   }
   renderInfo(){
     return (
@@ -172,9 +207,11 @@ class StoreInfo extends React.Component{
                               <input  className="form-control" type="text" name = "open" defaultValue={this.state.restaurantInfo[3][1]} onChange={this.onChange}></input>
                               <div className="row m-2">
                                   <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+																	<p style={{margin: "0", padding: "0.25em", fontSize: ".75em"}}>
+																			&#160;(Note: Please enter in military time.)
+																	</p>
                               </div>
-                          </form>
-                     
+                          </form>           
                   }
               </div>
               <div className = "border-bottom m-3">
@@ -188,6 +225,9 @@ class StoreInfo extends React.Component{
                               <input  className="form-control" type="text" name = "close" defaultValue={this.state.restaurantInfo[4][1]} onChange={this.onChange}></input>
                               <div className="row m-2">
                                   <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+																	<p style={{margin: "0", padding: "0.25em", fontSize: ".75em"}}>
+																			&#160;(Note: Please enter in military time.)
+																	</p>
                               </div>
                           </form>
                        
