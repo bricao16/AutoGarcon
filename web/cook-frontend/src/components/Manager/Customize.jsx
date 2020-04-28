@@ -18,31 +18,37 @@ renderInfo is called which either creates a form to edit for the
 section or renders what is there from the database.*/
 
 class Customize extends React.Component{
-    constructor(props) {
-      super(props);
-
-      const cookies = new Cookies();
-      this.state = {
-        customizeInfo: [],
-        sectionEdit: "",
-        font:"",
-        primary: this.props.info.primary_color,
-        secondary: this.props.info.secondary_color,
-        tertiary:this.props.info.tertiary_color,
-        temp_primary: this.props.info.primary_color,
-        temp_secondary: this.props.info.secondary_color,
-        temp_tertiary:this.props.info.tertiary_color,
-        staff: cookies.get("mystaff")
-    };
+    constructor(props) {     
+        super(props);
+        
+        const cookies = new Cookies();
+        this.state = {
+          customizeInfo: [],
+          fonts: [ 'Arial', 'Roboto','Times New Roman', 'Courier New', 'Courier', 'Verdana'],
+          sectionEdit: "",
+          show:false,
+          font: this.props.info.font,
+          primary: this.props.info.primary_color ,
+          secondary: this.props.info.secondary_color,
+          tertiary: this.props.info.tertiary_color,
+          temp_primary: this.props.info.primary_color,
+          temp_secondary: this.props.info.secondary_color,
+          temp_tertiary:this.props.info.tertiary_color,
+          restaurant_id :cookies.get("mystaff").restaurant_id,
+          token:cookies.get('mytoken')
+        };
 
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleShow = this.handleShow.bind(this);
+
   }
     /*
       On change of the edit field- update the field in the
       state so we can send it to the database.
     */
   onChange = (e) => {
+
       console.log(e);
       if(this.state.sectionEdit ==="Primary")
       {  this.setState({ 'temp_primary':  e.hex});
@@ -58,44 +64,56 @@ class Customize extends React.Component{
     }
 
 
-  /* Used for connecting to Menu in database */
+  /* Used for connecting to Customization in database */
   handleSubmit(event) {
-  
+    console.log(this.state);
     this.editForm("");
+
     //event.preventDefault();
     
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
-    
+
     axios({
-      method: 'post',
-      url: process.env.REACT_APP_DB + '/restaurant/' +this.state.staff.resturant_id,
-      data: 'name='+this.state.name+'&address='+this.state.address
-      +'&phone='+this.state.phone+'&open='+this.state.open
-      +'&close='+this.state.close,
+      method: 'POST',
+      url:  process.env.REACT_APP_DB +'/restaurant/update/',
+      data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
+      '&address='+this.state.address+'&phone='+this.state.phone+
+      '&opening='+this.state.open+'&closing='+this.state.close,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.state.token
       },
       httpsAgent: new https.Agent({  
         rejectUnauthorized: false,
       }),
     })
     .then(async response => {
-      const data = await response.json();
-      
-      if(!response.ok){
-        alert('Sucessful sumbit');
-        const error = (data && data.message) || response.status;
-        return Promise.reject(error);
-      }
-      this.setState({redirect: true});
-    
+      await response;
+
+      if (response.status !== 200) {this.handleShow(false);}
+      else {this.handleShow(true, "changed");}
     })
-    .catch(error =>{
-        alert('Unsucessful sumbit');
-      this.setState({redirect: false});
+    .catch(error => {
+      this.handleShow(false);
       console.error("There was an error!", error);
     });
+
+
 }
+
+  /* Used to show the correct alert after hitting save item */
+  handleShow(success, message) {
+    if (success) {
+      this.setState({response: "Successfully "+message+"!"});
+      this.setState({alertVariant: 'success'});
+    }
+    else {
+      this.setState({response: 'Failed to update'})
+      this.setState({alertVariant: 'danger'});
+    }
+
+    this.setState({show: true});
+  }
 
 //change the category of which is being edited
 editForm = (category) => {
@@ -103,6 +121,11 @@ editForm = (category) => {
       sectionEdit: category
   });
 }
+
+change(event){
+  this.setState({value: event.target.value});
+}
+
 renderInfo(){
     return (
         <React.Fragment>
@@ -112,22 +135,33 @@ renderInfo(){
                 </Card.Header>
                     <Card.Body>
                         {/* if Font is not the section to edit render the database info and a button to edit*/}
+
                         {this.state.sectionEdit !== "Font" ?
-                          <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[5][1]}
-                             
-                              </p>
+                          <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[5][1]}</p>
                             :   
                             <form class="form-inline">
-                            {/* if Font is the section to edit create a form and on submit send to the database*/}
-                            <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Font</label>
-                            <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
-                              <option value="1">Arial</option>
-                              <option value="2">Times New Roman</option>
-                              <option value="3">Calibri</option>
-                            </select>
-                            <button type="submit" class="btn btn-primary mr-3" >Submit</button>
-                            <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
-                          </form>
+                            {/* choose font and submit to change font */}
+                            <div style= {{float: 'left'}}>
+                                <select id="lang" onChange={this.change.bind(this)} value={this.state.value}>
+                                    {/* <option value="Selected">{this.state.customizeInfo[5][1]}</option> */}
+                                    
+                                    {/* dropdown menu options */}
+                                    <option value="Arial">{this.state.fonts[0]}</option>
+                                    <option value="Roboto">{this.state.fonts[1]}</option>
+                                    <option value="Times New Roman">{this.state.fonts[2]}</option>
+                                    <option value="Courier New">{this.state.fonts[3]}</option>
+                                    <option value="Courier">{this.state.fonts[4]}</option>
+                                    <option value="Verdana">{this.state.fonts[5]}</option>
+
+                                </select>
+                                 <button type="submit" class="btn btn-primary mr-3" >Submit</button>
+                                <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
+                            </div>
+                            <br></br>
+                            <div className="row m-2">
+                                        <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                    </div>
+                                </form>
                         }
                     </Card.Body>
             </Card>
@@ -261,3 +295,4 @@ const menuTextStyle = {
   'paddingTop': '8px'
 };
 export default Customize;
+

@@ -52,7 +52,7 @@ class StoreInfo extends React.Component{
         this.setState({ [e.target.name]: e.target.value });
         console.log(this.state);
       }
-  /* Used for connecting to Menu in database */
+  /* Used for connecting to restaurantInfo in database */
   handleSubmit(event) {
     this.editForm("");
     event.preventDefault();
@@ -88,6 +88,10 @@ class StoreInfo extends React.Component{
     if (success) {
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
+
+      setTimeout(function () {	
+        window.location.reload(1);	
+    }, 3000);
     }
     else {
       this.setState({response: 'Failed to update'})
@@ -222,11 +226,12 @@ class StoreInfo extends React.Component{
                 <h2 style={mainMenuHeaderStyle}>
                   Restaurant Information
                 </h2>
-                    <Container fluid style={{'minWidth': '50vw'}}>
+                    <Container fluid style={{'minWidth': '70vh'}}>
                         <div className="d-flex flex-wrap">
                             {this.renderInfo()}
                         </div>
                     </Container>
+
                 </div>
             </Container>
         );
@@ -251,8 +256,7 @@ const mainMenuHeaderStyle = {
   'color': '#ffffff',
   'fontFamily': 'Kefa',
   'textAlign' : 'center',
-  'height':'54px',
-  'paddingTop':'8px'
+  'padding':'8px'
 }
 export default StoreInfo;
  {/*
