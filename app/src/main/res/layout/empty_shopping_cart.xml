@@ -36,6 +36,7 @@
                 android:src="@drawable/sad_face" />
 
             <TextView
+                android:id="@+id/myAwesomeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -54,9 +55,19 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_above="@+id/bottom_navigation"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="50dp"
             android:background="@color/colorAccent"
             android:text="Place Order"
+            android:textColor="@android:color/black"></Button>
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_above="@+id/bottom_navigation"
+            android:layout_marginBottom="4dp"
+            android:background="@color/colorAccent"
+            android:text="Cancel Oder"
             android:textColor="@android:color/black"></Button>
 
         <!-- bottom nav bar -->

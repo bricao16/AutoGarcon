@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -48,7 +49,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     private SharedPreference pref;//saving user transaction data such as food item chosen by the user.
     private ShoppingCartSingleton shoppingCart;//keeping food item chosen by the user.
     private RecyclerView recyclerView;//generating a list of restaurant
-
+         TextView myAwesomeTextView;
     /**
      * This method ties the xml elements to Java objects and sets onClick listeners for side
      * side navigation bar elements and the place order button which will send the put request
@@ -166,11 +167,23 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                         return "application/json";
                     }
                 };
-
                 /** Sending the actual putRequest. */
                 VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
 
-                //Clear th order
+                //Clear the order
+                //myAwesomeTextView = (TextView)findViewById(R.id.myAwesomeTextView);
+                //myAwesomeTextView.setText("My Awesome Text");
+                shoppingCart = new ShoppingCartSingleton();
+                pref.setShoppingCart(shoppingCart);
+                setContentView(R.layout.empty_shopping_cart);
+            }
+        });
+        //Cancel Button: reset cart
+        Button PlaceCancelButton = findViewById(R.id.btn_cancel);
+        PlaceCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ShoppingCart.this, "Canceled the order ",Toast.LENGTH_LONG).show();
                 shoppingCart = new ShoppingCartSingleton();
                 pref.setShoppingCart(shoppingCart);
                 setContentView(R.layout.empty_shopping_cart);
