@@ -55,7 +55,8 @@ class CSignUp extends React.Component{
         redirect: false,
         show: false,
         restaurant_id:cookies.get('mystaff').restaurant_id,
-        position:"cook",
+        position:"Cook",
+        positions:["Cook","Manager"],
         token:null
     };
     
@@ -72,7 +73,7 @@ class CSignUp extends React.Component{
         this.setState({ [e.target.name]: e.target.value });
       }
  handleSubmit(event){
-    
+    console.log(this.state);
     event.preventDefault();
   
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
@@ -281,6 +282,14 @@ render() {
                   name="staff_id"
                   autoComplete="staffid"
                 />
+              </Grid>
+               <Grid item xs={12}>
+                <select id="lang" onChange={this.onChange} value={this.state.value} name="position">
+                    
+                    {/* dropdown menu options */}
+                    <option value="Cook">{this.state.positions[0]}</option>
+                    <option value="Manager">{this.state.positions[1]}</option>
+                </select>                   
               </Grid>
               <Grid item xs={12}>
                 <TextField onChange = {this.onChange}
