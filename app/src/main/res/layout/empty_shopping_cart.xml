@@ -49,27 +49,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- button that places order -->
-        <Button
-            android:id="@+id/btn_placeorder"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_above="@+id/bottom_navigation"
-            android:layout_marginBottom="50dp"
-            android:background="@color/colorAccent"
-            android:text="Place Order"
-            android:textColor="@android:color/black"></Button>
-
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_above="@+id/bottom_navigation"
-            android:layout_marginBottom="4dp"
-            android:background="@color/colorAccent"
-            android:text="Cancel Order"
-            android:textColor="@android:color/black"></Button>
-
         <!-- bottom nav bar -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
