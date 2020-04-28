@@ -5,6 +5,9 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Alert from 'react-bootstrap/Alert';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
 
 /* This component is used to render the 
 resturant information for the manager view.
@@ -29,7 +32,7 @@ class StoreInfo extends React.Component{
       name:this.props.info.name,
       address: this.props.info.address,
       phone: this.props.info.phone,
-      open:this.props.info.opening,
+      open: this.props.info.opening,
       close:this.props.info.closing,
       restaurant_id :cookies.get("mystaff").restaurant_id,
       token:cookies.get('mytoken')
@@ -51,7 +54,6 @@ class StoreInfo extends React.Component{
       }
   /* Used for connecting to Menu in database */
   handleSubmit(event) {
-    console.log(this.state);
     this.editForm("");
     event.preventDefault();
     axios({
@@ -101,24 +103,26 @@ class StoreInfo extends React.Component{
         sectionEdit: category
     })
   }
+
+
   renderInfo(){
     return (
-
-        <Card className="text-center m-2 w-100" style={itemStyle}>
-          <Card.Header style={cardHeaderStyle}>General</Card.Header>
-          <Card.Body>
+    <Card className="text-center m-2 w-100" style={itemStyle}>
+         
+          <Card.Body >
               <div className = "border-bottom m-3">
                   {/*If edit was clicked on this part open form otherwise render just the name */}
-                  <h5 className="card-subtitle mb-2 text-muted float-left">Restaurant Name</h5>
+                  <h5 className="card-subtitle mb-2 text-muted float-left">Name</h5>
                    {this.state.sectionEdit !== "Name" ? 
                           <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[0][1]}
-                              <button  onClick={() => this.editForm("Name") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                              <button  onClick={() => this.editForm("Name") } className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
                           </p>
                           : 
                             <form onSubmit = {this.handleSubmit}>
                                   <input  className="form-control" type="text" name = "name" defaultValue={this.state.restaurantInfo[0][1]} onChange={this.onChange}></input>
                                   <div className="row m-2">
                                       <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                      <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
                                   </div>
                               </form>
                        
@@ -129,61 +133,66 @@ class StoreInfo extends React.Component{
                   <h5 className="card-subtitle mb-2 text-muted float-left">Address</h5>
                       {this.state.sectionEdit !== "Address" ? 
                           <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[1][1]}
-                              <button  onClick={() => this.editForm("Address") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                              <button  onClick={() => this.editForm("Address") } className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
                           </p>
                           : 
                                <form onSubmit = {this.handleSubmit}>
                                   <input  className="form-control" type="text" name = "address" defaultValue={this.state.restaurantInfo[1][1]} onChange={this.onChange}></input>
                                   <div className="row m-2">
                                       <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                      <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
                                   </div>
                               </form>
 
                       }
               </div>
               <div className = "border-bottom m-3">
-              <h5 className="card-subtitle mb-2 text-muted float-left">Phone Number</h5>
+              <h5 className="card-subtitle mb-2 text-muted float-left">Phone </h5>
                   {this.state.sectionEdit !== "Phone" ? 
                       <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[2][1]}
-                          <button onClick={() => this.editForm("Phone") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                          <button onClick={() => this.editForm("Phone") } className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
                       </p>
                       : 
                           <form onSubmit = {this.handleSubmit}>
                               <input  className="form-control" type="text" name = "phone" defaultValue={this.state.restaurantInfo[2][1]} onChange={this.onChange}></input>
                               <div className="row m-2">
                                   <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                  <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
                               </div>
                           </form>
 
                   }
               </div>
               <div className = "border-bottom m-3">
-              <h5 className="card-subtitle mb-2 text-muted float-left">Opening Time</h5>
+              <h5 className="card-subtitle mb-2 text-muted float-left">Opening</h5>
                   {this.state.sectionEdit !== "Open" ? 
                       <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[3][1]}
-                          <button onClick={() => this.editForm("Open") }className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                          <button onClick={() => this.editForm("Open") }className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
                       </p>
                       : 
+
                           <form onSubmit = {this.handleSubmit}>
-                              <input  className="form-control" type="text" name = "open" defaultValue={this.state.restaurantInfo[3][1]} onChange={this.onChange}></input>
+                              <input  className="form-control" type="text" name = "close" defaultValue={this.state.restaurantInfo[3][1]} onChange={this.onChange}></input>
                               <div className="row m-2">
                                   <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                  <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
                               </div>
                           </form>
                      
                   }
               </div>
               <div className = "border-bottom m-3">
-              <h5 className="card-subtitle mb-2 text-muted float-left">Closing Time</h5>
+              <h5 className="card-subtitle mb-2 text-muted float-left">Closing </h5>
                   {this.state.sectionEdit !== "Close" ? 
                       <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[4][1]}
-                          <button onClick={() => this.editForm("Close") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                          <button onClick={() => this.editForm("Close") } className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
                       </p>
                       : 
                           <form onSubmit = {this.handleSubmit}>
                               <input  className="form-control" type="text" name = "close" defaultValue={this.state.restaurantInfo[4][1]} onChange={this.onChange}></input>
                               <div className="row m-2">
                                   <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                  <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
                               </div>
                           </form>
                        
@@ -192,6 +201,8 @@ class StoreInfo extends React.Component{
               
           </Card.Body>
       </Card>
+        
+
       )
     }
     render() {
@@ -211,7 +222,7 @@ class StoreInfo extends React.Component{
                 <h2 style={mainMenuHeaderStyle}>
                   Restaurant Information
                 </h2>
-                    <Container fluid style={{'minHeight': '70vh'}}>
+                    <Container fluid style={{'minWidth': '50vw'}}>
                         <div className="d-flex flex-wrap">
                             {this.renderInfo()}
                         </div>
@@ -244,3 +255,5 @@ const mainMenuHeaderStyle = {
   'paddingTop':'8px'
 }
 export default StoreInfo;
+ {/*
+        */}

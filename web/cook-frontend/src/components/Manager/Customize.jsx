@@ -4,6 +4,8 @@ import Card from 'react-bootstrap/Card';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import Dropdown from 'react-bootstrap/Dropdown';
+import { ChromePicker } from 'react-color';
 
 /*this is the customize component for the manager
 view. The customization info is prefilled from the pull from
@@ -14,6 +16,7 @@ the 'sectionEdit' state to that section.
 
 renderInfo is called which either creates a form to edit for the
 section or renders what is there from the database.*/
+
 class Customize extends React.Component{
     constructor(props) {
       super(props);
@@ -23,29 +26,43 @@ class Customize extends React.Component{
         customizeInfo: [],
         sectionEdit: "",
         font:"",
-        primary: "",
-        secondary: "",
-        tertiary:"",
+        primary: this.props.info.primary_color,
+        secondary: this.props.info.secondary_color,
+        tertiary:this.props.info.tertiary_color,
+        temp_primary: this.props.info.primary_color,
+        temp_secondary: this.props.info.secondary_color,
+        temp_tertiary:this.props.info.tertiary_color,
         staff: cookies.get("mystaff")
     };
 
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-
+    /*
+      On change of the edit field- update the field in the
+      state so we can send it to the database.
+    */
   onChange = (e) => {
-        /*
-          On change of the edit field- update the field in the
-          state so we can send it to the database.
-        */
-        this.setState({ [e.target.name]: e.target.value });
+      console.log(e);
+      if(this.state.sectionEdit ==="Primary")
+      {  this.setState({ 'temp_primary':  e.hex});
       }
+      else if(this.state.sectionEdit ==="Seconday")
+      {
+        this.setState({ 'temp_secondary':  e.hex});
+      }
+      else if(this.state.sectionEdit ==="Tertiary")
+      {
+        this.setState({ 'temp_tertiary':  e.hex});
+      }
+    }
+
 
   /* Used for connecting to Menu in database */
   handleSubmit(event) {
   
     this.editForm("");
-    event.preventDefault();
+    //event.preventDefault();
     
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
     
@@ -84,78 +101,100 @@ class Customize extends React.Component{
 editForm = (category) => {
     this.setState({
       sectionEdit: category
-  })
+  });
 }
 renderInfo(){
     return (
         <React.Fragment>
-            <Card className="text-center m-2 w-100" style={itemStyle}>
-                <Card.Header style={cardHeaderStyle}>Font 
+            <Card className="text-center m-2 w-50" style={itemStyle}>
+                <Card.Header >Font 
+                <button onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
                 </Card.Header>
                     <Card.Body>
                         {/* if Font is not the section to edit render the database info and a button to edit*/}
-                        {this.state.sectionEdit !== "Font" ? 
-                            <p style={{margin: "0", padding: "0.3em"}}>{this.state.customizeInfo[5][1] + " "}
-                                <button  onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button> 
-                            </p>
+                        {this.state.sectionEdit !== "Font" ?
+                          <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[5][1]}
+                             
+                              </p>
                             :   
-                            <form onSubmit = {this.handleSubmit}>
+                            <form class="form-inline">
                             {/* if Font is the section to edit create a form and on submit send to the database*/}
-                                    <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[5][1]} onChange={this.onChange}></input>
-                                    <div className="row m-2">
-                                        <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                    </div>
-                                </form>
+                            <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Font</label>
+                            <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+                              <option value="1">Arial</option>
+                              <option value="2">Times New Roman</option>
+                              <option value="3">Calibri</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary mr-3" >Submit</button>
+                            <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
+                          </form>
                         }
                     </Card.Body>
             </Card>
-            <Card className="text-center m-2 w-100" style={itemStyle}>
-                <Card.Header style={cardHeaderStyle}>Colors</Card.Header>
-                <Card.Body>
-                    <div className = "border-bottom m-3">
-                        <h5 className="card-subtitle mb-2 text-muted float-left">Primary</h5>
-                         {this.state.sectionEdit !== "Primary" ? 
-                                <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[6][1]}
-                                    <button onClick={() => this.editForm("Primary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                                </p>
-                                :  <form onSubmit = {this.handleSubmit}>
-                                    <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[6][1]} onChange={this.onChange}></input>
-                                    <div className="row m-2">
-                                        <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                    </div>
-                                </form>
-                            }
-                    </div>
-                    <div className = "border-bottom m-3">
-                        <h5 className="card-subtitle mb-2 text-muted float-left">Secondary</h5>
-                            {this.state.sectionEdit !== "Secondary" ? 
-                                <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[7][1]}
-                                    <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                                </p>
-                                : <form onSubmit = {this.handleSubmit}>
-                                    <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[7][1]} onChange={this.onChange}></input>
-                                    <div className="row m-2">
-                                        <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                    </div>
-                                </form>
-                            }
-                    </div>
-                    <div className = "border-bottom m-3">
-                    <h5 className="card-subtitle mb-2 text-muted float-left">Tertiary</h5>
+            
+                  <Card className="text-center m-2 w-10" style={itemStyle}>
+                    <Card.Header>Primary
+                      <button onClick={() => this.editForm("Primary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                    </Card.Header>
+                    <Card.Body style={{backgroundColor:this.state.primary}}>
+                      <div className = "col  m-3">
+                        {this.state.sectionEdit !== "Primary" ? 
+                            <p>{this.state.primary}</p>
+                        :  <Container>
+                                <ChromePicker
+                                  color={ this.state.temp_primary }
+                                  onChangeComplete={this.onChange }
+                                />
+                                <br/>
+                              <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
+                              </Container>
+                        }
+                      </div>
+                    </Card.Body>
+                   </Card>
+                  <Card className="text-center m-2 w-10" style={itemStyle}>
+                    <Card.Header>Secondary
+                      <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                    </Card.Header>
+                    <Card.Body style={{backgroundColor:this.state.secondary}}>
+                      <div className = "col  m-3">
+                        {this.state.sectionEdit !== "Secondary" ? 
+                            <p>{this.state.secondary}</p>
+                        :    
+                              <Container>
+                                <ChromePicker
+                                  color={ this.state.temp_secondary}
+                                  onChangeComplete={this.onChange }
+                                />
+                                <br/>
+                              <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
+                              </Container>
+                        }
+                      </div>
+                    </Card.Body>
+                   </Card>
+                   <Card className="text-center m-2 w-10" style={itemStyle}>
+                    <Card.Header >Tertiary
+                      <button  onClick={() => this.editForm("Tertiary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                    </Card.Header>
+                    <Card.Body style={{backgroundColor:this.state.tertiary }}>
+                      <div className = "p-3">
                         {this.state.sectionEdit !== "Tertiary" ? 
-                            <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[8][1]}
-                                <button  onClick={() => this.editForm("Tertiary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                            </p>
-                            : <form onSubmit = {this.handleSubmit}>
-                                    <input  className="form-control" type="text" name = "font" defaultValue={this.state.customizeInfo[8][1]} onChange={this.onChange}></input>
-                                    <div className="row m-2">
-                                        <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                    </div>
-                                </form>
+                            <p>{this.state.tertiary}  </p>
+                             :
+                              <Container>
+                                <ChromePicker
+                                  color={ this.state.temp_tertiary}
+                                  onChangeComplete={this.onChange }
+                                />
+                                <br/>
+                              <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
+                              </Container>
                         }
                     </div> 
-                </Card.Body>
-            </Card>
+                    </Card.Body>
+                   </Card>'
+   
         </React.Fragment>
 
         )
@@ -164,6 +203,7 @@ renderInfo(){
     render() {
         const {customizeInfo } = this.state;
         const resturantInfo = this.props.info;
+        console.log(resturantInfo);
         //put resturant info into an array
         Object.keys(resturantInfo).forEach(function(key) {
             customizeInfo.push([key ,resturantInfo[key]]);
@@ -171,10 +211,10 @@ renderInfo(){
         return (
             <Container>
                 <div style={backgroundStyle}>
-                <h2 style={mainMenuHeaderStyle}>
+                <h2 style ={menuHeaderStyle}>
                   Customize
                 </h2>
-                    <Container fluid style={{'minHeight': '70vh'}}>
+                    <Container fluid style={{'width': '70vw'}}>
                         <div className="d-flex flex-wrap">
                             {this.renderInfo()}
                         </div>
@@ -197,7 +237,14 @@ const cardHeaderStyle = {
 };
 const itemStyle = {
     'borderBottom': 'grey solid 1px',
-    'width':'200px'
+
+};
+const menuHeaderStyle = {
+  'backgroundColor': '#102644',
+  'color': '#ffffff',
+  'fontFamily': 'Kefa',
+  'textAlign' : 'center',
+  'height':'54px'
 };
 const mainMenuHeaderStyle = {
   'backgroundColor': '#102644',
@@ -207,4 +254,10 @@ const mainMenuHeaderStyle = {
   'height':'54px',
   'paddingTop':'8px'
 }
+
+const menuTextStyle = {
+  'flex': '1',
+  'paddingRight': '69px',
+  'paddingTop': '8px'
+};
 export default Customize;
