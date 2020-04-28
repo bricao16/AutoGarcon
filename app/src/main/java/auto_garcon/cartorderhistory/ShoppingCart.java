@@ -53,6 +53,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     private ShoppingCartSingleton shoppingCart;//keeping food item chosen by the user.
     private RecyclerView recyclerView;//generating a list of restaurant
 
+    private ShoppingCartAdapter adapter;
     private StringRequest putRequest;
     private TextView myAwesomeTextView;
     private Dialog confirmPopup;
@@ -90,7 +91,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
              * individual item in the cart.
              */
             recyclerView = findViewById(R.id.list);
-            ShoppingCartAdapter adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
+            adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
@@ -119,6 +120,13 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                 if( pref.getShoppingCart().getCart().isEmpty() ){
                     Toast.makeText(ShoppingCart.this, "Cart is empty, put more menus",Toast.LENGTH_LONG).show();
+                }
+
+                if( adapter.isMenuChangedAfterPlaced() ){
+                    Toast.makeText(ShoppingCart.this, "Placing After changed",Toast.LENGTH_LONG).show();
+                    putRequest = null;
+                    adapter.setIsChanged(false);
+                    adapter.setIsPlaced(false);
                 }
 
                 if( putRequest == null && !pref.getShoppingCart().getCart().isEmpty() ) {
@@ -183,7 +191,10 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                             return "application/json";
                         }
                     };
-                    Toast.makeText(ShoppingCart.this, "Placed Order",Toast.LENGTH_LONG).show();
+                    if( !adapter.isMenuChangedAfterPlaced() ){
+                        Toast.makeText(ShoppingCart.this, "Placed Order",Toast.LENGTH_LONG).show();
+                    }
+                    adapter.setIsPlaced(true);
                 }//placing order
 
                 if( putRequest != null ){
@@ -201,6 +212,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                             /** Sending the actual putRequest. */
                             VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
 
+                            putRequest = null;
                             //Clear the order
                             //myAwesomeTextView = (TextView)findViewById(R.id.myAwesomeTextView);
                             //myAwesomeTextView.setText("My Awesome Text");
