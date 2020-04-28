@@ -26,6 +26,10 @@ favorites
   customer_id       KEY             VARCHAR(50)
   restaurant_id     KEY             INT
 
+fonts
+  restaurant_id     FOREIGN KEY     INT
+  font_name         KEY             VARCHAR(50)
+
 menu
   item_id           KEY             INT
   restaurant_id     FOREIGN KEY     INT
@@ -35,6 +39,7 @@ menu
   image                             BLOB  
   in_stock                          BOOLEAN
   price                             DOUBLE(10,2) // XX,XXX,XXX.XX
+  description                       VARCHAR(300)
 
 orderdetails
   order_num         FOREIGN KEY     INT
@@ -66,6 +71,10 @@ services
   restaurant_id     FOREIGN KEY     INT
   table_num         KEY             INT
   service_status                    VARCHAR(50) // Bill, Help, Good
+  
+sides
+  main_dish_id      FOREIGN KEY     INT
+  side_dish_id      FOREIGN KEY     INT
   
 staff
   staff_id          KEY             VARCHAR(50)
