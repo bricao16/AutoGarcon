@@ -1,6 +1,7 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
 import Stat from './StatItem';
+import {XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries} from 'react-vis';
 
 /*this is the stats component for the manager
 view. The stats are stored in state and rendered 
@@ -29,7 +30,19 @@ class Stats extends React.Component{
               <div style={backgroundStyle}>
              <Container fluid style={{'minHeight': '70vh'}}>
                 <div className="d-flex flex-wrap">
-                    {this.renderStats()}
+                    <XYPlot
+                      width={300}
+                      height={300}>
+                      <HorizontalGridLines />
+                      <LineSeries
+                        data={[
+                          {x: 1, y: 10},
+                          {x: 2, y: 5},
+                          {x: 3, y: 15}
+                        ]}/>
+                      <XAxis />
+                      <YAxis />
+                    </XYPlot>
                 </div>
             </Container> 
         </div>
@@ -43,3 +56,5 @@ const backgroundStyle = {
 }
 
 export default Stats;
+
+

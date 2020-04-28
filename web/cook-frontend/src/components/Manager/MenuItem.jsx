@@ -54,6 +54,7 @@ class MenuItem extends React.Component {
         {
            return(
                 <Card className="text-center m-2" style={itemStyle}> { /* a header is the item name and a clickable edit pencil */}
+
                     <Card.Header style={cardHeaderStyle}>{this.props.menu[0]}
                     </Card.Header>
                     <div onClick={() => this.NewItemForm()} style={editButtonStyle} className='p-1'>

@@ -3,6 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import {Redirect} from "react-router-dom";
 import CSignUp from './CSignUp';
+import MSignUp from './MSignUp';
 /*
 this view in the manager page allows a manager
 to either

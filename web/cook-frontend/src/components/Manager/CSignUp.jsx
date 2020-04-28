@@ -12,6 +12,7 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import CookView from './CSignUp';
+import Alert from 'react-bootstrap/Alert';
 
 const cookies = new Cookies();
 
@@ -54,12 +55,14 @@ class CSignUp extends React.Component{
         redirect: false,
         show: false,
         restaurant_id:cookies.get('mystaff').restaurant_id,
-        position:"cook",
+        position:"Cook",
+        positions:["Cook","Manager"],
         token:null
     };
     
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleShow = this.handleShow.bind(this);
   }
 
   onChange = (e) => {
@@ -70,7 +73,7 @@ class CSignUp extends React.Component{
         this.setState({ [e.target.name]: e.target.value });
       }
  handleSubmit(event){
-    
+    console.log(this.state);
     event.preventDefault();
   
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
@@ -81,18 +84,67 @@ class CSignUp extends React.Component{
         this.state.contact_num===''|| this.state.email=== ''|| 
         this.state.password==='')
     {
-      return alert('All fields are required');
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "All fields are required"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return null;
     }
+    //verify staff ID
+    if (this.state.staff_id.length<6 || this.state.staff_id.length>50 )
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Staff ID must be between 6 and 50 characters"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
+    //verify first name length / no non-letters
+    if (this.state.first_name.length>50 ||   !/[a-z]/.test(this.state.first_name.toLowerCase()) )
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Invalid first name"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
+    //verify last name length / no non-letters
+    if ( this.state.last_name.length>50  || !/[a-z]/.test(this.state.last_name.toLowerCase()) )
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Invalid last name"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
+
     //verify email formatting
     if (!(/\S+@\S+\.\S+/.test(this.state.email)))
     {  
-         return alert("You have entered an invalid email address!");
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Invalid email address"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
     } 
     //verify phone formatting
     if (!(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.state.contact_num)))
     {
-      return alert("You have entered an invalid phone number")
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Invalid phone number"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
     }
+    //verify password
+    if (this.state.password.length<6 || !/[A-Z]/.test(this.state.password) || !/[0-9]/.test(this.state.password) ||  this.state.password.length>50 )
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Password must contain an uppercase letter, a digit and be between 6 and 50 characters"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
 
     axios({
       method: 'put',
@@ -111,30 +163,49 @@ class CSignUp extends React.Component{
       .then(async response => {
         await response;
         
-        if (response.status !== 200) {this.handleShow(response);}
+        if (response.status !== 200) {this.handleShow(false,"");}
         else 
         {
+            this.handleShow(true,"");
               this.setState({
                 redirect: true,
-                show: false,
-
+                show: true,
               });
         }
       })
       .catch(error =>{
-        alert('Unsuccessful Submit');
-        this.setState({alertVariant: 'danger'});
-        this.setState({response: "Unknown error"});
+        this.handleShow(false,error.response.data);
+        //this.setState({alertVariant: 'danger'});
+        //this.setState({response: "Unknown error"});
         this.setState({redirect: false});
         console.error("There was an error!", error);
       });
 
   }
+    /* Used to show the correct alert after hitting save item */
+  handleShow(success,message) {
+    if (success) {
+      this.setState({response: "Successfully created staff member: " + this.state.first_name});
+      this.setState({alertVariant: 'success'});
+    }
+    else {
+      this.setState({response:  message} )
+      this.setState({alertVariant: 'danger'});
+    }
+
+    this.setState({show: true});
+  }
 render() {
     //if sucessful submit redirect to cook view
   if(this.state.redirect === true){
-    alert("Sucessful Staff Creation");
-    return <CookView section=""/> 
+    return(
+      <React.Fragment>
+        <Alert show={this.state.show} variant={this.state.alertVariant}>
+        {this.state.response}
+        </Alert>
+        <CookView section=""/> 
+      </React.Fragment>
+      );
   }  
   if(cookies.get('mystaff').position === "manager")
   {
@@ -142,6 +213,10 @@ render() {
     /*staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password */
     return (
       <Container component="main" maxWidth="xs">
+        {/*alert if successful or unsuccessful*/}
+        <Alert show={this.state.show} variant={this.state.alertVariant}>
+        {this.state.response}
+        </Alert>
         <CssBaseline />
         <div className={useStyles.paper}>
           <Avatar className={useStyles.avatar}>
@@ -207,6 +282,14 @@ render() {
                   name="staff_id"
                   autoComplete="staffid"
                 />
+              </Grid>
+               <Grid item xs={12}>
+                <select id="lang" onChange={this.onChange} value={this.state.value} name="position">
+                    
+                    {/* dropdown menu options */}
+                    <option value="Cook">{this.state.positions[0]}</option>
+                    <option value="Manager">{this.state.positions[1]}</option>
+                </select>                   
               </Grid>
               <Grid item xs={12}>
                 <TextField onChange = {this.onChange}
