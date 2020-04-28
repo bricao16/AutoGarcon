@@ -197,7 +197,7 @@ export default function NavItems(props) {
           </ListItem>
 				<Divider />
         <List>
-          <ListItem button component="a" href ='/menu'>
+          <ListItem button component="a" href ='/QRCode'>
             <ListItemIcon><GeneralIcon/></ListItemIcon>
             <ListItemText primary="QR Code Generator" />
           </ListItem>
