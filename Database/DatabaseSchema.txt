@@ -27,7 +27,7 @@ favorites
   restaurant_id     KEY             INT
 
 fonts
-  restaurant_id     FOREIGN KEY     INT
+  font_id           KEY             INT
   font_name         KEY             VARCHAR(50)
 
 menu
@@ -66,6 +66,7 @@ restaurants
   primary_color                     VARCHAR(50)
   secondary_color                   VARCHAR(50)
   tertiary_color                    VARCHAR(50)
+  cuisine                           VARCHAR(50)
   
 services
   restaurant_id     FOREIGN KEY     INT
