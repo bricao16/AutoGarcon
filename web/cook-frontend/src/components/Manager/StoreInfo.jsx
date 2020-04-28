@@ -209,17 +209,17 @@ class StoreInfo extends React.Component{
         return (
             <Container>
                 <div style={backgroundStyle}>
-                <Alert show={this.state.show} variant={this.state.alertVariant}>
-                  {this.state.response}
-                </Alert>
-                <h2 style={mainMenuHeaderStyle}>
-                  Restaurant Information
-                </h2>
-                    <Container fluid style={{'minHeight': '70vh'}}>
-                        <div className="d-flex flex-wrap">
-                            {this.renderInfo()}
-                        </div>
-                    </Container>
+                  <h2 style={mainMenuHeaderStyle}>
+                    Restaurant Information
+                  </h2>
+                  <Container fluid style={{'minHeight': '70vh'}}>
+                    <Alert show={this.state.show} variant={this.state.alertVariant}>
+                      {this.state.response}
+                    </Alert>
+                    <div className="d-flex flex-wrap">
+                      {this.renderInfo()}
+                    </div>
+                  </Container>
                 </div>
             </Container>
         );
@@ -244,7 +244,6 @@ const mainMenuHeaderStyle = {
   'color': '#ffffff',
   'fontFamily': 'Kefa',
   'textAlign' : 'center',
-  'height':'54px',
-  'paddingTop':'8px'
+  'padding':'8px'
 }
 export default StoreInfo;
