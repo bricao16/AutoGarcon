@@ -112,6 +112,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+
 export default function NavItems(props) {
   const classes = useStyles();
   const theme = useTheme();
@@ -126,6 +127,7 @@ export default function NavItems(props) {
   };
 
   return (
+
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
@@ -168,8 +170,8 @@ export default function NavItems(props) {
       >
         <div className={classes.toolbar} style={{'backgroundColor':'#f1f1f1'}}>
         <Typography variant="h6" className ='pr-4' noWrap >
-        <img src={LogoImage}  width="auto" height="45px" alt="waiter" /> 
-           <i>{props.restName}</i>
+        <img src={props.imageBlob}  width="auto" height="45px" alt="waiter" /> 
+           {/*<i>{props.restName}</i>*/}
           </Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <MenuIcon /> : <MenuIcon />}

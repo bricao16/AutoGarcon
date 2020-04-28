@@ -22,6 +22,7 @@ resturant logo and name. The stats page is the landing
 page */
 
 const cookies = new Cookies();
+
 class Manager extends React.Component{
 
     constructor(props) {
@@ -98,7 +99,27 @@ class Manager extends React.Component{
           });
         })
     }
-    
+    //convert blob to base 64
+    arrayBufferToBase64( buffer ) {
+      var binary = '';
+      var bytes = new Uint8Array( buffer );
+      var len = bytes.byteLength;
+      for (var i = 0; i < len; i++) {
+          binary += String.fromCharCode( bytes[ i ] );
+      }
+      return window.btoa( binary );
+    }
+    // From http://stackoverflow.com/questions/14967647/ (continues on next line)
+    // encode-decode-image-with-base64-breaks-image (2013-04-21)
+    fixBinary (bin) {
+    var length = bin.length;
+    var buf = new ArrayBuffer(length);
+    var arr = new Uint8Array(buf);
+    for (var i = 0; i < length; i++) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return buf;
+  }
     render() 
     {
       //if user doesnt have access take them to login
@@ -137,7 +158,16 @@ class Manager extends React.Component{
         Object.keys(this.state.restaurantJSON).forEach(function(key) {
           restaurantInfo.push([key ,restaurantJSON[key]]);
         });} 
+        const imageData = this.arrayBufferToBase64(this.state.restaurantJSON.restaurant.logo.data);
+        var binary = this.fixBinary(atob(imageData));
+        const blob = new Blob([binary], {type : 'image/png'});
+        const blobUrl =URL.createObjectURL(blob);
+        var img = new Image();
+        img.src = blobUrl;
+        //document.body.appendChild(img);
+        console.log(blobUrl);
       return (
+
         <React.Fragment>
           //if cookies havent been accepted yet ask them
           
@@ -158,7 +188,8 @@ class Manager extends React.Component{
             :
             <p></p>
             }
-        <NavItems restaurantInfo = {restaurantInfo} restName ={restaurantInfo[1][1].name} firstName={staff.first_name} lastName={staff.last_name}/>
+          
+            <NavItems restaurantInfo = {restaurantInfo} restName ={restaurantInfo[1][1].name} firstName={staff.first_name} lastName={staff.last_name} imageBlob = {blobUrl}/>
         
 
                    
