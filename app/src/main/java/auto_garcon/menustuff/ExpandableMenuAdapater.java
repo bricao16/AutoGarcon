@@ -125,7 +125,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 calorieCount.setTextColor(Color.WHITE);
                 itemName.setText(getChild(i, j).getNameOfItem());
                 itemName.setTextColor(Color.WHITE);
-                String priceString = "Price: $" + getChild(i, j).getPrice();
+                String priceString = "Price: " + String.format("$%.02f", getChild(i, j).getPrice());
                 itemPrice.setText(priceString);
                 itemPrice.setTextColor(Color.WHITE);
 
