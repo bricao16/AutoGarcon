@@ -25,7 +25,6 @@
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "pixeden-stroke-7-icon": "^1.2.3",
-    "pkg-dashboard": "file:./pkg-dashboard",
     "pretty-checkbox": "^3.0.3",
     "qrcode.react": "^1.0.0",
     "react": "^16.12.0",
