@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
@@ -30,7 +31,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
@@ -40,35 +43,31 @@ import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
-
+/*
+This show a list of restaurant pages, and
+dealing with user actions such as searching.
+This retrieve data of restaurant pages from database by using JASON with https connection.
+ */
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
-
-    private SharedPreference pref;
-    RecyclerView recyclerView;
-    HomeAdapter adapter;
-    private ArrayList<RestaurantItem> items;
-
+    //data fields
+    private JSONObject obj;
+    private SharedPreference pref;//a file to keep track of user data as long as it's logged in.
+    RecyclerView recyclerView;//showing a list of restaurant pages
+    HomeAdapter adapter;//generating a list of restaurant pages
+    private ArrayList<RestaurantItem> items;//RestaurantItem generated through the database connection.
     //Here is for Search box
-    SearchView searchView;
-    ArrayList<String> search_list;
-    ArrayAdapter<String> list_adapter;
+    SearchView searchView;//a object for searching
+    ArrayList<String> search_list;//keeping restaurant page through the database connection.
+    ArrayAdapter<String> list_adapter;//to check user input match items in the database.
     //End of Search Box
+    HashMap<Integer, String> allRestaurantList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
         pref = new SharedPreference(Home.this);
+        super.onCreate(savedInstanceState);
 
-
-        // dummy  data for a search box
-        search_list = new ArrayList<>();
-        search_list.add("French");
-        search_list.add("Chinese");
-        search_list.add("Italian");
-        search_list.add("Nigerian");
-        search_list.add("Thai");
+        setContentView(R.layout.activity_home);
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
@@ -80,15 +79,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(Home.this);
 
-        //TextView sideNavBarName =  findViewById(R.id.side_nav_bar_name);
-
-        //Toast.makeText(this, sideNavBarName.getText().toString(), Toast.LENGTH_SHORT).show();
-
-
-        // sideNavBarName.setText("HI");
-
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -112,19 +103,17 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-
-        Toast.makeText(Home.this, pref.getUser().getUsername(), Toast.LENGTH_SHORT).show();
-
         //shake feature
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector shakeDetector = new ShakeDetector(this);
         shakeDetector.start(sensorManager);
 
-        final String url = "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername();
+        final String FavoritesURL = "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername();
 
         items = new ArrayList<>();
+        recyclerView = findViewById(R.id.favorites_list);
 
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+        JsonObjectRequest getRequestForFavorites = new JsonObjectRequest(Request.Method.GET, FavoritesURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -147,6 +136,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                         switch(inner_key){
                                             case "restaurant_id":
                                                 itemToBeAdded.setID(Integer.parseInt(item.get(inner_key).toString()));
+                                                pref.addToFavorites(Integer.parseInt(item.get(inner_key).toString()));
                                                 break;
                                             case "restaurant_name":
                                                 itemToBeAdded.setName(item.get(inner_key).toString());
@@ -177,13 +167,78 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                     }
 
                                     items.add(itemToBeAdded);
+                                    if(items.size() == 0) {
+                                        setContentView(R.layout.no_favorites_home);
+                                    }
                                 }
                             }
 
-                            recyclerView = findViewById(R.id.favorites_list);
                             recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
                             adapter = new HomeAdapter(Home.this, items);
                             recyclerView.setAdapter(adapter);
+
+                            if(pref.getFavorites().size() == 0 || pref.getFavorites() == null) {
+                                setContentView(R.layout.no_favorites_home);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(Home.this, error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                }
+
+        );
+        Log.d("asdfasdfasdf, ", pref.getFavorites().toString());
+
+        VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForFavorites);
+
+        final String allRestaurantsURL = "http://50.19.176.137:8000/restaurants";
+
+        JsonObjectRequest getRequestForSearch = new JsonObjectRequest(Request.Method.GET, allRestaurantsURL, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            //parsing through json from get request to add them to menu
+                            allRestaurantList = new HashMap<Integer, String>();
+
+                            Iterator<String> keys = response.keys();
+                            while(keys.hasNext()) {
+                                String key = keys.next();
+
+                                if (response.get(key) instanceof JSONObject) {
+                                    JSONObject item = response.getJSONObject(key);
+
+                                    int restaurantID = 0;
+                                    String restaurantName = "";
+
+                                    Iterator<String> inner_keys = item.keys();
+
+                                    while(inner_keys.hasNext()) {
+                                        String inner_key = inner_keys.next();
+
+
+                                        switch(inner_key){
+                                            case "restaurant_id":
+                                                restaurantID = Integer.parseInt(item.get(inner_key).toString());
+                                                break;
+                                            case "restaurant_name":
+                                                restaurantName = item.get(inner_key).toString();
+                                                break;
+                                        }
+                                    }
+
+                                    allRestaurantList.put(restaurantID, restaurantName);
+                                }
+                            }
+
+                            Log.d("sdf", allRestaurantList.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -199,34 +254,53 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         );
 
-        VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequest);
-
         //Here is for Search box
         searchView = (SearchView) findViewById(R.id.searchView);
+        searchView.onActionViewExpanded();
         list_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,search_list);
+        items.clear();
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
             @Override
             public boolean onQueryTextSubmit(String query) {
+                items.clear();
+                if(allRestaurantList.containsValue(query)){
+                    Toast.makeText(Home.this, "Yes Match found "+query,Toast.LENGTH_LONG).show();
+                    RestaurantItem itemToBeAdded = new RestaurantItem();
 
-                //here we search restaurant by name, type of cuisine, etc...
-                //and possibly re:render the table.
-                if( search_list.contains(query) ){
-                    list_adapter.getFilter().filter(query);
-                    Toast.makeText(Home.this, "Yes Match found",Toast.LENGTH_LONG).show();
+                    //go through all restaurants
+                    for (Map.Entry mapElement : allRestaurantList.entrySet()) {
+                        int id = (int) mapElement.getKey();
+                        String name = (String) mapElement.getValue();
+                        itemToBeAdded = new RestaurantItem();
+                        //if name is same as the input
+                        if( name.equalsIgnoreCase(query) ){
+                            itemToBeAdded.setName( query );
+                            itemToBeAdded.setID( id );
+                            items.add( itemToBeAdded );
+                        }
+                    }
+                    recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
+                    adapter = new HomeAdapter(Home.this, items);
+                    recyclerView.setAdapter(adapter);
                 }
-                else {
-                    Toast.makeText(Home.this, "No Match found",Toast.LENGTH_LONG).show();
+                else{
+                    Toast.makeText(Home.this, "No Match found "+query,Toast.LENGTH_LONG).show();
                 }
+
+
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                //    adapter.getFilter().filter(newText);
+            public boolean onQueryTextChange(String query) {
                 return false;
             }
+
         });
-        //Here is for End Search box
+
+        VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForSearch);
     }
 
     @Override

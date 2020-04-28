@@ -1,5 +1,8 @@
 package auto_garcon.singleton;
-
+/**
+ * Class for holding user information
+ *
+ */
 public class UserSingleton {
     private String firstName;
     private String lastName;

@@ -1,167 +1,219 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Orders from "./Orders";
 import Header from "./Header";
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
+// import $ from "jquery"; will be used in future
 
+/*
+
+ */
 function Body(props){
-
-  const [getUrl, setGetUrl] = useState('/orders/123');
+  // says where react is in lifecycle, mounted or not
+  const isMounted = useRef(true);
+  // For canceling server request
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+  // Cookies for getting user info
+  const cookies = new Cookies();
+  // restaurant id obtained from logged in user's cookies
+  const restaurant_id = cookies.get('mystaff').restaurant_id;
+  // Switch between HTTP and HTTPS
+  const serverUrl = process.env.REACT_APP_DB;
+  // either /orders/ or /orders/complete/
+  // const [ordersPath, setOrdersPath] = useState(null);
+  const ordersPath = useRef(null);
+  // server_url concatenated with /orders/update
+  const completedOrderUrl = serverUrl + '/orders/update';
+  // if on completed tab
   const [completed, setCompleted] = useState(false);
 
+  // If path changes (because of switching tabs: active or complete)
+  // or restaurant_id updates for some reason, the correct orders will be pulled from database
   useEffect(() => {
     if(props.path === '/active'){
-      setGetUrl('/orders/123');
+      ordersPath.current = '/orders/' + restaurant_id;
       setCompleted(false);
     } else if (props.path === '/completed'){
-      setGetUrl('/orders/complete/123');
+      ordersPath.current = '/orders/complete/' + restaurant_id;
       setCompleted(true);
     }
-  }, [props.path]);
+  }, [props.path, restaurant_id]);
 
+  // When orders database url changes, pull orders
+  // Will happen when switching tabs
   useEffect(() => {
-    updateOrders();
-  }, [getUrl]);
+    getOrders();
+    changeSelectedOrder(0);
+  }, [ordersPath.current]);
 
+  // Set up things for componentDidMount() componentWillUnmount()
+  // Creates method to re-pull orders from database every 10 seconds
   useEffect(() => {
+    // setupKeyPresses(); <- This will be added in the future
     // updates orders every 10 seconds
-    const interval = setInterval(updateOrders, 10000); // start interval after mounting
-    return () => clearInterval(interval); // clear interval after unmounting
+    const interval = setInterval(getOrders, 10000); // start interval after mounting
+    // While unmounting do this
+    return () => {
+      isMounted.current = false;
+      clearInterval(interval); // clear interval after unmounting
+    }
   }, []);
 
-  // Get In Progress orders from database
-  function updateOrders(){
-    console.log('updating orders');
-    serverRequest(
-      'get',
-      getUrl,
-      '',
-      configureOrders
-    );
-  }
-
+  // Holds orders from database in object
   const [orders, setOrders] = useState({});
 
-  function configureOrders(orders){
-    // console.log(orders);
-    let ordersState = {};
-    if(orders === undefined){
-      console.log('no orders');
-      return;
+  // Converts orders returned from database into object that can easily be turned into Order components
+  function configureOrders(orders_database){
+    if(typeof orders_database === 'object'){
+      let ordersState = {};
+      // Iterate over each order
+      Object.values(orders_database).forEach(order => {
+        // Check if that order_num exists
+        if(!(order.order_num in ordersState)){
+          // Create new order with empty items
+          ordersState[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
+        }
+        // If no category provided
+        if(!order.category){
+          order.category = 'Category';
+        }
+        if(!(order.category in ordersState[order.order_num].items)){
+          ordersState[order.order_num].items[order.category] = [];
+        }
+        // Add item to order
+        ordersState[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name});
+      });
+      // save orders in orders state
+      setOrders(ordersState);
+    } else {
+      // set orders state to empty because return from database was empty or invalid
+      setOrders({})
     }
-    orders = orders.data;
-    // Iterate over each order
-    Object.values(orders).forEach(order => {
-      // console.log(order);
-      // Check if that order_num exists
-      if(!(order.order_num in ordersState)){
-        // Create new order with empty items
-        ordersState[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
-      }
-      // If no category provided, mark as Entree
-      if(!order.category){
-        order.category = 'Entrees';
-      }
-      if(!(order.category in ordersState[order.order_num].items)){
-        ordersState[order.order_num].items[order.category] = [];
-      }
-      // Add item to order
-      ordersState[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name});
-    });
-    setOrders(ordersState);
   }
 
-  const [selectedOrder, setSelectedOrder] = useState(0);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   function changeSelectedOrder(cardId){
-    setSelectedOrder(cardId);
+    // Check if cardId exists, 0 cards will result in cardId of null
+    if(cardId >=0 && cardId < Object.keys(orders).length){
+      setSelectedOrder(cardId);
+    } else {
+      cardId = null;
+    }
+  }
+
+  // Get 'in progress' orders from db
+  function getOrders(){
+    // Null until calculated by effect hook
+    if(ordersPath.current){
+      const url = serverUrl + ordersPath.current;
+      console.log('Fetching ' + url);
+      axios.get(url, {
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false,
+        }),
+        cancelToken: source.token
+      })
+        .then(res => res.data)
+        .then(orders => {
+          if(isMounted) {
+            setOrders({});
+            configureOrders(orders);
+          } else {
+            source.cancel('component unmounted');
+          }
+        })
+        .catch(error =>{
+        console.log('server request error');
+        console.error(error);
+      });
+    }
   }
 
   function changeOrderStatus(status){
-    const orderNum = Object.keys(orders)[selectedOrder];
-    serverRequest(
-      'post',
-      '/orders/update',
-      `order_num=${orderNum}&order_status=${status}`,
-      () => {
-        updateOrders(); // grab orders from database
-        changeSelectedOrder(0);
-      }
-    );
+    if(selectedOrder !== null){
+      const orderNum = Object.keys(orders)[selectedOrder];
+      console.log('Changing order ' + orderNum + ' to ' + status + ', post to ' + completedOrderUrl);
+      const data = 'order_num=' + orderNum + '&order_status=' + status;
+      axios.post(completedOrderUrl,
+        data,
+        {
+          httpsAgent: new https.Agent({
+            rejectUnauthorized: false,
+          }),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          cancelToken: source.token
+        })
+        .then(() => {
+          if(isMounted) {
+            getOrders(); // grab orders from database
+            changeSelectedOrder(0);
+          } else {
+            source.cancel('component unmounted');
+          }
+        })
+        .catch(error =>{
+          console.log('post request error');
+          console.error(error);
+        });
+    }
   }
 
-  function serverRequest(method, path, data, responseCallback){
-    // _isMounted = false;
-    // this._isMounted = true;
-    // this.axiosCancelSource = axios.CancelToken.source();
-    axios({
-      method: method,
-      url: process.env.REACT_APP_DB + path,
-      data: data,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      httpsAgent: new https.Agent({
-        rejectUnauthorized: false,
-      }),
-    })
-      .then((res) => {
-        // if (this._isMounted) {
-          // abort request if not mounted
-        responseCallback(res);
-      })
-      .catch(error =>{
-        alert('server error');
-        console.error(error);
-      });
-  }
+  // The following features will be added in the future
   /*
-  componentWillUnmount () {
-    this._isMounted = false;
-    console.log('unmount component')
-    this.axiosCancelSource.cancel('Component unmounted.')
-  }
-  */
-  /*
-  setupKeyPresses(){
+  function setupKeyPresses(){
     $(document).keydown(key => {
       // Arrow keys right and left
+      // for changing selected order
       if(key.which === 37 || key.which === 39){
-        this.handleArrowKeyPress(key);
-      // c
+        handleArrowKeyPress(key);
+      // c - marking order complete
       } else if(key.which === 67){
-        this.markOrderComplete();
-      // e
-      } else if(key.which === 69){
-        this.toggleExpandOrder();
-      // 0 - 9
+        // If on active orders tab
+        if(!completed){
+          changeOrderStatus('Complete');
+        }
+      // r - restore order to status 'In Progress'
+      } else if(key.which === 82){
+        // If on completed orders tab
+        if(completed){
+          changeOrderStatus('In Progress');
+        }
+      // e - this will be added back later
+      // } else if(key.which === 69){
+      //   this.toggleExpandOrder();
+      // 0 - 9 - pressing number to change selected order
       } else if(key.which >= 49 && key.which <= 57){
-        this.handleNumberKeyPress(key);
+        handleNumberKeyPress(key);
       }
     });
   }
 
-  handleArrowKeyPress(key){
-    let newSelectedOrder = this.state.selectedOrder;
-    if(key.which === 37){
+  function handleArrowKeyPress(key){
+    // get current selected order
+    let newSelectedOrder = selectedOrder;
+    // console.log(newSelectedOrder);
+    if (key.which === 37) {
       newSelectedOrder -= 1;
-    } else if (key.which === 39){
+    } else if (key.which === 39) {
       newSelectedOrder += 1;
     }
-    const ordersLength = Object.keys(this.state.orders).length;
-    if(newSelectedOrder >= ordersLength){
+    const ordersLength = Object.keys(orders).length;
+    if (newSelectedOrder >= ordersLength) {
       newSelectedOrder = 0;
-    } else if(newSelectedOrder < 0){
-      newSelectedOrder = ordersLength-1;
+    } else if (newSelectedOrder < 0) {
+      newSelectedOrder = ordersLength - 1;
     }
-    this.changeSelectedOrder(newSelectedOrder);
+    changeSelectedOrder(newSelectedOrder);
   }
 
-  handleNumberKeyPress(key){
-    const number = key.which - 49;
-    if(number < Object.keys(this.state.orders).length){
-      this.changeSelectedOrder(number);
-    }
+  function handleNumberKeyPress(key){
+    const newSelectedOrder = key.which - 49;
+    changeSelectedOrder(newSelectedOrder);
   }
 
   toggleExpandOrder(){
@@ -173,11 +225,21 @@ function Body(props){
   }
   */
 
+  function renderOrders(){
+    // Check if there are orders in orders, if not just write 'No orders'
+    if(Object.keys(orders).length) {
+      return <Orders orders={orders} selectedOrder={selectedOrder} handleCardClick={changeSelectedOrder}
+                     completed={completed}/>;
+    }
+    let string = completed ? "No completed orders" : "No active orders";
+    return <p className="px-2">{string}</p>
+  }
+
   return (
     <div className="p-3">
       <Header handleStatusChangeClick={changeOrderStatus} path={props.path} />
       {/*<Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={markOrderComplete} />*/}
-      <Orders orders={orders} selectedOrder={selectedOrder} handleCardClick={changeSelectedOrder} completed={completed}/>
+      {renderOrders()}
     </div>
   )
 }

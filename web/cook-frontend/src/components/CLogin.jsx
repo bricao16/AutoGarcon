@@ -3,8 +3,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,9 +13,9 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 
-/*this is the login component for the cook
+/*login component for the cook
 view. Asks for the staffID, password and logs in if the user and correct password
-exists on the database */
+exists on the database cookies are set to use persistant state once logged in.*/
 const useStyles = makeStyles(theme => ({
   paper: {
     display: 'flex',
@@ -36,6 +34,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+
 const cookies = new Cookies();
 
 export default class CLogin extends React.Component {
@@ -43,7 +42,7 @@ export default class CLogin extends React.Component {
 	  super(props);
 	  
 	  this.state = {
-	    email: '',
+	    staffID: '',
       passwd:'',
       redirect: false,
       show: false,
@@ -53,20 +52,18 @@ export default class CLogin extends React.Component {
     
     this.handleShow = this.handleShow.bind(this);
 	  this.handleSubmit = this.handleSubmit.bind(this);
-	  this.handleEmail = this.handleEmail.bind(this);
+	  this.handleID = this.handleID.bind(this);
 	  this.handlePasswd = this.handlePasswd.bind(this);
   }
-
+  //on submit send form info to the database
   handleSubmit(event){
-	  
 	  event.preventDefault();
-	  
 	  /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
 	  
 	  axios({
       method: 'post',
       url: process.env.REACT_APP_DB + '/staff/login',
-      data: 'username='+this.state.email+'&password='+this.state.passwd,
+      data: 'username='+this.state.staffID+'&password='+this.state.passwd,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
@@ -76,9 +73,10 @@ export default class CLogin extends React.Component {
     })
       .then(async response => {
         await response;
-        
+        //if a bad response alert the user
         if (response.status !== 200) {this.handleShow(response);}
         else {
+          //if good response set the state to returned info
           this.setState({staff: response.data.staff,
                         token:response.data.token,
                         show: false,
@@ -88,16 +86,17 @@ export default class CLogin extends React.Component {
       })
       .catch(error =>{
         this.setState({alertVariant: 'danger'});
-        this.setState({response: "Unknown error"});
+        this.setState({response: error.response.data});
         this.setState({redirect: false});
+        this.setState({show: true});
         console.error("There was an error!", error);
       });
   }
-  
-  handleEmail(event){
-	  this.setState({email: event.target.value});
+  //on change of ID update state
+  handleID(event){
+	  this.setState({staffID: event.target.value});
   }
-  
+  //on change of password update state
   handlePasswd(event){
 	  this.setState({passwd: event.target.value});
   }
@@ -124,6 +123,8 @@ export default class CLogin extends React.Component {
 
   render(){
 	if(this.state.redirect === true){
+    /*set the cookies and redirect to the cook page- no validation need
+    cook and manager can log in to cook page*/
     cookies.set('mystaff', this.state.staff, { path: '/' });
     cookies.set('mytoken', this.state.token, { path: '/' });
 	  return <Redirect to='/cook'/>
@@ -149,18 +150,18 @@ export default class CLogin extends React.Component {
             Cook Sign In
           </Typography>
         </div>
-
+          {/* Form for putting in user id and password */}
           <form className={useStyles.form} noValidate>
-          <TextField onChange = {this.handleEmail}
-            value = {this.state.email}
+          <TextField onChange = {this.handleID}
+            value = {this.state.staffID}
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            id="email"
+            id="staffID"
             label="Staff ID"
-            name="email"
-            autoComplete="email"
+            name="staffID"
+            autoComplete="staffID"
             autoFocus
           />
           <TextField onChange = {this.handlePasswd}
@@ -175,8 +176,7 @@ export default class CLogin extends React.Component {
             id="password"
             autoComplete="current-password"
           />
-
-          {/* Remember me checkbox 
+          {/* Remember me checkbox No functionality yet
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
@@ -194,6 +194,6 @@ export default class CLogin extends React.Component {
           </form>
         </div>
 	  </Container>
-	);
+	 );
   }
 }

@@ -10,9 +10,9 @@ class Header extends React.Component {
 
   renderTabs(){
     if(this.props.path === '/active'){
-      return <Button variant="secondary" size="sm" className="mr-3" onClick={() => this.props.handleStatusChangeClick('Complete')}>Complete (C)</Button>;
+      return <Button variant="secondary" size="sm" className="mr-3" onClick={() => this.props.handleStatusChangeClick('Complete')}>Complete</Button>;
     } else if(this.props.path === '/completed') {
-      return <Button variant="secondary" size="sm" className="mr-3" onClick={() => this.props.handleStatusChangeClick('In Progress')}>Restore (R)</Button>;
+      return <Button variant="secondary" size="sm" className="mr-3" onClick={() => this.props.handleStatusChangeClick('In Progress')}>Restore</Button>;
     }
   }
 

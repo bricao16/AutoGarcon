@@ -12,19 +12,23 @@
     tools:context="auto_garcon.initialpages.TwoButtonPage">
 
     <!-- image of logo for auto-garcon -->
+
+    <!-- scanner button -->
+
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="match_parent"
-        android:layout_height="355dp"
+        android:layout_width="343dp"
+        android:layout_height="179dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="44dp"
         android:src="@drawable/logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- scanner button -->
     <Button
         android:id="@+id/scanner_button"
         android:layout_width="match_parent"
-        android:layout_height="145dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="28dp"
         android:background="@color/colorPrimary"
         android:elevation="5555dp"
@@ -37,7 +41,7 @@
     <Button
         android:id="@+id/fav_button"
         android:layout_width="match_parent"
-        android:layout_height="145dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="72dp"
         android:background="@color/colorPrimary"
         android:text="FavPage"

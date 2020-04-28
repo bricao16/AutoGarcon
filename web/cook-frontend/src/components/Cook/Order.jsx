@@ -10,11 +10,8 @@ class Order extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      orderTime: null,
-      orderTimeString: null,
-      timeSinceOrder: null
-    };
+    this.state = {orderTime: null, orderTimeString: null, timeSinceOrder: null};
+    // this.initializeTime();
   }
 
   renderItems(){
@@ -34,7 +31,7 @@ class Order extends React.Component {
       allItems.push(
         // Category with children items
         <div key={key1++}>
-          <p style={itemCategoryStyle} className="m-0">{category}</p>
+          {/*<p style={itemCategoryStyle} className="m-0">{category}</p>*/}
           <div className="px-2">
             {items}
           </div>
@@ -47,7 +44,8 @@ class Order extends React.Component {
   variableOrderStyles(){
     let style = Object.assign({}, orderStyle);
     if(this.props.isSelected){
-      style.background = '#7e7e7e';
+      // style.background = '#7e7e7e';
+      style.background = 'red';
     }
     if(this.props.order.expand){
       style.fontSize = '1.6em';
@@ -60,7 +58,10 @@ class Order extends React.Component {
     const orderTime = moment(this.props.order.order_date, 'YYYY-MM-DD HH:mm:ss');
     // Convert to string that displays as 12 hour time with AM/PM
     const orderTimeString = orderTime.format('LT');
-    this.setState({orderTime: orderTime, orderTimeString: orderTimeString}, this.setupTimeInterval);
+    let state = this.state;
+    state.orderTime = orderTime;
+    state.orderTimeString = orderTimeString;
+    this.setState(state);
   }
 
   setupTimeInterval(){
@@ -74,20 +75,26 @@ class Order extends React.Component {
     // Seconds between now and order placed time
     const secondsSinceOrder = now.diff(this.state.orderTime, 's');
     // Formatted time between order placed time and now as hours:minute:seconds
-    const timeSinceOrder = moment.duration(secondsSinceOrder, 's').format('hh:mm:ss');
+    const timeSinceOrder = moment.duration(secondsSinceOrder, 's').format('hh:*mm:ss');
     let state = this.state;
     state.timeSinceOrder = timeSinceOrder;
     this.setState(state);
   }
 
   renderTime(){
-    return (
-      <>
-        <span className="pr-3">{this.state.orderTimeString}</span>
+    let timeSince = <></>;
+    if(!this.props.isCompleted) {
+      timeSince = (
         <div className="d-flex" style={{alignItems: 'center'}}>
           <FontAwesomeIcon icon={faClock}/>
           <span className="pl-1">{this.state.timeSinceOrder}</span>
         </div>
+      );
+    }
+    return (
+      <>
+        <span className="pr-3">{this.state.orderTimeString}</span>
+        {timeSince}
       </>
     );
   }
@@ -110,7 +117,8 @@ class Order extends React.Component {
   }
 
   componentDidMount() {
-    this.initializeTime()
+    this.initializeTime();
+    this.setupTimeInterval();
   }
 
   componentWillUnmount() {

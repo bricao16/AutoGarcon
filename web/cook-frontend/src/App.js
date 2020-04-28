@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
 import Cook from "./components/Cook/Cook";
-import ManagerPage from "./components/Manager/Manager";
+import ManagerPage from "./components/Manager/Home/Manager";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
-import { CookiesProvider, withCookies } from 'react-cookie';
+
 import Home from "./components/Home";
 import PrivacyPolicy from './components/PrivacyPolicy';
 
@@ -24,7 +24,6 @@ class App extends React.Component{
     }
   render(){
     return (
-      <CookiesProvider>
         <Router>
           <main style={mainStyle} className="d-flex">
             <Switch>
@@ -34,19 +33,16 @@ class App extends React.Component{
               <Route path="/cook">
                 <Cook />
               </Route>
-              <Route
-                  path="/manager"
-                  render={() => (<Manager cookies={this.props.cookies}/>)}
+              <Route path="/manager"
+                  render={() => (<Manager />)}
                 >
-
-              </Route>
+                </Route>
               <Route path="/sign_up">
                 <SignUp />
               </Route>
-             <Route
-                  path="/login_manager"
-                  render={() => (<MLogin cookies={this.props.cookies}/>)}
-                >
+              <Route path="/login_manager"
+                render={() => (<MLogin />)}
+              >
               </Route>
               <Route path="/login_cook">
                 <CLogin/>
@@ -68,12 +64,11 @@ class App extends React.Component{
             </Switch>
           </main>
         </Router>
-      </CookiesProvider>
       );
     }
   }
 
-export default withCookies(App);
+export default App;
 
 function Manager() {
   return (

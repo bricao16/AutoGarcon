@@ -34,7 +34,12 @@ import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.VolleySingleton;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
-
+/**
+ * Class for Using QR code
+ * Gets permission for using camera
+ * Reads QR code and handles the request
+ *
+ */
 public class QRcode extends AppCompatActivity {
     private TextView txt_result;
     private SurfaceView surfaceView;
@@ -129,7 +134,7 @@ public class QRcode extends AppCompatActivity {
                                             String restaurant = response.getJSONObject("restaurant").getString("name");
                                             txt_result.setText("Continue to " + restaurant);
                                             txt_result = (TextView) findViewById(R.id.code_info);
-                                            onPause();
+                                            //onPause();
                                             Intent Menu = new Intent(QRcode.this, Menu.class);
                                             Menu.putExtra("restaurant id",Integer.parseInt(data));
                                             startActivity(Menu);

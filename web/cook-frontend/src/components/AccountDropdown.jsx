@@ -4,8 +4,9 @@ import Cookies from 'universal-cookie';
 import {Redirect} from "react-router-dom";
 
 /*
-This component is the dropdown menu that displays the user and other actions that the user can perform 
-such as viewing profile, account settings, and logging out
+This component is the dropdown menu that displays the user and 
+other actions that the user can perform such as 
+account settings, privacy policy and logging out
 */
 const cookies = new Cookies();
 class AccountDropdown extends React.Component {
@@ -33,14 +34,14 @@ class AccountDropdown extends React.Component {
     cookies.remove('mystaff');
     return <Redirect to='/'/> 
   }
-    //set privacy policy to true on click and render it in render
   privacyPolicy(){
-  this.setState({
-      privacyPolicy: true
-  })
-}
+    //set privacy policy to true on click and render it
+    this.setState({
+        privacyPolicy: true
+    })
+  }
   render() {
-    //if the privacy policy has been clicked open it  
+    //if the privacy policy has been clicked open it in new tab
     if(this.state.privacyPolicy)
     {
       window.open('/privacy_policy', "_blank");
@@ -48,6 +49,7 @@ class AccountDropdown extends React.Component {
           privacyPolicy: false
       })
     }
+    //either log out or view the dropdown
     return (
         this.state.section === "" ? 
           <Dropdown alignRight className={this.props.className}>
@@ -56,7 +58,6 @@ class AccountDropdown extends React.Component {
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item href="#/action-1">View Profile</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
               <div onClick={()=>this.privacyPolicy()}>
                 <Dropdown.Item>Privacy Policy</Dropdown.Item>
               </div>

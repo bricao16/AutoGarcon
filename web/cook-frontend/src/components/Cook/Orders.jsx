@@ -5,7 +5,9 @@ import '../../assets/orders/order.css'
 
 /*
   This component is used to render the orders for the Cook page.
-  The orders are an array of object containing order details.  Look at the Order component for more details on the format of an order object.
+  It is passed in an array of orders and renders each one by iterating over them.
+  Each order contains an order id, table number, time order placed, time since order placed, and all the items in the order.
+  Each order is rendered as an Order component.
 
   renderOrders is a helper function which takes all the orders,
   converts them to Order objects and returns a single JSX object that

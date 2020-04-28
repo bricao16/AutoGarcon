@@ -1,7 +1,7 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
 
-//template created by https://www.privacypolicytemplate.net/
+//simple template created by https://www.privacypolicytemplate.net/
 class PrivacyPolicy extends React.Component {
 
   constructor(props) {

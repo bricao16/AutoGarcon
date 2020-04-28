@@ -7,16 +7,17 @@
     android:background="#102644">
 
     <TextView
-        android:id="@+id/out_of_order"
+        android:id="@+id/order_items"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
+        android:textColor="@color/design_default_color_background"
         app:layout_constraintBottom_toTopOf="@+id/add_to_cart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.476"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/add_to_cart"
@@ -27,6 +28,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="30dp"
         android:text="@string/add_to_cart"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.476"

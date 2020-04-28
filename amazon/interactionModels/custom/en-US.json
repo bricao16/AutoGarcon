@@ -38,6 +38,7 @@
           "name": "ClosingTimeIntent",
           "slots": [],
           "samples": [
+            "When does this place close",
             "closing time",
             "What time does it close"
           ]
@@ -51,6 +52,7 @@
             }
           ],
           "samples": [
+            "what {category} do you have",
             "What type of {category} do you have",
             "{category} menu",
             "{category}"
@@ -84,6 +86,70 @@
             "{menuItem} calories",
             "number of calories in {menuItem}",
             "How many calories are in the {menuItem}"
+          ]
+        },
+        {
+          "name": "AddNewAlexaIntent",
+          "slots": [
+            {
+              "name": "RestaurantIDSlot",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "{RestaurantIDSlot}",
+                "The restaurant ID is {RestaurantIDSlot}"
+              ]
+            },
+            {
+              "name": "TableNumberSlot",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "{TableNumberSlot}",
+                "The table number is {TableNumberSlot}"
+              ]
+            }
+          ],
+          "samples": [
+            "add new alexa",
+            "register new alexa",
+            "register this device"
+          ]
+        },
+        {
+          "name": "AddItemToOrder",
+          "slots": [
+            {
+              "name": "menuItem",
+              "type": "AMAZON.Food",
+              "samples": [
+                "add {menuItem}",
+                "I would like {menuItem}",
+                "{menuItem}"
+              ]
+            },
+            {
+              "name": "quantity",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "I would like to add {quantity}",
+                "I would like {quantity}",
+                "{quantity}"
+              ]
+            }
+          ],
+          "samples": [
+            "add {menuItem} to order",
+            "add an item to my order",
+            "add item",
+            "add an item",
+            "add to order"
+          ]
+        },
+        {
+          "name": "MakeOrderInProgressIntent",
+          "slots": [],
+          "samples": [
+            "Send my order to the kitchen",
+            "Submit order"
           ]
         }
       ],
@@ -167,18 +233,127 @@
               "name": {
                 "value": "Deep Fried Green Beans"
               }
-            },
-            {
-              "id": "6",
-              "name": {
-                "value": "Chicken Tenders"
-              }
             }
           ],
           "name": "AMAZON.Food"
         }
       ]
-    }
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "AddItemToOrder",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "menuItem",
+              "type": "AMAZON.Food",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.236247120979.655236679615"
+              }
+            },
+            {
+              "name": "quantity",
+              "type": "AMAZON.NUMBER",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.236247120979.1466462808854"
+              }
+            }
+          ],
+          "delegationStrategy": "ALWAYS"
+        },
+        {
+          "name": "AddNewAlexaIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "RestaurantIDSlot",
+              "type": "AMAZON.NUMBER",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.827332373272.497069860493"
+              }
+            },
+            {
+              "name": "TableNumberSlot",
+              "type": "AMAZON.NUMBER",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.827332373272.44838416479"
+              }
+            }
+          ],
+          "delegationStrategy": "ALWAYS"
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.236247120979.655236679615",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What would you like?"
+          },
+          {
+            "type": "PlainText",
+            "value": "What would you like to add?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Which item would you like to add?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.236247120979.1466462808854",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "How many would you like to add?"
+          },
+          {
+            "type": "PlainText",
+            "value": "How many would you like?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.827332373272.497069860493",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What is the restaurant ID?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Which restaurant ID is this for?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.827332373272.44838416479",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Which table is this for?"
+          },
+          {
+            "type": "PlainText",
+            "value": "What is the table number?"
+          }
+        ]
+      }
+    ]
   },
-  "version": "21"
+  "version": "36"
 }
