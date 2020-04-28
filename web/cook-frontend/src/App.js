@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Cook from "./components/Cook/Cook";
-import ManagerPage from "./components/Manager/Manager";
+import ManagerPage from "./components/Manager/Home/Manager";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
