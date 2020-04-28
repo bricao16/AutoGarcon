@@ -177,39 +177,43 @@ export default function NavItems(props) {
         </div>
         <Divider />
         <List >
-            <ListItem button component="a" href ='/manager'>
-            <ListItemIcon><StatsIcon/></ListItemIcon>
-            <ListItemText primary="Statistics" />
-            </ListItem>
+          <ListItem button component="a" href ='/manager'>
+						<ListItemIcon><StatsIcon/></ListItemIcon>
+						<ListItemText primary="Statistics" />
+          </ListItem>
         </List>
         <Divider />
         <List>
-            <ListItem button component="a" href ='/menu'>
-
-            <ListItemIcon><RestaurantMenuIcon/></ListItemIcon>
-            <ListItemText primary="Menu" />
-            </ListItem>
+          <ListItem button component="a" href ='/menu'>
+						<ListItemIcon><RestaurantMenuIcon/></ListItemIcon>
+						<ListItemText primary="Menu" />
+          </ListItem>
         </List>
         <Divider />
         <List>
           <ListItem button component="a" href ='/general' >
-
             <ListItemIcon><GeneralIcon/></ListItemIcon>
             <ListItemText primary="General" />
           </ListItem>
+				<Divider />
+        <List>
+          <ListItem button component="a" href ='/menu'>
+            <ListItemIcon><GeneralIcon/></ListItemIcon>
+            <ListItemText primary="QR Code Generator" />
+          </ListItem>
+        </List>
           <ListItem button component="a" href ='/general' >
             <ListItemText primary="Alexa" />
           </ListItem>
         </List>
-         <Divider />
-         <List>
-            <ListItem button component="a" href ='/customize'>
-            
+        <Divider />
+        <List>
+          <ListItem button component="a" href ='/customize'>
             <ListItemIcon><CustomIcon/></ListItemIcon>
             <ListItemText primary="Customize" />
-            </ListItem>
-          </List>
-         <Divider />
+          </ListItem>
+        </List>
+        <Divider />
         <List>
           {['Staff'].map((text, index) => (
             <ListItem button key={text} component="a" href ='/cookview'>

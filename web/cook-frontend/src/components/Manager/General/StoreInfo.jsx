@@ -61,7 +61,7 @@ class StoreInfo extends React.Component{
 		} else if (this.state.address.length > 40){
 			this.handleValidation("Restaurant address is too long.  Please reduce to 40 characters or less.");
 			
-		} else if (this.state.open < 0 || this.state.open > 2400){
+		} else if (Number(this.state.open) < 0 || Number(this.state.open) > 2400){
 			this.handleValidation("Valid opening time not entered.  Please enter a time between 0 and 2400.");
 		} else if (isNaN(this.state.open)){
 			this.handleValidation("No number entered for opening time.  Please enter a time between 0 and 2400.");		
@@ -77,7 +77,7 @@ class StoreInfo extends React.Component{
 			this.handleValidation("No integer entered for closing time.  Please enter a time between 0 and 2400.");
 		} else {
 			
-			console.log(this.state);
+			console.log(this.state + "Reaching in here.");
 			this.editForm("");
 			event.preventDefault();
 			axios({
@@ -112,24 +112,18 @@ class StoreInfo extends React.Component{
     if (success) {
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
-
-      setTimeout(function () {	
-        window.location.reload(1);	
-    }, 2000);
     }
     else {
       this.setState({response: 'Failed to update'})
       this.setState({alertVariant: 'danger'});
     }
-
     this.setState({show: true});
-  }
-
-  //change the category of which is being edited
-  editForm = (category) => {
-      this.setState({
-        sectionEdit: category
-    })
+		
+		setTimeout(() => {
+			this.setState({
+			show:false
+			});
+		}, 2500)
   }
 	
 	handleValidation(message){
@@ -141,8 +135,16 @@ class StoreInfo extends React.Component{
 			this.setState({
 			show:false
 			});
-		}, 50000)
+		}, 2500)
   }
+
+  //change the category of which is being edited
+  editForm = (category) => {
+      this.setState({
+        sectionEdit: category
+    })
+  }
+		
   renderInfo(){
     return (
     <Card className="text-center m-2 w-100" style={itemStyle}>

@@ -67,6 +67,8 @@ class NewItem extends React.Component {
 			this.handleValidation("Calorie field isn't a number.  Please set to a number.");
 		} else if(this.state.calories > 20000){
 			this.handleValidation("Calorie field is out of range.  Please try a value less than 20,000.");
+		} else if(this.state.calories < 0){
+			this.handleValidation("Calorie field must be greater than zero.");
 		}	else if(isNaN(this.state.price)){
 			this.handleValidation("Price field isn't a number.  Please set to a number.");	
 		} else if(this.state.price > 100000){
