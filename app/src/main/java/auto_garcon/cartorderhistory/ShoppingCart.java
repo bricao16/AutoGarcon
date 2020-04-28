@@ -22,15 +22,15 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.auto_garcon.R;
-import auto_garcon.homestuff.*;
 import auto_garcon.accountstuff.Settings;
+import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
@@ -64,6 +64,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          *  the cart is empty or not.
          */
         pref = new SharedPreference(this);
+
         if(pref.getShoppingCart().getCart().size() == 0) {
             setContentView(R.layout.empty_shopping_cart);
             shoppingCart = pref.getShoppingCart();
@@ -168,6 +169,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                 /** Sending the actual putRequest. */
                 VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
+
+                //Clear th order
+                shoppingCart = new ShoppingCartSingleton();
+                pref.setShoppingCart(shoppingCart);
+                setContentView(R.layout.empty_shopping_cart);
             }
         });
 
