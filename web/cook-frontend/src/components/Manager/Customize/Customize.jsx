@@ -4,7 +4,6 @@ import Card from 'react-bootstrap/Card';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-import Dropdown from 'react-bootstrap/Dropdown';
 import { ChromePicker } from 'react-color';
 
 /*this is the customize component for the manager
@@ -264,13 +263,7 @@ const backgroundStyle = {
   'backgroundColor': '#f1f1f1',
   'minWidth': '70vw'
 }
-const cardHeaderStyle = {
-    'backgroundColor': '#0b658a',
-    'color': '#ffffff',
-    'fontFamily': 'Kefa',
-    'textAlign':'left',
-    'height': '45px'
-};
+
 const itemStyle = {
     'borderBottom': 'grey solid 1px',
 
@@ -282,19 +275,4 @@ const menuHeaderStyle = {
   'textAlign' : 'center',
   'height':'54px'
 };
-const mainMenuHeaderStyle = {
-  'backgroundColor': '#102644',
-  'color': '#ffffff',
-  'fontFamily': 'Kefa',
-  'textAlign' : 'center',
-  'height':'54px',
-  'paddingTop':'8px'
-}
-
-const menuTextStyle = {
-  'flex': '1',
-  'paddingRight': '69px',
-  'paddingTop': '8px'
-};
 export default Customize;
-

@@ -5,9 +5,6 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Alert from 'react-bootstrap/Alert';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
 
 /* This component is used to render the 
 resturant information for the manager view.
@@ -282,11 +279,6 @@ const backgroundStyle = {
   'backgroundColor': '#f1f1f1'
 }
 
-const cardHeaderStyle = {
-    'backgroundColor': '#0b658a',
-    'color': '#ffffff',
-    'fontFamily': 'Kefa'
-};
 const itemStyle = {
     'borderBottom': 'grey solid 1px',
     'width':'200px'
@@ -299,5 +291,3 @@ const mainMenuHeaderStyle = {
   'padding':'8px'
 }
 export default StoreInfo;
- {/*
-        */}

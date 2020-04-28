@@ -2,7 +2,6 @@ import React from "react";
 import Container from 'react-bootstrap/Container';
 
 import Nav from 'react-bootstrap/Nav';
-import logoImage from "../../../assets/AutoGarconLogo.png";
 import https from 'https';
 import axios from 'axios';
 import {
@@ -158,18 +157,16 @@ class Manager extends React.Component{
         Object.keys(this.state.restaurantJSON).forEach(function(key) {
           restaurantInfo.push([key ,restaurantJSON[key]]);
         });} 
+        //get logo image data from binary
         const imageData = this.arrayBufferToBase64(this.state.restaurantJSON.restaurant.logo.data);
         var binary = this.fixBinary(atob(imageData));
         const blob = new Blob([binary], {type : 'image/png'});
         const blobUrl =URL.createObjectURL(blob);
-        var img = new Image();
-        img.src = blobUrl;
-        //document.body.appendChild(img);
-        console.log(blobUrl);
+        console.log(this.state);
       return (
 
         <React.Fragment>
-          //if cookies havent been accepted yet ask them
+          {/*if cookies havent been accepted yet ask them*/}
           
             {cookies.get('cookieAccept') === undefined ? 
                   <CookieConsent
@@ -199,21 +196,8 @@ class Manager extends React.Component{
       );
     }
   }
-
-const backgroundStyle = {
-  'backgroundColor': '#ffffff'
-}
-
 const sectionStyle = {
   'backgroundColor': '#ffffff',
   'color':'#102644'
 }
-
-const navColStyle = {
-  'maxWidth': '100px',
-  'a.link':'black',
-  'fontFamily': 'Kefa'
-}
-
-
 export default Manager;

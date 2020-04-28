@@ -20,7 +20,7 @@ class Stats extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-              selected: "highestSelling"
+              selected: "Highest Selling Items"
         };
     }
     changeSelection(category){
@@ -30,24 +30,24 @@ class Stats extends React.Component{
     render() {
         return (
             <Container>
-             <Dropdown alignRight className="p-3">
+             <Dropdown  className="p-3">
                   <Dropdown.Toggle variant="light" id="dropdown-basic">
-                    Statistics
+                    {this.state.selected} 
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                  <div onClick={()=>this.changeSelection("highestSelling")}>
+                  <div onClick={()=>this.changeSelection("Highest Selling Items")}>
                     <Dropdown.Item href="#/action-1">Highest Selling Items</Dropdown.Item>
                     </div>
-                    <div onClick={()=>this.changeSelection("traffic")}>
+                    <div onClick={()=>this.changeSelection("Traffic")}>
                       <Dropdown.Item>Traffic</Dropdown.Item>
                     </div>
                   </Dropdown.Menu>
                 </Dropdown>
               <div style={backgroundStyle}>
-             <Container fluid style={{'minHeight': '60vh'}}>
+             <Container fluid style={{'minHeight': '70vh'}}>
                 <div className="d-flex flex-wrap">
 
-                {this.state.selected === "highestSelling" ? 
+                {this.state.selected === "Highest Selling Items" ? 
                   <HighestSelling data={data} />
                 :
                   <XYPlot
