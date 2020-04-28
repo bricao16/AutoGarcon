@@ -242,7 +242,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 putRequest = null;
                 shoppingCart = new ShoppingCartSingleton();
                 pref.setShoppingCart(shoppingCart);
-                setContentView(R.layout.empty_shopping_cart);
+
+                //refreshes page
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
             }
         });
 
