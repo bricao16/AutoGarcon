@@ -101,7 +101,7 @@ class StoreInfo extends React.Component{
 				else {this.handleShow(true, "changed");}
 			})
 			.catch(error => {
-				this.handleShow(false);
+				this.handleShow(false, error.response.data);
 				console.error("There was an error!", error);
 			});
 		}
@@ -112,13 +112,9 @@ class StoreInfo extends React.Component{
     if (success) {
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
-
-      setTimeout(function () {	
-        window.location.reload(1);	
-    }, 2000);
     }
     else {
-      this.setState({response: 'Failed to update'})
+      this.setState({response: message})
       this.setState({alertVariant: 'danger'});
     }
 
@@ -139,7 +135,7 @@ class StoreInfo extends React.Component{
 		
 		setTimeout(() => {
 			this.setState({
-			show:false
+			  show:false
 			});
 		}, 50000)
   }

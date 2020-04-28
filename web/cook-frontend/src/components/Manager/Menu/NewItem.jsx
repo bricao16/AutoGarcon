@@ -116,13 +116,13 @@ class NewItem extends React.Component {
 			})
 			/* fetch(endpoint, requestOptions) and await response */
 			.then(async response => {
-				await response;
+        await response;
 
 				if (response.status !== 200) {this.handleShow(false);}
 				else {this.handleShow(true, message);}
 			})
 			.catch(error => {
-				this.handleShow(false);
+				this.handleShow(false, error.response.data);
 				console.error("There was an error!", error);
 			});
 		}
@@ -166,13 +166,13 @@ class NewItem extends React.Component {
     /*fetch(endpoint, requestOptions) and await response */
 		.then(async response => {
       await response;
-	  /* Unsuccessfull deletion from database */
+	    /* Unsuccessfull deletion from database */
       if (response.status !== 200) {this.handleShow(false);}
-	  /* Successfull deletion from database */
+	    /* Successfull deletion from database */
       else {this.handleShow(true, message);}
 		})
 		.catch(error => {
-      this.handleShow(false);
+      this.handleShow(false, error.response.data);
 			console.error("There was an error!", error);
 		});
   }
@@ -184,7 +184,7 @@ class NewItem extends React.Component {
       this.setState({alertVariant: 'success'});
     }
     else {
-      this.setState({response: 'Failed to update item'})
+      this.setState({response: message})
       this.setState({alertVariant: 'danger'});
     }
 
@@ -194,7 +194,7 @@ class NewItem extends React.Component {
 			this.setState({
 			show:false
 			});
-		}, 4000)
+		}, 5000)
   }
 	
   handleValidation(message){
@@ -207,7 +207,7 @@ class NewItem extends React.Component {
 			this.setState({
 			show:false
 			});
-		}, 4000)
+		}, 5000)
   }
   
 
