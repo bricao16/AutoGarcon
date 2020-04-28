@@ -67,6 +67,8 @@ class NewItem extends React.Component {
 			this.handleValidation("Calorie field isn't a number.  Please set to a number.");
 		} else if(this.state.calories > 20000){
 			this.handleValidation("Calorie field is out of range.  Please try a value less than 20,000.");
+		} else if(this.state.calories < 0){
+			this.handleValidation("Calorie field must be greater than zero.");
 		}	else if(isNaN(this.state.price)){
 			this.handleValidation("Price field isn't a number.  Please set to a number.");	
 		} else if(this.state.price > 100000){
@@ -116,13 +118,13 @@ class NewItem extends React.Component {
 			})
 			/* fetch(endpoint, requestOptions) and await response */
 			.then(async response => {
-				await response;
+        await response;
 
 				if (response.status !== 200) {this.handleShow(false);}
 				else {this.handleShow(true, message);}
 			})
 			.catch(error => {
-				this.handleShow(false);
+				this.handleShow(false, error.response.data);
 				console.error("There was an error!", error);
 			});
 		}
@@ -166,13 +168,13 @@ class NewItem extends React.Component {
     /*fetch(endpoint, requestOptions) and await response */
 		.then(async response => {
       await response;
-	  /* Unsuccessfull deletion from database */
+	    /* Unsuccessfull deletion from database */
       if (response.status !== 200) {this.handleShow(false);}
-	  /* Successfull deletion from database */
+	    /* Successfull deletion from database */
       else {this.handleShow(true, message);}
 		})
 		.catch(error => {
-      this.handleShow(false);
+      this.handleShow(false, error.response.data);
 			console.error("There was an error!", error);
 		});
   }
@@ -184,7 +186,7 @@ class NewItem extends React.Component {
       this.setState({alertVariant: 'success'});
     }
     else {
-      this.setState({response: 'Failed to update item'})
+      this.setState({response: message})
       this.setState({alertVariant: 'danger'});
     }
 
@@ -194,7 +196,7 @@ class NewItem extends React.Component {
 			this.setState({
 			show:false
 			});
-		}, 4000)
+		}, 5000)
   }
 	
   handleValidation(message){
@@ -207,7 +209,7 @@ class NewItem extends React.Component {
 			this.setState({
 			show:false
 			});
-		}, 4000)
+		}, 5000)
   }
   
 

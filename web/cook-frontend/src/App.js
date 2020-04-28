@@ -61,6 +61,8 @@ class App extends React.Component{
                 render={(props) => <Manager {...props} content={"customize"}/>} />
               <Route path="/cookview"
                 render={(props) => <Manager {...props} content={"cookview"}/>} />
+							<Route path = "/QRCode"
+								render={(props) => <Manager {...props} content={"QRCode"}/>} />
             </Switch>
           </main>
         </Router>
