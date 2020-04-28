@@ -116,11 +116,16 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart);
                 TextView outOfStock = addToCartPopup.findViewById(R.id.order_items);
+                TextView calorieCount = addToCartPopup.findViewById(R.id.calories);
+                String caloriesString = "Calories: " + getChild(i, j).getCalories();
+                calorieCount.setText(caloriesString);
+                calorieCount.setTextColor(Color.WHITE);
 
                 //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
                 if(getChild(i, j).getAmountInStock() == 0) {
                     outOfStock.setText("Out of Stock");
                     addToCart.setVisibility(View.GONE);
+                  //  calorieCount.setVisibility(View.GONE);
                 }
 
                     addToCart.setOnClickListener(new View.OnClickListener() {
