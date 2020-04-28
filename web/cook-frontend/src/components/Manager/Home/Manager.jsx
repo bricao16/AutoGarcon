@@ -34,6 +34,7 @@ class Manager extends React.Component{
         restaurantInfo:[],
         token: cookies.get('mytoken'),
         staff: cookies.get('mystaff'),
+        categories: []
       };
     }
 
@@ -77,10 +78,18 @@ class Manager extends React.Component{
           return finalJson;
         })
         .then((result) => {
-            this.setState({
-              isLoaded: true,
-              restaurantJSON: result
-            });
+          /* Insert every category into the categories cookie store */
+          Object.keys(result.menu).forEach(item => {
+            if (!this.state.categories.includes(result.menu[item].category)) {
+              this.state.categories.push(result.menu[item].category)
+            }
+          })
+          cookies.set('categories', this.state.categories)
+
+          this.setState({
+            isLoaded: true,
+            restaurantJSON: result
+          });
           })
         .catch((error) => {
           this.setState({

@@ -118,17 +118,26 @@ class NewItem extends React.Component {
 			})
 			/* fetch(endpoint, requestOptions) and await response */
 			.then(async response => {
-				await response;
+        await response;
 
 				if (response.status !== 200) {this.handleShow(false);}
 				else {this.handleShow(true, message);}
 			})
 			.catch(error => {
-				this.handleShow(false);
+				this.handleShow(false, error.response.data);
 				console.error("There was an error!", error);
 			});
 		}
   }
+
+  getCategories() {
+    return (
+      this.state.cookies.get('categories').map(category => 
+        <option value={category}>{category}</option>
+      )
+    )
+  }
+
   /* item needs to be deleted */
   handleDelete(event){
 	  event.preventDefault();
@@ -159,13 +168,13 @@ class NewItem extends React.Component {
     /*fetch(endpoint, requestOptions) and await response */
 		.then(async response => {
       await response;
-	  /* Unsuccessfull deletion from database */
+	    /* Unsuccessfull deletion from database */
       if (response.status !== 200) {this.handleShow(false);}
-	  /* Successfull deletion from database */
+	    /* Successfull deletion from database */
       else {this.handleShow(true, message);}
 		})
 		.catch(error => {
-      this.handleShow(false);
+      this.handleShow(false, error.response.data);
 			console.error("There was an error!", error);
 		});
   }
@@ -177,7 +186,7 @@ class NewItem extends React.Component {
       this.setState({alertVariant: 'success'});
     }
     else {
-      this.setState({response: 'Failed to update item'})
+      this.setState({response: message})
       this.setState({alertVariant: 'danger'});
     }
 
@@ -187,7 +196,7 @@ class NewItem extends React.Component {
 			this.setState({
 			show:false
 			});
-		}, 1500)
+		}, 5000)
   }
 	
   handleValidation(message){
@@ -200,7 +209,7 @@ class NewItem extends React.Component {
 			this.setState({
 			show:false
 			});
-		}, 1500)
+		}, 5000)
   }
   
 
@@ -248,27 +257,26 @@ class NewItem extends React.Component {
               </Modal.Footer>
             </Modal>
 
-            <div class="d-flex flex-row-reverse pb-3">
-              <button type="button" className="btn btn-outline-danger btn-sm" onClick={this.handleModalShow}>Delete Item</button>
-            </div>
             <div>
               <form class="pb-1">
 
                 <div className="form-group row">
                   <label className="col ">Name </label>
-                    <input className="form-control col" type="text" name="name" value={this.state.name} onChange={this.handleInputChange} placeholder={this.state.name}>
+                    <input className="form-control col" type="text" name="name" onChange={this.handleInputChange} placeholder={this.state.name}>
                     </input>
                 </div>
 
                 <div className="form-group row">
                   <label className="col">Category </label>
-                  <input className="form-control col" type="text" name="category" value={this.state.category} onChange={this.handleInputChange} placeholder={this.state.category}>
-                  </input>
+                  <select name="category" class="form-control col" onChange={this.handleInputChange} placeholder={this.state.category}>
+                    {this.getCategories()}
+                    <option value="New Category">New Category</option>
+                  </select>
                 </div>
 
                   <div className="form-group row">
                     <label className="col">Calories</label>
-                    <input className="form-control col" type="text" name="calories" value={this.state.calories} onChange={this.handleInputChange} placeholder={this.state.calories}>
+                    <input className="form-control col" type="text" name="calories" onChange={this.handleInputChange} placeholder={this.state.calories}>
                     </input>
                 </div>
 
@@ -278,14 +286,14 @@ class NewItem extends React.Component {
                       <div className="input-group-prepend">
                         <div className="input-group-text">$</div>
                       </div>
-                      <input type="text" className="form-control" name="price" value={this.state.price} onChange={this.handleInputChange} placeholder={this.state.price}>
+                      <input type="text" className="form-control" name="price" onChange={this.handleInputChange} placeholder={this.state.price}>
                       </input>
                     </div>
                 </div>
 
                 <div class="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
-                    <input type="checkbox" id="in_stock" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} checked={this.state.in_stock}/> 
+                    <input type="checkbox" id="in_stock" name="in_stock" onChange={this.handleInputChange} checked={this.state.in_stock}/> 
                     <label class="pl-2" for="in_stock">In stock</label>
                   </div>
                 </div>
@@ -350,8 +358,10 @@ class NewItem extends React.Component {
 
                 <div className="form-group row">
                   <label className="col">Category </label>
-                  <input className="form-control col" type="text" name="category" value={this.state.category} onChange={this.handleInputChange} defaultValue={this.state.category}>
-                  </input>
+                  <select name="category" class="form-control col" value={this.state.category} onChange={this.handleInputChange} placeholder={this.state.category}>
+                    {this.getCategories()}
+                    <option value="New Category">New Category</option>
+                  </select>
                 </div>
 
                   <div className="form-group row">
