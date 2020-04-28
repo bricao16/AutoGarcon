@@ -2,6 +2,8 @@ import React from "react";
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
@@ -128,7 +130,8 @@ class NewItem extends React.Component {
   /* item needs to be deleted */
   handleDelete(event){
 	  event.preventDefault();
-    
+    this.setState({ModalShow: false});
+
     let requestMethod;
     let endpoint;
     let body;
@@ -199,6 +202,9 @@ class NewItem extends React.Component {
   }
   
 
+  handleModalClose = () => this.setState({ModalShow: false});
+  handleModalShow = () => this.setState({ModalShow: true});
+
   /* Parsing stock to set correct value */
   parseStock(value) {
     if (value === false) {
@@ -225,8 +231,23 @@ class NewItem extends React.Component {
               {this.state.response}
             </Alert>
 
+            <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
+              <Modal.Header closeButton>
+                <Modal.Title>Delete Item</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={this.handleModalClose}>
+                  Close
+                </Button>
+                <Button variant="danger" onClick={this.handleDelete}>
+                  Delete item
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
             <div class="d-flex flex-row-reverse pb-3">
-              <button onClick={this.handleDelete} type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
+              <button type="button" className="btn btn-outline-danger btn-sm" onClick={this.handleModalShow}>Delete Item</button>
             </div>
             <div>
               <form class="pb-1">
@@ -297,8 +318,23 @@ class NewItem extends React.Component {
             {this.state.response}
           </Alert>
 
+          <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Delete Item</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={this.handleModalClose}>
+                Close
+              </Button>
+              <Button variant="danger" onClick={this.handleDelete}>
+                Delete item
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
             <div className="d-flex flex-row-reverse pb-3">
-              <button onClick={this.handleDelete} type="delete" className="btn btn-outline-danger btn-sm">Delete Item</button>
+              <button type="button" className="btn btn-outline-danger btn-sm" onClick={this.handleModalShow}>Delete Item</button>
             </div>
 
             <div>

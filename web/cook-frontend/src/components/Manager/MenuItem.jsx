@@ -54,16 +54,16 @@ class MenuItem extends React.Component {
         {
            return(
                 <Card className="text-center m-2" style={itemStyle}> { /* a header is the item name and a clickable edit pencil */}
-                    <Card.Header style={cardHeaderStyle}>{this.props.menu[0]} 
+                    <Card.Header style={cardHeaderStyle}>{this.props.menu[0]}
                     </Card.Header>
+                    <div onClick={() => this.NewItemForm()} style={editButtonStyle} className='p-1'>
+                      <a> <i className='fas fa-edit'></i> </a>
+                    </div>
                     <Card.Body>
-                        <p style={{margin: "0", padding: "0.3em"}}>${this.props.menu[1].price} </p>
-                        <p style={{margin: "0", padding: "0.3em"}}>Calories: {this.props.menu[1].calories} </p>
-                        <p style={{margin: "0", padding: "0.3em"}}>{this.props.menu[1].picture} </p>
-                        <i> <p style={{margin: "0", padding: "0.3em"}}>{this.getStockState(this.props.menu[1].in_stock)} </p></i>
-                        <div onClick={() => this.NewItemForm() }>  
-                            <button className="btn btn-outline-dark btn-sm"> <i className='fas fa-edit'></i> </button>
-                        </div>
+                      <p style={{margin: "0", padding: "0.3em"}}>${this.props.menu[1].price} </p>
+                      <p style={{margin: "0", padding: "0.3em"}}>Calories: {this.props.menu[1].calories} </p>
+                      <p style={{margin: "0", padding: "0.3em"}}>{this.props.menu[1].picture} </p>
+                      <i> <p style={{margin: "0", padding: "0.3em"}}>{this.getStockState(this.props.menu[1].in_stock)} </p></i>
                     </Card.Body>
                 </Card>
             ) 
@@ -76,12 +76,18 @@ class MenuItem extends React.Component {
     }
 }
 const cardHeaderStyle = {
-    'backgroundColor': '#0b658a',
-    'color': '#ffffff',
-    'fontFamily': 'Kefa'
+  'backgroundColor': '#0b658a',
+  'color': '#ffffff',
+  'fontFamily': 'Kefa'
 };
 const itemStyle = {
-    'width':'200px'
+  'width':'200px'
+}
+const editButtonStyle = {
+  'cursor':'pointer',
+  'color': 'white',
+  'position': 'absolute',
+  'right': '0'
 }
 
 export default MenuItem;

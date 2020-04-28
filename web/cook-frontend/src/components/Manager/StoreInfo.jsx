@@ -49,7 +49,7 @@ class StoreInfo extends React.Component{
         this.setState({ [e.target.name]: e.target.value });
         console.log(this.state);
       }
-  /* Used for connecting to Menu in database */
+  /* Used for connecting to restaurantInfo in database */
   handleSubmit(event) {
     console.log(this.state);
     this.editForm("");
@@ -86,6 +86,10 @@ class StoreInfo extends React.Component{
     if (success) {
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
+
+      setTimeout(function () {	
+        window.location.reload(1);	
+    }, 3000);
     }
     else {
       this.setState({response: 'Failed to update'})
@@ -205,17 +209,17 @@ class StoreInfo extends React.Component{
         return (
             <Container>
                 <div style={backgroundStyle}>
-                <Alert show={this.state.show} variant={this.state.alertVariant}>
-                  {this.state.response}
-                </Alert>
-                <h2 style={mainMenuHeaderStyle}>
-                  Restaurant Information
-                </h2>
-                    <Container fluid style={{'minHeight': '70vh'}}>
-                        <div className="d-flex flex-wrap">
-                            {this.renderInfo()}
-                        </div>
-                    </Container>
+                  <h2 style={mainMenuHeaderStyle}>
+                    Restaurant Information
+                  </h2>
+                  <Container fluid style={{'minHeight': '70vh'}}>
+                    <Alert show={this.state.show} variant={this.state.alertVariant}>
+                      {this.state.response}
+                    </Alert>
+                    <div className="d-flex flex-wrap">
+                      {this.renderInfo()}
+                    </div>
+                  </Container>
                 </div>
             </Container>
         );
@@ -240,7 +244,6 @@ const mainMenuHeaderStyle = {
   'color': '#ffffff',
   'fontFamily': 'Kefa',
   'textAlign' : 'center',
-  'height':'54px',
-  'paddingTop':'8px'
+  'padding':'8px'
 }
 export default StoreInfo;
