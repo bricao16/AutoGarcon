@@ -154,13 +154,14 @@ renderInfo(){
                                     <option value="Verdana">{this.state.fonts[5]}</option>
 
                                 </select>
-                                 <button type="submit" class="btn btn-primary mr-3" >Submit</button>
-                                <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
+                                 
+                                
                             </div>
                             <br></br>
                             <div className="row m-2">
                                         <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                    </div>
+                            </div>
+                            <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
                                 </form>
                         }
                     </Card.Body>
