@@ -26,6 +26,7 @@ class NewItem extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+	this.handleValidation = this.handleValidation.bind(this);
   }
 
   /* Used for handling changes to the input field */
@@ -56,60 +57,73 @@ class NewItem extends React.Component {
     let body;
     let message;
 	
-	if(this.state.name.length > 40){
-		
-		
-	}
+		if(this.state.name.length > 40){
+			this.handleValidation("Name field is too large. Please reduce to 40 characters or less.");
+		} else if(this.state.category.length > 40) {
+			this.handleValidation("Category field is too large.  Please reduce to 40 characters or less.");
+		} else if(isNaN(this.state.calories)){
+			this.handleValidation("Calorie field isn't a number.  Please set to a number.");
+		} else if(this.state.calories > 20000){
+			this.handleValidation("Calorie field is out of range.  Please try a value less than 20,000.");
+		}	else if(isNaN(this.state.price)){
+			this.handleValidation("Price field isn't a number.  Please set to a number.");	
+		} else if(this.state.price > 100000){
+			this.handleValidation("Price field is too large.  Please try a value less than 100,000.");
+		} else {
+			
+			this.state.price = Number(this.state.price).toFixed(2);
 
-    // Non existent so need to add item
-    if (this.state.type === "default") {
-      message = "added"
-      requestMethod = "PUT"
-      endpoint = process.env.REACT_APP_DB + "/menu/add"
-      body = 'restaurant_id='+this.state.user.restaurant_id
-        +'&item_name='+this.state.name
-        +'&calorie_num='+this.state.calories
-        +'&category='+this.state.category
-        +'&price='+this.state.price
-        +'&in_stock='+this.state.in_stock
-    }
-    // Item needs to be edited
-    else {
-      message = "updated"
-      requestMethod = "POST"
-      endpoint = process.env.REACT_APP_DB + "/menu/update"
-      body = 'restaurant_id='+this.state.user.restaurant_id
-        +'&item_id='+this.state.item_id
-        +'&item_name='+this.state.name
-        +'&calorie_num='+this.state.calories
-        +'&category='+this.state.category
-        +'&price='+this.state.price
-        +'&in_stock='+this.state.in_stock
-    }
-	  
-    axios({
-      method: requestMethod,
-      url: endpoint,
-      data: body,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
-      },
-      httpsAgent: new https.Agent({  
-        rejectUnauthorized: false,
-      }),
-    })
-    /* fetch(endpoint, requestOptions) and await response */
-		.then(async response => {
-      await response;
 
-      if (response.status !== 200) {this.handleShow(false);}
-      else {this.handleShow(true, message);}
-		})
-		.catch(error => {
-      this.handleShow(false);
-			console.error("There was an error!", error);
-		});
+			// Non existent so need to add item
+			if (this.state.type === "default") {
+				message = "added"
+				requestMethod = "PUT"
+				endpoint = process.env.REACT_APP_DB + "/menu/add"
+				body = 'restaurant_id='+this.state.user.restaurant_id
+					+'&item_name='+this.state.name
+					+'&calorie_num='+this.state.calories
+					+'&category='+this.state.category
+					+'&price='+this.state.price
+					+'&in_stock='+this.state.in_stock
+			}
+			// Item needs to be edited
+			else {
+				message = "updated"
+				requestMethod = "POST"
+				endpoint = process.env.REACT_APP_DB + "/menu/update"
+				body = 'restaurant_id='+this.state.user.restaurant_id
+					+'&item_id='+this.state.item_id
+					+'&item_name='+this.state.name
+					+'&calorie_num='+this.state.calories
+					+'&category='+this.state.category
+					+'&price='+this.state.price
+					+'&in_stock='+this.state.in_stock
+			}
+			
+			axios({
+				method: requestMethod,
+				url: endpoint,
+				data: body,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+					'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
+				},
+				httpsAgent: new https.Agent({  
+					rejectUnauthorized: false,
+				}),
+			})
+			/* fetch(endpoint, requestOptions) and await response */
+			.then(async response => {
+				await response;
+
+				if (response.status !== 200) {this.handleShow(false);}
+				else {this.handleShow(true, message);}
+			})
+			.catch(error => {
+				this.handleShow(false);
+				console.error("There was an error!", error);
+			});
+		}
   }
   /* item needs to be deleted */
   handleDelete(event){
@@ -163,9 +177,25 @@ class NewItem extends React.Component {
     }
 
     this.setState({show: true});
+		
+		setTimeout(() => {
+			this.setState({
+			show:false
+			});
+		}, 1500)
   }
+	
   handleValidation(message){
-	  this.state({response: message});
+	  this.setState({response: message});
+	  this.setState({alertVariant: 'danger'});
+		
+		this.setState({show: true});
+		
+		setTimeout(() => {
+			this.setState({
+			show:false
+			});
+		}, 1500)
   }
   
 
