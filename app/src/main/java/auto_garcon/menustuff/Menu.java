@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -68,6 +70,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private JSONObject obj;
     private TextView restaurantName;
     private ImageView restaurantLogo;
+    Dialog removeFromFavoritesPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,55 +110,69 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String removeFavoriteURL = "http://50.19.176.137:8000/favorites/delete";
+                    removeFromFavoritesPopup = new Dialog(Menu.this);
 
-                    obj = new JSONObject();//json object that will be sent as the request parameter
+                    removeFromFavoritesPopup.setContentView(R.layout.remove_from_favorites_popup);
+                    removeFromFavoritesPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    removeFromFavoritesPopup.show();
 
-                    try {
-                        obj.put("customer_id", pref.getUser().getUsername());
-                        obj.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0));
-                    }
-                    catch (JSONException e) {
-                        //TODO figure out how to handle this other than stack trace
-                        e.printStackTrace();
-                    }
+                    Button removeFromFavorites = removeFromFavoritesPopup.findViewById(R.id.remove_yes);
 
-                    StringRequest deleteRequest = new StringRequest(Request.Method.POST, removeFavoriteURL,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    Toast.makeText(Menu.this, response, Toast.LENGTH_LONG).show();
-                                    finish();
-                                    startActivity(getIntent());
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    error.printStackTrace();
-                                    Toast.makeText(Menu.this, error.toString(), Toast.LENGTH_LONG).show();
-                                }
+                    removeFromFavorites.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String removeFavoriteURL = "http://50.19.176.137:8000/favorites/delete";
+
+                            obj = new JSONObject();//json object that will be sent as the request parameter
+
+                            try {
+                                obj.put("customer_id", pref.getUser().getUsername());
+                                obj.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0));
                             }
-                    ) {
-                        @Override
-                        public byte[] getBody() throws AuthFailureError {
-                            return obj.toString().getBytes();
-                        }
+                            catch (JSONException e) {
+                                //TODO figure out how to handle this other than stack trace
+                                e.printStackTrace();
+                            }
 
-                        @Override
-                        public String getBodyContentType() {
-                            return "application/json";
-                        }
+                            StringRequest deleteRequest = new StringRequest(Request.Method.POST, removeFavoriteURL,
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            Toast.makeText(Menu.this, response, Toast.LENGTH_LONG).show();
+                                            removeFromFavoritesPopup.dismiss();
+                                            finish();
+                                            startActivity(getIntent());
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            error.printStackTrace();
+                                            Toast.makeText(Menu.this, error.toString(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                            ) {
+                                @Override
+                                public byte[] getBody() throws AuthFailureError {
+                                    return obj.toString().getBytes();
+                                }
 
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            HashMap<String,String> headers = new HashMap<String,String>();
-                            headers.put("Authorization", "Bearer " + pref.getAuth());
-                            return headers;
-                        }
-                    };
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/json";
+                                }
 
-                    VolleySingleton.getInstance(Menu.this).addToRequestQueue(deleteRequest);// making the actual request
+                                @Override
+                                public Map<String, String> getHeaders() throws AuthFailureError {
+                                    HashMap<String,String> headers = new HashMap<String,String>();
+                                    headers.put("Authorization", "Bearer " + pref.getAuth());
+                                    return headers;
+                                }
+                            };
+
+                            VolleySingleton.getInstance(Menu.this).addToRequestQueue(deleteRequest);// making the actual request
+                        }
+                    });
                 }
             });
         }
