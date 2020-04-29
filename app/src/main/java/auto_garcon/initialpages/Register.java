@@ -156,9 +156,8 @@ public class Register extends AppCompatActivity {
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
 
-                                    if(error.networkResponse.statusCode==409){
+                                    if(error.networkResponse.statusCode == 409){
                                         Toast.makeText(Register.this, "Customer username already exist please enter a different username", Toast.LENGTH_LONG).show();
-
                                     }
                                     else{
                                         Toast.makeText(Register.this,"User could not be created",Toast.LENGTH_LONG).show();

@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -46,6 +47,7 @@ import auto_garcon.initialpages.Login;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
 /**
  * Class setting up the menu
@@ -78,7 +80,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
          * Ties the side navigation bar xml elements to Java objects and setting listeners for the
          * side navigation drawer as well as the elements within it.
          */
-        DrawerLayout drawerLayout = findViewById(R.id.restaurant_main);// associating xml objects with the java Object equivalent
+        final DrawerLayout drawerLayout = findViewById(R.id.restaurant_main);// associating xml objects with the java Object equivalent
         Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
         NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
@@ -123,6 +125,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 @Override
                                 public void onResponse(String response) {
                                     Toast.makeText(Menu.this, response, Toast.LENGTH_LONG).show();
+                                    finish();
+                                    startActivity(getIntent());
                                 }
                             },
                             new Response.ErrorListener() {
@@ -181,6 +185,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 public void onResponse(String response) {
                                     // response
                                     Toast.makeText(Menu.this,response,Toast.LENGTH_LONG).show();
+                                    finish();
+                                    startActivity(getIntent());
                                 }
                             },
                             new Response.ErrorListener() {
@@ -219,6 +225,11 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             listView = findViewById(R.id.menu_list);
                             listView.setAdapter(listAdapter);
                             String whereToSendItem = "";
+                            String font;
+                            String primaryColor;
+                            String secondaryColor;
+                            String tertiaryColor;
+                            ShoppingCartSingleton toAddFontsAndColors = pref.getShoppingCart();
 
                             //parsing through json from get request to add them to menu
                             JSONObject restaurant = response.getJSONObject("restaurant");
@@ -228,10 +239,19 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             restaurant.getInt("phone_number");
                             restaurant.getInt("opening");
                             restaurant.getInt("closing");
-                            restaurant.getString("font");
-                            restaurant.getString("primary_color");
-                            restaurant.getString("secondary_color");
-                            restaurant.getString("tertiary_color");
+                            font = restaurant.getString("font");
+                            primaryColor = restaurant.getString("primary_color");
+                            secondaryColor = restaurant.getString("secondary_color");
+                            tertiaryColor = restaurant.getString("tertiary_color");
+
+                            toAddFontsAndColors.setFont(font);
+                            toAddFontsAndColors.setPrimaryColor(primaryColor);
+                            toAddFontsAndColors.setSecondaryColor(secondaryColor);
+                            toAddFontsAndColors.setTertiaryColor(tertiaryColor);
+
+                            pref.setShoppingCart(toAddFontsAndColors);
+
+                            drawerLayout.setBackgroundColor(Color.parseColor(primaryColor));
 
                             byte[] temp = new byte[restaurant.getJSONObject("logo").getJSONArray("data").length()];
 

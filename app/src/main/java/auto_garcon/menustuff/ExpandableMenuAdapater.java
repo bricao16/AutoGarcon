@@ -12,6 +12,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.example.auto_garcon.R;
 
 import java.util.HashMap;
@@ -114,11 +116,14 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 addToCartPopup.show();
 
+                ConstraintLayout background = addToCartPopup.findViewById(R.id.menu_popup);
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart);
                 TextView outOfStock = addToCartPopup.findViewById(R.id.order_items);
                 TextView calorieCount = addToCartPopup.findViewById(R.id.calories);
                 TextView itemName = addToCartPopup.findViewById(R.id.itemNameMenuPop);
                 TextView itemPrice = addToCartPopup.findViewById(R.id.menuItemPrice);
+
+                background.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
 
                 String caloriesString = "Calories: " + getChild(i, j).getCalories();
                 calorieCount.setText(caloriesString);
@@ -128,7 +133,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 String priceString = "Price: " + String.format("$%.02f", getChild(i, j).getPrice());
                 itemPrice.setText(priceString);
                 itemPrice.setTextColor(Color.WHITE);
-
 
                 //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
                 if(getChild(i, j).getAmountInStock() == 0) {

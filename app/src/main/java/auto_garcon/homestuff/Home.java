@@ -189,12 +189,11 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Home.this, error.toString(),Toast.LENGTH_LONG).show();
+
                     }
                 }
 
         );
-        Log.d("asdfasdfasdf, ", pref.getFavorites().toString());
 
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForFavorites);
 
@@ -223,7 +222,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                     while(inner_keys.hasNext()) {
                                         String inner_key = inner_keys.next();
 
-
                                         switch(inner_key){
                                             case "restaurant_id":
                                                 restaurantID = Integer.parseInt(item.get(inner_key).toString());
@@ -237,8 +235,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                     allRestaurantList.put(restaurantID, restaurantName);
                                 }
                             }
-
-                            Log.d("sdf", allRestaurantList.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -248,7 +244,9 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Home.this, error.toString(),Toast.LENGTH_LONG).show();
+                        if(error.networkResponse.statusCode == 500) {
+                            Toast.makeText(Home.this, "Error retrieving restaurants",Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
 
