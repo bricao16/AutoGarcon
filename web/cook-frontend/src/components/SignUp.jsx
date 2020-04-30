@@ -215,6 +215,10 @@ class SignUp extends React.Component {
     else if (!this.state.password) {
       passwordError = "Password cannot be blank"
     }
+    //check if password is same as staff id
+    else if (this.state.password == this.state.staff_id) {
+      passwordError = "Password cannot be the same as Staff ID"
+    }
     //check if password is between 8-20 characters, has one digit, uppercase, and lowercase letter
     else if (!(this.state.password.match(passwordCheck))) {
       passwordError = "Password must be between 8 to 20 characters, contain at least one numeric digit, one uppercase and one lowercase letter";
