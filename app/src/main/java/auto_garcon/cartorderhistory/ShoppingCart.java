@@ -59,6 +59,10 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     private StringRequest putRequest;
     private Dialog confirmPopup;
     private Dialog clearCartPopup;
+    DrawerLayout drawerLayout;
+    Toolbar toolbar;
+    NavigationView navigationView;
+    ActionBarDrawerToggle toggle;
     /**
      * This method ties the xml elements to Java objects and sets onClick listeners for side
      * side navigation bar elements and the place order button which will send the put request
@@ -75,18 +79,47 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          */
         pref = new SharedPreference(this);
 
+        /**
+         * Ties the side navigation bar xml elements to Java objects and setting listeners for the
+         * side navigation drawer as well as the elements within it.
+         */
+
+
         if(pref.getShoppingCart().getCart().size() == 0) {
             setContentView(R.layout.empty_shopping_cart);
             shoppingCart = pref.getShoppingCart();
+
+            drawerLayout = findViewById(R.id.empty_shopping_cart);
+            toolbar = findViewById(R.id.xml_toolbar);
+            navigationView = findViewById(R.id.navigationView);
+            toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
+            navigationView.setNavigationItemSelectedListener(this);
         }
         else if(pref.getShoppingCart() == null){
             shoppingCart = new ShoppingCartSingleton();
-            setContentView(R.layout.empty_shopping_cart);
             pref.setShoppingCart(shoppingCart);
+            setContentView(R.layout.empty_shopping_cart);
+
+            drawerLayout = findViewById(R.id.empty_shopping_cart);
+            toolbar = findViewById(R.id.xml_toolbar);
+            navigationView = findViewById(R.id.navigationView);
+            toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
+            navigationView.setNavigationItemSelectedListener(this);
         }
         else {
-            setContentView(R.layout.activity_shopping_cart);
             shoppingCart = pref.getShoppingCart();
+            setContentView(R.layout.activity_shopping_cart);
+            drawerLayout = findViewById(R.id.shopping_cart_main);
+            toolbar = findViewById(R.id.xml_toolbar);
+            navigationView = findViewById(R.id.navigationView);
+            toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
+            navigationView.setNavigationItemSelectedListener(this);
 
             /**
              * Ties the cart xml to a Java object and sets the adapter, which will manage each
@@ -227,21 +260,15 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                     });
                 }
             });
+
+            drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+            PlaceOrderButton.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+            ClearCartPopup.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
         }
 
-        /**
-         * Ties the side navigation bar xml elements to Java objects and setting listeners for the
-         * side navigation drawer as well as the elements within it.
-         */
-        DrawerLayout drawerLayout = findViewById(R.id.shopping_cart_main);
-        Toolbar toolbar = findViewById(R.id.xml_toolbar);
-        NavigationView navigationView = findViewById(R.id.navigationView);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
 
-        drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+
+
 
 
         /**
