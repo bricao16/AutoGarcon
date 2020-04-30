@@ -168,8 +168,12 @@ class Manager extends React.Component{
         <React.Fragment>
           {/*if cookies havent been accepted yet ask them*/}
           
-            {cookies.get('cookieAccept') === undefined ? 
-                  <CookieConsent
+
+          
+            <NavItems restaurantInfo = {restaurantInfo} restName ={restaurantInfo[1][1].name} firstName={staff.first_name} lastName={staff.last_name} imageBlob = {blobUrl}/>
+        
+              {cookies.get('cookieAccept') === undefined ? 
+                  <CookieConsent style = {{'width': '100vw', 'textAlign': 'right'}}
                   debug={true}
                    enableDeclineButton
                     flipButtons
@@ -185,10 +189,6 @@ class Manager extends React.Component{
             :
             <p></p>
             }
-          
-            <NavItems restaurantInfo = {restaurantInfo} restName ={restaurantInfo[1][1].name} firstName={staff.first_name} lastName={staff.last_name} imageBlob = {blobUrl}/>
-        
-
                    
              </React.Fragment>
               

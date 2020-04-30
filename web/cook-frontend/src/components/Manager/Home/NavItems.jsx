@@ -236,7 +236,7 @@ export default function NavItems(props) {
                 <StoreInfo info = {props.restaurantInfo[1][1]} />
               </Route>
               <Route path="/customize">
-                <Customize info = {props.restaurantInfo[1][1]}/>
+                <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} />
               </Route>
               <Route path="/cookview">
                 <CookView/>

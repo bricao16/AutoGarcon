@@ -4,7 +4,9 @@ import Card from 'react-bootstrap/Card';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import Row from 'react-bootstrap/Row';
 import { ChromePicker } from 'react-color';
+import Modal from 'react-bootstrap/Modal';
 
 /*this is the customize component for the manager
 view. The customization info is prefilled from the pull from
@@ -33,6 +35,10 @@ class Customize extends React.Component{
           temp_primary: this.props.info.primary_color,
           temp_secondary: this.props.info.secondary_color,
           temp_tertiary:this.props.info.tertiary_color,
+          font_color : '#111111',
+          temp_font_color: '#111111',
+          file: null,
+          fileName:"Choose file",
           restaurant_id :cookies.get("mystaff").restaurant_id,
           token:cookies.get('mytoken')
         };
@@ -48,7 +54,7 @@ class Customize extends React.Component{
     */
   onChange = (e) => {
 
-      console.log(e);
+      //colors
       if(this.state.sectionEdit ==="Primary")
       {  this.setState({ 'temp_primary':  e.hex});
       }
@@ -60,7 +66,23 @@ class Customize extends React.Component{
       {
         this.setState({ 'temp_tertiary':  e.hex});
       }
+      else if(this.state.sectionEdit ==="Font Color")
+      {
+        this.setState({ 'temp_font_color':  e.hex});
+      }
+      
     }
+
+      onChangeFile = (e) => {
+        console.log(e.target.files)
+        //change the file name
+        this.setState({ fileName: e.target.files[0].name });
+        //get our image into blob format
+        this.loadXHR(e.target.files[0]).then(function(blob) {
+          // here the image is a blob
+          this.setState({ file: blob });
+        }.bind(this));
+      }
 
 
   /* Used for connecting to Customization in database */
@@ -124,10 +146,100 @@ editForm = (category) => {
 change(event){
   this.setState({value: event.target.value});
 }
+//convert image to blob from https://stackoverflow.com/questions/42471755/convert-image-into-blob-using-javascript
+loadXHR(url) {
+    return new Promise(function(resolve, reject) {
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url);
+            xhr.responseType = "blob";
+            xhr.onerror = function() {reject("Network error.")};
+            xhr.onload = function() {
+                if (xhr.status === 200) {resolve(xhr.response)}
+                else {reject("Loading error:" + xhr.statusText)}
+            };
+            xhr.send();
+        }
+        catch(err) {reject(err.message)}
+    });
+}
+  handleModalClose = () => this.setState({ModalShow: false});
+  handleModalShow = () => this.setState({ModalShow: true});
 
 renderInfo(){
     return (
-        <React.Fragment>
+          <>
+            <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
+              <Modal.Header closeButton>
+                <Modal.Title>{this.state.sectionEdit}</Modal.Title>
+              </Modal.Header>
+
+                    {/*primary*/}
+                    {this.state.sectionEdit === "Primary" && 
+                    <Modal.Body style={{backgroundColor:this.state.temp_primary}}>
+                      <div className="container">
+                        <div className="row">
+                          <Container>
+                              <ChromePicker
+                                color={ this.state.temp_primary }
+                                onChangeComplete={this.onChange }
+                              />
+                              <br/>
+                            </Container>
+                          </div>
+                        </div>
+                      </Modal.Body>
+                    }
+                    {/*secondary*/}
+                    {this.state.sectionEdit === "Secondary" && 
+                    <Modal.Body style={{backgroundColor:this.state.temp_secondary}}>
+                      <div className="container">
+                        <div className="row">
+                          <Container>
+                            <ChromePicker
+                              color={ this.state.temp_secondary }
+                              onChangeComplete={this.onChange }
+                            />
+                   
+                          </Container>
+                        </div>
+                        </div>
+                      </Modal.Body>
+                    }
+                    {/*tertiary*/}
+                    {this.state.sectionEdit === "Tertiary" && 
+                    <Modal.Body style={{backgroundColor:this.state.temp_tertiary}}>
+                      <div className="container">
+                        <div className="row">
+                          <Container>
+                            <ChromePicker
+                              color={ this.state.temp_tertiary }
+                              onChangeComplete={this.onChange }
+                            />
+                          </Container>
+                         </div>
+                        </div>
+                      </Modal.Body>
+                      }
+                    {/*font color*/}
+                    {this.state.sectionEdit === "Font Color" && 
+                    <Modal.Body style={{backgroundColor:this.state.temp_font_color}}>
+                      <div className="container">
+                        <div className="row">
+                          <Container>
+                            <ChromePicker
+                              color={ this.state.temp_font_color }
+                              onChangeComplete={this.onChange }
+                            />
+                          </Container>
+                          </div>
+                        </div>
+                      </Modal.Body>
+                    }
+
+            </Modal>
+           <Container >
+            <Row>
             <Card className="text-center m-2 w-50" style={itemStyle}>
                 <Card.Header >Font 
                 <button onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
@@ -138,7 +250,7 @@ renderInfo(){
                         {this.state.sectionEdit !== "Font" ?
                           <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[5][1]}</p>
                             :   
-                            <form class="form-inline">
+                            <form className="form-inline">
                             {/* choose font and submit to change font */}
                             <div style= {{float: 'left'}}>
                                 <select id="lang" onChange={this.change.bind(this)} value={this.state.value}>
@@ -152,85 +264,91 @@ renderInfo(){
                                     <option value="Courier">{this.state.fonts[4]}</option>
                                     <option value="Verdana">{this.state.fonts[5]}</option>
 
-                                </select>
-                                 
-                                
+                                </select>     
                             </div>
                             <br></br>
                             <div className="row m-2">
                                         <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
                             </div>
-                            <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
+                            <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
                                 </form>
                         }
                     </Card.Body>
-            </Card>
-            
-                  <Card className="text-center m-2 w-10" style={itemStyle}>
-                    <Card.Header>Primary
-                      <button onClick={() => this.editForm("Primary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                </Card>
+                  <Card className="text-center m-2 w-45" style={itemStyle}>
+                    <Card.Header >Logo
+                      <button  onClick={() => this.editForm("Logo") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
-                    <Card.Body style={{backgroundColor:this.state.primary}}>
-                      <div className = "col  m-3">
-                        {this.state.sectionEdit !== "Primary" ? 
-                            <p>{this.state.primary}</p>
-                        :  <Container>
-                                <ChromePicker
-                                  color={ this.state.temp_primary }
-                                  onChangeComplete={this.onChange }
-                                />
-                                <br/>
-                              <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
-                              </Container>
-                        }
-                      </div>
-                    </Card.Body>
-                   </Card>
-                  <Card className="text-center m-2 w-10" style={itemStyle}>
-                    <Card.Header>Secondary
-                      <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                    </Card.Header>
-                    <Card.Body style={{backgroundColor:this.state.secondary}}>
-                      <div className = "col  m-3">
-                        {this.state.sectionEdit !== "Secondary" ? 
-                            <p>{this.state.secondary}</p>
-                        :    
-                              <Container>
-                                <ChromePicker
-                                  color={ this.state.temp_secondary}
-                                  onChangeComplete={this.onChange }
-                                />
-                                <br/>
-                              <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
-                              </Container>
-                        }
-                      </div>
-                    </Card.Body>
-                   </Card>
-                   <Card className="text-center m-2 w-10" style={itemStyle}>
-                    <Card.Header >Tertiary
-                      <button  onClick={() => this.editForm("Tertiary") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                    </Card.Header>
-                    <Card.Body style={{backgroundColor:this.state.tertiary }}>
+                    <Card.Body >
                       <div className = "p-3">
-                        {this.state.sectionEdit !== "Tertiary" ? 
-                            <p>{this.state.tertiary}  </p>
+                        {this.state.sectionEdit !== "Logo" ? 
+                            <img src={this.props.logo}  width="auto" height="45px" alt="waiter" /> 
                              :
-                              <Container>
-                                <ChromePicker
-                                  color={ this.state.temp_tertiary}
-                                  onChangeComplete={this.onChange }
+                             <Container>
+                            <div className="input-group">
+                              <div className="custom-file">
+                                <input
+                                  onChange={this.onChangeFile}
+                                  type="file"
+                                  className="custom-file-input"
+                                  id="inputGroupFile01"
+                                  aria-describedby="inputGroupFileAddon01"
                                 />
-                                <br/>
-                              <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
-                              </Container>
+                                <label className="custom-file-label" htmlFor="inputGroupFile01">
+                                  {this.state.fileName}
+                                </label>
+
+                              </div>
+                            </div>
+                            <br/>
+                            <div className="row m-2">
+                               <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                            <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
+                             </div>
+                         </Container>
                         }
                     </div> 
                     </Card.Body>
-                   </Card>'
-   
-        </React.Fragment>
+                   </Card>
+                </Row>
 
+                <Row>
+                  <Card className="text-center m-2 w-20" style={itemStyle} >
+                    <Card.Header onClick={this.handleModalShow}>Primary
+                      <button onClick={() => this.editForm("Primary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
+                    </Card.Header>
+                    <Card.Body style={{backgroundColor:this.state.primary}}>
+
+                    </Card.Body>
+                   </Card>
+                  <Card className="text-center m-2 w-20" style={itemStyle}>
+                    <Card.Header onClick={this.handleModalShow}>Secondary
+                      <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
+                    </Card.Header>
+                    <Card.Body style={{backgroundColor:this.state.secondary, minHeight:'10vh'}}>
+
+                    </Card.Body>
+                   </Card>
+    
+                   <Card className="text-center m-2 w-20" style={itemStyle}>
+                    <Card.Header onClick={this.handleModalShow}>Tertiary
+                      <button  onClick={() => this.editForm("Tertiary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
+                    </Card.Header>
+                    <Card.Body style={{backgroundColor:this.state.tertiary }}>
+
+                    </Card.Body>
+                   </Card>
+                   <Card className="text-center m-2 w-20" style={itemStyle}>
+                    <Card.Header onClick={this.handleModalShow}>Font Color
+                      <button  onClick={() => this.editForm("Font Color") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
+                    </Card.Header>
+                    <Card.Body style={{backgroundColor:this.state.font_color }}>
+
+                    </Card.Body>
+                   </Card>
+                  </Row>
+                </Container>
+            </>
         )
 
 }
@@ -248,7 +366,7 @@ renderInfo(){
                 <h2 style ={menuHeaderStyle}>
                   Customize
                 </h2>
-                    <Container fluid style={{'minHeight': '70vh'}}>
+                    <Container fluid style={{'minHeight': '70vh',   'minWidth': '100%'}}>
                         <div className="d-flex flex-wrap">
                             {this.renderInfo()}
                         </div>
@@ -275,4 +393,8 @@ const menuHeaderStyle = {
   'textAlign' : 'center',
   'height':'54px'
 };
+const modalImageStyle = {
+  'max-width': '200px',
+  'max-height': '200px'
+}
 export default Customize;
