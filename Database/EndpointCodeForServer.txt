@@ -1,0 +1,139 @@
+/*
+	Updates staff info including staff_id, first_name, last_name, contact_num, email, password
+	Inputs: staff_id, first_name, last_name, contact_num, email, password (optional), JWT
+	Outputs:
+		On success:
+			{
+				token:
+				{
+					token
+				}
+				staff:
+				{
+					staff_id,
+					first_name,
+					last_name,
+					contact_num,
+					email
+				}
+			}
+		If JWT is not valid or not supplied:
+			Must be authorized!
+		If JWT is not a staff token:
+			Must be signed in as a staff!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: staff_id, first_name, last_name, contact_num, email, password (optional)
+		On error:
+			Error updating staff info
+*/
+app.post('/staff/update', verifyToken, (req, res) => {
+	//Verify the JWT
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Make sure the JWT is for a staff:
+			if (auth.staff) {
+				//Make sure right number of parameters are entered:
+				if(!(req.body.staff_id && req.body.restaurant_id && req.body.first_name && req.body.last_name && req.body.contact_num && req.body.email)) {
+					res.status(500).send('Error: Missing parameter. Required parameters: staff_id, restaurant_id, first_name, last_name, contact_num, email, password (optional))');
+					return;
+				}   //if
+
+				//Build query and store staff_id:
+				let staff_id = auth.staff.staff_id;
+				let query = 'UPDATE sample.staff SET staff_id = ?, first_name = ?, last_name = ?, contact_num = ?, email = ?';
+
+				//Check if the staff member wants to change their password:
+				if (req.body.password) {
+					//Create a new salt
+					let salt = genSalt();
+					//Hash supplied password with salt
+					let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+						if (err) {
+							res.status(500).send('Error updating staff info');
+						}	//if
+						else {
+							//Build query and parameters:
+							query = query + ', salt = ?, password = ?';
+							query = query + ' WHERE staff_id = ?';
+							let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, salt, derivedKey.toString('hex'), staff_id];
+
+							//Add new staff information to db:
+							db.query(query, parameters, (err, rows) => {
+								if (err) {
+									res.status(500).send('Error updating staff info');
+								}   //if
+								else {
+									//Build staff object:
+									let staff = {
+										'staff_id': req.body.staff_id,
+										'first_name': req.body.first_name,
+										'last_name': req.body.last_name,
+										'contact_num': req.body.contact_num,
+										'email': req.body.email
+									};  //staff
+
+									//Sign JWT and send token
+									//To add expiration date: jwt.sign({staff}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+									jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
+										//Build response
+										let response = {
+											'token': token,
+											staff
+										};  //response
+
+										//Send Response:
+										res.type('json').send(response);
+									});	//sign
+								}   //else
+							}); //db.query
+						}   //else
+					}); //hashed
+				}	//if
+
+				//If staff doesn't want to change password:
+				else {
+					//Build query and parameters:
+					query = query + ' WHERE staff_id = ?';
+					let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, staff_id];
+
+					//Update staff info in db:
+					db.query(query, parameters, (err, rows) => {
+						if (err) {
+							res.status(500).send('Error updating staff info');
+						}   //if
+						else {
+							//Build user object:
+							let staff = {
+								'staff_id': req.body.staff_id,
+								'first_name': req.body.first_name,
+								'last_name': req.body.last_name,
+								'contact_num': req.body.contact_num,
+								'email': req.body.email
+							};  //staff
+
+							//Sign JWT and send token
+							//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+							jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
+								//Build response
+								let response = {
+									'token': token,
+									staff
+								};  //response
+
+								//Send Response:
+								res.type('json').send(response);
+							});	//sign
+						}   //else
+					}); //db.query
+				}	//else
+			}	//if
+			//If JWT is not for a staff:
+			else {
+				res.status(401).send('Must be signed in as a staff member!');
+			}	//else
+		}   //else
+	});	//verify
+});	//app.post
