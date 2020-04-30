@@ -146,6 +146,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                     public void onClick(View v) {
                         if(pref.getShoppingCart().getCart().size() == 0) {
                             cart = new ShoppingCartSingleton(getChild(i, j).getRestaurantID());
+                            cart.setPrimaryColor(pref.getShoppingCart().getPrimaryColor());
+                            cart.setSecondaryColor(pref.getShoppingCart().getSecondaryColor());
+                            cart.setTertiaryColor(pref.getShoppingCart().getTertiaryColor());
                             cart.addToCart(getChild(i, j));
                             pref.setShoppingCart(cart);
                         }
@@ -173,7 +176,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 @Override
                                 public void onClick(View v) {
                                     cart = new ShoppingCartSingleton(getChild(i, j).getRestaurantID());
-
+                                    cart.setPrimaryColor(pref.getShoppingCart().getPrimaryColor());
+                                    cart.setSecondaryColor(pref.getShoppingCart().getSecondaryColor());
+                                    cart.setTertiaryColor(pref.getShoppingCart().getTertiaryColor());
                                     cart.addToCart(getChild(i, j));
                                     pref.setShoppingCart(cart);
                                     confirmPopup.dismiss();

@@ -83,32 +83,16 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          * Ties the side navigation bar xml elements to Java objects and setting listeners for the
          * side navigation drawer as well as the elements within it.
          */
-
-
         if(pref.getShoppingCart().getCart().size() == 0) {
             setContentView(R.layout.empty_shopping_cart);
             shoppingCart = pref.getShoppingCart();
-
-            drawerLayout = findViewById(R.id.empty_shopping_cart);
-            toolbar = findViewById(R.id.xml_toolbar);
-            navigationView = findViewById(R.id.navigationView);
-            toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-            drawerLayout.addDrawerListener(toggle);
-            toggle.syncState();
-            navigationView.setNavigationItemSelectedListener(this);
+            NavigationBarSetup();
         }
         else if(pref.getShoppingCart() == null){
             shoppingCart = new ShoppingCartSingleton();
             pref.setShoppingCart(shoppingCart);
             setContentView(R.layout.empty_shopping_cart);
-
-            drawerLayout = findViewById(R.id.empty_shopping_cart);
-            toolbar = findViewById(R.id.xml_toolbar);
-            navigationView = findViewById(R.id.navigationView);
-            toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-            drawerLayout.addDrawerListener(toggle);
-            toggle.syncState();
-            navigationView.setNavigationItemSelectedListener(this);
+            NavigationBarSetup();
         }
         else {
             shoppingCart = pref.getShoppingCart();
@@ -261,15 +245,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 }
             });
 
-            drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
             PlaceOrderButton.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
             ClearCartPopup.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+            drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+
         }
-
-
-
-
-
 
         /**
          * Ties xml element to a Java object and where to onClick functionality is provided,
@@ -334,5 +314,15 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 break;
         }
         return false;
+    }
+
+    public void NavigationBarSetup(){
+        drawerLayout = findViewById(R.id.empty_shopping_cart);
+        toolbar = findViewById(R.id.xml_toolbar);
+        navigationView = findViewById(R.id.navigationView);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
     }
 }
