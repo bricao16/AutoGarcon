@@ -4,6 +4,7 @@ import {
     XAxis, // Shows the values on x axis
     YAxis, // Shows the values on y axis
     VerticalBarSeries,
+    ChartLabel,
     LabelSeries
 } from 'react-vis';
 import Container from 'react-bootstrap/Container';
@@ -79,20 +80,40 @@ class HighestSelling extends React.Component {
         <XYPlot 
             xType="ordinal" 
             width={chartWidth} 
-            height={chartHeight} 
+            height={chartHeight } 
             yDomain={chartDomain}
+
         >
             <XAxis />
             <YAxis />
             <VerticalBarSeries
                 data={this.state.data}
+                 style={{opacity: '0.80'}}
             />
+            <ChartLabel
+                text="Categories"
+                className="alt-x-label"
+                includeMargin={false}
+                xPercent={0.90}
+                yPercent={1.12}
+                />
+            <ChartLabel
+                text="Units Sold"
+                className="alt-y-label"
+                includeMargin={false}
+                xPercent={0.03}
+                yPercent={0.00}
+                style={{
+                  transform: 'rotate(-90)',
+                  textAnchor: 'end'
+                }}
+                />
             <LabelSeries
                 data={this.state.data.map(obj => {
                     return { ...obj, label: obj.label.toString() }
                 })}
                 labelAnchorX="middle"
-                labelAnchorY="text-after-edge"
+                labelAnchorY="text-before-edge"
             />
         </XYPlot>
         );
