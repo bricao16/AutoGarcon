@@ -90,7 +90,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                         }
                         //Getting a item that the user pushed the add button
                         //Decrementing the quantity and recalculating the total cost of the item.
-                        if(menuItemArrayList.get(position).getQuantity() != 1){
+                        if(menuItemArrayList.get(position).getQuantity() > 1){
                             menuItemArrayList.get(position).decrementQuantity();
                             menuItemArrayList.get(position).setCost();
                             //Set its view again to show the updated quantity.
@@ -98,6 +98,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                             holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
                             cart.cartContainsItem(menuItemArrayList.get(position)).decrementQuantity();
                             preference.setShoppingCart(cart);
+                        }
+                        else {
+                            menuItemArrayList.remove(position);
+                            cart.setItems(menuItemArrayList);
+                            preference.setShoppingCart(cart);
+                            notifyDataSetChanged();
                         }
             }
         });
