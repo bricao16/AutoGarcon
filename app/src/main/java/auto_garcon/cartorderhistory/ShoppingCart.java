@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,7 +36,6 @@ import auto_garcon.accountstuff.Settings;
 import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
-import auto_garcon.initialpages.TwoButtonPage;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
@@ -84,14 +81,14 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          * side navigation drawer as well as the elements within it.
          */
         if(pref.getShoppingCart().getCart().size() == 0) {
-            setContentView(R.layout.empty_shopping_cart);
+            setContentView(R.layout.activity_empty_shopping_cart);
             shoppingCart = pref.getShoppingCart();
             NavigationBarSetup();
         }
         else if(pref.getShoppingCart() == null){
             shoppingCart = new ShoppingCartSingleton();
             pref.setShoppingCart(shoppingCart);
-            setContentView(R.layout.empty_shopping_cart);
+            setContentView(R.layout.activity_empty_shopping_cart);
             NavigationBarSetup();
         }
         else {

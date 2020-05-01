@@ -82,7 +82,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
         if(view == null) {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.expandable_menu, null);
+            view = inflater.inflate(R.layout.expandable_menu_header, null);
         }
 
         TextView listHeader = view.findViewById(R.id.list_header);

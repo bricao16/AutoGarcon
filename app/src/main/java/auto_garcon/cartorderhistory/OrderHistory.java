@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,22 +24,17 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import auto_garcon.accountstuff.*;
 import auto_garcon.homestuff.*;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
-import auto_garcon.initialpages.TwoButtonPage;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
-import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 
 /**
@@ -76,7 +70,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
             public void onResponse(String response) {
 
                 if (response.equals("No order history for this customer")) {
-                    setContentView(R.layout.emptyorders);
+                    setContentView(R.layout.activity_empty_orders_order_history);
 
                 } else {
                     JsonParser parser = new JsonParser();

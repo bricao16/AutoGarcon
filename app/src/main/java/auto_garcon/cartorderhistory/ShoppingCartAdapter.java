@@ -46,7 +46,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     @Override
     public ShoppingCartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(ct);//this allows the list expand dynamically
-            View view = inflater.inflate(R.layout.shopping_cart_row,parent,false);//make the list visible
+            View view = inflater.inflate(R.layout.shopping_cart_tile,parent,false);//make the list visible
         return new ShoppingCartViewHolder(view);//set visibility on the ShoppingCart
     }
 
