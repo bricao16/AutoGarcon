@@ -42,6 +42,7 @@ import java.util.Map;
 
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
+import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.initialpages.Login;
@@ -89,16 +90,13 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
-                                Intent QRcode = new Intent(Home.this, QRcode.class);
-                                startActivity(QRcode);
+                                startActivity(new Intent(Home.this, QRcode.class));
                                 return true;
                             case R.id.action_home:
-                                Intent home = new Intent(Home.this, Home.class);
-                                startActivity(home);
+                                startActivity(new Intent(Home.this, Home.class));
                                 return true;
                             case R.id.action_cart:
-                                Intent shoppingCart = new Intent(Home.this, ShoppingCart.class);
-                                startActivity(shoppingCart);
+                                startActivity(new Intent(Home.this, ShoppingCart.class));
                                 return true;
                         }
                         return false;
@@ -131,7 +129,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                 if (response.get(key) instanceof JSONObject) {
 
                                     RestaurantItem itemToBeAdded = new RestaurantItem();
-                                    JSONObject item = response.getJSONObject(key.toString());
+                                    JSONObject item = response.getJSONObject(key);
 
                                     Iterator<String> inner_keys = item.keys();
                                     while(inner_keys.hasNext()) {
@@ -249,7 +247,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                     }
                                 }
                             }
-                            ArrayAdapter<String> searchAdapter = new ArrayAdapter<String>(Home.this, android.R.layout.simple_list_item_1, allRestaurantNames);
+                            ArrayAdapter<String> searchAdapter = new ArrayAdapter<>(Home.this, android.R.layout.simple_list_item_1, allRestaurantNames);
 
                             searchBar.setAdapter(searchAdapter);
                         } catch (JSONException e) {
@@ -284,23 +282,22 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Intent account = new Intent(getBaseContext(),   Account.class);
-                startActivity(account);
+                startActivity(new Intent(Home.this, Account.class));
                 break;
             case R.id.order_history:
-                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
-                startActivity(orderHistory);
+                startActivity(new Intent(Home.this, OrderHistory.class));
+                break;
+            case R.id.current_orders:
+                startActivity(new Intent(Home.this, CurrentOrders.class));
                 break;
             case R.id.settings:
-                Intent settings = new Intent(getBaseContext(),   Settings.class);
-                startActivity(settings);
+                startActivity(new Intent(Home.this, Settings.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                Intent login = new Intent(getBaseContext(),   Login.class);
-                startActivity(login);
+                startActivity(new Intent(Home.this, Login.class));
                 break;
         }
         return false;

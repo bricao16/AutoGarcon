@@ -268,7 +268,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                 startActivity(QRcode);
                                 return true;
                             case R.id.action_home:
-                                Intent home = new Intent(getBaseContext(),Home.class);
+                                Intent home = new Intent(getBaseContext(), Home.class);
                                 startActivity(home);
                                 return true;
                             case R.id.action_cart:
@@ -290,24 +290,23 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
-            case R.id.account://switch to account page
-                Intent account = new Intent(getBaseContext(),   Account.class);
-                startActivity(account);
+            case R.id.account:
+                startActivity(new Intent(ShoppingCart.this, Account.class));
                 break;
-            case R.id.order_history://switch to order history
-                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
-                startActivity(orderHistory);
+            case R.id.order_history:
+                startActivity(new Intent(ShoppingCart.this, OrderHistory.class));
                 break;
-            case R.id.settings://switch to settings page
-                Intent settings = new Intent(getBaseContext(),   Settings.class);
-                startActivity(settings);
+            case R.id.current_orders:
+                startActivity(new Intent(ShoppingCart.this, CurrentOrders.class));
                 break;
-            case R.id.log_out://logs user out
+            case R.id.settings:
+                startActivity(new Intent(ShoppingCart.this, Settings.class));
+                break;
+            case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                Intent login = new Intent(getBaseContext(),   Login.class);
-                startActivity(login);
+                startActivity(new Intent(ShoppingCart.this, Login.class));
                 break;
         }
         return false;

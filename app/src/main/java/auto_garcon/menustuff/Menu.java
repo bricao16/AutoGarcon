@@ -43,6 +43,7 @@ import java.util.Map;
 
 import auto_garcon.accountstuff.*;
 import auto_garcon.accountstuff.Settings;
+import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.homestuff.*;
 import auto_garcon.initialpages.Login;
@@ -345,16 +346,13 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
-                                Intent home = new Intent(getBaseContext(),   QRcode.class);
-                                startActivity(home);
+                                startActivity(new Intent(Menu.this, QRcode.class));
                                 return true;
                             case R.id.action_home:
-                                Intent qrcode = new Intent(getBaseContext(),   Home.class);
-                                startActivity(qrcode);
+                                startActivity(new Intent(Menu.this, Home.class));
                                 return true;
                             case R.id.action_cart:
-                                Intent shoppingCart = new Intent(getBaseContext(),   ShoppingCart.class);
-                                startActivity(shoppingCart);
+                                startActivity(new Intent(Menu.this, ShoppingCart.class));
                                 return true;
                         }
                         return false;
@@ -368,26 +366,25 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      * This method is what provides the side navigation bar with its onClick functionality to
      * other activities.
      */
-    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Intent account = new Intent(getBaseContext(),   Account.class);
-                startActivity(account);
+                startActivity(new Intent(Menu.this, Account.class));
                 break;
             case R.id.order_history:
-                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
-                startActivity(orderHistory);
+                startActivity(new Intent(Menu.this, OrderHistory.class));
+                break;
+            case R.id.current_orders:
+                startActivity(new Intent(Menu.this, CurrentOrders.class));
                 break;
             case R.id.settings:
-                Intent settings = new Intent(getBaseContext(),   Settings.class);
-                startActivity(settings);
+                startActivity(new Intent(Menu.this, Settings.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
-                Intent login = new Intent(getBaseContext(),   Login.class);
-                startActivity(login);
+
+                startActivity(new Intent(Menu.this, Login.class));
                 break;
         }
         return false;

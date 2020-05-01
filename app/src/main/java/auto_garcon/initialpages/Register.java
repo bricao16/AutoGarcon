@@ -143,8 +143,7 @@ public class Register extends AppCompatActivity {
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 
-                                        Intent twoButton = new Intent(Register.this, TwoButtonPage.class);// goes to two Button Page
-                                        startActivity(twoButton);
+                                        startActivity(new Intent(Register.this, TwoButtonPage.class));
                                         finish();//prevents user from coming back
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -178,8 +177,7 @@ public class Register extends AppCompatActivity {
         textViewLogin.setOnClickListener(new View.OnClickListener() {// when the user clicks on this link we change to xml to the log in layout
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Register.this, Login.class);
-                startActivity(intent);
+                startActivity(new Intent(Register.this, Login.class));
             }
         });
     }

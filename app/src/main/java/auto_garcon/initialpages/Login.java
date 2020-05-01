@@ -109,8 +109,7 @@ public class Login extends AppCompatActivity {
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 
-                                        Intent twoButton = new Intent(Login.this, TwoButtonPage.class);
-                                        startActivity(twoButton);
+                                        startActivity(new Intent(Login.this, TwoButtonPage.class));
                                         finish();
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -144,8 +143,7 @@ public class Login extends AppCompatActivity {
         textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {// if user wants to go register page this will send them there
-                Intent signUp = new Intent(Login.this, Register.class);
-                startActivity(signUp);
+                startActivity(new Intent(Login.this, Register.class));
             }
         });
     }
