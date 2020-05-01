@@ -41,16 +41,14 @@ public class TwoButtonPage extends AppCompatActivity {
         scannerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {//when the scannerButton is clicked this will send the user to the QrCode page
-                Intent QrCode = new Intent(TwoButtonPage.this, QRcode.class);
-                startActivity(QrCode);
+                startActivity(new Intent(TwoButtonPage.this, QRcode.class));
             }
         });
+
         favButton.setOnClickListener(new View.OnClickListener() {// when the favButton is clicked user is sent to the HomePage
             @Override
             public void onClick(View v) {
-
-                Intent home = new Intent(TwoButtonPage.this, Home.class);//creating an intent to send the user to homepage
-                startActivity(home);
+                startActivity(new Intent(TwoButtonPage.this, Home.class));
             }
         });
 

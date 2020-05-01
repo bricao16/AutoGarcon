@@ -6,7 +6,10 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -30,17 +33,21 @@ import com.squareup.seismic.ShakeDetector;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
+import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
+import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
 /*
@@ -50,17 +57,15 @@ This retrieve data of restaurant pages from database by using JASON with https c
  */
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     //data fields
-    private JSONObject obj;
     private SharedPreference pref;//a file to keep track of user data as long as it's logged in.
-    RecyclerView recyclerView;//showing a list of restaurant pages
-    HomeAdapter adapter;//generating a list of restaurant pages
+    RecyclerView favoritesRecyclerView;//showing a list of restaurant pages
+    HomeAdapter homeAdapter;//generating a list of restaurant pages
     private ArrayList<RestaurantItem> items;//RestaurantItem generated through the database connection.
     //Here is for Search box
-    SearchView searchView;//a object for searching
-    ArrayList<String> search_list;//keeping restaurant page through the database connection.
-    ArrayAdapter<String> list_adapter;//to check user input match items in the database.
     //End of Search Box
-    HashMap<Integer, String> allRestaurantList;
+    private List<String> allRestaurantNames;
+    private List<Integer> allRestaurantIDs;
+    AutoCompleteTextView searchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,16 +90,13 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
-                                Intent QRcode = new Intent(Home.this, QRcode.class);
-                                startActivity(QRcode);
+                                startActivity(new Intent(Home.this, QRcode.class));
                                 return true;
                             case R.id.action_home:
-                                Intent home = new Intent(Home.this, Home.class);
-                                startActivity(home);
+                                startActivity(new Intent(Home.this, Home.class));
                                 return true;
                             case R.id.action_cart:
-                                Intent shoppingCart = new Intent(Home.this, ShoppingCart.class);
-                                startActivity(shoppingCart);
+                                startActivity(new Intent(Home.this, ShoppingCart.class));
                                 return true;
                         }
                         return false;
@@ -111,7 +113,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         final String FavoritesURL = "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername();
 
         items = new ArrayList<>();
-        recyclerView = findViewById(R.id.favorites_list);
+        favoritesRecyclerView = findViewById(R.id.favorites_list);
 
         JsonObjectRequest getRequestForFavorites = new JsonObjectRequest(Request.Method.GET, FavoritesURL, null,
                 new Response.Listener<JSONObject>() {
@@ -127,7 +129,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                 if (response.get(key) instanceof JSONObject) {
 
                                     RestaurantItem itemToBeAdded = new RestaurantItem();
-                                    JSONObject item = response.getJSONObject(key.toString());
+                                    JSONObject item = response.getJSONObject(key);
 
                                     Iterator<String> inner_keys = item.keys();
                                     while(inner_keys.hasNext()) {
@@ -168,17 +170,17 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
                                     items.add(itemToBeAdded);
                                     if(items.size() == 0) {
-                                        setContentView(R.layout.no_favorites_home);
+                                        setContentView(R.layout.activity_empty_favorites_home);
                                     }
                                 }
                             }
 
-                            recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
-                            adapter = new HomeAdapter(Home.this, items);
-                            recyclerView.setAdapter(adapter);
+                            favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
+                            homeAdapter = new HomeAdapter(Home.this, items);
+                            favoritesRecyclerView.setAdapter(homeAdapter);
 
                             if(pref.getFavorites().size() == 0 || pref.getFavorites() == null) {
-                                setContentView(R.layout.no_favorites_home);
+                                setContentView(R.layout.activity_empty_favorites_home);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -189,14 +191,27 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Home.this, error.toString(),Toast.LENGTH_LONG).show();
+
                     }
                 }
 
         );
-        Log.d("asdfasdfasdf, ", pref.getFavorites().toString());
 
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForFavorites);
+
+        searchBar = findViewById(R.id.search_bar);
+
+        searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent menu = new Intent(Home.this, Menu.class);
+
+                allRestaurantNames.indexOf(searchBar.getText().toString());
+
+                menu.putExtra("restaurant id", allRestaurantIDs.get(allRestaurantNames.indexOf(searchBar.getText().toString())));
+                startActivity(menu);
+            }
+        });
 
         final String allRestaurantsURL = "http://50.19.176.137:8000/restaurants";
 
@@ -206,7 +221,8 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                     public void onResponse(JSONObject response) {
                         try {
                             //parsing through json from get request to add them to menu
-                            allRestaurantList = new HashMap<Integer, String>();
+                            allRestaurantNames = new ArrayList<>();
+                            allRestaurantIDs = new ArrayList<>();
 
                             Iterator<String> keys = response.keys();
                             while(keys.hasNext()) {
@@ -215,30 +231,25 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                 if (response.get(key) instanceof JSONObject) {
                                     JSONObject item = response.getJSONObject(key);
 
-                                    int restaurantID = 0;
-                                    String restaurantName = "";
-
                                     Iterator<String> inner_keys = item.keys();
 
                                     while(inner_keys.hasNext()) {
                                         String inner_key = inner_keys.next();
 
-
                                         switch(inner_key){
                                             case "restaurant_id":
-                                                restaurantID = Integer.parseInt(item.get(inner_key).toString());
+                                                allRestaurantIDs.add(Integer.parseInt(item.get(inner_key).toString()));
                                                 break;
                                             case "restaurant_name":
-                                                restaurantName = item.get(inner_key).toString();
+                                                allRestaurantNames.add(item.get(inner_key).toString());
                                                 break;
                                         }
                                     }
-
-                                    allRestaurantList.put(restaurantID, restaurantName);
                                 }
                             }
+                            ArrayAdapter<String> searchAdapter = new ArrayAdapter<>(Home.this, android.R.layout.simple_list_item_1, allRestaurantNames);
 
-                            Log.d("sdf", allRestaurantList.toString());
+                            searchBar.setAdapter(searchAdapter);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -248,59 +259,17 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Home.this, error.toString(),Toast.LENGTH_LONG).show();
+                        if(error.networkResponse.statusCode == 500) {
+                            Toast.makeText(Home.this, "Error retrieving restaurants",Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
 
         );
 
-        //Here is for Search box
-        searchView = (SearchView) findViewById(R.id.searchView);
-        searchView.onActionViewExpanded();
-        list_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,search_list);
-        items.clear();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                items.clear();
-                if(allRestaurantList.containsValue(query)){
-                    Toast.makeText(Home.this, "Yes Match found "+query,Toast.LENGTH_LONG).show();
-                    RestaurantItem itemToBeAdded = new RestaurantItem();
-
-                    //go through all restaurants
-                    for (Map.Entry mapElement : allRestaurantList.entrySet()) {
-                        int id = (int) mapElement.getKey();
-                        String name = (String) mapElement.getValue();
-                        itemToBeAdded = new RestaurantItem();
-                        //if name is same as the input
-                        if( name.equalsIgnoreCase(query) ){
-                            itemToBeAdded.setName( query );
-                            itemToBeAdded.setID( id );
-                            items.add( itemToBeAdded );
-                        }
-                    }
-                    recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
-                    adapter = new HomeAdapter(Home.this, items);
-                    recyclerView.setAdapter(adapter);
-                }
-                else{
-                    Toast.makeText(Home.this, "No Match found "+query,Toast.LENGTH_LONG).show();
-                }
-
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                return false;
-            }
-
-        });
-
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForSearch);
+
+
     }
 
     @Override
@@ -313,23 +282,22 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Intent account = new Intent(getBaseContext(),   Account.class);
-                startActivity(account);
+                startActivity(new Intent(Home.this, Account.class));
                 break;
             case R.id.order_history:
-                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
-                startActivity(orderHistory);
+                startActivity(new Intent(Home.this, OrderHistory.class));
+                break;
+            case R.id.current_orders:
+                startActivity(new Intent(Home.this, CurrentOrders.class));
                 break;
             case R.id.settings:
-                Intent settings = new Intent(getBaseContext(),   Settings.class);
-                startActivity(settings);
+                startActivity(new Intent(Home.this, Settings.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                Intent login = new Intent(getBaseContext(),   Login.class);
-                startActivity(login);
+                startActivity(new Intent(Home.this, Login.class));
                 break;
         }
         return false;

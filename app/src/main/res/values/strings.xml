@@ -21,6 +21,9 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="new_password">New Password</string>
     <string name="add_to_favorites">Add to Favorites</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="current_orders">Current Orders</string>
 
     <string name="change_name">Change Name</string>
     <string name="first_name">First Name</string>
@@ -29,7 +32,7 @@
     <string name="adding_item_confirmation_text">Adding this item will remove the other items currently in cart.</string>
 
     <string name="cart_is_empty">The cart is currently empty. Add items to spend money.</string>
-    <string name ="no_Orders">You have no recent Orders</string>
+    <string name="no_Orders">You have no recent Orders</string>
 
     <string name="no_favorites">No favorite restaurants, add restaurants to fill this page.</string>
 

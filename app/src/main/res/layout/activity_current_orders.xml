@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- xml layout for the order history activity which contains the user's most
+     recent orders from all restaurants -->
+
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,9 +10,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:openDrawer="end"
-    android:id="@+id/shopping_cart_main"
-    tools:context="auto_garcon.cartorderhistory.ShoppingCart">
+    android:id="@+id/current_orders_main"
+    tools:context="auto_garcon.cartorderhistory.CurrentOrders">
 
+    <!-- contains all xml elements except for the side nav bar -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -18,40 +23,9 @@
             android:id="@+id/xml_toolbar"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@color/colorAccent" />
-
-        <!-- list of cart items -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="115dp"
-            ></androidx.recyclerview.widget.RecyclerView>
-
-        <!-- button that places order -->
+            android:background="@color/colorAccent"/>
 
         <!-- bottom nav bar -->
-        <Button
-        android:id="@+id/btn_placeorder"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_marginBottom="43dp"
-        android:background="@color/colorAccent"
-        android:text="Place Order"
-        android:textColor="@android:color/black"></Button>
-
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_above="@+id/bottom_navigation"
-            android:layout_marginBottom="2dp"
-            android:background="@color/colorAccent"
-            android:text="Cancel Order"
-            android:textColor="@android:color/black"></Button>
-
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
@@ -62,6 +36,19 @@
             app:itemTextColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:menu="@menu/bottom_nav_menu" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/current_orders_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottom_navigation"
+            android:layout_below="@+id/xml_toolbar"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="5dp" />
 
     </RelativeLayout>
 

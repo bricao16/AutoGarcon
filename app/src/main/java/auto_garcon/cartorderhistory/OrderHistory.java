@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,22 +24,17 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import auto_garcon.accountstuff.*;
 import auto_garcon.homestuff.*;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
-import auto_garcon.initialpages.TwoButtonPage;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
-import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 
 /**
@@ -58,9 +52,9 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        order = new ArrayList<String>();
-        date = new ArrayList<String >();
-        carts = new ArrayList<ShoppingCartSingleton>();
+        order = new ArrayList<>();
+        date = new ArrayList<>();
+        carts = new ArrayList<>();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
@@ -76,7 +70,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
             public void onResponse(String response) {
 
                 if (response.equals("No order history for this customer")) {
-                    setContentView(R.layout.emptyorders);
+                    setContentView(R.layout.activity_empty_orders_order_history);
 
                 } else {
                     JsonParser parser = new JsonParser();
@@ -84,12 +78,9 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
                     setContentView(R.layout.activity_order_history);
                     recyclerView = findViewById(R.id.order_list);
-
-                    Log.d("213", json.toString());
-
                     /*--------------------------------------------------------------*/
                     //parsing through json from get request to add them to menu
-                    int tracker =0;
+                    int tracker = 0;
 
                     for(int i = 0;i<json.size();i++){
                         if(i!=0){//first item check
@@ -124,9 +115,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                         }
                     }
 
-                    OrderHistoryAdapter adapter;// used to hold to allow recent orders to show up as cards for xml layout
 
-                    adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date);//values that will be needed to input data into our xml objects that is handled in our adapter class
+                    OrderHistoryAdapter adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date);//values that will be needed to input data into our xml objects that is handled in our adapter class
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
 
@@ -144,30 +134,23 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
                     BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                             new BottomNavigationView.OnNavigationItemSelectedListener() {
-                                @Override
-                                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                                     switch (item.getItemId()) {
                                         case R.id.action_scan:
-                                            Intent QRcode = new Intent(getBaseContext(), QRcode.class);
-                                            startActivity(QRcode);
+                                            startActivity(new Intent(OrderHistory.this, QRcode.class));
                                             return true;
                                         case R.id.action_home:
-                                            Intent home = new Intent(getBaseContext(), Home.class);
-                                            startActivity(home);
+                                            startActivity(new Intent(OrderHistory.this, Home.class));
                                             return true;
                                         case R.id.action_cart:
-                                            Intent shoppingCart = new Intent(getBaseContext(), ShoppingCart.class);
-                                            startActivity(shoppingCart);
+                                            startActivity(new Intent(OrderHistory.this, ShoppingCart.class));
+                                            return true;
                                     }
                                     return false;
                                 }
                             };
 
                     bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-
-                    //Toast.makeText(OrderHistory.this,response,Toast.LENGTH_LONG).show();
-
-
                 }
             }
         },
@@ -177,40 +160,33 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onErrorResponse (VolleyError error){
                 Toast.makeText(OrderHistory.this, error.getMessage(), Toast.LENGTH_LONG).show();
-
                 }
-            }
+            });
 
-
-            );
-        VolleySingleton.getInstance(OrderHistory .this).
-
-            addToRequestQueue(getRequest);// sending the request to the database
+        VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
     }
-
 
     //onClick for side nav bar
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Intent account = new Intent(getBaseContext(),   Account.class);
-                startActivity(account);
+                startActivity(new Intent(OrderHistory.this, Account.class));
                 break;
             case R.id.order_history:
-                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
-                startActivity(orderHistory);
+                startActivity(new Intent(OrderHistory.this, OrderHistory.class));
+                break;
+            case R.id.current_orders:
+                startActivity(new Intent(OrderHistory.this, CurrentOrders.class));
                 break;
             case R.id.settings:
-                Intent settings = new Intent(getBaseContext(),   Settings.class);
-                startActivity(settings);
+                startActivity(new Intent(OrderHistory.this, Settings.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                Intent login = new Intent(getBaseContext(),   Login.class);
-                startActivity(login);
+                startActivity(new Intent(OrderHistory.this, Login.class));
                 break;
         }
         return false;

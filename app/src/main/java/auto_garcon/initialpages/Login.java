@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,7 +30,7 @@ import auto_garcon.singleton.VolleySingleton;
  */
 
 public class Login extends AppCompatActivity {
-    private EditText emailId;// used to extract data from emathe login activtiy xml
+    private EditText usernameId;// used to extract data from emathe login activtiy xml
     private EditText password; // used to extract data from the password field in the login activity xml
     private Button buttonSignIn;// used to identify when the user is attempting to sign in
     private TextView textViewSignUp;// used to identify if the user wants to register
@@ -55,7 +56,7 @@ public class Login extends AppCompatActivity {
             finish();//prevents them from coming back to this page
         }
 
-        emailId = findViewById(R.id.username);// associating xml objects with the java Object equivalent
+        usernameId = findViewById(R.id.username);// associating xml objects with the java Object equivalent
         password = findViewById(R.id.password);// associating xml objects with the java Object equivalent
         buttonSignIn = findViewById(R.id.signUp);// associating xml objects with the java Object equivalent
         textViewSignUp = findViewById(R.id.loginLink);// associating xml objects with the java Object equivalent
@@ -63,17 +64,23 @@ public class Login extends AppCompatActivity {
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String username = emailId.getText().toString().trim();//extracted data from xml object and converted into a string
+                final String username = usernameId.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String passwd = password.getText().toString().trim();//extracted data from xml object and converted into a string
 
                 if(username.isEmpty()){//checks if the username they are trying to submit is empty
-                    emailId.setError("Please enter your username");
-                    emailId.requestFocus();
+                    usernameId.setError("Please enter your username");
+                    usernameId.requestFocus();
                 }
                 else if (passwd.isEmpty()){//checks if the password the user is trying to submit is empty
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
+                else if(username.length()>50){
+                    usernameId.setError("Please enter a username with less than 50 characters");
+                    usernameId.requestFocus();
+
+                }
+
                 else if (!(username.isEmpty() && passwd.isEmpty())) {//if everything is good we proceed with the get request
 
                     //post request for logging in
@@ -102,11 +109,11 @@ public class Login extends AppCompatActivity {
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 
-                                        Intent twoButton = new Intent(Login.this, TwoButtonPage.class);
-                                        startActivity(twoButton);
+                                        startActivity(new Intent(Login.this, TwoButtonPage.class));
                                         finish();
                                     } catch (JSONException e) {
                                         e.printStackTrace();
+                                        Toast.makeText(Login.this, "Error Occurred", Toast.LENGTH_SHORT).show();// if something fails with our request display error
                                     }
                                 }
                             },
@@ -115,7 +122,12 @@ public class Login extends AppCompatActivity {
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
                                     error.printStackTrace();
-                                    Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG).show();
+                                    if(error.networkResponse.statusCode == 401){
+                                        Toast.makeText(Login.this,"Could not Sign in",Toast.LENGTH_LONG).show();
+                                    }
+                                    else{
+                                        Toast.makeText(Login.this,"Invalid username or password",Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }
                     );
@@ -131,8 +143,7 @@ public class Login extends AppCompatActivity {
         textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {// if user wants to go register page this will send them there
-                Intent signUp = new Intent(Login.this, Register.class);
-                startActivity(signUp);
+                startActivity(new Intent(Login.this, Register.class));
             }
         });
     }

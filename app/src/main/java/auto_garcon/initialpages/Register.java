@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,23 +72,43 @@ public class Register extends AppCompatActivity {
                 final String username = userID.getText().toString().trim();//extracted data from xml object and converted into a string
 
                 if(TextUtils.isEmpty(firstName)){//checking if user entered there firstName
-                    emailId.setError("Please enter first name");
-                    emailId.requestFocus();
+                    userFirst.setError("Please enter first name");
+                    userFirst.requestFocus();
                 }
                 else if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
-                    password.setError("Please enter last name");
-                    password.requestFocus();
+                    userLast.setError("Please enter last name");
+                    userLast.requestFocus();
                 }
                 else if(TextUtils.isEmpty(email)){//checking if user entered their email
                     emailId.setError("Please enter email id");
                     emailId.requestFocus();
                 }
+                else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
+                    emailId.setError("Please enter a valid email");
+                    emailId.requestFocus();
+                }
                 else if(TextUtils.isEmpty(passwd)){//checking if user entered their password
+                    Log.d("Tag","test:"+Patterns.EMAIL_ADDRESS.matcher(email).matches());
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
                 else if(passwd.length()<6){//checks if the user entered a password lass than 6 characters
                     password.setError("Password Must be Greater than 6 Characters");
+                    password.requestFocus();
+
+                }
+                else if(passwd.equals(passwd.toLowerCase())){//checks if the password contains one uppercase
+                    password.setError("Password Must contain at least one uppercase");
+                    password.requestFocus();
+                }
+                else if(passwd.equals(passwd.toUpperCase())){//checkis if password contains one lowercase
+                    password.setError("Password Must contain at least one lowercase");
+                    password.requestFocus();
+                }
+                else if(username.length()>50){
+                    userID.setError("Please enter a username with less than 50 characters");
+                    userID.requestFocus();
+
                 }
                 else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email)
                         && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirments are met than we can send our put request to the database
@@ -122,8 +143,7 @@ public class Register extends AppCompatActivity {
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 
-                                        Intent twoButton = new Intent(Register.this, TwoButtonPage.class);// goes to two Button Page
-                                        startActivity(twoButton);
+                                        startActivity(new Intent(Register.this, TwoButtonPage.class));
                                         finish();//prevents user from coming back
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -134,8 +154,14 @@ public class Register extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
+
+                                    if(error.networkResponse.statusCode == 409){
+                                        Toast.makeText(Register.this, "Customer username already exist please enter a different username", Toast.LENGTH_LONG).show();
+                                    }
+                                    else{
+                                        Toast.makeText(Register.this,"User could not be created",Toast.LENGTH_LONG).show();
+                                    }
                                     error.printStackTrace();
-                                    Toast.makeText(Register.this, error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             }
                     );
@@ -151,8 +177,7 @@ public class Register extends AppCompatActivity {
         textViewLogin.setOnClickListener(new View.OnClickListener() {// when the user clicks on this link we change to xml to the log in layout
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Register.this, Login.class);
-                startActivity(intent);
+                startActivity(new Intent(Register.this, Login.class));
             }
         });
     }
