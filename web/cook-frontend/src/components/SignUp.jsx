@@ -219,7 +219,7 @@ class SignUp extends React.Component {
 
 
   render() {
-    //if sucessful submit redirect to cook view
+    //if successful submit redirect to Home page
     if (this.state.redirect === true) {
       return (
         <div>
