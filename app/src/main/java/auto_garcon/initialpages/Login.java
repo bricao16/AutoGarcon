@@ -86,7 +86,6 @@ public class Login extends AppCompatActivity {
                 else if (!(username.isEmpty() && passwd.isEmpty())) {//if everything is good we proceed with the get request
 
                     //post request for logging in
-                    String url = "http://50.19.176.137:8000/customer/login";
                     JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
                     try{
                         obj.put("username", username);
@@ -96,7 +95,7 @@ public class Login extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, obj,
+                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, "http://50.19.176.137:8000/customer/login", obj,
                             new Response.Listener<JSONObject>()
                             {
                                 @Override

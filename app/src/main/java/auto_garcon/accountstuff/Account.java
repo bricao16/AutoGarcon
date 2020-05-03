@@ -85,15 +85,14 @@ public class Account extends AppCompatActivity {
                 }
                 else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email) && TextUtils.isEmpty(username))) {// if all the requirements are met than we can send our put request to the database
                     //put request for updating Account Information
-                    String url = "http://50.19.176.137:8000/customer/update";
 
-                    StringRequest putRequest = new StringRequest(Request.Method.POST, url,
+                    StringRequest putRequest = new StringRequest(Request.Method.POST, "http://50.19.176.137:8000/customer/update",
                             new Response.Listener<String>()
                             {
                                 @Override
                                 public void onResponse(String response) {
                                     // response
-                                    Toast.makeText(Account.this,response.toString(),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Account.this, response, Toast.LENGTH_LONG).show();
 
                                     pref.setUser(new UserSingleton(firstName,  lastName, username, email));
 
