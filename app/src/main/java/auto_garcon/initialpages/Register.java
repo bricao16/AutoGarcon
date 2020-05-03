@@ -114,7 +114,6 @@ public class Register extends AppCompatActivity {
                         && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirments are met than we can send our put request to the database
 
                     //put request for registering
-                    String url = "http://50.19.176.137:8000/customer/register";
                     JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
                     try{
                         obj.put("customer_id", username);
@@ -128,7 +127,7 @@ public class Register extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, url, obj,
+                    JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, "http://50.19.176.137:8000/customer/register", obj,
                             new Response.Listener<JSONObject>()
                             {
                                 @Override
