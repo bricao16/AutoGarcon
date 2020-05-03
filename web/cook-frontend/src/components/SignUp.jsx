@@ -8,21 +8,22 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-//import {Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import https from 'https';
 import axios from 'axios';
 import Link from '@material-ui/core/Link';
 import Alert from 'react-bootstrap/Alert';
+import Home from './Home';
 
 
-//import Cookies from 'universal-cookie';
+import Cookies from 'universal-cookie';
 
 /*this sign up will be used to create a 
 restuarant. 
 It currently has no functionality other
 than a outline of a form to be submitted*/
 
-//const cookies = new Cookies();
+const cookies = new Cookies();
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -216,17 +217,15 @@ class SignUp extends React.Component {
   }
 
 
+  state = { redirect: null };
 
   render() {
     //if sucessful submit redirect to cook view
     if (this.state.redirect === true) {
       return (
-        <React.Fragment>
           <Alert show={this.state.show} variant={this.state.alertVariant}>
             {this.state.response}
           </Alert>
-          <CookView section="" />
-        </React.Fragment>
       );
     }
     if (cookies.get('mystaff').position === "manager") {
