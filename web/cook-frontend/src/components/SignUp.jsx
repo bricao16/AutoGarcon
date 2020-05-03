@@ -217,15 +217,19 @@ class SignUp extends React.Component {
   }
 
 
-  state = { redirect: null };
 
   render() {
     //if sucessful submit redirect to cook view
     if (this.state.redirect === true) {
       return (
+        <div>
+          
           <Alert show={this.state.show} variant={this.state.alertVariant}>
             {this.state.response}
           </Alert>
+          <Home section="" />
+
+        </div>
       );
     }
     if (cookies.get('mystaff').position === "manager") {
