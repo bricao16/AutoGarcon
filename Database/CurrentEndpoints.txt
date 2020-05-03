@@ -73,6 +73,37 @@ POST /restaurant/update
 		On error: 
 			(500) Error updating restaurant information
 
+GET /fonts
+	Returns font options
+	Inputs: none
+	Outputs:
+		On success:
+			{
+				i:
+				{
+					font_id,
+					font_name
+				}
+			}
+		On error:
+			(500) Error retrieving fonts
+
+POST /restaurant/customization
+	Inputs (in body of request): restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, logo (optional)
+	Outputs:
+		On success:
+			(200) Successfully updated restaurant customization!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, logo (optional)
+		If restaurant does not exist:
+			(409) Error: restaurant does not exist
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant of the item:
+			(400) Must be the restaurant manager to update restaurant information!
+		On error: 
+			(500) Error updating restaurant customization
+
 
 //==================================================================================//
 //							ENDPOINTS RELATING TO ORDERS 							//
@@ -270,6 +301,35 @@ PUT /staff/register
 		On error:
 			(500) Error creating new staff member
 
+POST /staff/update
+	Updates staff info including staff_id, first_name, last_name, contact_num, email, password
+	Inputs (in body of request): staff_id, first_name, last_name, contact_num, email, password (optional) 
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			{
+				token:
+				{
+					token
+				}
+				staff:
+				{
+					staff_id,
+					first_name,
+					last_name,
+					contact_num,
+					email
+				}
+			}
+		If JWT is not valid or not supplied:
+			(401) Must be authorized!
+		If JWT is not a staff token:
+			(401) Must be signed in as a staff member!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: staff_id, first_name, last_name, contact_num, email, password (optional)
+		On error:
+			(500) Error updating staff info
+
 
 //==================================================================================//
 //							ENDPOINTS RELATING TO CUSTOMERS 						//
@@ -357,7 +417,9 @@ GET /customer/history/:id
 					order_num,
 					restaurant_id,
 					logo,
+					item_id,
 					item_name,
+					price,
 					quantity,
 					order_date,
 					table_num
@@ -367,6 +429,33 @@ GET /customer/history/:id
 			(200) No order history for this customer
 		On error:
 			(500) Error retrieving order history
+
+GET /customer/inprogress/:id
+	Retrieves a customer's in progress orders
+	Inputs: customer_id
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			{
+				i =   {
+					order_num,
+					restaurant_id,
+					item_id,
+					item_name,
+					price,
+					quantity,
+					order_date,
+					table_num
+				}
+			}
+		If a user has no in progress orders:
+			(200) This customer has no in progress orders
+		If JWT is not valid or not supplied: 
+			(401) Must be authorized!
+		If JWT is for a different customer:
+			(401) Can't retrieve other customer's favorites!
+		On error:
+			(500) Error retrieving in progress orders
 
 
 //==============================================================================//
@@ -386,7 +475,8 @@ GET /menu/:id
 					price,
 					category,
 					picture,
-					in_stock
+					in_stock,
+					description
 				}
 			}
 		If restaurant has no menu items:
@@ -396,27 +486,27 @@ GET /menu/:id
 
 PUT /menu/add
 	Adds a new item to the menu
-	Inputs (in body of request): restaurant_id, item_name, calorie_num, category, price
+	Inputs (in body of request): restaurant_id, item_name, calorie_num, category, price, description
 	Outputs:
 		On success:
 			(200) Successfully added new menu item!
 		If item_name and restaurant_id exists already:
 			(409) Error: item already exists
 		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price
+			(400) Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description
 		On error:
 			(500) Error adding new menu item
 
 POST /menu/update
 	Updates an existing menu item
-	Inputs (in body of request): item_id, restaurant_id, item_name, calorie_num, category, in_stock, price
+	Inputs (in body of request): item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description
 	Outputs:
 		On success:
 			(200) Successfully updated menu item!
 		If the item does not exist at the restaurant:
 			(409) Error: item does not exist
 		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price
+			(400) Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description
 		On error:
 			(500) Error updating menu item
 
@@ -502,16 +592,51 @@ PUT /alexa/order/new
 
 PUT /alexa/order/update
 	Updates an existing pending order for an alexa
-	Inputs (in body of request): order_num, item, quantity
+	Inputs (in body of request): order_num, item_id, quantity
 	Outputs:
 		On sucess:
 			(200) Successfully updated order!
 		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: order_num, item, quantity
+			(400) Error: Missing parameter. Required parameters: order_num, item_id, quantity
 		If order_num does not exist:
 			(409) Error: order does not exist or is not pending
 		On error:
 			(500) Error updating order
+
+POST /alexa/order/remove
+	Updates the quantity of an item in an alexa order
+	Inputs (in body of request): order_num, item_id, quantity (new quantity)
+	Outputs:
+		On sucess:
+			(200) Successfully updated order!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: order_num, item_id, quantity
+		If order_num and item_id does not exist:
+			(409) Error: item does not exist in the order
+		If quantity is negative:
+			(409) Quantity can't be negative
+		On error:
+			(500) Error updating order
+
+GET /alexa/order/:id
+	Returns items in a pending alexa order
+	Inputs: alexa_id
+	Outputs:
+		On success:
+			{
+				i: {
+					order_num,
+					item_id,
+					item_name,
+					quantity,
+					order_date,
+					table_num
+				}
+			}
+		If no in progress orders exist:
+			(200) No pending order
+		On error:
+			(500) Error retrieving order
 
 
 //==========================================================================//
