@@ -22,6 +22,7 @@ import GeneralIcon from '@material-ui/icons/ListAltOutlined';
 import Stats from '../Statistics/Stats';
 import Menu from '../Menu/Menu';
 import StoreInfo from '../General/StoreInfo';
+import QRCode from  '../General/QRCode';
 import CookView from '../Staff/CookView';
 import Customize from '../Customize/Customize';
 import LogoImage from "../../../assets/AutoGarconLogo.png";
@@ -242,6 +243,9 @@ export default function NavItems(props) {
               <Route path="/cookview">
                 <CookView/>
               </Route>
+							<Route path="/QRCode">
+								<QRCode info = {props.restaurantInfo[1][1]} />
+							</Route>
             </Switch>
              <footer className={classes.footerStyle}>
               Powered by AutoGarcon
