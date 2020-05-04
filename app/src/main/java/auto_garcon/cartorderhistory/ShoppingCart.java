@@ -132,6 +132,8 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                     } catch (JSONException e) {
                         //TODO figure out how to handle this other than stack trace
                         e.printStackTrace();
+                        Toast.makeText(ShoppingCart.this, "Error occured", Toast.LENGTH_LONG).show();
+
                     }
 
                     /**

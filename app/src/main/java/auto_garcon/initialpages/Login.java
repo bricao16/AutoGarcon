@@ -122,6 +122,7 @@ public class Login extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
+                                    Log.d("asdff", String.valueOf(error.networkResponse.statusCode));
                                     error.printStackTrace();
                                     if(error.networkResponse.statusCode == 401){
                                         Toast.makeText(Login.this,"Could not Sign in",Toast.LENGTH_LONG).show();

@@ -49,12 +49,14 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
     private ArrayList<String> order;// used to capture user order number
     private ArrayList<ShoppingCartSingleton> carts;// used to handle items returned from the recent order history
     private ArrayList<String> date;// used to capture time for all orders
+    private ArrayList<Double> prices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         order = new ArrayList<>();
         date = new ArrayList<>();
         carts = new ArrayList<>();
+        prices = new ArrayList<>();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
@@ -68,7 +70,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
                 if (response.equals("No order history for this customer")) {
                     setContentView(R.layout.activity_empty_orders_order_history);
-
                 } else {
                     JsonParser parser = new JsonParser();
                     JsonObject json = (JsonObject) parser.parse(response);
@@ -86,12 +87,14 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();// get the item for that order
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
+                                item.setCost(json.getAsJsonObject(""+i).get("price").getAsDouble());
                                 carts.get(tracker-1).addToCart(item);
                             }
                             else{
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();//create the new item
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
+                                item.setCost(json.getAsJsonObject(""+i).get("price").getAsDouble());
                                 order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());//get the new order number and add it to the item arraylsit
                                 carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));//get the new restaurant id and create a new shopping cart
                                 carts.get(tracker).addToCart(item);//ad the new item to the cart
@@ -103,6 +106,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
                             item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());
                             item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());
+                            item.setCost(json.getAsJsonObject(""+i).get("price").getAsDouble());
                             order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());
                             carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));
                             carts.get(i).addToCart(item);
