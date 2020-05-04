@@ -21,6 +21,14 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:background="@drawable/rectangle"/>
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_gravity="center"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:alpha=".5"
+            app:srcCompat="@drawable/qr_code_example" />
     </FrameLayout>
 
     <LinearLayout
@@ -39,7 +47,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="10dp"
-            android:text="Scan Code on Table"
+            android:text="Scan QR Code on Restaurant Table"
             android:textColor="#000000"
             android:textSize="20sp"/>
 <!--

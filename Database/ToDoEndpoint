@@ -1,0 +1,24 @@
+Last Updated: 05/02/2020
+
+TODO:
+Web
+-GET  services
+-POST staff account information
+-EDIT get/menu | description, photo, allergens 
+-PUT  restaurant
+-GET  customization
+-POST customization
+-GET  customer experience (Alexa launch)
+-POST customer experience
+-GET  message_from_customer
+-PUT  message_to_customer
+
+Android
+-EDIT order history | item prices
+-GET  in progress orders
+-POST forget password endpoint | create temp password
+-EDIT get/menu | include sides
+
+Alexa
+-GET  order/pending
+-POST assistance

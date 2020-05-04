@@ -25,7 +25,7 @@ class Customize extends React.Component{
         const cookies = new Cookies();
         this.state = {
           customizeInfo: [],
-          fonts: [ 'Arial', 'Roboto','Times New Roman', 'Courier New', 'Courier', 'Verdana'],
+          fonts: [ 'Oswald', 'Raleway', 'Open Sans', 'Lato', 'Pt Sans', 'Lora', 'Montserrat', 'Playfair Display', 'Benchnine', 'Merriweather'],
           sectionEdit: "",
           show:false,
           font: this.props.info.font,
@@ -257,12 +257,17 @@ renderInfo(){
                                     {/* <option value="Selected">{this.state.customizeInfo[5][1]}</option> */}
                                     
                                     {/* dropdown menu options */}
-                                    <option value="Arial">{this.state.fonts[0]}</option>
-                                    <option value="Roboto">{this.state.fonts[1]}</option>
-                                    <option value="Times New Roman">{this.state.fonts[2]}</option>
-                                    <option value="Courier New">{this.state.fonts[3]}</option>
-                                    <option value="Courier">{this.state.fonts[4]}</option>
-                                    <option value="Verdana">{this.state.fonts[5]}</option>
+                                    <option value="Oswald">{this.state.fonts[0]}</option>
+                                    <option value="Raleway">{this.state.fonts[1]}</option>
+                                    <option value="Open Sans">{this.state.fonts[2]}</option>
+                                    <option value="Lato">{this.state.fonts[3]}</option>
+                                    <option value="Pt Sans">{this.state.fonts[4]}</option>
+                                    <option value="Lora">{this.state.fonts[5]}</option>
+                                    <option value="Montserrat">{this.state.fonts[6]}</option>
+                                    <option value="Playfair Display">{this.state.fonts[7]}</option>
+                                    <option value="Benchnine">{this.state.fonts[8]}</option>
+                                    <option value="Merriweather">{this.state.fonts[9]}</option>
+
 
                                 </select>     
                             </div>

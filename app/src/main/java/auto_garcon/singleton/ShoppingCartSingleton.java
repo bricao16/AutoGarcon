@@ -10,6 +10,10 @@ import auto_garcon.menustuff.MenuItem;
 public class ShoppingCartSingleton {
     private  ArrayList<MenuItem> items;
     private int restaurantID;
+    private String font;
+    private String primaryColor;
+    private String secondaryColor;
+    private String tertiaryColor;
 
     public ShoppingCartSingleton(){
         this.items = new ArrayList<MenuItem>();
@@ -78,5 +82,37 @@ public class ShoppingCartSingleton {
             toReturn= toReturn+items.get(i).getNameOfItem()+ " Qty("+items.get(i).getQuantity()+")"+"\n";
         }
         return toReturn;
+    }
+
+    public void setFont(String font) {
+        this.font = font;
+    }
+
+    public String getFont() {
+        return this.font;
+    }
+
+    public void setPrimaryColor(String primaryColor) {
+        this.primaryColor = primaryColor;
+    }
+
+    public String getPrimaryColor() {
+        return this.primaryColor;
+    }
+
+    public void setSecondaryColor(String secondaryColor) {
+        this.secondaryColor = secondaryColor;
+    }
+
+    public String getSecondaryColor() {
+        return this.secondaryColor;
+    }
+
+    public void setTertiaryColor(String tertiaryColor) {
+        this.tertiaryColor = tertiaryColor;
+    }
+
+    public String getTertiaryColor() {
+        return this.tertiaryColor;
     }
 }

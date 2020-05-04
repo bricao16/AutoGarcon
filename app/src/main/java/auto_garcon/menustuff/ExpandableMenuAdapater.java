@@ -12,6 +12,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.example.auto_garcon.R;
 
 import java.util.HashMap;
@@ -80,7 +82,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
         if(view == null) {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.expandable_menu, null);
+            view = inflater.inflate(R.layout.expandable_menu_header, null);
         }
 
         TextView listHeader = view.findViewById(R.id.list_header);
@@ -114,13 +116,29 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 addToCartPopup.show();
 
+                ConstraintLayout background = addToCartPopup.findViewById(R.id.menu_popup);
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart);
                 TextView outOfStock = addToCartPopup.findViewById(R.id.order_items);
+                TextView calorieCount = addToCartPopup.findViewById(R.id.calories);
+                TextView itemName = addToCartPopup.findViewById(R.id.itemNameMenuPop);
+                TextView itemPrice = addToCartPopup.findViewById(R.id.menuItemPrice);
+
+                background.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+
+                String caloriesString = "Calories: " + getChild(i, j).getCalories();
+                calorieCount.setText(caloriesString);
+                calorieCount.setTextColor(Color.WHITE);
+                itemName.setText(getChild(i, j).getNameOfItem());
+                itemName.setTextColor(Color.WHITE);
+                String priceString = "Price: " + String.format("$%.02f", getChild(i, j).getPrice());
+                itemPrice.setText(priceString);
+                itemPrice.setTextColor(Color.WHITE);
 
                 //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
                 if(getChild(i, j).getAmountInStock() == 0) {
                     outOfStock.setText("Out of Stock");
                     addToCart.setVisibility(View.GONE);
+                  //  calorieCount.setVisibility(View.GONE);
                 }
 
                     addToCart.setOnClickListener(new View.OnClickListener() {
@@ -128,6 +146,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                     public void onClick(View v) {
                         if(pref.getShoppingCart().getCart().size() == 0) {
                             cart = new ShoppingCartSingleton(getChild(i, j).getRestaurantID());
+                            cart.setPrimaryColor(pref.getShoppingCart().getPrimaryColor());
+                            cart.setSecondaryColor(pref.getShoppingCart().getSecondaryColor());
+                            cart.setTertiaryColor(pref.getShoppingCart().getTertiaryColor());
                             cart.addToCart(getChild(i, j));
                             pref.setShoppingCart(cart);
                         }
@@ -155,7 +176,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 @Override
                                 public void onClick(View v) {
                                     cart = new ShoppingCartSingleton(getChild(i, j).getRestaurantID());
-
+                                    cart.setPrimaryColor(pref.getShoppingCart().getPrimaryColor());
+                                    cart.setSecondaryColor(pref.getShoppingCart().getSecondaryColor());
+                                    cart.setTertiaryColor(pref.getShoppingCart().getTertiaryColor());
                                     cart.addToCart(getChild(i, j));
                                     pref.setShoppingCart(cart);
                                     confirmPopup.dismiss();
