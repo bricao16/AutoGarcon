@@ -207,10 +207,16 @@ class MLogin extends React.Component {
 			Sign In
 		  </Button>
 		  <Grid container>
-			<Grid item>
+			<Grid item xs> 
 			  {/* Create an account link */}
 			  <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
 				{"Don't have an account? Sign Up"}
+			  </Link>
+			</Grid>
+			<Grid item>
+			  {/* Create an account link */}
+			  <Link href="/forgot_password" variant="body2" style={{color: '#0B658A'}}>
+				{"Forgot Password?"}
 			  </Link>
 			</Grid>
 		  </Grid>
