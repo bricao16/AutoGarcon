@@ -25,6 +25,7 @@ import StoreInfo from '../General/StoreInfo';
 import CookView from '../Staff/CookView';
 import Customize from '../Customize/Customize';
 import LogoImage from "../../../assets/AutoGarconLogo.png";
+import CropFreeIcon from '@material-ui/icons/CropFree';
 
 import {
     Switch,
@@ -198,7 +199,7 @@ export default function NavItems(props) {
 				<Divider />
         <List>
           <ListItem button component="a" href ='/QRCode'>
-            <ListItemIcon><GeneralIcon/></ListItemIcon>
+            <ListItemIcon><CropFreeIcon/></ListItemIcon>
             <ListItemText primary="QR Code Generator" />
           </ListItem>
         </List>
