@@ -20,6 +20,7 @@ Asks for the staff ID, password and logs in if the user and correct password
 exists on the database cookies are set to use persistant state once logged in.
  */
 
+
 const useStyles = makeStyles(theme => ({
   paper: {
     display: 'flex',
@@ -41,7 +42,7 @@ const useStyles = makeStyles(theme => ({
 
 const cookies = new Cookies();
 
-class MLogin extends React.Component {
+class ForgotPassword extends React.Component {
 	
   constructor(props){
 	  super(props);
@@ -162,7 +163,7 @@ class MLogin extends React.Component {
           </div>
           {/* Cook Sign In Title */}
           <Typography component="h1" variant="h5">
-            Manager Sign In
+            Password Reset
           </Typography>
         </div>
         {/* Form for putting in user id and password */}
@@ -173,23 +174,11 @@ class MLogin extends React.Component {
 			margin="normal"
 			required
 			fullWidth
-			id="ID"
-			label="Staff ID"
-			name="ID"
-			autoComplete="ID"
+			id="Email"
+			label="Email"
+			name="Email"
+			autoComplete="Email"
 			autoFocus
-		  />
-		  <TextField onChange = {this.handlePasswd}
-			value = {this.state.passwd}
-			variant="outlined"
-			margin="normal"
-			required
-			fullWidth
-			name="password"
-			label="Password"
-			type="password"
-			id="password"
-			autoComplete="current-password"
 		  />
 		  {/* Remember me check box no functionality yet
 		  <FormControlLabel
@@ -204,19 +193,16 @@ class MLogin extends React.Component {
 			style={{backgroundColor: '#0B658A', color:"#FFFFFF"}} 
 			className={useStyles.submit}
 		  >
-			Sign In
+			Recover
 		  </Button>
-		  <Grid container>
-			<Grid item xs> 
-			  {/* Create an account link */}
-			  <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
-				{"Don't have an account? Sign Up"}
-			  </Link>
-			</Grid>
+      <br></br> 
+      <br></br>
+		  <Grid container direction="row" justify="center" alignItems="center">
 			<Grid item>
-			  {/* Create an account link */}
-			  <Link href="/forgot_password" variant="body2" style={{color: '#0B658A'}}>
-				{"Forgot Password?"}
+			  {/* Link Back Home*/}
+        
+			  <Link href="/" variant="body2" style={{color: '#0B658A'}}>
+				{"Return to Home"}
 			  </Link>
 			</Grid>
 		  </Grid>
@@ -227,4 +213,4 @@ class MLogin extends React.Component {
   }
 }
 //const MLoginCookies = withCookies(MLogin);
-export default MLogin; 
+export default ForgotPassword; 
