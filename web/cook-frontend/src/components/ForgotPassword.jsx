@@ -200,9 +200,9 @@ class ForgotPassword extends React.Component {
 		  <Grid container direction="row" justify="center" alignItems="center">
 			<Grid item>
 			  {/* Link Back Home*/}
-        Return to 
+        
 			  <Link href="/" variant="body2" style={{color: '#0B658A'}}>
-				{" Home"}
+				{"Return to Home"}
 			  </Link>
 			</Grid>
 		  </Grid>
