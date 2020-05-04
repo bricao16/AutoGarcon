@@ -3,16 +3,18 @@ import {
     XYPlot,
     XAxis, // Shows the values on x axis
     YAxis, // Shows the values on y axis
-    VerticalBarSeries,
     ChartLabel,
-    LabelSeries
+    HorizontalGridLines,
+    VerticalGridLines,
+    LineSeries,
+
 } from 'react-vis';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
-
+import 'react-vis/dist/style.css';
 const chartWidth = 800;
 const chartHeight = 400;
-const chartDomain = [0, chartHeight];
+const chartDomain = [-5, chartHeight];
 
 class HighestSelling extends React.Component {
     constructor(props) {
@@ -24,35 +26,12 @@ class HighestSelling extends React.Component {
               checked:true
 
         };
-        this.checkboxHandler = this.checkboxHandler.bind(this);
+
         this.updateData = this.updateData.bind(this);
         this.renderPlot = this.renderPlot.bind(this);
-        this.renderCheckBoxes = this.renderCheckBoxes.bind(this);
-    }
-
-    changeSelection(category){
-      this.setState({'selectedTime':category})
-    }
-    //handle when a checkbox is changed
-    checkboxHandler(event){
-        var categories = this.state.unselectedCategories;
-
-        if(categories.includes(event.target.id)){
-             //if already in unselected remove it
-            const index = categories.indexOf(event.target.id);
-            categories.splice(index, 1);
-            this.setState({ unselectedCategories: categories });
-        }
-        else{
-              //if not in unselected add it
-            var joined = this.state.unselectedCategories.push(event.target.id);
-            this.setState({ unselectedCategories: joined });
-        }
-        //now update the data to render correctly
-        this.updateData();
-
 
     }
+
     //create a checkbox for every category of menu item
     renderCheckBoxes(){
         return this.props.data.map((item) => 
@@ -80,46 +59,28 @@ class HighestSelling extends React.Component {
         }.bind(this));
     }
     renderPlot(){
+        const MSEC_DAILY = 6000000;
+        const timestamp = new Date('May 4 2020').getTime();
         return(
-        <XYPlot 
-            xType="ordinal" 
-            width={chartWidth} 
-            height={chartHeight } 
-            yDomain={chartDomain}
+            <XYPlot xType="time" width={800} height={400} margin={{bottom: 50}}>
+              <HorizontalGridLines />
+              <VerticalGridLines />
+              <XAxis title="Hour"  tickTotal = {8} />
+              <YAxis title="Number of Orders" />
+              <LineSeries
+                data={[
+                  {x: timestamp + MSEC_DAILY, y: 3},
+                  {x: timestamp + MSEC_DAILY * 2, y: 5},
+                  {x: timestamp + MSEC_DAILY * 3, y: 15},
+                  {x: timestamp + MSEC_DAILY * 4, y: 17},
+                  {x: timestamp + MSEC_DAILY * 5, y: 12},
+                  {x: timestamp + MSEC_DAILY * 6, y: 10},
+                  {x: timestamp + MSEC_DAILY * 7, y: 14},
+                  {x: timestamp + MSEC_DAILY * 8, y: 9}
+                ]}
+              />
 
-        >
-            <XAxis />
-            <YAxis />
-            <VerticalBarSeries 
-                data={this.state.data}
-                 style={{opacity: '0.80'}}
-            />
-            <ChartLabel
-                text="Categories"
-                className="alt-x-label"
-                includeMargin={false}
-                xPercent={0.90}
-                yPercent={1.12}
-                />
-            <ChartLabel
-                text="Units Sold"
-                className="alt-y-label"
-                includeMargin={false}
-                xPercent={0.03}
-                yPercent={0.00}
-                style={{
-                  transform: 'rotate(-90)',
-                  textAnchor: 'end'
-                }}
-                />
-            <LabelSeries
-                data={this.state.data.map(obj => {
-                    return { ...obj, label: obj.label.toString() }
-                })}
-                labelAnchorX="middle"
-                labelAnchorY="text-before-edge"
-            />
-        </XYPlot>
+            </XYPlot>
         );
     }
     render() {
@@ -131,10 +92,6 @@ class HighestSelling extends React.Component {
                     <option onClick={()=>this.changeSelection("Week")}>Week</option>
                     <option onClick={()=>this.changeSelection("Month")}>Month</option>
                   </select>
-                </div>
-
-                 <div className="d-flex flex-wrap pt-3">
-                    {this.renderCheckBoxes()}                
                 </div>
                 {this.renderPlot()}
 
