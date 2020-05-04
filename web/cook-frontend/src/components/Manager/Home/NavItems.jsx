@@ -228,35 +228,34 @@ export default function NavItems(props) {
       </Drawer>
       <main className={classes.content} style={{'backgroundColor':'#fffffff'}}>
         <div className={classes.toolbar} />
-              <Switch>
-              <Route exact path="/manager">
-                <Stats/>
-              </Route>
-              <Route path="/menu">
-                <Menu menu = {props.restaurantInfo[0][1]}/>
-              </Route>
-              <Route path="/general">
-                <StoreInfo info = {props.restaurantInfo[1][1]} />
-              </Route>
-              <Route path="/customize">
-                <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} />
-              </Route>
-              <Route path="/cookview">
-                <CookView/>
-              </Route>
-							<Route path="/QRCode">
-								<QRCode info = {props.restaurantInfo[1][1]} />
-							</Route>
-              <Route path="/account">
-                <AccountSettings/>
-              </Route>
-            </Switch>
-             <footer className={classes.footerStyle}>
-              Powered by AutoGarcon
-              <img src={LogoImage} width="auto" height="50vh" alt="waiter" />
-            </footer> 
+        <Switch>
+          <Route exact path="/manager">
+            <Stats/>
+          </Route>
+          <Route path="/menu">
+            <Menu menu = {props.restaurantInfo[0][1]}/>
+          </Route>
+          <Route path="/general">
+            <StoreInfo info = {props.restaurantInfo[1][1]} />
+          </Route>
+          <Route path="/customize">
+            <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} />
+          </Route>
+          <Route path="/cookview">
+            <CookView/>
+          </Route>
+				  <Route path="/QRCode">
+					  <QRCode info = {props.restaurantInfo[1][1]} />
+				  </Route>
+          <Route path="/account">
+            <AccountSettings/>
+          </Route>
+        </Switch>
+        <footer className={classes.footerStyle}>
+          Powered by AutoGarcon
+          <img src={LogoImage} width="auto" height="50vh" alt="waiter" />
+        </footer> 
       </main>
-
     </div>
   );
 }
