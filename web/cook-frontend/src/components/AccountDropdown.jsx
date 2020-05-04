@@ -57,7 +57,7 @@ class AccountDropdown extends React.Component {
               {this.props.firstName} {this.props.lastName}
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">View Profile</Dropdown.Item>
+              <Dropdown.Item href="/account">View Account</Dropdown.Item>
               <div onClick={()=>this.privacyPolicy()}>
                 <Dropdown.Item>Privacy Policy</Dropdown.Item>
               </div>
