@@ -5,6 +5,7 @@ import ManagerPage from "./components/Manager/Home/Manager";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
+import ForgotPassword from "./components/ForgotPassword"
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 
 import Home from "./components/Home";
@@ -46,6 +47,9 @@ class App extends React.Component{
               </Route>
               <Route path="/login_cook">
                 <CLogin/>
+              </Route>
+              <Route path="/forgot_password">
+                <ForgotPassword/>
               </Route>
               <Route path="/privacy_policy">
                 <PrivacyPolicy/>
