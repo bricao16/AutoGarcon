@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import {XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries} from 'react-vis';
 import Dropdown from 'react-bootstrap/Dropdown';
 import HighestSelling from './HighestSelling';
-
+import Traffic from './Traffic';
 /*this is the stats component for the manager
 view. The stats are stored in state and rendered 
 onto cards in by statsProp
@@ -50,19 +50,7 @@ class Stats extends React.Component{
                 {this.state.selected === "Highest Selling Items" ? 
                   <HighestSelling data={data} />
                 :
-                  <XYPlot
-                    width={300}
-                    height={300}>
-                    <HorizontalGridLines />
-                    <LineSeries
-                      data={[
-                        {x: 1, y: 10},
-                        {x: 2, y: 5},
-                        {x: 3, y: 15}
-                      ]}/>
-                    <XAxis />
-                    <YAxis />
-                  </XYPlot>
+                  <Traffic data = {data} />
                 }
                 </div>
             </Container> 
@@ -73,7 +61,7 @@ class Stats extends React.Component{
 }
 
 const backgroundStyle = {
-  'backgroundColor': '#f1f1f1',
+  'paddingBottom': '4em',
   'minWidth': '70vw'
 }
 

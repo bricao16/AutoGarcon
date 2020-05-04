@@ -75,6 +75,7 @@ class MenuItem extends React.Component {
                         <li class="list-group-item">{this.getStockState(this.props.menu[1].in_stock)}</li>
                         <li class="list-group-item">${this.props.menu[1].price}</li>
                         <li class="list-group-item">Calories: {this.props.menu[1].calories}</li>
+                        <li class="list-group-item">{this.props.menu[1].description}</li>
                       </ul>
                     </div>
                   </div>

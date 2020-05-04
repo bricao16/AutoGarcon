@@ -73,7 +73,9 @@ class NewItem extends React.Component {
 			this.handleValidation("Price field isn't a number.  Please set to a number.");	
 		} else if(this.state.price > 100000){
 			this.handleValidation("Price field is too large.  Please try a value less than 100,000.");
-		} else {
+		} else if(this.state.description.length > 300){
+      this.handleValidation("Description field is too large.  Please reduce to 300 characters or less.");
+    } else {
 			
 			this.state.price = Number(this.state.price).toFixed(2);
 
@@ -88,7 +90,8 @@ class NewItem extends React.Component {
 					+'&calorie_num='+this.state.calories
 					+'&category='+this.state.category
 					+'&price='+this.state.price
-					+'&in_stock='+this.state.in_stock
+          +'&in_stock='+this.state.in_stock
+          +'&description='+this.state.description
 			}
 			// Item needs to be edited
 			else {
@@ -101,7 +104,8 @@ class NewItem extends React.Component {
 					+'&calorie_num='+this.state.calories
 					+'&category='+this.state.category
 					+'&price='+this.state.price
-					+'&in_stock='+this.state.in_stock
+          +'&in_stock='+this.state.in_stock
+          +'&description='+this.state.description
 			}
 			
 			axios({
@@ -300,7 +304,7 @@ class NewItem extends React.Component {
                 
                 <div className="form-group">
                   <label htmlFor="itemDescription">Description</label>
-                  <textarea className="form-control" id="itemDescription" rows="3"></textarea>
+                  <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} placeholder="300 Character limit"></textarea>
                 </div>
 
                 <div className="form-group">
@@ -390,7 +394,7 @@ class NewItem extends React.Component {
                 
                 <div className="form-group">
                   <label htmlFor="itemDescription">Description</label>
-                  <textarea className="form-control" id="itemDescription" rows="3"></textarea>
+                  <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} defaultValue={this.state.description} placeholder="300 Character limit"></textarea>
                 </div>
 
                 <div className="form-group">
