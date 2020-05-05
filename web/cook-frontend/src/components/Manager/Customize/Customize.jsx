@@ -7,6 +7,7 @@ import Cookies from 'universal-cookie';
 import Row from 'react-bootstrap/Row';
 import { ChromePicker } from 'react-color';
 import Modal from 'react-bootstrap/Modal';
+import Alert from 'react-bootstrap/Alert';
 
 /*this is the customize component for the manager
 view. The customization info is prefilled from the pull from
@@ -37,7 +38,8 @@ class Customize extends React.Component{
           temp_tertiary:this.props.info.tertiary_color,
           font_color : '#111111',
           temp_font_color: '#111111',
-          file: null,
+          file: this.props.logo,
+   
           fileName:"Choose file",
           restaurant_id :cookies.get("mystaff").restaurant_id,
           token:cookies.get('mytoken')
@@ -58,13 +60,18 @@ class Customize extends React.Component{
       if(this.state.sectionEdit ==="Primary")
       {  this.setState({ 'temp_primary':  e.hex});
       }
-      else if(this.state.sectionEdit ==="Seconday")
+      else if(this.state.sectionEdit ==="Secondary")
       {
+        console.log("here");
         this.setState({ 'temp_secondary':  e.hex});
       }
       else if(this.state.sectionEdit ==="Tertiary")
       {
         this.setState({ 'temp_tertiary':  e.hex});
+      }
+      else if(this.state.sectionEdit ==="Font")
+      {
+        this.setState({ 'font':  e.target.value});
       }
       else if(this.state.sectionEdit ==="Font Color")
       {
@@ -74,32 +81,60 @@ class Customize extends React.Component{
     }
 
       onChangeFile = (e) => {
-        console.log(e.target.files)
+   
         //change the file name
         this.setState({ fileName: e.target.files[0].name });
         //get our image into blob format
         this.loadXHR(e.target.files[0]).then(function(blob) {
-          // here the image is a blob
-          this.setState({ file: blob });
+          // here the image is a blob but we need the arayBuffer data
+          var bufferPromise = blob.arrayBuffer();
+          blob.arrayBuffer().then(function(buffer){
+                    const data = new Int8Array(buffer);
+                    console.log(data);
+                   this.setState({ file:  {'type': 'Buffer', 'data': data} });
+              }.bind(this));
+   
+   
         }.bind(this));
       }
 
 
   /* Used for connecting to Customization in database */
   handleSubmit(event) {
+      //change permanent
+      if(this.state.sectionEdit ==="Primary")
+      {  
+        this.state.primary = this.state.temp_primary
+
+      }
+      else if(this.state.sectionEdit ==="Secondary")
+      {
+
+        this.state.secondary = this.state.temp_secondary;
+      }
+      else if(this.state.sectionEdit ==="Tertiary")
+      {
+        this.state.tertiary = this.state.temp_tertiary;
+      }
+
+      else if(this.state.sectionEdit ==="Font Color")
+      {
+        this.state.font_color = this.state.temp_font_color;
+      }
     console.log(this.state);
     this.editForm("");
 
-    //event.preventDefault();
+    event.preventDefault();
     
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
 
     axios({
       method: 'POST',
-      url:  process.env.REACT_APP_DB +'/restaurant/update/',
-      data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
-      '&address='+this.state.address+'&phone='+this.state.phone+
-      '&opening='+this.state.open+'&closing='+this.state.close,
+      url:  process.env.REACT_APP_DB +'/restaurant/customization',
+      //+'&logo='+this.state.file
+      data: 'restaurant_id='+this.state.restaurant_id+'&primary_color='+this.state.primary+
+      '&secondary_color='+this.state.secondary+'&tertiary_color='+this.state.tertiary+
+      '&font='+this.state.font+'&font_color='+this.state.font_color+'&logo='+this.state.file,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer ' + this.state.token
@@ -127,6 +162,7 @@ class Customize extends React.Component{
     if (success) {
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
+      this.handleModalClose();
     }
     else {
       this.setState({response: 'Failed to update'})
@@ -134,6 +170,12 @@ class Customize extends React.Component{
     }
 
     this.setState({show: true});
+    
+    setTimeout(() => {
+      this.setState({
+      show:false
+      });
+    }, 2500)
   }
 
 //change the category of which is being edited
@@ -185,24 +227,30 @@ renderInfo(){
                                 onChangeComplete={this.onChange }
                               />
                               <br/>
+                               <div className="row m-2">
+                                  <button  onClick ={this.handleSubmit}className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                              </div>
                             </Container>
                           </div>
                         </div>
                       </Modal.Body>
                     }
-                    {/*secondary*/}
+                    {/*Secondary*/}
                     {this.state.sectionEdit === "Secondary" && 
                     <Modal.Body style={{backgroundColor:this.state.temp_secondary}}>
                       <div className="container">
                         <div className="row">
                           <Container>
-                            <ChromePicker
-                              color={ this.state.temp_secondary }
-                              onChangeComplete={this.onChange }
-                            />
-                   
-                          </Container>
-                        </div>
+                              <ChromePicker
+                                color={ this.state.temp_secondary }
+                                onChangeComplete={this.onChange }
+                              />
+                              <br/>
+                               <div className="row m-2">
+                                  <button  onClick ={this.handleSubmit}className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                              </div>
+                            </Container>
+                          </div>
                         </div>
                       </Modal.Body>
                     }
@@ -216,6 +264,12 @@ renderInfo(){
                               color={ this.state.temp_tertiary }
                               onChangeComplete={this.onChange }
                             />
+                             <form onSubmit = {this.handleSubmit}>
+
+                              <div className="row m-2">
+                                  <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                              </div>
+                            </form>
                           </Container>
                          </div>
                         </div>
@@ -233,6 +287,11 @@ renderInfo(){
                             />
                           </Container>
                           </div>
+                          <form onSubmit = {this.handleSubmit}>
+                            <div className="row m-2">
+                                <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                            </div>
+                          </form>
                         </div>
                       </Modal.Body>
                     }
@@ -248,12 +307,12 @@ renderInfo(){
                         {/* if Font is not the section to edit render the database info and a button to edit*/}
 
                         {this.state.sectionEdit !== "Font" ?
-                          <p style={{margin: "0", padding: "0.8em"}}>{this.state.customizeInfo[5][1]}</p>
+                          <p style={{margin: "0", padding: "0.8em"}}>{this.state.font}</p>
                             :   
                             <form className="form-inline">
                             {/* choose font and submit to change font */}
                             <div style= {{float: 'left'}}>
-                                <select id="lang" onChange={this.change.bind(this)} value={this.state.value}>
+                                <select id="lang" onChange={this.onChange} >
                                     {/* <option value="Selected">{this.state.customizeInfo[5][1]}</option> */}
                                     
                                     {/* dropdown menu options */}
@@ -273,7 +332,7 @@ renderInfo(){
                             </div>
                             <br></br>
                             <div className="row m-2">
-                                        <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                <button  onClick = {this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
                             </div>
                             <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
                                 </form>
@@ -287,7 +346,7 @@ renderInfo(){
                     <Card.Body >
                       <div className = "p-3">
                         {this.state.sectionEdit !== "Logo" ? 
-                            <img src={this.props.logo}  width="auto" height="45px" alt="waiter" /> 
+                            <img src={this.state.file}  width="auto" height="45px" alt="waiter" /> 
                              :
                              <Container>
                             <div className="input-group">
@@ -307,7 +366,7 @@ renderInfo(){
                             </div>
                             <br/>
                             <div className="row m-2">
-                               <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                               <button  onClick = {this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
                             <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
                              </div>
                          </Container>
@@ -326,6 +385,7 @@ renderInfo(){
 
                     </Card.Body>
                    </Card>
+
                   <Card className="text-center m-2 w-20" style={itemStyle}>
                     <Card.Header onClick={this.handleModalShow}>Secondary
                       <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
@@ -360,7 +420,6 @@ renderInfo(){
     render() {
         const {customizeInfo } = this.state;
         const resturantInfo = this.props.info;
-        console.log(resturantInfo);
         //put resturant info into an array
         Object.keys(resturantInfo).forEach(function(key) {
             customizeInfo.push([key ,resturantInfo[key]]);
@@ -371,6 +430,9 @@ renderInfo(){
                 <h2 style ={menuHeaderStyle}>
                   Customize
                 </h2>
+                <Alert show={this.state.show} variant={this.state.alertVariant}>
+                  {this.state.response}
+                </Alert>
                     <Container fluid style={{'minHeight': '70vh',   'minWidth': '100%'}}>
                         <div className="d-flex flex-wrap">
                             {this.renderInfo()}
