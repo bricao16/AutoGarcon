@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -58,23 +59,22 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
+        recyclerView = findViewById(R.id.order_list);
 
         pref = new SharedPreference(this);
 
-        final StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/customer/history/" + pref.getUser().getUsername(), new Response.Listener<String>() {
+        StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/customer/history/" + pref.getUser().getUsername(), new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-
                 if (response.equals("No order history for this customer")) {
-                    setContentView(R.layout.activity_empty_orders_order_history);
-
+                    recyclerView.setVisibility(View.GONE);
                 } else {
+                    findViewById(R.id.no_order_history).setVisibility(View.GONE);
+
                     JsonParser parser = new JsonParser();
                     JsonObject json = (JsonObject) parser.parse(response);
 
-                    setContentView(R.layout.activity_order_history);
-                    recyclerView = findViewById(R.id.order_list);
                     /*--------------------------------------------------------------*/
                     //parsing through json from get request to add them to menu
                     int tracker = 0;
@@ -107,7 +107,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));
                             carts.get(i).addToCart(item);
                             date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());
-                            Log.d("asdff", "" + order.get(i));
                             tracker=tracker+1;
                         }
                     }

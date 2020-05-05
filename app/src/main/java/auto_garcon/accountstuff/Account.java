@@ -64,7 +64,6 @@ public class Account extends AppCompatActivity {
                 final String firstName = changeFirstName.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String lastName = changeLastName.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String email = changeEmail.getText().toString().trim();//extracted data from xml object and converted into a string
-                final String passwd = changePassword.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String username = changeUsername.getText().toString().trim();//extracted data from xml object and converted into a string
 
                 if(TextUtils.isEmpty(firstName)){//checking if user entered there firstName
