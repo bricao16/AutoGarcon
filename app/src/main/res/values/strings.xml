@@ -14,6 +14,7 @@
     <string name="cart">Cart</string>
     <string name="old_account">Already Have an Account? \nLog in here</string>
     <string name="new_account">"Don't Have an Account? \nSign up here"</string>
+    <string name="forgotPassword">Forgot Password?</string>
     <string name="placeholder_account_name">"Account Name"</string>
     <string name="changepasswd">Change Password</string>
     <string name="save">Save</string>

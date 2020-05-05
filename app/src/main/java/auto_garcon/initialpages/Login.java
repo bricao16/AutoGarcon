@@ -3,6 +3,7 @@ package auto_garcon.initialpages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -36,6 +37,9 @@ public class Login extends AppCompatActivity {
     private Button buttonSignIn;// used to identify when the user is attempting to sign in
     private TextView textViewSignUp;// used to identify if the user wants to register
     private SharedPreference pref;//This object is used to store information about the user that can be used outside of this page
+    private TextView forgotPassword;
+    private static final Uri webpage = Uri.parse("http://autogarcon.herokuapp.com/forgot_password");// creating a uri object that will allow us to create an activity that sends a user to the link provided
+
 
     /**
      * This method instantiates and constraints the xml object assoiciated to the login java class.
@@ -62,6 +66,7 @@ public class Login extends AppCompatActivity {
         password = findViewById(R.id.password);// associating xml objects with the java Object equivalent
         buttonSignIn = findViewById(R.id.signUp);// associating xml objects with the java Object equivalent
         textViewSignUp = findViewById(R.id.loginLink);// associating xml objects with the java Object equivalent
+        forgotPassword = findViewById(R.id.forgotPassword);
 
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,6 +151,13 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View view) {// if user wants to go register page this will send them there
                 startActivity(new Intent(Login.this, Register.class));
+            }
+        });
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
+                startActivity(webIntent);
             }
         });
     }
