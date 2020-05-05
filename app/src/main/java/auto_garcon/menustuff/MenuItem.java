@@ -60,7 +60,7 @@ public class MenuItem implements Serializable{
         this.cost = getPrice() * getQuantity();
     }
 
-    public void setCost(double cost){this.cost=cost;}
+    public void setCost(double costt){this.cost=costt;}
 
     public double getCost() {
         return this.cost;

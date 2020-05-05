@@ -87,14 +87,16 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();// get the item for that order
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
-                                item.setCost(json.getAsJsonObject(""+i).get("price").getAsDouble());
+                                item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
+                               // Log.d("asdff", "" + item.getCost());
+
                                 carts.get(tracker-1).addToCart(item);
                             }
                             else{
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();//create the new item
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
-                                item.setCost(json.getAsJsonObject(""+i).get("price").getAsDouble());
+                                item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
                                 order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());//get the new order number and add it to the item arraylsit
                                 carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));//get the new restaurant id and create a new shopping cart
                                 carts.get(tracker).addToCart(item);//ad the new item to the cart
@@ -106,12 +108,11 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
                             item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());
                             item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());
-                            item.setCost(json.getAsJsonObject(""+i).get("price").getAsDouble());
+                            item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
                             order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());
                             carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));
                             carts.get(i).addToCart(item);
                             date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());
-                            Log.d("asdff", "" + order.get(i));
                             tracker=tracker+1;
                         }
                     }
