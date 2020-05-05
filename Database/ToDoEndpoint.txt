@@ -20,6 +20,7 @@ Alexa
 
 TODO:
 Web
+-EDIT post customization to include (cuisine and greeting)
 -EDIT upload images
 -EDIT get/menu | description, photos, allergen
 -GET  services
@@ -35,3 +36,4 @@ Android
 
 Alexa
 -POST assistance
+-GET launch request greeting
