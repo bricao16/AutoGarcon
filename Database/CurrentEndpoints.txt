@@ -667,13 +667,13 @@ GET /alexa/order/:id
 //==========================================================================//
 
 POST /verify
-	Verifies a JSON Web Token
-	Inputs: JWT
+	Verifies a JSON Web Token and checks if it is for a manager
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
-			{
-				'message': 'Test Passed'
-			}
+			(200) Valid manager token
+		If JWT is not for a manager:
+			(401) Not a manager
 		On error/invalid token:
 			(401) Must be authorized!
 
