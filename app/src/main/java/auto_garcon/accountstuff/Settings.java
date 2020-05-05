@@ -79,12 +79,12 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 
         faqButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {//when the scannerButton is clicked this will send the user to the QrCode page
+            public void onClick(View v) {//when the faq button is clicked this will send the user to the faq page page
           //      startActivity(new Intent(Settings.this, faq.class));
             }
         });
 
-        privacyLegalButton.setOnClickListener(new View.OnClickListener() {// when the favButton is clicked user is sent to the HomePage
+        privacyLegalButton.setOnClickListener(new View.OnClickListener() {// when the legal button is clicked user is sent to the legal page
             @Override
             public void onClick(View v) {
          //       startActivity(new Intent(Settings.this, legal.class));
