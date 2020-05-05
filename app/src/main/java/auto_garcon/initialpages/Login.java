@@ -3,6 +3,8 @@ package auto_garcon.initialpages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -85,7 +87,6 @@ public class Login extends AppCompatActivity {
                 else if(username.length()>50){
                     usernameId.setError("Please enter a username with less than 50 characters");
                     usernameId.requestFocus();
-
                 }
 
                 else if (!(username.isEmpty() && passwd.isEmpty())) {//if everything is good we proceed with the get request
@@ -153,6 +154,12 @@ public class Login extends AppCompatActivity {
                 startActivity(new Intent(Login.this, Register.class));
             }
         });
+
+       Drawable drawable = getDrawable(R.drawable.icons8forgotpassword);
+      drawable.setBounds(0,0,(int)(drawable.getIntrinsicWidth()*.5),(int)(drawable.getIntrinsicHeight()*.5));// making the drawable scalable
+        //todo : https://icons8.com refrence this in about page
+      forgotPassword.setCompoundDrawables(drawable,null,null,null);
+       //forgotPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.icons8forgotpassword,0,(int)(forgotPassword.getMaxHeight()*.5),(int)(forgotPassword.getMaxWidth()*.5));
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
