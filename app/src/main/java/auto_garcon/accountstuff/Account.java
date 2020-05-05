@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +35,7 @@ public class Account extends AppCompatActivity {
     Button saveAccountChanges;//used to identify when user wants to register
     TextView changePassword;//used to send user into Sign in Activity
     private SharedPreference pref;//This object is used to store information about the user that can be used outside of this page
+
     /**
      * This methods occurs when the user is brought to the Account xml
      * It defines the constraint for the xml objects when they are interacted with
@@ -43,60 +45,89 @@ public class Account extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //sets display to account activity page
         setContentView(R.layout.activity_account);
 
+        //initializing new preference variable
         pref = new SharedPreference(this);
+
+        //setting input container fields to variables
         changeFirstName = findViewById(R.id.first_name_change);
         changeLastName = findViewById(R.id.last_name_change);
         changeUsername = findViewById(R.id.change_username);
         changeEmail = findViewById(R.id.change_email);
+
+        //action buttons to save and change information
         saveAccountChanges = findViewById(R.id.save_acct_change);
         changePassword = findViewById(R.id.change_password);
 
+        //Filling in current user information into container fields
         changeFirstName.setText(pref.getUser().getFirstName());
         changeLastName.setText(pref.getUser().getLastName());
         changeUsername.setText(pref.getUser().getUsername());
         changeEmail.setText(pref.getUser().getEmail());
 
-        /**/
+        /*
+        * If user selects the save account changes buttons
+        * users information will update in database given inputs
+        * */
         saveAccountChanges.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                final String firstName = changeFirstName.getText().toString().trim();//extracted data from xml object and converted into a string
-                final String lastName = changeLastName.getText().toString().trim();//extracted data from xml object and converted into a string
-                final String email = changeEmail.getText().toString().trim();//extracted data from xml object and converted into a string
-                final String passwd = changePassword.getText().toString().trim();//extracted data from xml object and converted into a string
-                final String username = changeUsername.getText().toString().trim();//extracted data from xml object and converted into a string
 
-                if(TextUtils.isEmpty(firstName)){//checking if user entered there firstName
+                //extracting user data and converting the objects into stings
+                final String firstName = changeFirstName.getText().toString().trim();
+                final String lastName = changeLastName.getText().toString().trim();
+                final String email = changeEmail.getText().toString().trim();
+                final String passwd = changePassword.getText().toString().trim();
+                final String username = changeUsername.getText().toString().trim();
+
+                if(TextUtils.isEmpty(firstName)){//checking if user entered their firstName
                     changeFirstName.setError("Please enter first name");
                     changeFirstName.requestFocus();
                 }
-                else if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
+                else if(firstName.length()>50){//checking if firstname is less than 50 characters
+                    changeFirstName.setError("Limit first name to less than 50 characters");
+                    changeFirstName.requestFocus();
+                }
+                else if (TextUtils.isEmpty(lastName)){//checking if user entered their lastName
                     changeLastName.setError("Please enter last name");
+                    changeLastName.requestFocus();
+                }
+                else if(lastName.length()>50){//checking if lastname is less than 50 characters
+                    changeLastName.setError("Limit last name to less than 50 characters");
                     changeLastName.requestFocus();
                 }
                 else if(TextUtils.isEmpty(email)){//checking if user entered their email
                     changeEmail.setError("Please enter email ");
                     changeEmail.requestFocus();
                 }
-                else if(TextUtils.isEmpty(username)){//checking if user entered their email
-                    changeEmail.setError("Please enter username ");
+                else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
+                    changeEmail.setError("Please enter a valid email");
                     changeEmail.requestFocus();
                 }
+                else if(TextUtils.isEmpty(username)){//checking if user entered their username
+                    changeUsername.setError("Please enter username ");
+                    changeUsername.requestFocus();
+                }
+                else if(username.length()>50){//checking if username is less than 50 characters
+                    changeUsername.setError("Please enter a username with less than 50 characters");
+                    changeUsername.requestFocus();
+                }
                 else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email) && TextUtils.isEmpty(username))) {// if all the requirements are met than we can send our put request to the database
-                    //put request for updating Account Information
-                    String url = "http://50.19.176.137:8000/customer/update";
 
-                    StringRequest putRequest = new StringRequest(Request.Method.POST, url,
+                    //put request for updating Account Information
+                    StringRequest putRequest = new StringRequest(Request.Method.POST, "http://50.19.176.137:8000/customer/update",
                             new Response.Listener<String>()
                             {
                                 @Override
                                 public void onResponse(String response) {
                                     // response
-                                    Toast.makeText(Account.this,response.toString(),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Account.this, response, Toast.LENGTH_LONG).show();
 
-                                    pref.setUser(new UserSingleton(firstName,  lastName, username, email));
+                                    pref.setUser(new UserSingleton(firstName,  lastName, username, email));//updating preferences in app
 
+                                    //sends user to two button page after information has been updated
                                     Intent twoButton = new Intent(Account.this, Login.class);// creating an intent to change to the twoButton xml
                                     startActivity(twoButton);// move to the two button page
                                     finish();// this prevents the user from coming back to the Account page if they successfully updated the page
@@ -104,7 +135,7 @@ public class Account extends AppCompatActivity {
                             },
                             new Response.ErrorListener() {
                                 @Override
-                                public void onErrorResponse(VolleyError error) {//if our put request is un-successful we want display that there was an error to the user
+                                public void onErrorResponse(VolleyError error) {//if put request is un-successful we want display that there was an error to the user
                                     // error
                                     error.printStackTrace();
                                     Toast.makeText(Account.this, error.toString(),Toast.LENGTH_LONG).show();

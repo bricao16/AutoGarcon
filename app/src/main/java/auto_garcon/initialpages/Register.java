@@ -75,12 +75,23 @@ public class Register extends AppCompatActivity {
                     userFirst.setError("Please enter first name");
                     userFirst.requestFocus();
                 }
+                else if(firstName.length()>50){
+                    userLast.setError("First Name must be less than 50 characters");
+                }
                 else if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
                     userLast.setError("Please enter last name");
                     userLast.requestFocus();
                 }
+                else if(lastName.length()>50){
+                    userLast.setError("Last Name must be less than 50 characters");
+                    userLast.requestFocus();
+                }
                 else if(TextUtils.isEmpty(email)){//checking if user entered their email
                     emailId.setError("Please enter email id");
+                    emailId.requestFocus();
+                }
+                else if(email.length()>50){
+                    emailId.setError("Email Must be less than 50 characters");
                     emailId.requestFocus();
                 }
                 else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
@@ -96,6 +107,10 @@ public class Register extends AppCompatActivity {
                     password.setError("Password Must be Greater than 6 Characters");
                     password.requestFocus();
 
+                }
+                else if(passwd.length()>50){
+                    password.setError("Password Must be less than 50 characters");
+                    password.requestFocus();
                 }
                 else if(passwd.equals(passwd.toLowerCase())){//checks if the password contains one uppercase
                     password.setError("Password Must contain at least one uppercase");
@@ -114,7 +129,6 @@ public class Register extends AppCompatActivity {
                         && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirments are met than we can send our put request to the database
 
                     //put request for registering
-                    String url = "http://50.19.176.137:8000/customer/register";
                     JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
                     try{
                         obj.put("customer_id", username);
@@ -128,7 +142,7 @@ public class Register extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, url, obj,
+                    JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, "http://50.19.176.137:8000/customer/register", obj,
                             new Response.Listener<JSONObject>()
                             {
                                 @Override

@@ -2,6 +2,7 @@ package auto_garcon.cartorderhistory;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +23,8 @@ import java.util.ArrayList;
 
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
+import auto_garcon.singleton.VolleySingleton;
+
 /*
 This is a container for history pages that the user can see.
  */
@@ -81,6 +85,28 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                 TextView historyItems = popUp.findViewById(R.id.order_items);
                 historyItems.setText(carts.get(position).toString());
             }
+        });
+        holder.reOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmPopup = new Dialog(ct);
+                confirmPopup.setContentView(R.layout.confirm3_popup);
+                confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                confirmPopup.show();
+                Button confirmYes = confirmPopup.findViewById(R.id.confirm_clear);
+
+                confirmYes.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(ct, "Yes Confirmed",Toast.LENGTH_LONG).show();
+                        //Clear the order
+                        pref.setShoppingCart(carts.get(position));
+                        confirmPopup.dismiss();
+                    }
+                });
+
+            }
+
+
         });
 
 

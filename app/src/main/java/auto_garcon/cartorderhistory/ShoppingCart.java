@@ -18,7 +18,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -75,25 +74,22 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          *  the cart is empty or not.
          */
         pref = new SharedPreference(this);
+        setContentView(R.layout.activity_shopping_cart);
+
+        recyclerView = findViewById(R.id.shopping_cart_list);
+
 
         /**
          * Ties the side navigation bar xml elements to Java objects and setting listeners for the
          * side navigation drawer as well as the elements within it.
          */
         if(pref.getShoppingCart().getCart().size() == 0) {
-            setContentView(R.layout.activity_empty_shopping_cart);
-            shoppingCart = pref.getShoppingCart();
-            NavigationBarSetup();
+            recyclerView.setVisibility(View.GONE);
         }
-        else if(pref.getShoppingCart() == null){
-            shoppingCart = new ShoppingCartSingleton();
-            pref.setShoppingCart(shoppingCart);
-            setContentView(R.layout.activity_empty_shopping_cart);
-            NavigationBarSetup();
+        else{
+            findViewById(R.id.no_items_in_cart).setVisibility(View.GONE);
         }
-        else {
             shoppingCart = pref.getShoppingCart();
-            setContentView(R.layout.activity_shopping_cart);
             drawerLayout = findViewById(R.id.shopping_cart_main);
             toolbar = findViewById(R.id.xml_toolbar);
             navigationView = findViewById(R.id.navigationView);
@@ -106,18 +102,16 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
              * Ties the cart xml to a Java object and sets the adapter, which will manage each
              * individual item in the cart.
              */
-            recyclerView = findViewById(R.id.list);
             adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
             Button PlaceOrderButton = findViewById(R.id.btn_placeorder);
-            putRequest = null;
+
             PlaceOrderButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     /** Where the put request starts to get created. */
-                    String url = "http://50.19.176.137:8000/orders/place";
                     obj = new JSONObject();
 
                     /** Creates and builds the JSON object that will eventually be sent to the database. */
@@ -138,13 +132,15 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                     } catch (JSONException e) {
                         //TODO figure out how to handle this other than stack trace
                         e.printStackTrace();
+                        Toast.makeText(ShoppingCart.this, "Error occured", Toast.LENGTH_LONG).show();
+
                     }
 
                     /**
                      * Builds the StringRequest that will be sent to the database. As well as
                      * overriding the onResponse and onErrorResponse for our own use.
                      */
-                    putRequest = new StringRequest(Request.Method.PUT, url,
+                    putRequest = new StringRequest(Request.Method.PUT, "http://50.19.176.137:8000/orders/place",
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
@@ -158,23 +154,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                     Toast.makeText(ShoppingCart.this, error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             }
-                    ) {
-                        /**
-                         * How the JSON object we created earlier gets passed to the server.
-                         */
-                        @Override
-                        public byte[] getBody() throws AuthFailureError {
-                            return obj.toString().getBytes();
-                        }
-
-                        /**
-                         * Specifying that we will be passing a JSON object.
-                         */
-                        @Override
-                        public String getBodyContentType() {
-                            return "application/json";
-                        }
-                    };
+                    );
 
                     confirmPopup = new Dialog(ShoppingCart.this);
                     confirmPopup.setContentView(R.layout.confirm2_popup);
@@ -242,11 +222,25 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 }
             });
 
-            PlaceOrderButton.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
-            ClearCartPopup.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
-            drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+            if(pref.getShoppingCart().getSecondaryColor() == null){
+                PlaceOrderButton.setBackgroundColor(Color.parseColor("#0B658A"));
+                ClearCartPopup.setBackgroundColor(Color.parseColor("#0B658A"));
+            }
+            else{
+                PlaceOrderButton.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+                ClearCartPopup.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+            }
 
-        }
+            if(pref.getShoppingCart().getTertiaryColor() == null){
+                drawerLayout.setBackgroundColor(Color.parseColor("#66A8A7A4"));
+            }
+            else{
+                drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+            }
+
+
+
+
 
         /**
          * Ties xml element to a Java object and where to onClick functionality is provided,
@@ -310,15 +304,5 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 break;
         }
         return false;
-    }
-
-    public void NavigationBarSetup(){
-        drawerLayout = findViewById(R.id.empty_shopping_cart);
-        toolbar = findViewById(R.id.xml_toolbar);
-        navigationView = findViewById(R.id.navigationView);
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
     }
 }
