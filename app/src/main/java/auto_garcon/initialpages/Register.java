@@ -75,8 +75,16 @@ public class Register extends AppCompatActivity {
                     userFirst.setError("Please enter first name");
                     userFirst.requestFocus();
                 }
+                else if(firstName.length()>50){//checking if firstname is less than 50 characters
+                    userFirst.setError("Limit first name to less than 50 characters");
+                    userFirst.requestFocus();
+                }
                 else if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
                     userLast.setError("Please enter last name");
+                    userLast.requestFocus();
+                }
+                else if(lastName.length()>50){//checking if lastname is less than 50 characters
+                    userLast.setError("Limit last name to less than 50 characters");
                     userLast.requestFocus();
                 }
                 else if(TextUtils.isEmpty(email)){//checking if user entered their email
@@ -108,7 +116,6 @@ public class Register extends AppCompatActivity {
                 else if(username.length()>50){
                     userID.setError("Please enter a username with less than 50 characters");
                     userID.requestFocus();
-
                 }
                 else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email)
                         && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirments are met than we can send our put request to the database

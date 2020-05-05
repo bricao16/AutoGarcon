@@ -86,8 +86,16 @@ public class Account extends AppCompatActivity {
                     changeFirstName.setError("Please enter first name");
                     changeFirstName.requestFocus();
                 }
+                else if(firstName.length()>50){//checking if firstname is less than 50 characters
+                    changeFirstName.setError("Limit first name to less than 50 characters");
+                    changeFirstName.requestFocus();
+                }
                 else if (TextUtils.isEmpty(lastName)){//checking if user entered their lastName
                     changeLastName.setError("Please enter last name");
+                    changeLastName.requestFocus();
+                }
+                else if(lastName.length()>50){//checking if lastname is less than 50 characters
+                    changeLastName.setError("Limit last name to less than 50 characters");
                     changeLastName.requestFocus();
                 }
                 else if(TextUtils.isEmpty(email)){//checking if user entered their email
