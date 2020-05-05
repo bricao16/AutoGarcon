@@ -132,6 +132,8 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                     } catch (JSONException e) {
                         //TODO figure out how to handle this other than stack trace
                         e.printStackTrace();
+                        Toast.makeText(ShoppingCart.this, "Error occured", Toast.LENGTH_LONG).show();
+
                     }
 
                     /**
@@ -220,9 +222,23 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 }
             });
 
-            PlaceOrderButton.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
-            ClearCartPopup.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
-            drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+            if(pref.getShoppingCart().getSecondaryColor() == null){
+                PlaceOrderButton.setBackgroundColor(Color.parseColor("#0B658A"));
+                ClearCartPopup.setBackgroundColor(Color.parseColor("#0B658A"));
+            }
+            else{
+                PlaceOrderButton.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+                ClearCartPopup.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+            }
+
+            if(pref.getShoppingCart().getTertiaryColor() == null){
+                drawerLayout.setBackgroundColor(Color.parseColor("#66A8A7A4"));
+            }
+            else{
+                drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+            }
+
+
 
 
 

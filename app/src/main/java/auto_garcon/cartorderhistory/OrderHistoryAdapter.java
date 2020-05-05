@@ -2,6 +2,7 @@ package auto_garcon.cartorderhistory;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +23,8 @@ import java.util.ArrayList;
 
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
+import auto_garcon.singleton.VolleySingleton;
+
 /*
 This is a container for history pages that the user can see.
  */
@@ -30,6 +34,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     private ArrayList<ShoppingCartSingleton> carts;// used to handle items returned from the recent order history
     private ArrayList<String> date;// used to capture time for all orders
     private Context ct;
+    private ArrayList<String> resturantName;
     Dialog popUp;
     Dialog confirmPopup;
 
@@ -41,12 +46,13 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
      * @param carts
      * @param date
      */
-    public  OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date){
+    public  OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date,ArrayList<String> resturantName){
         ct=ctx;
         pref=preference;
         this.order=order;
         this.carts=carts;
         this.date=date;
+        this.resturantName= resturantName;
         Log.d("asd32e4ff", ""+carts.get(0).toString());
 
     }
@@ -66,7 +72,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     @Override
     public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderViewHolder holder, final int position) {
 
-        holder.order_num.setText(order.get(position));
+        holder.order_num.setText(resturantName.get(position));
         holder.resturant_num.setText(Integer.toString(carts.get(position).getRestaurantID()));
         holder.date.setText(date.get(position));
         holder.items.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +87,28 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                 TextView historyItems = popUp.findViewById(R.id.order_items);
                 historyItems.setText(carts.get(position).toString());
             }
+        });
+        holder.reOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmPopup = new Dialog(ct);
+                confirmPopup.setContentView(R.layout.confirm3_popup);
+                confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                confirmPopup.show();
+                Button confirmYes = confirmPopup.findViewById(R.id.confirm_clear);
+
+                confirmYes.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(ct, "Yes Confirmed",Toast.LENGTH_LONG).show();
+                        //Clear the order
+                        pref.setShoppingCart(carts.get(position));
+                        confirmPopup.dismiss();
+                    }
+                });
+
+            }
+
+
         });
 
 

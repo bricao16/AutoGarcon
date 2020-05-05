@@ -46,45 +46,60 @@
         app:layout_constraintTop_toBottomOf="@+id/username" />
 
     <!-- sign in button -->
+
+    <!-- sign up text that links to register activity -->
+
     <Button
         android:id="@+id/signUp"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="154dp"
         android:layout_height="39dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="32dp"
         android:text="@string/sign_in"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintHorizontal_bias="0.44"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
-    <!-- sign up text that links to register activity -->
+    <!-- image of logo for auto-garcon -->
+
     <TextView
         android:id="@+id/loginLink"
         android:layout_width="208dp"
         android:layout_height="36dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="52dp"
         android:layout_marginEnd="32dp"
         android:text="@string/new_account"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.467"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signUp" />
 
-    <!-- image of logo for auto-garcon -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="306dp"
         android:layout_height="156dp"
-        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginLink"
+        app:layout_constraintTop_toBottomOf="@+id/forgotPassword"
         app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/forgotPassword"
+        android:layout_width="241dp"
+        android:layout_height="61dp"
+        android:layout_marginTop="28dp"
+        android:gravity="center_vertical"
+        android:text="@string/forgotPassword"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.617"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginLink" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

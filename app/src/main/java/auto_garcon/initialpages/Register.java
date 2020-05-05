@@ -75,12 +75,23 @@ public class Register extends AppCompatActivity {
                     userFirst.setError("Please enter first name");
                     userFirst.requestFocus();
                 }
+                else if(firstName.length()>50){
+                    userLast.setError("First Name must be less than 50 characters");
+                }
                 else if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
                     userLast.setError("Please enter last name");
                     userLast.requestFocus();
                 }
+                else if(lastName.length()>50){
+                    userLast.setError("Last Name must be less than 50 characters");
+                    userLast.requestFocus();
+                }
                 else if(TextUtils.isEmpty(email)){//checking if user entered their email
                     emailId.setError("Please enter email id");
+                    emailId.requestFocus();
+                }
+                else if(email.length()>50){
+                    emailId.setError("Email Must be less than 50 characters");
                     emailId.requestFocus();
                 }
                 else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
@@ -96,6 +107,10 @@ public class Register extends AppCompatActivity {
                     password.setError("Password Must be Greater than 6 Characters");
                     password.requestFocus();
 
+                }
+                else if(passwd.length()>50){
+                    password.setError("Password Must be less than 50 characters");
+                    password.requestFocus();
                 }
                 else if(passwd.equals(passwd.toLowerCase())){//checks if the password contains one uppercase
                     password.setError("Password Must contain at least one uppercase");

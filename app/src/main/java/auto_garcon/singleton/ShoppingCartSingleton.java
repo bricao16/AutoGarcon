@@ -52,7 +52,7 @@ public class ShoppingCartSingleton {
         double cost = 0;
 
         for(int i = 0; i < items.size(); i++) {
-            cost = cost + items.get(i).getPrice();
+            cost = cost + items.get(i).getCost();
         }
 
         return cost;

@@ -14,6 +14,7 @@
     <string name="cart">Cart</string>
     <string name="old_account">Already Have an Account? \nLog in here</string>
     <string name="new_account">"Don't Have an Account? \nSign up here"</string>
+    <string name="forgotPassword">Forgot Password?</string>
     <string name="placeholder_account_name">"Account Name"</string>
     <string name="changepasswd">Change Password</string>
     <string name="save">Save</string>
@@ -30,6 +31,7 @@
     <string name="username">Username</string>
     <string name="confirm">Confirm</string>
     <string name="adding_item_confirmation_text">Adding this item will remove the other items currently in cart.</string>
+    <string name ="reOrder">This will replace all other items within the cart currently</string>
 
     <string name="cart_is_empty">The cart is currently empty. Add items to spend money.</string>
     <string name="no_Orders">You have no recent Orders</string>
