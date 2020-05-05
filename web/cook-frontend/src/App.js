@@ -7,6 +7,7 @@ import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
 import ForgotPassword from "./components/ForgotPassword"
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
+import ChangePassword from "./components/ChangePassword"
 
 import Home from "./components/Home";
 import PrivacyPolicy from './components/PrivacyPolicy';
@@ -50,6 +51,9 @@ class App extends React.Component{
               </Route>
               <Route path="/forgot_password">
                 <ForgotPassword/>
+              </Route>
+              <Route path="/change_password">
+                <ChangePassword/>
               </Route>
               <Route path="/privacy_policy">
                 <PrivacyPolicy/>
