@@ -3,7 +3,6 @@ import {
     XYPlot,
     XAxis, // Shows the values on x axis
     YAxis, // Shows the values on y axis
-    ChartLabel,
     HorizontalGridLines,
     VerticalGridLines,
     LineSeries,
@@ -12,9 +11,7 @@ import {
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import 'react-vis/dist/style.css';
-const chartWidth = 800;
-const chartHeight = 400;
-const chartDomain = [-5, chartHeight];
+
 
 class HighestSelling extends React.Component {
     constructor(props) {

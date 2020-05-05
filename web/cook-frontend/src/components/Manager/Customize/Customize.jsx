@@ -36,10 +36,11 @@ class Customize extends React.Component{
           temp_primary: this.props.info.primary_color,
           temp_secondary: this.props.info.secondary_color,
           temp_tertiary:this.props.info.tertiary_color,
+          temp_font : 'this.props.info.font',
           font_color : '#111111',
           temp_font_color: '#111111',
           file: this.props.logo,
-   
+          temp_file:this.props.logo,
           fileName:"Choose file",
           restaurant_id :cookies.get("mystaff").restaurant_id,
           token:cookies.get('mytoken')
@@ -81,51 +82,25 @@ class Customize extends React.Component{
     }
 
       onChangeFile = (e) => {
-   
+        console.log(e.target.files[0]);
+        //https://riptutorial.com/javascript/example/14207/getting-binary-representation-of-an-image-file
+        // preliminary code to handle getting local file and finally printing to console
+        // the results of our function ArrayBufferToBinary().
         //change the file name
         this.setState({ fileName: e.target.files[0].name });
-        //get our image into blob format
-        this.loadXHR(e.target.files[0]).then(function(blob) {
-          // here the image is a blob but we need the arayBuffer data
-          var bufferPromise = blob.arrayBuffer();
-          blob.arrayBuffer().then(function(buffer){
-                    const data = new Int8Array(buffer);
-                    console.log(data);
-                   this.setState({ file:  {'type': 'Buffer', 'data': data} });
-              }.bind(this));
-   
-   
-        }.bind(this));
+        var file = e.target.files[0];// get handle to local file.
+        var reader = new FileReader();
+        reader.onload = function(event) {
+            var data = event.target.result;
+             const finaldata = new Uint8Array(data);
+              //set our file to the correct data
+            this.setState({ temp_file:  {'type': 'Bufferz', 'data': finaldata} });
+        }.bind(this);
+        reader.readAsArrayBuffer(file); //gets an ArrayBuffer of the file
+
       }
-
-
   /* Used for connecting to Customization in database */
-  handleSubmit(event) {
-      //change permanent
-      if(this.state.sectionEdit ==="Primary")
-      {  
-        this.state.primary = this.state.temp_primary
-
-      }
-      else if(this.state.sectionEdit ==="Secondary")
-      {
-
-        this.state.secondary = this.state.temp_secondary;
-      }
-      else if(this.state.sectionEdit ==="Tertiary")
-      {
-        this.state.tertiary = this.state.temp_tertiary;
-      }
-
-      else if(this.state.sectionEdit ==="Font Color")
-      {
-        this.state.font_color = this.state.temp_font_color;
-      }
-    console.log(this.state);
-    this.editForm("");
-
-    event.preventDefault();
-    
+  submitToDB(){
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
 
     axios({
@@ -154,7 +129,45 @@ class Customize extends React.Component{
       console.error("There was an error!", error);
     });
 
+  }
 
+  handleSubmit(event) {
+      //finalize whatever section value was chosen then submit to database
+      if(this.state.sectionEdit ==="Primary")
+      {  
+        this.setState({ 'primary': this.state.temp_primary},
+          this.submitToDB);
+
+      }
+      else if(this.state.sectionEdit ==="Secondary")
+      {
+
+         this.setState({ 'secondary': this.state.temp_secondary},
+          this.submitToDB);
+      }
+      else if(this.state.sectionEdit ==="Tertiary")
+      {
+         this.setState({ 'tertiary': this.state.temp_tertiary},
+          this.submitToDB);
+      }
+
+      else if(this.state.sectionEdit ==="Font Color")
+      {
+         this.setState({ 'font_color': this.state.temp_font_color},
+          this.submitToDB);
+      }
+      else if(this.state.sectionEdit ==="Font")
+      {
+         this.setState({ 'font': this.state.temp_font},
+          this.submitToDB);
+      }
+      else if(this.state.sectionEdit ==="Logo")
+      {
+         this.setState({ 'file': this.state.temp_file},
+          this.submitToDB);
+      }
+    console.log(this.state);
+    this.editForm("");
 }
 
   /* Used to show the correct alert after hitting save item */
@@ -357,6 +370,7 @@ renderInfo(){
                                   className="custom-file-input"
                                   id="inputGroupFile01"
                                   aria-describedby="inputGroupFileAddon01"
+                                  multiple = {false}
                                 />
                                 <label className="custom-file-label" htmlFor="inputGroupFile01">
                                   {this.state.fileName}
@@ -407,7 +421,7 @@ renderInfo(){
                     <Card.Header onClick={this.handleModalShow}>Font Color
                       <button  onClick={() => this.editForm("Font Color") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
-                    <Card.Body style={{backgroundColor:this.state.font_color }}>
+                    <Card.Body style={{backgroundColor:this.state.font_color, minHeight:'10vh'}}>
 
                     </Card.Body>
                    </Card>
@@ -444,6 +458,7 @@ renderInfo(){
     }
 }
 
+
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1',
   'minWidth': '70vw'
@@ -460,8 +475,5 @@ const menuHeaderStyle = {
   'textAlign' : 'center',
   'height':'54px'
 };
-const modalImageStyle = {
-  'max-width': '200px',
-  'max-height': '200px'
-}
+
 export default Customize;

@@ -127,9 +127,9 @@ export default class CLogin extends React.Component {
   render() {
     if (this.state.redirect === true) {
       /*set the cookies and redirect to the cook page- no validation need
-      cook and manager can log in to cook page*/
-      cookies.set('mystaff', this.state.staff, { path: '/' });
-      cookies.set('mytoken', this.state.token, { path: '/' });
+      cook and manager can log in to cook page cookie timesout after 8 hours*/
+      cookies.set('mystaff', this.state.staff, { path: '/' }, {maxAge: 28800});
+      cookies.set('mytoken', this.state.token, { path: '/' },{maxAge: 28800});
       return <Redirect to='/cook' />
     }
     return (

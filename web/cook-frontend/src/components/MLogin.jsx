@@ -138,9 +138,10 @@ class MLogin extends React.Component {
   render(){
   	/*redirect to manager*/
 	if(this.state.redirect === true){
-    	//set the cookies and redirect to the cook page
-		cookies.set('mystaff', this.state.staff, { path: '/' });
-		cookies.set('mytoken', this.state.token, { path: '/' });
+    	//set the cookies and redirect to the cook page timeout after 1 hr
+		cookies.set('mystaff', this.state.staff, { path: '/' }, {maxAge: 3600} );
+		cookies.set('mytoken', this.state.token, { path: '/' }, {maxAge: 3600} );
+		// Will expire after 1hr (value is in number of sec.)
 		return  <Redirect to='/manager'/> 		
 	}  
 	return (

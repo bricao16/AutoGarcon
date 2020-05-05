@@ -1,6 +1,5 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
-import {XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries} from 'react-vis';
 import Dropdown from 'react-bootstrap/Dropdown';
 import HighestSelling from './HighestSelling';
 import Traffic from './Traffic';

@@ -56,7 +56,7 @@ class HighestSelling extends React.Component {
     //create a checkbox for every category of menu item
     renderCheckBoxes(){
         return this.props.data.map((item) => 
-            <Col>
+            <Col key={item.x.toString()}>
                 <div className="custom-control custom-checkbox">
                   <input type="checkbox" className="custom-control-input" id={item.x} defaultChecked={ this.state.checked } onChange={ this.checkboxHandler} ></input>
                   <label className="custom-control-label" htmlFor={item.x}>{item.x}</label>
