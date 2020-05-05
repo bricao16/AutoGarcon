@@ -1,0 +1,37 @@
+Last Updated: 05/05/2020
+
+FINISHED:
+Web
+-Get fonts
+-Get&Post customization (logo upload not done)
+-Edit menu/add & menu/update now include a description 
+-Post staff account information (cannot change position)
+
+Android
+-Edit GET order history to include order history
+-Get inprogress orders
+
+Alexa
+-Edit endpoints to take in 'item_id' instead of 'item'
+-Get items from pending order
+
+##################################################
+
+TODO:
+Web
+-EDIT upload images
+-EDIT get/menu | description, photos, allergen
+-GET  services
+-PUT  restaurant
+-GET  customer experience (Alexa launch)
+-POST customer experience
+-GET  message_from_customer
+-PUT  message_to_customer
+
+Android
+-GET  in progress orders
+-POST forget password endpoint | create temp password
+-EDIT get/menu | include sides
+
+Alexa
+-POST assistance
