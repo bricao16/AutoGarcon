@@ -19,8 +19,9 @@ Alexa
 
 TODO:
 Web
+-EDIT upload images
+-EDIT get/menu | description, photos, allergen
 -GET  services
--EDIT get/menu | description, photo, allergens 
 -PUT  restaurant
 -GET  customer experience (Alexa launch)
 -POST customer experience
