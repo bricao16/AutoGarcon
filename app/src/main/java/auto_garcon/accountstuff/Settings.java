@@ -9,12 +9,18 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.auto_garcon.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import auto_garcon.cartorderhistory.ShoppingCart;
+import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.cartorderhistory.OrderHistory;
+import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
 
 /**
@@ -46,6 +52,46 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         navigationView.setNavigationItemSelectedListener(this);
 
         pref = new SharedPreference(this);
+
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_scan:
+                                startActivity(new Intent(Settings.this, QRcode.class));
+                                return true;
+                            case R.id.action_home:
+                                startActivity(new Intent(Settings.this, Home.class));
+                                return true;
+                            case R.id.action_cart:
+                                startActivity(new Intent(Settings.this, ShoppingCart.class));
+                                return true;
+                        }
+                        return false;
+                    }
+                };
+
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+
+        Button faqButton = findViewById(R.id.faqButton);// associating xml objects with the java Object equivalent
+        Button privacyLegalButton = findViewById(R.id.privacyLegalButton);// associating xml objects with the java Object equivalent
+
+        faqButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {//when the scannerButton is clicked this will send the user to the QrCode page
+          //      startActivity(new Intent(Settings.this, faq.class));
+            }
+        });
+
+        privacyLegalButton.setOnClickListener(new View.OnClickListener() {// when the favButton is clicked user is sent to the HomePage
+            @Override
+            public void onClick(View v) {
+         //       startActivity(new Intent(Settings.this, legal.class));
+            }
+        });
+
+
     }
 
     //onClick for side nav bar
@@ -74,4 +120,6 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         }
         return false;
     }
+
+
 }
