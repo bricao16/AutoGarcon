@@ -6,6 +6,7 @@ Web
 -Get&Post customization (logo upload not done)
 -Edit menu/add & menu/update now include a description 
 -Post staff account information (cannot change position)
+-Sides endpoint
 
 Android
 -Edit GET order history to include order history
@@ -31,7 +32,6 @@ Web
 Android
 -GET  in progress orders
 -POST forget password endpoint | create temp password
--EDIT get/menu | include sides
 
 Alexa
 -POST assistance
