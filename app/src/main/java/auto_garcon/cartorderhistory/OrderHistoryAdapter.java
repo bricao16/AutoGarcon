@@ -34,6 +34,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     private ArrayList<ShoppingCartSingleton> carts;// used to handle items returned from the recent order history
     private ArrayList<String> date;// used to capture time for all orders
     private Context ct;
+    private ArrayList<String> resturantName;
     Dialog popUp;
     Dialog confirmPopup;
 
@@ -45,12 +46,13 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
      * @param carts
      * @param date
      */
-    public  OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date){
+    public  OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date,ArrayList<String> resturantName){
         ct=ctx;
         pref=preference;
         this.order=order;
         this.carts=carts;
         this.date=date;
+        this.resturantName= resturantName;
         Log.d("asd32e4ff", ""+carts.get(0).toString());
 
     }
@@ -70,7 +72,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     @Override
     public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderViewHolder holder, final int position) {
 
-        holder.order_num.setText(order.get(position));
+        holder.order_num.setText(resturantName.get(position));
         holder.resturant_num.setText(Integer.toString(carts.get(position).getRestaurantID()));
         holder.date.setText(date.get(position));
         holder.items.setOnClickListener(new View.OnClickListener() {

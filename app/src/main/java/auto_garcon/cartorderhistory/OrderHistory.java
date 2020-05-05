@@ -50,6 +50,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
     private ArrayList<ShoppingCartSingleton> carts;// used to handle items returned from the recent order history
     private ArrayList<String> date;// used to capture time for all orders
     private ArrayList<Double> prices;
+    private ArrayList<String> resturantName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         date = new ArrayList<>();
         carts = new ArrayList<>();
         prices = new ArrayList<>();
-
+        resturantName = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
 
@@ -101,6 +102,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));//get the new restaurant id and create a new shopping cart
                                 carts.get(tracker).addToCart(item);//ad the new item to the cart
                                 date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());//add the date
+                                resturantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
                                 tracker=tracker+1;
                             }
                         }
@@ -113,12 +115,13 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));
                             carts.get(i).addToCart(item);
                             date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());
+                            resturantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
                             tracker=tracker+1;
                         }
                     }
 
 
-                    OrderHistoryAdapter adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date);//values that will be needed to input data into our xml objects that is handled in our adapter class
+                    OrderHistoryAdapter adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date,resturantName);//values that will be needed to input data into our xml objects that is handled in our adapter class
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
 
