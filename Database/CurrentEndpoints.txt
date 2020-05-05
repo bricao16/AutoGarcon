@@ -21,7 +21,8 @@ GET /restaurant/:id
 					primary_color,
 					secondary_color,
 					tertiary_color,
-					logo
+					logo,
+					cuisine
 				}
 				menu:
 				{
@@ -31,7 +32,8 @@ GET /restaurant/:id
 						price,
 						category,
 						picture,
-						in_stock
+						in_stock,
+						description
 					}
 				}
 			}
@@ -525,6 +527,27 @@ DELETE /menu/delete
 			(401) Must be the restaurant manager to delete menu items!
 		On error: 
 			(500) Error deleting menu item
+
+GET /menu/sides/:id
+	Returns sides for an item with item_id = id
+	Inputs: item_id
+	Outputs:
+		On success:
+			{
+				i:
+				{
+					item_id,
+					item_name,
+					calories,
+					picture,
+					in_stock,
+					description
+				}
+			}
+		If item has no menu sides:
+			(200) This item has no sides
+		On error:
+			(500) Error retrieving sides
 
 
 //==================================================================================//

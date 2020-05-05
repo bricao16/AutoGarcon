@@ -2,7 +2,7 @@
 	REST-API Server
 	Tucker Urbanski
 	Date Created: 3/2/2020
-	Last Modified: 5/2/2020
+	Last Modified: 5/5/2020
 */
 
 // Built-in Node.js modules
@@ -71,7 +71,8 @@ console.log('Now listening on port 8000');
 					primary_color,
 					secondary_color,
 					tertiary_color,
-					logo
+					logo,
+					cuisine
 				}
 				menu: {
 					dish_name: {
@@ -79,7 +80,8 @@ console.log('Now listening on port 8000');
 						price,
 						category,
 						picture,
-						in_stock
+						in_stock,
+						description
 					}
 				}
 			}
@@ -112,7 +114,8 @@ app.get('/restaurant/:id', (req, res) => {
 				'primary_color': rows[0].primary_color,
 				'secondary_color': rows[0].secondary_color,
 				'tertiary_color': rows[0].tertiary_color,
-				'logo': rows[0].logo
+				'logo': rows[0].logo,
+				'cuisine': rows[0].cuisine
 			};	//response
 
 			//Add menu to response:
@@ -125,7 +128,8 @@ app.get('/restaurant/:id', (req, res) => {
 					'price': rows[i].price,
 					'category': rows[i].category,
 					'picture': 'No picture yet',
-					'in_stock': rows[i].in_stock
+					'in_stock': rows[i].in_stock,
+					'description': rows[i].description
 				};	//response
 			}   //for
 
@@ -1705,6 +1709,60 @@ app.delete('/menu/delete', verifyToken, (req, res) => {
 		}   //else
 	}); //db.query
 });	//app.delete
+
+/*
+	Returns sides for an item with item_id = id
+	Inputs: item_id
+	Outputs:
+		On success:
+			{
+				i:
+				{
+					item_id,
+					item_name,
+					calories,
+					picture,
+					in_stock,
+					description
+				}
+			}
+		If item has no menu sides:
+			This item has no sides
+		On error:
+			Error retrieving sides
+*/
+app.get('/menu/sides/:id', (req, res) => {
+	let query = 'SELECT * FROM sample.menu join sample.sides on sample.menu.item_id=sample.sides.side_dish_id WHERE main_dish_id = ?';
+
+	//Query database:
+	db.query(query, req.params.id, (err, rows) => {
+		if (err) {
+			res.status(500).send('Error retrieving sides');
+		}   //if
+		else if (rows.length < 1) {
+			res.status(200).send('This item has no sides');
+		}   //else if
+		else {
+			//Build JSON object:
+			let response = {};
+
+			//Loop through each row returned from query:
+			for (let i=0; i<rows.length; i++) {
+				response[i] = {
+					'item_id': rows[i].item_id,
+					'item_name': rows[i].item_name,
+					'calories': rows[i].calorie_num,
+					'picture': 'No picture yet',
+					'in_stock': rows[i].in_stock,
+					'description': rows[i].description
+				};	//response
+			}   //for
+
+			//Send Response:
+			res.type('json').send(response);
+		}   //else
+	}); //db.query
+}); //app.get
 
 
 //==================================================================================//
