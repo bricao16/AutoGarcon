@@ -32,7 +32,6 @@ public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdap
 
         public CurrentOrdersViewHolder(@NonNull View v) {
             super(v);
-
         }
     }
 }

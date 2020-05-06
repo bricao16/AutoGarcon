@@ -22,10 +22,6 @@ public class LoadingScreen extends AppCompatActivity {
         SharedPreference pref = new SharedPreference(LoadingScreen.this);
         ShoppingCartSingleton shoppingCart = new ShoppingCartSingleton();
 
-        shoppingCart.setPrimaryColor("#0B658A");
-        shoppingCart.setSecondaryColor("#102644");
-        shoppingCart.setTertiaryColor("#318381");
-
         pref.setShoppingCart(shoppingCart);
 
         /** Waits for 3000 milliseconds then goes to login activity*/
