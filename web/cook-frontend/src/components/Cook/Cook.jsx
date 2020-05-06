@@ -70,7 +70,8 @@ function Cook(){
 
   // Check if user is logged in
   // If they aren't then send them to log in page
-  if(cookies.staff === undefined || cookies.token === undefined) {
+  const tokenVerify = verifyCook(cookies.token);
+  if(tokenVerify === false) {
     return(
       <Redirect to="/login_cook" />
     );
@@ -101,5 +102,53 @@ function Cook(){
   )
 
 }
+function verifyCook(token)
+  {
+    //verify the token is a valid token
+    /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
+    if(token === undefined )
+    {
+      //if they dont even have a token return false
+      return false;
+    }
+    axios({
+      method: 'POST',
+      url:  process.env.REACT_APP_DB +'/verify',
+      //+'&logo='+this.state.file
+      data: 'token='+token,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + token
+      },
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+    .then(async response => {
+      await response;
+      //if not a manager
+      if (response.status !== 200) { 
+         
+         if(response.data == "Must be authorized!")
+         {
+          //make sure valid token
+          return false
+         }
+         else if(response.data = "Not a manager")
+         {
+          //not a manager but valid token is okay
+          return true
+         }
+         else{return false} //anything else just return false
+      }
+      else {return true}  //if valid manager
+    }) 
+    .catch(error => {
+      //databse error
+      console.error("There was an error!", error);
+      return false;
+    });
+
+  }
 
 export default Cook;
