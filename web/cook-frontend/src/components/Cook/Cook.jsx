@@ -12,7 +12,6 @@ import Footer from "./Footer";
 import Orders from "./Orders/Orders";
 import Menu from "./Menu/Menu";
 
-
 const useStyles = makeStyles({
   main: {
     flex: 1,
@@ -88,7 +87,7 @@ function Cook(){
             <Redirect to="/cook/orders" />
           </Route>
           {/* Render cook order page when on /cook/orders */}
-          <Route exact path="/cook/orders">
+          <Route path="/cook/orders">
             <Orders />
           </Route>
           {/* Render cook menu page when on /cook/menu */}

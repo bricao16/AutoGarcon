@@ -11,17 +11,11 @@ import AccountDropdown from "../AccountDropdown";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    backgroundColor: '#f1f1f1',
-    position: 'initial'
+    backgroundColor: '#f1f1f1'
   },
   toolbar: {
-    display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(0, 1),
-  },
-  button: {
-    background: 'rgb(11, 101, 138)',
-    color: 'white'
   },
   tabs: {
     margin: theme.spacing(0,3)
@@ -44,13 +38,12 @@ function Header(props){
   const {cookies} = props;
 
   const [value, setValue] = React.useState(0);
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   return(
-    <AppBar className={classes.appBar}>
+    <AppBar className={classes.appBar} position="sticky">
       <Toolbar className={classes.toolbar}>
         <img src={exampleCompanyLogo}  width="auto" height="40px" alt="waiter" />
         <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
