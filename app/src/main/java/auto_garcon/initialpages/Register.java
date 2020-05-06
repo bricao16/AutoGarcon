@@ -124,6 +124,11 @@ public class Register extends AppCompatActivity {
                     userID.setError("Please enter a username with less than 50 characters");
                     userID.requestFocus();
 
+
+                }
+                else if(TextUtils.isEmpty(username)){
+                    userID.setError("Please enter a username");
+                    userID.requestFocus();
                 }
                 else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email)
                         && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirments are met than we can send our put request to the database
