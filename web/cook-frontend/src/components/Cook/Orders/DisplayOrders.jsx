@@ -44,7 +44,7 @@ function DisplayOrders(){
   }
 
   return(
-    <Container fluid maxWidth="false" className={classes.main}>
+    <Container maxWidth={false} className={classes.main}>
       { renderOrders() }
     </Container>
   )
