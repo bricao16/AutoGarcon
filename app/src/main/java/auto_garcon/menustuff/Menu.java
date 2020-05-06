@@ -249,7 +249,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             restaurant.getString("cuisine");
 
                             listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash, getIntent().getIntExtra("restaurant id", 0),
-                                    primaryColor, restaurant.getString("secondary_color"), restaurant.getString("tertiary_color"));
+                                    primaryColor, restaurant.getString("secondary_color"), restaurant.getString("tertiary_color"),restaurant.getInt("opening"),restaurant.getInt("closing"));
                             listView = findViewById(R.id.menu_list);
                             listView.setAdapter(listAdapter);
 

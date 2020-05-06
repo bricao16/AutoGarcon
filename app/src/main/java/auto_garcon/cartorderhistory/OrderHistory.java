@@ -186,7 +186,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                 {
                     @Override
                     public void onErrorResponse (VolleyError error){
-                        Toast.makeText(OrderHistory.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(OrderHistory.this, "An Error has Occured", Toast.LENGTH_LONG).show();
                     }
                 });
 

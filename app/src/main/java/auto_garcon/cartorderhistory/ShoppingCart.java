@@ -30,6 +30,9 @@ import com.google.android.material.navigation.NavigationView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import auto_garcon.accountstuff.Account;
 
 import auto_garcon.accountstuff.Settings;
@@ -45,6 +48,7 @@ import auto_garcon.singleton.VolleySingleton;
     * current shopping cart and allows them to submit the order or make any modifications
     * to what is currently in the cart
     */
+
 public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private JSONObject obj;
@@ -179,6 +183,10 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                         /** Sending the actual putRequest. */
                         if(pref.getUser().getRestaurantID()!=pref.getShoppingCart().getRestaurantID()){
                             Toast.makeText(ShoppingCart.this,"Please scan The QR code of the Targeted Restaurant",Toast.LENGTH_LONG).show();
+                        }
+                        else if(pref.getShoppingCart().getStartingHour()> Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR)||Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR)>pref.getShoppingCart().getEndingHour()){
+                            Toast.makeText(ShoppingCart.this,"The restaurant is Currently closed",Toast.LENGTH_LONG).show();
+
                         }
 
                         else {
