@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -45,11 +47,13 @@ import auto_garcon.singleton.VolleySingleton;
 public class OrderHistory extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     RecyclerView recyclerView;// for the adapter class to be used as a non final
-    private SharedPreference pref;// used to refrence user information
+    private SharedPreference pref;// used to reference user information
     private ArrayList<String> order;// used to capture user order number
     private ArrayList<ShoppingCartSingleton> carts;// used to handle items returned from the recent order history
     private ArrayList<String> date;// used to capture time for all orders
     private ArrayList<Double> prices;
+    private ArrayList<String> restaurantName;
+    private ArrayList<byte[]> logos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,25 +61,25 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         date = new ArrayList<>();
         carts = new ArrayList<>();
         prices = new ArrayList<>();
-
+        restaurantName = new ArrayList<>();
+        logos = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
 
         pref = new SharedPreference(this);
+        recyclerView = findViewById(R.id.order_list);
 
         final StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/customer/history/" + pref.getUser().getUsername(), new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-
                 if (response.equals("No order history for this customer")) {
-                    setContentView(R.layout.activity_empty_orders_order_history);
+                    recyclerView.setVisibility(View.GONE);
                 } else {
                     JsonParser parser = new JsonParser();
                     JsonObject json = (JsonObject) parser.parse(response);
 
-                    setContentView(R.layout.activity_order_history);
-                    recyclerView = findViewById(R.id.order_list);
+                    findViewById(R.id.no_order_history).setVisibility(View.GONE);
                     /*--------------------------------------------------------------*/
                     //parsing through json from get request to add them to menu
                     int tracker = 0;
@@ -87,18 +91,27 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();// get the item for that order
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
-                                item.setCost(json.getAsJsonObject(""+i).get("price").getAsDouble());
+                                item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
+                                // Log.d("asdff", "" + item.getCost());
+
                                 carts.get(tracker-1).addToCart(item);
                             }
                             else{
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();//create the new item
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
-                                item.setCost(json.getAsJsonObject(""+i).get("price").getAsDouble());
+                                item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
                                 order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());//get the new order number and add it to the item arraylsit
                                 carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));//get the new restaurant id and create a new shopping cart
                                 carts.get(tracker).addToCart(item);//ad the new item to the cart
                                 date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());//add the date
+                                restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
+                                byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
+
+                                for(int j = 0; j < temp.length; j++) {
+                                    temp[j] = (byte) (((int) json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
+                                }
+                                logos.add(temp);
                                 tracker=tracker+1;
                             }
                         }
@@ -106,18 +119,27 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
                             item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());
                             item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());
-                            item.setCost(json.getAsJsonObject(""+i).get("price").getAsDouble());
+                            item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
                             order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());
                             carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));
                             carts.get(i).addToCart(item);
                             date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());
-                            Log.d("asdff", "" + order.get(i));
+                            restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
+                            byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
+
+                            for(int j = 0; j < temp.length; j++) {
+                                temp[j] = (byte) (((int) json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
+                            }
+                            Log.d("123", String.valueOf(json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(61).getAsInt()));
+
+                            logos.add(temp);
+
                             tracker=tracker+1;
                         }
                     }
 
 
-                    OrderHistoryAdapter adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date);//values that will be needed to input data into our xml objects that is handled in our adapter class
+                    OrderHistoryAdapter adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date,restaurantName,logos);//values that will be needed to input data into our xml objects that is handled in our adapter class
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
 
@@ -157,12 +179,12 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         },
                 new Response.ErrorListener()
 
-            {
-                @Override
-                public void onErrorResponse (VolleyError error){
-                Toast.makeText(OrderHistory.this, error.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
+                {
+                    @Override
+                    public void onErrorResponse (VolleyError error){
+                        Toast.makeText(OrderHistory.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
 
         VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
     }

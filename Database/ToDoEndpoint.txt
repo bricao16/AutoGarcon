@@ -1,6 +1,42 @@
-Last Updated: 05/05/2020
+Last Updated: 05/06/2020
 
-FINISHED:
+RECENTLY FINISHED:
+
+Database Redesign Test
+-GET  /test/restaurant/:restaurant_id gives restaurant information and full item information (with menu)
+-GET  /test/menu/:id  gives list of items in a menu
+-POST /test/menu/update update a menu
+-PUT  /test/menu/add
+-PUT  /test/menu/item/add add a item to a menu
+
+##################################################
+
+TODO:
+Web
+-PUT  /restaurant/register
+-EDIT post customization to include (cuisine and greeting)
+-EDIT upload images
+-EDIT get/menu | description, photos, allergen
+-EDIT customize to include cuisine and greeting
+-EDIT error check for emails if already exists.
+-GET  services
+-GET  customer experience (Alexa launch)
+-POST customer experience
+-GET  message_from_customer
+-PUT  message_to_customer
+
+Android
+-GET  in progress orders
+-POST forget password endpoint | create temp password
+-POST image for user
+
+Alexa
+-POST assistance
+-GET greeting
+
+##################################################
+
+FINISHED Up to 05/05/2020:
 Web
 -Get fonts
 -Get&Post customization (logo upload not done)
@@ -16,24 +52,3 @@ Alexa
 -Edit endpoints to take in 'item_id' instead of 'item'
 -Get items from pending order
 
-##################################################
-
-TODO:
-Web
--EDIT post customization to include (cuisine and greeting)
--EDIT upload images
--EDIT get/menu | description, photos, allergen
--GET  services
--PUT  restaurant
--GET  customer experience (Alexa launch)
--POST customer experience
--GET  message_from_customer
--PUT  message_to_customer
-
-Android
--GET  in progress orders
--POST forget password endpoint | create temp password
-
-Alexa
--POST assistance
--GET launch request greeting

@@ -119,10 +119,48 @@ class Manager extends React.Component{
     }
     return buf;
   }
+  verifyManager()
+  {
+    //verify the token is a manager token
+    /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
+    if(this.state.token === undefined )
+    {
+      //if they dont even have a token return false
+      return false;
+    }
+    axios({
+      method: 'POST',
+      url:  process.env.REACT_APP_DB +'/verify',
+      //+'&logo='+this.state.file
+      data: 'token='+this.state.token,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.state.token
+      },
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+    .then(async response => {
+      await response;
+      //if not a manager
+      if (response.status !== 200) { return false}
+      else {return true} 
+    })
+    .catch(error => {
+      //databse error
+      console.error("There was an error!", error);
+      return false;
+    });
+
+  }
     render() 
     {
-      //if user doesnt have access take them to login
-      if(this.state.staff === undefined || this.state.token === undefined  || this.state.staff.position !== "manager")
+      const manager = this.verifyManager(this.state.token);
+      /*verify a users access - if staff is unefined or not position of manager we want to
+      log out as well- even if they somehow got correct manager token the page will break and 
+      we need them to log back in */ 
+      if(this.state.staff === undefined || manager === false ||  this.state.staff.position !== "manager")
       {
         return(
             <Container>
