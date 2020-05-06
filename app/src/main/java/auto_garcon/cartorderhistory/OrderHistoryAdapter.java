@@ -2,11 +2,9 @@ package auto_garcon.cartorderhistory;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,19 +24,18 @@ import java.util.TimeZone;
 
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
-import auto_garcon.singleton.VolleySingleton;
 
 /*
 This is a container for history pages that the user can see.
  */
-public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.OrderViewHolder> {
-    private SharedPreference pref;// used to refrence user information
+public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.OrderHistoryViewHolder> {
+    private SharedPreference pref;// used to reference user information
     private ArrayList<String> order;// used to capture user order number
     private ArrayList<ShoppingCartSingleton> carts;// used to handle items returned from the recent order history
     private ArrayList<String> date;// used to capture time for all orders
     private ArrayList<byte[]> logos;
     private Context ct;
-    private ArrayList<String> resturantName;
+    private ArrayList<String> restaurantName;
     Dialog popUp;
     Dialog confirmPopup;
 
@@ -50,43 +47,40 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
      * @param carts
      * @param date
      */
-    public  OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date,ArrayList<String> resturantName,ArrayList<byte[]> logos){
+    public  OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date,ArrayList<String> restaurantName,ArrayList<byte[]> logos){
         ct = ctx;
-        this.logos=logos;
+        this.logos = logos;
         pref = preference;
         this.order = order;
         this.carts = carts;
         this.date = date;
-        this.resturantName = resturantName;
+        this.restaurantName = restaurantName;
         String hold = "";
-        for(int i = 0 ;i<this.logos.get(0).length;i++) {
-            hold = hold+","+this.logos.get(0)[i];
-        }
-        Log.d("asd32e4ff", ""+hold);
 
+        for(int i = 0 ;i < this.logos.get(0).length; i++) {
+            hold = hold + "," + this.logos.get(0)[i];
+        }
     }
 
     @NonNull
     @Override
-    public OrderHistoryAdapter.OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d("asd32e4ff1", ""+carts.get(0).toString());
-
+    public OrderHistoryAdapter.OrderHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(ct);//this allows the list expand dynamically
-        View view = inflater.inflate(R.layout.order_cards,parent,false);//make the list visible
+        View view = inflater.inflate(R.layout.order_history_tile,parent,false);//make the list visible
 
-        return new OrderViewHolder(view);
+        return new OrderHistoryViewHolder(view);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderViewHolder holder, final int position) {
-        holder.order_num.setText(resturantName.get(position));// set the text for the order tile
+    public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderHistoryViewHolder holder, final int position) {
+        holder.order_num.setText(restaurantName.get(position));// set the text for the order tile
 
         holder.restaurant_num.setText(Integer.toString(carts.get(position).getRestaurantID()));// set the restruant id to allow us to re order
 
         holder.date.setText(date.get(position));// set the date in the order tile card
 
-        holder.resturant.setImageBitmap(BitmapFactory.decodeByteArray(logos.get(position),0,logos.get(position).length));// set the image of the resturant to the image view on the order_tile card
+        holder.restaurant.setImageBitmap(BitmapFactory.decodeByteArray(logos.get(position),0,logos.get(position).length));// set the image of the resturant to the image view on the order_tile card
 
         holder.items.setOnClickListener(new View.OnClickListener() {// when they user clicks on view items text view on the order tile card
             @Override
@@ -101,11 +95,12 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                 historyItems.setText(carts.get(position).toString());
             }
         });
+
         holder.reOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 confirmPopup = new Dialog(ct);
-                confirmPopup.setContentView(R.layout.confirm3_popup);
+                confirmPopup.setContentView(R.layout.confirm_popup);
                 confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 confirmPopup.show();
                 Button confirmYes = confirmPopup.findViewById(R.id.confirm_clear);
@@ -120,35 +115,33 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                         confirmPopup.dismiss();
                     }
                 });
-
             }
 
 
         });
-
-
     }
 
     @Override
     public int getItemCount() {
         return order.size();
     }
-    public class OrderViewHolder extends RecyclerView.ViewHolder{
+
+    public class OrderHistoryViewHolder extends RecyclerView.ViewHolder{
 
         TextView order_num;
         TextView date;
         TextView restaurant_num;
         TextView items;
         Button reOrder;
-        ImageView resturant;
-        public OrderViewHolder(@NonNull View v) {
+        ImageView restaurant;
+        public OrderHistoryViewHolder(@NonNull View v) {
             super(v);
             order_num= v.findViewById(R.id.order_num2);
             date = v.findViewById(R.id.date);
             restaurant_num = v.findViewById(R.id.resturant_num);
             items= v.findViewById(R.id.order_items);
             reOrder = v.findViewById(R.id.ReOrderButton);
-            resturant = v.findViewById(R.id.resturant);
+            restaurant = v.findViewById(R.id.resturant);
         }
     }
 }
