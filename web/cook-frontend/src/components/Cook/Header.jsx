@@ -1,6 +1,6 @@
 import React from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-
+import { makeStyles, useTheme, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import red from '@material-ui/core/colors/red';
 import {AppBar, Toolbar, Tabs, Tab} from '@material-ui/core'
 import {Link} from 'react-router-dom'
 
@@ -8,10 +8,9 @@ import exampleCompanyLogo from '../../assets/exampleCompanyLogo.png'
 
 import AccountDropdown from "../AccountDropdown";
 
-
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    backgroundColor: '#f1f1f1'
+    backgroundColor: '#f1f1f1',
   },
   toolbar: {
     alignItems: 'center',
@@ -30,9 +29,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#0b658a'
+    }
+  },
+});
+
 function Header(props){
 
-  const theme = useTheme();
+  // const theme = useTheme();
   const classes = useStyles(theme);
 
   const {cookies} = props;
@@ -43,18 +50,20 @@ function Header(props){
   };
 
   return(
-    <AppBar className={classes.appBar} position="sticky">
-      <Toolbar className={classes.toolbar}>
-        <img src={exampleCompanyLogo}  width="auto" height="40px" alt="waiter" />
-        <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
-          <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
-          <Tab label="Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />
-        </Tabs>
-        <div className={classes.account}>
-          <AccountDropdown firstName={cookies.staff.first_name} lastName={cookies.staff.last_name} />
-        </div>
-      </Toolbar>
-    </AppBar>
+    <ThemeProvider theme={theme}>
+      <AppBar className={classes.appBar} position="sticky">
+        <Toolbar className={classes.toolbar}>
+          <img src={exampleCompanyLogo}  width="auto" height="40px" alt="waiter" />
+          <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
+            <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
+            <Tab label="Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />
+          </Tabs>
+          <div className={classes.account}>
+            <AccountDropdown firstName={cookies.staff.first_name} lastName={cookies.staff.last_name} />
+          </div>
+        </Toolbar>
+      </AppBar>
+    </ThemeProvider>
   )
 }
 

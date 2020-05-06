@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Orders from "./Orders";
-import OrdersHeader from "./OrdersHeader";
+// import OrdersHeader from "./OrdersHeader";
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
@@ -228,8 +228,7 @@ function Body(props){
   function renderOrders(){
     // Check if there are orders in orders, if not just write 'No orders'
     if(Object.keys(orders).length) {
-      return <Orders orders={orders} selectedOrder={selectedOrder} handleCardClick={changeSelectedOrder}
-                     completed={completed}/>;
+      return <Orders orders={orders} selectedOrder={selectedOrder} handleCardClick={changeSelectedOrder} completed={completed}/>;
     }
     let string = completed ? "No completed orders" : "No active orders";
     return <p className="px-2">{string}</p>
@@ -237,7 +236,7 @@ function Body(props){
 
   return (
     <div className="p-3">
-      <OrdersHeader handleStatusChangeClick={changeOrderStatus} path={props.path} />
+      {/*<OrdersHeader handleStatusChangeClick={changeOrderStatus} path={props.path} />*/}
       {/*<Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={markOrderComplete} />*/}
       {renderOrders()}
     </div>

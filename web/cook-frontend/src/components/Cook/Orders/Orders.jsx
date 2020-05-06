@@ -3,6 +3,8 @@ import React from "react";
 import Header from './Header'
 import {Redirect, Route, Switch} from "react-router-dom";
 
+import DisplayOrders from "./DisplayOrders";
+
 function Orders(){
 
   return(
@@ -13,10 +15,10 @@ function Orders(){
           <Redirect to="/cook/orders/active" />
         </Route>
         <Route exact path="/cook/orders/active">
-          Active
+          <DisplayOrders />
         </Route>
         <Route exact path="/cook/orders/completed">
-          Completed
+          <DisplayOrders />
         </Route>
       </Switch>
     </div>
