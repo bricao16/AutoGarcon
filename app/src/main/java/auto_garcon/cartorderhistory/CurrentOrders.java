@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -21,7 +22,11 @@ import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import auto_garcon.accountstuff.Account;
@@ -50,7 +55,8 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(CurrentOrders.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
 
-
+        TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+        usernameSideNavBar.setText(pref.getUser().getUsername());
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(CurrentOrders.this);
@@ -81,7 +87,31 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                     @Override
                     public void onResponse(String response) {
                         // response
-                        Log.d("SFSasdfasdfDF", response);
+                        try {
+                            JSONObject orderJSONObject = new JSONObject(response);
+
+                            Iterator<String> keys = orderJSONObject.keys();
+                            while(keys.hasNext()) {
+                                String key = keys.next();
+
+                                if (orderJSONObject.get(key) instanceof JSONObject) {
+                                    auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
+                                    JSONObject menuItemCategories = orderJSONObject.getJSONObject(key);
+
+                                    menuItemCategories.getInt("order_num");
+                                    menuItemCategories.getInt("restaurant_id");
+                                    menuItemCategories.getInt("item_id");
+                                    menuItemCategories.getString("item_name");
+                                    menuItemCategories.getDouble("price");
+                                    menuItemCategories.getInt("quantity");
+                                    menuItemCategories.getString("order_date");
+                                    //menuItemCategories.getString("table_num");
+                                }
+                            }
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -94,7 +124,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
-                HashMap<String,String> headers = new HashMap<String,String>();
+                HashMap<String,String> headers = new HashMap<String, String>();
                 headers.put("Authorization","Bearer " + pref.getAuth());
                 return headers;
             }

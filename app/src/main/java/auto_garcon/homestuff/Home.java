@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -81,8 +82,12 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
         NavigationView navigationView = findViewById(R.id.navigationView);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(Home.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         searchBar = findViewById(R.id.search_bar);
+
+        TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+        usernameSideNavBar.setText(pref.getUser().getUsername());
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();

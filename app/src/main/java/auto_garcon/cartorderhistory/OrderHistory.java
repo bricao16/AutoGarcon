@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -148,6 +149,9 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
                     NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
                     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(OrderHistory.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+
+                    TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+                    usernameSideNavBar.setText(pref.getUser().getUsername());
 
                     drawerLayout.addDrawerListener(toggle);
                     toggle.syncState();

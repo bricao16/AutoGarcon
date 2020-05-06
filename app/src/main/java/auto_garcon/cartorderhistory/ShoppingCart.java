@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -94,6 +95,10 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.xml_toolbar);
         navigationView = findViewById(R.id.navigationView);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+
+        TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+        usernameSideNavBar.setText(pref.getUser().getUsername());
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
@@ -161,7 +166,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 );
 
                 confirmPopup = new Dialog(ShoppingCart.this);
-                confirmPopup.setContentView(R.layout.confirm2_popup);
+                confirmPopup.setContentView(R.layout.place_order_confirmation_popup);
                 confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 confirmPopup.show();
                 Button confirmYes = confirmPopup.findViewById(R.id.confirm_yes);

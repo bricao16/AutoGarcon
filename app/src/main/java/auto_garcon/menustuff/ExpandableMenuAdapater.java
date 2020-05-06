@@ -122,7 +122,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 addToCartPopup = new Dialog(context);
                 confirmPopup = new Dialog(context);
 
-                addToCartPopup.setContentView(R.layout.menu_popup);
+                addToCartPopup.setContentView(R.layout.menu_item_popup);
                 addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 addToCartPopup.show();
 
