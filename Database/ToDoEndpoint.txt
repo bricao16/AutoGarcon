@@ -13,11 +13,12 @@ Database Redesign Test
 
 TODO:
 Web
+-PUT  /restaurant/register
 -EDIT upload images
 -EDIT get/menu | description, photos, allergen
 -EDIT customize to include cuisine and greeting
+-EDIT error check for emails if already exists.
 -GET  services
--PUT  restaurant
 -GET  customer experience (Alexa launch)
 -POST customer experience
 -GET  message_from_customer
@@ -26,6 +27,7 @@ Web
 Android
 -GET  in progress orders
 -POST forget password endpoint | create temp password
+-POST image for user
 
 Alexa
 -POST assistance
