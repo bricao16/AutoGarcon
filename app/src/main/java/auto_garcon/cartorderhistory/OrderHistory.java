@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -52,6 +53,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
     private ArrayList<String> date;// used to capture time for all orders
     private ArrayList<Double> prices;
     private ArrayList<String> restaurantName;
+    private ArrayList<byte[]> logos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         carts = new ArrayList<>();
         prices = new ArrayList<>();
         restaurantName = new ArrayList<>();
+        logos = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
 
@@ -103,6 +106,12 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 carts.get(tracker).addToCart(item);//ad the new item to the cart
                                 date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());//add the date
                                 restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
+                                byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
+
+                                for(int j = 0; j < temp.length; j++) {
+                                    temp[j] = (byte) (((int) json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
+                                }
+                                logos.add(temp);
                                 tracker=tracker+1;
                             }
                         }
@@ -116,12 +125,21 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             carts.get(i).addToCart(item);
                             date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());
                             restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
+                            byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
+
+                            for(int j = 0; j < temp.length; j++) {
+                                temp[j] = (byte) (((int) json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
+                            }
+                            Log.d("123", String.valueOf(json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(61).getAsInt()));
+
+                            logos.add(temp);
+
                             tracker=tracker+1;
                         }
                     }
 
 
-                    OrderHistoryAdapter adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date,restaurantName);//values that will be needed to input data into our xml objects that is handled in our adapter class
+                    OrderHistoryAdapter adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date,restaurantName,logos);//values that will be needed to input data into our xml objects that is handled in our adapter class
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
 

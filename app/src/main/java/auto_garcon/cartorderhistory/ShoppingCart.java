@@ -173,12 +173,18 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                         Toast.makeText(ShoppingCart.this, "Yes Confirmed",Toast.LENGTH_LONG).show();
 
                         /** Sending the actual putRequest. */
-                        VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
+                        if(pref.getUser().getRestaurantID()!=pref.getShoppingCart().getRestaurantID()){
+                            Toast.makeText(ShoppingCart.this,"Please scan The QR code of the Targeted Restaurant",Toast.LENGTH_LONG).show();
+                        }
 
-                        //Clear the order
-                        shoppingCart = new ShoppingCartSingleton();
-                        pref.setShoppingCart(shoppingCart);
-                        startActivity(new Intent(ShoppingCart.this, ShoppingCart.class));
+                        else {
+                                VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
+
+                                //Clear the order
+                                shoppingCart = new ShoppingCartSingleton();
+                                pref.setShoppingCart(shoppingCart);
+                                startActivity(new Intent(ShoppingCart.this, ShoppingCart.class));
+                        }
 
                         confirmPopup.dismiss();
                     }
