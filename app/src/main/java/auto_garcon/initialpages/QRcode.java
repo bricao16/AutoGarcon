@@ -109,33 +109,10 @@ public class QRcode extends AppCompatActivity {
                 txt_result.post(new Runnable() {
                     @Override
                     public void run() {
-                        String url = "http://50.19.176.137:8000/restaurant/" + data;
-                        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                                new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        try {
-                                            String restaurant = response.getJSONObject("restaurant").getString("name");
-                                            txt_result.setText("Continue to " + restaurant);
-                                            txt_result = (TextView) findViewById(R.id.code_info);
-                                            //onPause();
-                                            Intent menu = new Intent(QRcode.this, Menu.class);
-                                            menu.putExtra("restaurant id",Integer.parseInt(data));
-                                            pref.getUser().setRestaurantID(Integer.parseInt(data));
-                                            startActivity(menu);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                },
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Toast.makeText(QRcode.this,error.toString(),Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                        );
-                        VolleySingleton.getInstance(QRcode.this).addToRequestQueue(getRequest);
+                        Intent menu = new Intent(QRcode.this, Menu.class);
+                        menu.putExtra("restaurant id",Integer.parseInt(data));
+                        pref.getUser().setRestaurantID(Integer.parseInt(data));
+                        startActivity(menu);
                     }
                 });
             }
