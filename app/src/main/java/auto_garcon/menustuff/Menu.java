@@ -97,14 +97,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
 
-        boolean inFavorites = false;
         Button addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
         if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
-            inFavorites = true;
-        }
-
-        if(inFavorites) {
             addOrRemoveFavorite.setText("Remove from favorites");
             pref.removeFromFavorites(getIntent().getIntExtra("restaurant id", 0));
 
@@ -257,6 +252,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             restaurant.getInt("phone_number");
                             restaurant.getInt("opening");
                             restaurant.getInt("closing");
+                            restaurant.getString("cuisine");
                             font = restaurant.getString("font");
                             primaryColor = restaurant.getString("primary_color");
                             secondaryColor = restaurant.getString("secondary_color");
@@ -287,34 +283,17 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 if (menu.get(key) instanceof JSONObject) {
 
                                     auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
-                                    JSONObject item = menu.getJSONObject(key.toString());
+                                    JSONObject item = menu.getJSONObject(key);
 
-                                    Iterator<String> inner_keys = item.keys();
-                                    while(inner_keys.hasNext()) {
-                                        String inner_key = inner_keys.next();
+                                    itemToBeAdded.setRestaurantID(getIntent().getIntExtra("restaurant id", 0));
+                                    itemToBeAdded.setItemID(item.getInt("item_id"));
+                                    itemToBeAdded.setCalories(item.getInt("calories"));
+                                    itemToBeAdded.setPrice(item.getDouble("price"));
+                                    itemToBeAdded.setAmountInStock(item.getInt("in_stock"));
+                                    itemToBeAdded.setCategory(item.getString("category"));
+                                    whereToSendItem = item.getString("category");
+                                    itemToBeAdded.setDescription(item.getString("description"));
 
-                                        itemToBeAdded.setRestaurantID(getIntent().getIntExtra("restaurant id", 0));
-
-                                        switch(inner_key){
-                                            case "calories":
-                                                itemToBeAdded.setCalories(Integer.parseInt(item.get(inner_key).toString()));
-                                                break;
-                                            case "price":
-                                                itemToBeAdded.setPrice(Double.parseDouble(item.get(inner_key).toString()));
-                                                break;
-                                            case "category":
-                                                itemToBeAdded.setCategory(item.get(inner_key).toString());
-                                                whereToSendItem = item.get(inner_key).toString();
-                                                break;
-                                            case "in_stock":
-                                                itemToBeAdded.setAmountInStock(Integer.parseInt(item.get(inner_key).toString()));
-                                                break;
-
-                                            case "item_id":
-                                                itemToBeAdded.setItemID(Integer.parseInt(item.get(inner_key).toString()));
-                                                break;
-                                        }
-                                    }
                                     //if conditional filters out erroneous categories
                                     if(whereToSendItem.equals("Alcohol") || whereToSendItem.equals("Refillable Drink") || whereToSendItem.equals("Dessert") || whereToSendItem.equals("Entree") || whereToSendItem.equals("Appetizer")){
                                     itemToBeAdded.setNameOfItem(key);

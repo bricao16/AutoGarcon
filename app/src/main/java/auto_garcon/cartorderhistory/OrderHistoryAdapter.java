@@ -47,12 +47,12 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
      * @param date
      */
     public  OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date,ArrayList<String> resturantName){
-        ct=ctx;
-        pref=preference;
-        this.order=order;
-        this.carts=carts;
-        this.date=date;
-        this.resturantName= resturantName;
+        ct = ctx;
+        pref = preference;
+        this.order = order;
+        this.carts = carts;
+        this.date = date;
+        this.resturantName = resturantName;
         Log.d("asd32e4ff", ""+carts.get(0).toString());
 
     }
@@ -71,9 +71,8 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
     @Override
     public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderViewHolder holder, final int position) {
-
         holder.order_num.setText(resturantName.get(position));
-        holder.resturant_num.setText(Integer.toString(carts.get(position).getRestaurantID()));
+        holder.restaurant_num.setText(Integer.toString(carts.get(position).getRestaurantID()));
         holder.date.setText(date.get(position));
         holder.items.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,20 +121,18 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
         TextView order_num;
         TextView date;
-        TextView resturant_num;
+        TextView restaurant_num;
         TextView items;
         Button reOrder;
         ImageView resturant;
-            public OrderViewHolder(@NonNull View v) {
-                super(v);
-                order_num= v.findViewById(R.id.order_num2);
-                date = v.findViewById(R.id.date);
-                resturant_num = v.findViewById(R.id.resturant_num);
-                items= v.findViewById(R.id.order_items);
-                reOrder = v.findViewById(R.id.ReOrderButton);
-                resturant = v.findViewById(R.id.resturant);
-
-            }
-
+        public OrderViewHolder(@NonNull View v) {
+            super(v);
+            order_num= v.findViewById(R.id.order_num2);
+            date = v.findViewById(R.id.date);
+            restaurant_num = v.findViewById(R.id.resturant_num);
+            items= v.findViewById(R.id.order_items);
+            reOrder = v.findViewById(R.id.ReOrderButton);
+            resturant = v.findViewById(R.id.resturant);
+        }
     }
 }

@@ -56,7 +56,6 @@ public class Login extends AppCompatActivity {
 
         pref = new SharedPreference(this);// creating a sharedPrefrence object that access the same file of all other shared prefrences on the app
 
-
         if(pref.getLoginStatus()){ // checks if they are already signed in if so we send them to the homepage if their already logged in
             //Todo: check if there token is still valid
             Intent intent  = new Intent(Login.this, TwoButtonPage.class);
@@ -64,11 +63,11 @@ public class Login extends AppCompatActivity {
             finish();//prevents them from coming back to this page
         }
 
-        usernameId = findViewById(R.id.username);// associating xml objects with the java Object equivalent
-        password = findViewById(R.id.password);// associating xml objects with the java Object equivalent
-        buttonSignIn = findViewById(R.id.signUp);// associating xml objects with the java Object equivalent
-        textViewSignUp = findViewById(R.id.loginLink);// associating xml objects with the java Object equivalent
-        forgotPassword = findViewById(R.id.forgotPassword);
+        usernameId = findViewById(R.id.username_enter_login);// associating xml objects with the java Object equivalent
+        password = findViewById(R.id.password_enter_login);// associating xml objects with the java Object equivalent
+        buttonSignIn = findViewById(R.id.sign_in_button_login);// associating xml objects with the java Object equivalent
+        textViewSignUp = findViewById(R.id.no_account_login);// associating xml objects with the java Object equivalent
+        forgotPassword = findViewById(R.id.forgot_password_login);
 
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,7 +155,7 @@ public class Login extends AppCompatActivity {
         });
 
        Drawable drawable = getDrawable(R.drawable.icons8forgotpassword);
-      drawable.setBounds(0,0,(int)(drawable.getIntrinsicWidth()*.5),(int)(drawable.getIntrinsicHeight()*.5));// making the drawable scalable
+      drawable.setBounds(0,0,(int)(drawable.getIntrinsicWidth() * .5), (int)(drawable.getIntrinsicHeight() * .5));// making the drawable scalable
         //todo : https://icons8.com refrence this in about page
       forgotPassword.setCompoundDrawables(drawable,null,null,null);
        //forgotPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.icons8forgotpassword,0,(int)(forgotPassword.getMaxHeight()*.5),(int)(forgotPassword.getMaxWidth()*.5));

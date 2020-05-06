@@ -77,170 +77,171 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_shopping_cart);
 
         recyclerView = findViewById(R.id.shopping_cart_list);
+        shoppingCart = pref.getShoppingCart();
 
 
         /**
          * Ties the side navigation bar xml elements to Java objects and setting listeners for the
          * side navigation drawer as well as the elements within it.
          */
-        if(pref.getShoppingCart().getCart().size() == 0) {
+        if(shoppingCart.getCart().size() == 0) {
             recyclerView.setVisibility(View.GONE);
         }
         else{
             findViewById(R.id.no_items_in_cart).setVisibility(View.GONE);
         }
-            shoppingCart = pref.getShoppingCart();
-            drawerLayout = findViewById(R.id.shopping_cart_main);
-            toolbar = findViewById(R.id.xml_toolbar);
-            navigationView = findViewById(R.id.navigationView);
-            toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-            drawerLayout.addDrawerListener(toggle);
-            toggle.syncState();
-            navigationView.setNavigationItemSelectedListener(this);
 
-            /**
-             * Ties the cart xml to a Java object and sets the adapter, which will manage each
-             * individual item in the cart.
-             */
-            adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        drawerLayout = findViewById(R.id.shopping_cart_main);
+        toolbar = findViewById(R.id.xml_toolbar);
+        navigationView = findViewById(R.id.navigationView);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
 
-            Button PlaceOrderButton = findViewById(R.id.btn_placeorder);
+        /**
+         * Ties the cart xml to a Java object and sets the adapter, which will manage each
+         * individual item in the cart.
+         */
+        adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-            PlaceOrderButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    /** Where the put request starts to get created. */
-                    obj = new JSONObject();
+        Button PlaceOrderButton = findViewById(R.id.btn_placeorder);
 
-                    /** Creates and builds the JSON object that will eventually be sent to the database. */
-                    try {
-                        JSONObject order = new JSONObject();
-                        for (int i = 0; i < shoppingCart.getCart().size(); i++) {
-                            JSONObject item = new JSONObject();
+        PlaceOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(pref.getUser().getRestaurantID() != shoppingCart.getRestaurantID()) {
 
-                            item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
-                            item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
-                            order.put(Integer.toString(i), item);
-                        }
+                }
 
-                        obj.put("restaurant_id", Integer.toString(shoppingCart.getRestaurantID()));
-                        obj.put("customer_id", pref.getUser().getUsername());
-                        obj.put("table_num", 6);
-                        obj.put("order", order);
-                    } catch (JSONException e) {
-                        //TODO figure out how to handle this other than stack trace
-                        e.printStackTrace();
-                        Toast.makeText(ShoppingCart.this, "Error occured", Toast.LENGTH_LONG).show();
+                /** Where the put request starts to get created. */
+                obj = new JSONObject();
 
+                /** Creates and builds the JSON object that will eventually be sent to the database. */
+                try {
+                    JSONObject order = new JSONObject();
+                    for (int i = 0; i < shoppingCart.getCart().size(); i++) {
+                        JSONObject item = new JSONObject();
+
+                        item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
+                        item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
+                        order.put(Integer.toString(i), item);
                     }
 
-                    /**
-                     * Builds the StringRequest that will be sent to the database. As well as
-                     * overriding the onResponse and onErrorResponse for our own use.
-                     */
-                    putRequest = new StringRequest(Request.Method.PUT, "http://50.19.176.137:8000/orders/place",
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    Toast.makeText(ShoppingCart.this, response, Toast.LENGTH_LONG).show();
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    error.printStackTrace();
-                                    Toast.makeText(ShoppingCart.this, error.toString(), Toast.LENGTH_LONG).show();
-                                }
+                    obj.put("restaurant_id", Integer.toString(shoppingCart.getRestaurantID()));
+                    obj.put("customer_id", pref.getUser().getUsername());
+                    obj.put("table_num", 6);
+                    obj.put("order", order);
+                } catch (JSONException e) {
+                    //TODO figure out how to handle this other than stack trace
+                    e.printStackTrace();
+                    Toast.makeText(ShoppingCart.this, "Error occured", Toast.LENGTH_LONG).show();
+
+                }
+
+                /**
+                 * Builds the StringRequest that will be sent to the database. As well as
+                 * overriding the onResponse and onErrorResponse for our own use.
+                 */
+                putRequest = new StringRequest(Request.Method.PUT, "http://50.19.176.137:8000/orders/place",
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Toast.makeText(ShoppingCart.this, response, Toast.LENGTH_LONG).show();
                             }
-                    );
-
-                    confirmPopup = new Dialog(ShoppingCart.this);
-                    confirmPopup.setContentView(R.layout.confirm2_popup);
-                    confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    confirmPopup.show();
-                    Button confirmYes = confirmPopup.findViewById(R.id.confirm_yes);
-                    Button confirmNo = confirmPopup.findViewById(R.id.confirm_not);
-
-                    confirmYes.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            Toast.makeText(ShoppingCart.this, "Yes Confirmed",Toast.LENGTH_LONG).show();
-
-                            /** Sending the actual putRequest. */
-                            VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
-
-                            //Clear the order
-                            shoppingCart = new ShoppingCartSingleton();
-                            pref.setShoppingCart(shoppingCart);
-                            startActivity(new Intent(ShoppingCart.this, ShoppingCart.class));
-
-                            confirmPopup.dismiss();
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
+                                Toast.makeText(ShoppingCart.this, error.toString(), Toast.LENGTH_LONG).show();
+                            }
                         }
-                    });
+                );
 
-                    confirmNo.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            Toast.makeText(ShoppingCart.this, "Not Confirmed yet",Toast.LENGTH_LONG).show();
-                            confirmPopup.dismiss();
-                        }
-                    });
-                }
-            });
+                confirmPopup = new Dialog(ShoppingCart.this);
+                confirmPopup.setContentView(R.layout.confirm2_popup);
+                confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                confirmPopup.show();
+                Button confirmYes = confirmPopup.findViewById(R.id.confirm_yes);
+                Button confirmNo = confirmPopup.findViewById(R.id.confirm_not);
 
-            //Cancel Button: reset cart
-            Button ClearCartPopup = findViewById(R.id.btn_cancel);
-            ClearCartPopup.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clearCartPopup = new Dialog(ShoppingCart.this);
-                    clearCartPopup.setContentView(R.layout.clear_cart_popup);
-                    clearCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    clearCartPopup.show();
-                    Button confirmYes = clearCartPopup.findViewById(R.id.confirm_yes);
-                    Button confirmNo = clearCartPopup.findViewById(R.id.confirm_no);
+                confirmYes.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(ShoppingCart.this, "Yes Confirmed",Toast.LENGTH_LONG).show();
 
-                    confirmYes.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            Toast.makeText(ShoppingCart.this, "Yes Confirmed",Toast.LENGTH_LONG).show();
-                            //Clear the order
-                            shoppingCart = new ShoppingCartSingleton();
-                            pref.setShoppingCart(shoppingCart);
+                        /** Sending the actual putRequest. */
+                        VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
 
-                            startActivity(new Intent(ShoppingCart.this, ShoppingCart.class));
+                        //Clear the order
+                        shoppingCart = new ShoppingCartSingleton();
+                        pref.setShoppingCart(shoppingCart);
+                        startActivity(new Intent(ShoppingCart.this, ShoppingCart.class));
 
-                            clearCartPopup.dismiss();
-                        }
-                    });
+                        confirmPopup.dismiss();
+                    }
+                });
 
-                    confirmNo.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            Toast.makeText(ShoppingCart.this, "Not Confirmed yet",Toast.LENGTH_LONG).show();
-                            clearCartPopup.dismiss();
-                        }
-                    });
-                }
-            });
-
-            if(pref.getShoppingCart().getSecondaryColor() == null){
-                PlaceOrderButton.setBackgroundColor(Color.parseColor("#0B658A"));
-                ClearCartPopup.setBackgroundColor(Color.parseColor("#0B658A"));
+                confirmNo.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(ShoppingCart.this, "Not Confirmed yet",Toast.LENGTH_LONG).show();
+                        confirmPopup.dismiss();
+                    }
+                });
             }
-            else{
-                PlaceOrderButton.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
-                ClearCartPopup.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+        });
+
+        //Cancel Button: reset cart
+        Button ClearCartPopup = findViewById(R.id.btn_cancel);
+        ClearCartPopup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearCartPopup = new Dialog(ShoppingCart.this);
+                clearCartPopup.setContentView(R.layout.clear_cart_popup);
+                clearCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                clearCartPopup.show();
+                Button confirmYes = clearCartPopup.findViewById(R.id.confirm_yes);
+                Button confirmNo = clearCartPopup.findViewById(R.id.confirm_no);
+
+                confirmYes.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(ShoppingCart.this, "Yes Confirmed",Toast.LENGTH_LONG).show();
+                        //Clear the order
+                        shoppingCart = new ShoppingCartSingleton();
+                        pref.setShoppingCart(shoppingCart);
+
+                        startActivity(new Intent(ShoppingCart.this, ShoppingCart.class));
+
+                        clearCartPopup.dismiss();
+                    }
+                });
+
+                confirmNo.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(ShoppingCart.this, "Not Confirmed yet",Toast.LENGTH_LONG).show();
+                        clearCartPopup.dismiss();
+                    }
+                });
             }
+        });
 
-            if(pref.getShoppingCart().getTertiaryColor() == null){
-                drawerLayout.setBackgroundColor(Color.parseColor("#66A8A7A4"));
-            }
-            else{
-                drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
-            }
+        if(pref.getShoppingCart().getSecondaryColor() == null){
+            PlaceOrderButton.setBackgroundColor(Color.parseColor("#0B658A"));
+            ClearCartPopup.setBackgroundColor(Color.parseColor("#0B658A"));
+        }
+        else{
+            PlaceOrderButton.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+            ClearCartPopup.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+        }
 
-
-
-
+        if(pref.getShoppingCart().getTertiaryColor() == null){
+            drawerLayout.setBackgroundColor(Color.parseColor("#66A8A7A4"));
+        }
+        else{
+            drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+        }
 
         /**
          * Ties xml element to a Java object and where to onClick functionality is provided,

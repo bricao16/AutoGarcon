@@ -83,6 +83,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         if(view == null) {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.expandable_menu_header, null);
+            view.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
         }
 
         TextView listHeader = view.findViewById(R.id.list_header);
@@ -98,6 +99,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         if(view == null) {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.expandable_menu_item, null);
+            view.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
         }
 
         TextView txtListChild = view.findViewById(R.id.list_item);
@@ -117,22 +119,22 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 addToCartPopup.show();
 
                 ConstraintLayout background = addToCartPopup.findViewById(R.id.menu_popup);
-                Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart);
+                Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart_menu_popup);
                 TextView outOfStock = addToCartPopup.findViewById(R.id.order_items);
-                TextView calorieCount = addToCartPopup.findViewById(R.id.calories);
-                TextView itemName = addToCartPopup.findViewById(R.id.itemNameMenuPop);
-                TextView itemPrice = addToCartPopup.findViewById(R.id.menuItemPrice);
+                TextView calorieCount = addToCartPopup.findViewById(R.id.item_calories_menu_popup);
+                TextView itemName = addToCartPopup.findViewById(R.id.item_name_menu_popup);
+                TextView itemPrice = addToCartPopup.findViewById(R.id.item_price_menu_popup);
+                TextView itemDescription = addToCartPopup.findViewById(R.id.item_description_menu_popup);
 
                 background.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
 
-                String caloriesString = "Calories: " + getChild(i, j).getCalories();
-                calorieCount.setText(caloriesString);
+                calorieCount.setText("Calories: " + getChild(i, j).getCalories());
                 calorieCount.setTextColor(Color.WHITE);
                 itemName.setText(getChild(i, j).getNameOfItem());
                 itemName.setTextColor(Color.WHITE);
-                String priceString = "Price: " + String.format("$%.02f", getChild(i, j).getPrice());
-                itemPrice.setText(priceString);
+                itemPrice.setText("Price: " + String.format("$%.02f", getChild(i, j).getPrice()));
                 itemPrice.setTextColor(Color.WHITE);
+                itemDescription.setText(getChild(i, j).getDescription());
 
                 //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
                 if(getChild(i, j).getAmountInStock() == 0) {

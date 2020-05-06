@@ -8,13 +8,11 @@ import android.os.Handler;
 
 import com.example.auto_garcon.R;
 
-import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 
 /** Initial loading screen. */
 public class LoadingScreen extends AppCompatActivity {
-    private static int LOADING_SCREEN = 3000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +36,6 @@ public class LoadingScreen extends AppCompatActivity {
                 startActivity(toLogin);
                 finish();
             }
-        }, LOADING_SCREEN);
+        }, 3000);
     }
 }

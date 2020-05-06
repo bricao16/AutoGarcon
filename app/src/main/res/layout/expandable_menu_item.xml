@@ -13,8 +13,8 @@
         android:layout_width="245dp"
         android:layout_height="wrap_content"
         android:id="@+id/list_item"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
         android:textSize="16sp"/>
 
@@ -23,9 +23,10 @@
         android:layout_width="155dp"
         android:layout_height="wrap_content"
         android:id="@+id/list_item_price"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         android:layout_marginLeft="245dp"
+        android:paddingEnd="10dp"
         android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
         android:gravity="right"
         android:textSize="16sp"/>

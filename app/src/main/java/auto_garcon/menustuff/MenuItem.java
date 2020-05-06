@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class MenuItem implements Serializable{
     private String category;
     private String nameOfItem;
+    private String description;
     private int amountInStock;
     private int calories;
     private int restaurantID;
@@ -18,6 +19,7 @@ public class MenuItem implements Serializable{
 
 
     public MenuItem() {
+        this.description = "";
         this.quantity = 1;
     }
 
@@ -102,6 +104,14 @@ public class MenuItem implements Serializable{
         if(this.quantity > 0) {
             this.quantity = this.quantity - 1;
         }
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return this.description;
     }
 
 
