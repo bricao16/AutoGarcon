@@ -36,7 +36,7 @@ class Customize extends React.Component{
           temp_primary: this.props.info.primary_color,
           temp_secondary: this.props.info.secondary_color,
           temp_tertiary:this.props.info.tertiary_color,
-          temp_font : 'this.props.info.font',
+          temp_font : this.props.info.font,
           font_color : '#111111',
           temp_font_color: '#111111',
           file: this.props.logo,
@@ -72,7 +72,7 @@ class Customize extends React.Component{
       }
       else if(this.state.sectionEdit ==="Font")
       {
-        this.setState({ 'font':  e.target.value});
+        this.setState({ 'temp_font':  e.target.value});
       }
       else if(this.state.sectionEdit ==="Font Color")
       {
@@ -322,7 +322,7 @@ renderInfo(){
                         {this.state.sectionEdit !== "Font" ?
                           <p style={{margin: "0", padding: "0.8em"}}>{this.state.font}</p>
                             :   
-                            <form className="form-inline">
+                            <form className="form-inline" >
                             {/* choose font and submit to change font */}
                             <div style= {{float: 'left'}}>
                                 <select id="lang" onChange={this.onChange} >
@@ -345,7 +345,7 @@ renderInfo(){
                             </div>
                             <br></br>
                             <div className="row m-2">
-                                <button  onClick = {this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                <button onClick = {this.handleSubmit} type="button" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
                             </div>
                             <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
                                 </form>

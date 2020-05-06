@@ -160,7 +160,7 @@ class Manager extends React.Component{
       /*verify a users access - if staff is unefined or not position of manager we want to
       log out as well- even if they somehow got correct manager token the page will break and 
       we need them to log back in */ 
-      if(this.state.staff === undefined || manager == false ||  this.state.staff.position != "manager")
+      if(this.state.staff === undefined || manager === false ||  this.state.staff.position !== "manager")
       {
         return(
             <Container>
