@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Orders from "./Orders";
-import Header from "./Header";
+import OrdersHeader from "./OrdersHeader";
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
@@ -237,7 +237,7 @@ function Body(props){
 
   return (
     <div className="p-3">
-      <Header handleStatusChangeClick={changeOrderStatus} path={props.path} />
+      <OrdersHeader handleStatusChangeClick={changeOrderStatus} path={props.path} />
       {/*<Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={markOrderComplete} />*/}
       {renderOrders()}
     </div>

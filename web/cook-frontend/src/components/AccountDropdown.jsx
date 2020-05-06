@@ -27,7 +27,7 @@ class AccountDropdown extends React.Component {
     this.setState({
         section: category
     })
-  }
+  };
   logout(){
     //remove the cookies to logout
     cookies.remove('mytoken');
@@ -51,26 +51,23 @@ class AccountDropdown extends React.Component {
     }
     //either log out or view the dropdown
     return (
-        this.state.section === "" ? 
-          <Dropdown alignRight className={this.props.className}>
-            <Dropdown.Toggle variant="light" id="dropdown-basic">
-              {this.props.firstName} {this.props.lastName}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item href="/account">View Account</Dropdown.Item>
-              <div onClick={()=>this.privacyPolicy()}>
-                <Dropdown.Item>Privacy Policy</Dropdown.Item>
-              </div>
-              <div onClick={()=>this.handleAction('logout')}>
-                <Dropdown.Item>Logout</Dropdown.Item>
-              </div>
-            </Dropdown.Menu>
-          </Dropdown>
-        :
-        this.logout()
-     
-
-
+      this.state.section === "" ?
+        <Dropdown alignRight className={this.props.className}>
+          <Dropdown.Toggle variant="light" id="dropdown-basic">
+            {this.props.firstName} {this.props.lastName}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item href="/account">View Account</Dropdown.Item>
+            <div onClick={()=>this.privacyPolicy()}>
+              <Dropdown.Item>Privacy Policy</Dropdown.Item>
+            </div>
+            <div onClick={()=>this.handleAction('logout')}>
+              <Dropdown.Item>Logout</Dropdown.Item>
+            </div>
+          </Dropdown.Menu>
+        </Dropdown>
+      :
+      this.logout()
     );
   }
 }

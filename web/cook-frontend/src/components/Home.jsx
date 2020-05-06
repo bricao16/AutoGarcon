@@ -1,5 +1,5 @@
 import React from "react";
-import logoImage from "../assets/AutoGarconLogoHome.png";
+import logoImage from "../assets/AutoGarconLogoCrop.png";
 import {Link} from "react-router-dom";
 // from free license at https://www.pexels.com/photo/clear-wine-glass-on-table-67468/
 import Background from "../assets/background.jpg";

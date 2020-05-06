@@ -21,8 +21,6 @@ well as a stock image with a circle containing a description of the product.*/
 class App extends React.Component{
     constructor(props) {
       super(props);
-      this.state = {
-      };
     }
   render(){
     return (

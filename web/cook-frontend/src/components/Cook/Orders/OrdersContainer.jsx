@@ -15,7 +15,7 @@ import '../../assets/orders/order.css'
   component.
 */
 
-class Orders extends React.Component{
+class OrdersContainer extends React.Component{
 
   constructor(props) {
     super(props);
@@ -54,4 +54,4 @@ const ordersStyle = {
   fontSize: '1.1em'
 };
 
-export default Orders;
+export default OrdersContainer;

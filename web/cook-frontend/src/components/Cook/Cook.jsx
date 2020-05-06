@@ -1,82 +1,106 @@
-import React from "react";
-import Navigation from "./Navigation";
-// import Alert from "./Alert";
-import Footer from "./Footer";
-import Body from "./Body";
-import Nav from 'react-bootstrap/Nav';
-import Container from 'react-bootstrap/Container';
+import React, {useEffect, useRef, useState} from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Cookies from 'universal-cookie';
+import clsx from 'clsx';
+import axios from "axios";
+import https from "https";
 
-class Cook extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.props = props;
-    this.state = {
-      orders: {},
-      selectedOrder: 0,
-      // alertActive: false,
-      // alertContent: <></>,
-      currentTab: "active",
-      token: cookies.get('mytoken'),
-      staff: cookies.get('mystaff')
-    };
+import Header from "./Header";
+import Footer from "./Footer";
+import Orders from "./Orders/Orders";
+import Menu from "./Menu/Menu";
+
+
+const useStyles = makeStyles({
+  main: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  content: {
+    flex: 1
   }
+});
+
+
+const universalCookies = new Cookies();
+
+function Cook(){
+
+  const classes = useStyles();
+
+  const cookies = {
+    token: universalCookies.get('mytoken'),
+    staff: universalCookies.get('mystaff')
+  };
 
   /*
-  deactivateAlert(){
-    let state = this.state;
-    state.alertActive = false;
-    state.alertContent = <></>;
-    this.setState(state);
-  }
+  const [restaurantData, setRestaurantData] = useState({});
 
-  renderAlert(){
-    if(this.state.alertActive){
-      return <Alert alert={this.state.alertContent}/>
+  const [logoData, setLogoData] = useState("");
+
+  useEffect(() =>{
+    getRestaurantData();
+  }, []);
+
+  useEffect(() =>{
+    if(restaurantData.restaurant){
+      changeLogoData();
     }
+  }, [restaurantData]);
+
+  function getRestaurantData(){
+    const url = process.env.REACT_APP_DB + '/restaurant/' + cookies.staff.restaurant_id;
+    axios.get(url, {
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false,
+      })
+    })
+      .then(res => res.data)
+      .then(data => {
+        console.log(data);
+        setRestaurantData(data);
+      })
+      .catch(error =>{
+        console.error(error);
+      });
   }
   */
 
-  render() {
-    // if user doesnt have access
-    if(this.state.staff === undefined || this.state.token === undefined) {
-      return(
-        <Container>
-          <Nav.Link href="/login_cook"> Session expired please log back in </Nav.Link>
-        </Container>
-      );
-    }
-    return (
-      <div style={cookStyle} className="d-flex flex-column">
-        {/* {this.renderAlert()} Might add this back*/}
-        <Navigation currentTab={this.state.currentTab} />
-        <div style={bodyStyle}>
-          <Switch>
-            <Route exact path="/cook">
-              <Redirect to="/cook/active" />
-            </Route>
-            <Route exact path="/cook/active" render={(props) => <Body {...props} path="/active" />} />
-            <Route exact path="/cook/completed" render={(props) => <Body {...props} path="/completed" />} />
-          </Switch>
-        </div>
-        <Footer />
-      </div>
-    )
+  // Check if user is logged in
+  // If they aren't then send them to log in page
+  if(cookies.staff === undefined || cookies.token === undefined) {
+    return(
+      <Redirect to="/login_cook" />
+    );
   }
+
+  return (
+    <div className={classes.main}>
+      {/* Header with navigation and account drop down*/}
+      <Header cookies={cookies} />
+      <div className={classes.content}>
+        <Switch>
+          {/* If navigate to /cook redirect to /cook/orders */}
+          <Route exact path="/cook">
+            <Redirect to="/cook/orders" />
+          </Route>
+          {/* Render cook order page when on /cook/orders */}
+          <Route exact path="/cook/orders">
+            <Orders />
+          </Route>
+          {/* Render cook menu page when on /cook/menu */}
+          <Route exact path="/cook/menu">
+            <Menu />
+          </Route>
+        </Switch>
+      </div>
+      <Footer />
+    </div>
+  )
+
 }
-
-// Cookies used for getting login and user info
-const cookies = new Cookies();
-
-const cookStyle = {
-  width: '100vw'
-};
-
-const bodyStyle = {
-  flex: 1,
-  backgroundColor: '#f1f1f1'
-};
 
 export default Cook;
