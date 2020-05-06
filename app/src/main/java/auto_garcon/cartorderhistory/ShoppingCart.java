@@ -79,12 +79,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         recyclerView = findViewById(R.id.shopping_cart_list);
         shoppingCart = pref.getShoppingCart();
 
-
         /**
          * Ties the side navigation bar xml elements to Java objects and setting listeners for the
          * side navigation drawer as well as the elements within it.
          */
-        if(shoppingCart.getCart().size() == 0) {
+        if(shoppingCart.getCart().size() == 0 || shoppingCart.getCart() == null) {
             recyclerView.setVisibility(View.GONE);
         }
         else{
@@ -227,21 +226,9 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        if(pref.getShoppingCart().getSecondaryColor() == null){
-            PlaceOrderButton.setBackgroundColor(Color.parseColor("#0B658A"));
-            ClearCartPopup.setBackgroundColor(Color.parseColor("#0B658A"));
-        }
-        else{
-            PlaceOrderButton.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
-            ClearCartPopup.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
-        }
 
-        if(pref.getShoppingCart().getTertiaryColor() == null){
-            drawerLayout.setBackgroundColor(Color.parseColor("#66A8A7A4"));
-        }
-        else{
-            drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
-        }
+        PlaceOrderButton.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+        ClearCartPopup.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
 
         /**
          * Ties xml element to a Java object and where to onClick functionality is provided,

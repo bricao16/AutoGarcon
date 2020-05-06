@@ -30,15 +30,23 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private HashMap<String, List<MenuItem>> listHashMap;
     private SharedPreference pref;
     private ShoppingCartSingleton cart;
+    private int restaurantID;
+    private String primaryColor;
+    private String secondaryColor;
+    private String tertiaryColor;
 
     Dialog addToCartPopup;
     Dialog confirmPopup;
 
-    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap) {
+    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor) {
         this.context = context;
         this.listDataHeader = listDataHeader;
         this.listHashMap = listHashMap;
         this.pref = new SharedPreference(context);
+        this.restaurantID = restaurantID;
+        this.primaryColor = primaryColor;
+        this.secondaryColor = secondaryColor;
+        this.tertiaryColor = tertiaryColor;
     }
 
     @Override
@@ -83,7 +91,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         if(view == null) {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.expandable_menu_header, null);
-            view.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+            view.setBackgroundColor(Color.parseColor(secondaryColor));
         }
 
         TextView listHeader = view.findViewById(R.id.list_header);
@@ -94,12 +102,12 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(final int i, final int j, boolean b, View view, ViewGroup viewGroup) {
-        final String childText = (String) getChild(i, j).getNameOfItem();
+        final String childText = getChild(i, j).getNameOfItem();
 
         if(view == null) {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.expandable_menu_item, null);
-            view.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+            view.setBackgroundColor(Color.parseColor(tertiaryColor));
         }
 
         TextView txtListChild = view.findViewById(R.id.list_item);
@@ -126,7 +134,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 TextView itemPrice = addToCartPopup.findViewById(R.id.item_price_menu_popup);
                 TextView itemDescription = addToCartPopup.findViewById(R.id.item_description_menu_popup);
 
-                background.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
+                background.setBackgroundColor(Color.parseColor(secondaryColor));
 
                 calorieCount.setText("Calories: " + getChild(i, j).getCalories());
                 calorieCount.setTextColor(Color.WHITE);
@@ -147,14 +155,14 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                     @Override
                     public void onClick(View v) {
                         if(pref.getShoppingCart().getCart().size() == 0) {
-                            cart = new ShoppingCartSingleton(getChild(i, j).getRestaurantID());
-                            cart.setPrimaryColor(pref.getShoppingCart().getPrimaryColor());
-                            cart.setSecondaryColor(pref.getShoppingCart().getSecondaryColor());
-                            cart.setTertiaryColor(pref.getShoppingCart().getTertiaryColor());
+                            cart = new ShoppingCartSingleton(restaurantID);
+                            cart.setPrimaryColor(primaryColor);
+                            cart.setSecondaryColor(secondaryColor);
+                            cart.setTertiaryColor(tertiaryColor);
                             cart.addToCart(getChild(i, j));
                             pref.setShoppingCart(cart);
                         }
-                        else if(pref.getShoppingCart().getRestaurantID() == getChild(i, j).getRestaurantID()) {
+                        else if(pref.getShoppingCart().getRestaurantID() == restaurantID) {
                             cart = pref.getShoppingCart();
 
                             if(cart.cartContainsItem(getChild(i, j)) != null) {
@@ -166,7 +174,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                             pref.setShoppingCart(cart);
                         }
-                        else if(pref.getShoppingCart().getRestaurantID() != getChild(i, j).getRestaurantID()) {
+                        else if(pref.getShoppingCart().getRestaurantID() != restaurantID) {
                             confirmPopup.setContentView(R.layout.confirm_popup);
 
                             confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -177,10 +185,10 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                             confirmClearCart.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    cart = new ShoppingCartSingleton(getChild(i, j).getRestaurantID());
-                                    cart.setPrimaryColor(pref.getShoppingCart().getPrimaryColor());
-                                    cart.setSecondaryColor(pref.getShoppingCart().getSecondaryColor());
-                                    cart.setTertiaryColor(pref.getShoppingCart().getTertiaryColor());
+                                    cart = new ShoppingCartSingleton(restaurantID);
+                                    cart.setPrimaryColor(primaryColor);
+                                    cart.setSecondaryColor(secondaryColor);
+                                    cart.setTertiaryColor(tertiaryColor);
                                     cart.addToCart(getChild(i, j));
                                     pref.setShoppingCart(cart);
                                     confirmPopup.dismiss();

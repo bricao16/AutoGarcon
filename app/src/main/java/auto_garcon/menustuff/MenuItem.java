@@ -11,12 +11,11 @@ public class MenuItem implements Serializable{
     private String description;
     private int amountInStock;
     private int calories;
-    private int restaurantID;
     private double price;
     private double cost;
     private int quantity;
     private int itemID;
-
+    private byte[] itemImage;
 
     public MenuItem() {
         this.description = "";
@@ -29,14 +28,6 @@ public class MenuItem implements Serializable{
 
     public String getNameOfItem(){
         return this.nameOfItem;
-    }
-
-    public void setRestaurantID(int restaurantID) {
-        this.restaurantID = restaurantID;
-    }
-
-    public int getRestaurantID(){
-        return this.restaurantID;
     }
 
     public void setCalories(int calories) {
@@ -61,8 +52,6 @@ public class MenuItem implements Serializable{
     public void setCost() {
         this.cost = getPrice() * getQuantity();
     }
-
-    public void setCost(double costt){this.cost=costt;}
 
     public double getCost() {
         return this.cost;
@@ -114,5 +103,11 @@ public class MenuItem implements Serializable{
         return this.description;
     }
 
+    public void setItemImage(byte[] itemImage){
+        this.itemImage = itemImage;
+    }
 
+    public byte[] getItemImage() {
+        return this.itemImage;
+    }
 }
