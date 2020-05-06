@@ -36,10 +36,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import auto_garcon.accountstuff.*;
 import auto_garcon.accountstuff.Settings;
@@ -97,14 +99,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
 
-        boolean inFavorites = false;
         Button addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
         if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
-            inFavorites = true;
-        }
-
-        if(inFavorites) {
             addOrRemoveFavorite.setText("Remove from favorites");
             pref.removeFromFavorites(getIntent().getIntExtra("restaurant id", 0));
 
@@ -232,93 +229,118 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             });
         }
 
-        final String url = "http://50.19.176.137:8000/restaurant/" + getIntent().getIntExtra("restaurant id", 0);
-
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
+        StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/test/restaurant/" + getIntent().getIntExtra("restaurant id", 0),
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(String response) {
                         try {
-                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash);
-                            listView = findViewById(R.id.menu_list);
-                            listView.setAdapter(listAdapter);
-                            String whereToSendItem = "";
+                            JSONObject restaurantJSONObject = new JSONObject(response);
                             String font;
                             String primaryColor;
-                            String secondaryColor;
-                            String tertiaryColor;
-                            ShoppingCartSingleton toAddFontsAndColors = pref.getShoppingCart();
 
                             //parsing through json from get request to add them to menu
-                            JSONObject restaurant = response.getJSONObject("restaurant");
-                            restaurantName.setText(restaurant.getString("name"));
+                            JSONObject restaurant = restaurantJSONObject.getJSONObject("restaurant");
 
+                            restaurantName.setText(restaurant.getString("name"));
                             restaurant.getString("address");
                             restaurant.getInt("phone_number");
                             restaurant.getInt("opening");
                             restaurant.getInt("closing");
+
                             font = restaurant.getString("font");
+                            restaurant.getString("font_color");
                             primaryColor = restaurant.getString("primary_color");
-                            secondaryColor = restaurant.getString("secondary_color");
-                            tertiaryColor = restaurant.getString("tertiary_color");
 
-                            toAddFontsAndColors.setFont(font);
-                            toAddFontsAndColors.setPrimaryColor(primaryColor);
-                            toAddFontsAndColors.setSecondaryColor(secondaryColor);
-                            toAddFontsAndColors.setTertiaryColor(tertiaryColor);
+                            restaurant.getString("cuisine");
 
-                            pref.setShoppingCart(toAddFontsAndColors);
+                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash, getIntent().getIntExtra("restaurant id", 0),
+                                    primaryColor, restaurant.getString("secondary_color"), restaurant.getString("tertiary_color"));
+                            listView = findViewById(R.id.menu_list);
+                            listView.setAdapter(listAdapter);
 
                             drawerLayout.setBackgroundColor(Color.parseColor(primaryColor));
 
-                            byte[] temp = new byte[restaurant.getJSONObject("logo").getJSONArray("data").length()];
+                            byte[] restaurantLogoByteArray = new byte[restaurant.getJSONObject("logo").getJSONArray("data").length()];
 
-                            for(int i = 0; i < restaurant.getJSONObject("logo").getJSONArray("data").length(); i++) {
-                                temp[i] = (byte) (((int) restaurant.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
+                            for(int i = 0; i < restaurantLogoByteArray.length; i++) {
+                                restaurantLogoByteArray[i] = (byte) (((int) restaurant.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
                             }
 
-                            restaurantLogo.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
+                            restaurantLogo.setImageBitmap(BitmapFactory.decodeByteArray(restaurantLogoByteArray, 0, restaurantLogoByteArray.length));
 
-                            JSONObject menu = response.getJSONObject("menu");
+                            JSONObject menuItem = restaurantJSONObject.getJSONObject("menu");
 
-                            Iterator<String> keys = menu.keys();
+                            Iterator<String> keys = menuItem.keys();
                             while(keys.hasNext()) {
                                 String key = keys.next();
-                                if (menu.get(key) instanceof JSONObject) {
+                                if (menuItem.get(key) instanceof JSONObject) {
 
                                     auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
-                                    JSONObject item = menu.getJSONObject(key.toString());
+                                    JSONObject menuItemCategories = menuItem.getJSONObject(key);
+                                    String whereToSendItem = "";
 
-                                    Iterator<String> inner_keys = item.keys();
-                                    while(inner_keys.hasNext()) {
-                                        String inner_key = inner_keys.next();
+                                    if(menuItemCategories.getInt("start_time") == 0 && menuItemCategories.getInt("end_time") == 0) {
+                                        whereToSendItem = menuItemCategories.getString("category");
+                                        itemToBeAdded = creatingToBeAddedItem(menuItemCategories);
+                                    }
+                                    else if(menuItemCategories.getInt("start_time") < Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR)
+                                            && Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) < menuItemCategories.getInt("end_time")) {
+                                        whereToSendItem = menuItemCategories.getString("category");
+                                        itemToBeAdded = creatingToBeAddedItem(menuItemCategories);
+                                    }
 
-                                        itemToBeAdded.setRestaurantID(getIntent().getIntExtra("restaurant id", 0));
-
-                                        switch(inner_key){
-                                            case "calories":
-                                                itemToBeAdded.setCalories(Integer.parseInt(item.get(inner_key).toString()));
-                                                break;
-                                            case "price":
-                                                itemToBeAdded.setPrice(Double.parseDouble(item.get(inner_key).toString()));
-                                                break;
-                                            case "category":
-                                                itemToBeAdded.setCategory(item.get(inner_key).toString());
-                                                whereToSendItem = item.get(inner_key).toString();
-                                                break;
-                                            case "in_stock":
-                                                itemToBeAdded.setAmountInStock(Integer.parseInt(item.get(inner_key).toString()));
-                                                break;
-
-                                            case "item_id":
-                                                itemToBeAdded.setItemID(Integer.parseInt(item.get(inner_key).toString()));
-                                                break;
+                                    if(itemToBeAdded.getCategory() != null) {
+                                        if(itemToBeAdded.getCategory().equals("Alcohol") && alcohol_list != null) {
+                                            for(int i = 0; i < alcohol_list.size(); i++) {
+                                                if(itemToBeAdded.getItemID() == alcohol_list.get(i).getItemID()){
+                                                    if(itemToBeAdded.getPrice() < alcohol_list.get(i).getPrice()) {
+                                                        alcohol_list.get(i).setPrice(itemToBeAdded.getPrice());
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if(itemToBeAdded.getCategory().equals("Refillable Drink") && drink_list != null) {
+                                            for(int i = 0; i < drink_list.size(); i++) {
+                                                if(itemToBeAdded.getItemID() == drink_list.get(i).getItemID()){
+                                                    if(itemToBeAdded.getPrice() < drink_list.get(i).getPrice()) {
+                                                        drink_list.get(i).setPrice(itemToBeAdded.getPrice());
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if(itemToBeAdded.getCategory().equals("Dessert") && dessert_list != null) {
+                                            for(int i = 0; i < dessert_list.size(); i++) {
+                                                if(itemToBeAdded.getItemID() == dessert_list.get(i).getItemID()){
+                                                    if(itemToBeAdded.getPrice() < drink_list.get(i).getPrice()) {
+                                                        dessert_list.get(i).setPrice(itemToBeAdded.getPrice());
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if(itemToBeAdded.getCategory().equals("Entree") && entree_list != null) {
+                                            for(int i = 0; i < entree_list.size(); i++) {
+                                                if(itemToBeAdded.getItemID() == entree_list.get(i).getItemID()){
+                                                    if(itemToBeAdded.getPrice() < entree_list.get(i).getPrice()) {
+                                                        entree_list.get(i).setPrice(itemToBeAdded.getPrice());
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if(itemToBeAdded.getCategory().equals("Appetizer") && appetizer_list != null){
+                                            for(int i = 0; i < appetizer_list.size(); i++) {
+                                                if(itemToBeAdded.getItemID() == appetizer_list.get(i).getItemID()){
+                                                    if(itemToBeAdded.getPrice() < appetizer_list.get(i).getPrice()) {
+                                                        appetizer_list.get(i).setPrice(itemToBeAdded.getPrice());
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
+
                                     //if conditional filters out erroneous categories
-                                    if(whereToSendItem.equals("Alcohol") || whereToSendItem.equals("Refillable Drink") || whereToSendItem.equals("Dessert") || whereToSendItem.equals("Entree") || whereToSendItem.equals("Appetizer")){
-                                    itemToBeAdded.setNameOfItem(key);
-                                    addToList(itemToBeAdded, whereToSendItem);}
+                                    if((whereToSendItem.equals("Alcohol") || whereToSendItem.equals("Refillable Drink") || whereToSendItem.equals("Dessert") || whereToSendItem.equals("Entree") || whereToSendItem.equals("Appetizer"))
+                                        && whereToSendItem.length() != 0) {
+                                        addToList(itemToBeAdded, whereToSendItem);}
                                 }
                             }
                         } catch (JSONException e) {
@@ -443,5 +465,31 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             default:
                 break;
         }
+    }
+
+    private auto_garcon.menustuff.MenuItem creatingToBeAddedItem(JSONObject menuItemCategories) {
+        auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
+
+        try{
+            itemToBeAdded.setItemID(menuItemCategories.getInt("item_id"));
+            itemToBeAdded.setNameOfItem(menuItemCategories.getString("item_name"));
+            itemToBeAdded.setCalories(menuItemCategories.getInt("calories"));
+            itemToBeAdded.setPrice(menuItemCategories.getDouble("price"));
+            itemToBeAdded.setCategory(menuItemCategories.getString("category"));
+
+            itemToBeAdded.setAmountInStock(menuItemCategories.getInt("in_stock"));
+            itemToBeAdded.setDescription(menuItemCategories.getString("description"));
+
+            byte[] menuItemImageByteArray = new byte[menuItemCategories.getJSONObject("image").getJSONArray("data").length()];
+
+            for(int i = 0; i < menuItemImageByteArray.length; i++) {
+                menuItemImageByteArray[i] = (byte) (((int) menuItemCategories.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return itemToBeAdded;
     }
 }

@@ -54,13 +54,13 @@ public class Register extends AppCompatActivity {
 
         pref = new SharedPreference(this);
 
-        userID = findViewById(R.id.username);// associating xml objects with the java Object equivalent
-        emailId = findViewById(R.id.email);// associating xml objects with the java Object equivalent
-        userFirst = findViewById(R.id.firstName);// associating xml objects with the java Object equivalent
-        userLast = findViewById(R.id.lastName);// associating xml objects with the java Object equivalent
-        password = findViewById(R.id.password);// associating xml objects with the java Object equivalent
-        buttonSignUp = findViewById(R.id.signUp);// associating xml objects with the java Object equivalent
-        textViewLogin = findViewById(R.id.loginLink);// associating xml objects with the java Object equivalent
+        userID = findViewById(R.id.username_enter_register);// associating xml objects with the java Object equivalent
+        emailId = findViewById(R.id.email_enter_register);// associating xml objects with the java Object equivalent
+        userFirst = findViewById(R.id.first_name_enter_register);// associating xml objects with the java Object equivalent
+        userLast = findViewById(R.id.last_name_enter_register);// associating xml objects with the java Object equivalent
+        password = findViewById(R.id.password_enter_register);// associating xml objects with the java Object equivalent
+        buttonSignUp = findViewById(R.id.sign_up_button_register);// associating xml objects with the java Object equivalent
+        textViewLogin = findViewById(R.id.yes_account_register);// associating xml objects with the java Object equivalent
 
         /**/
         buttonSignUp.setOnClickListener(new View.OnClickListener(){

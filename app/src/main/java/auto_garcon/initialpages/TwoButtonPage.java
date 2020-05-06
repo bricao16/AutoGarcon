@@ -30,11 +30,6 @@ public class TwoButtonPage extends AppCompatActivity {
         Button scannerButton = findViewById(R.id.scanner_button);// associating xml objects with the java Object equivalent
         Button favButton = findViewById(R.id.fav_button);// associating xml objects with the java Object equivalent
 
-        //if it's not created yet
-        if(pref.getShoppingCart() == null ){
-            shoppingCart = new ShoppingCartSingleton();
-            pref.setShoppingCart(shoppingCart);
-        }
         /*
         When one of these buttons is clicked it will take the users onto either the QRcode or the Favorite Page
          */

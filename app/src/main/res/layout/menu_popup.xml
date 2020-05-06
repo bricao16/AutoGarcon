@@ -7,9 +7,25 @@
     android:id="@+id/menu_popup"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+    <TextView
+        android:id="@+id/item_name_menu_popup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/item_image_menu_popup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/item_image_menu_popup"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_name_menu_popup"
+        app:layout_constraintBottom_toTopOf="@id/item_price_menu_popup"/>
 
     <TextView
         android:id="@+id/order_items"
@@ -19,56 +35,53 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="48dp"
         android:textColor="@color/design_default_color_background"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@id/item_image_menu_popup" />
+
+    <TextView
+        android:id="@+id/item_price_menu_popup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="price"
+        android:textSize="8sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/item_calories_menu_popup"
+        app:layout_constraintTop_toBottomOf="@id/item_image_menu_popup" />
+
+    <TextView
+        android:id="@+id/item_calories_menu_popup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="calories"
+        android:textSize="8sp"
+        app:layout_constraintStart_toEndOf="@+id/item_price_menu_popup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_image_menu_popup"
+        app:layout_constraintBottom_toTopOf="@+id/item_description_menu_popup"/>
+
+
+    <TextView
+        android:id="@+id/item_description_menu_popup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="description"
+        android:textSize="8dp"
+        android:gravity="left"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_price_menu_popup"
+        app:layout_constraintBottom_toTopOf="@+id/add_to_cart_menu_popup"/>
 
     <Button
-        android:id="@+id/add_to_cart"
+        android:id="@+id/add_to_cart_menu_popup"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="145dp"
         android:layout_height="39dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="30dp"
         android:text="@string/add_to_cart"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.476"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/calories"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="76dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/itemNameMenuPop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="itemNameMenuPop"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/menuItemPrice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/menuItemPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="menuItemPrice"
-        app:layout_constraintBottom_toTopOf="@+id/calories"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/item_description_menu_popup"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
