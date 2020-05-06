@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.homestuff.Home;
 import auto_garcon.menustuff.Menu;
+import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
@@ -44,11 +45,13 @@ public class QRcode extends AppCompatActivity {
     private TextView txt_result;
     private SurfaceView surfaceView;
     private QREader QReader;
+    private SharedPreference pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qr_code_page);
+        pref = new SharedPreference(this);
 
         //request permission
     Dexter.withActivity(this)
@@ -118,6 +121,7 @@ public class QRcode extends AppCompatActivity {
                                             //onPause();
                                             Intent menu = new Intent(QRcode.this, Menu.class);
                                             menu.putExtra("restaurant id",Integer.parseInt(data));
+                                            pref.getUser().setRestaurantID(Integer.parseInt(data));
                                             startActivity(menu);
                                         } catch (JSONException e) {
                                             e.printStackTrace();

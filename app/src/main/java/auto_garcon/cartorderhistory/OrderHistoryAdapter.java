@@ -3,6 +3,7 @@ package auto_garcon.cartorderhistory;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
@@ -20,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.auto_garcon.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
@@ -33,6 +36,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     private ArrayList<String> order;// used to capture user order number
     private ArrayList<ShoppingCartSingleton> carts;// used to handle items returned from the recent order history
     private ArrayList<String> date;// used to capture time for all orders
+    private ArrayList<byte[]> logos;
     private Context ct;
     private ArrayList<String> resturantName;
     Dialog popUp;
@@ -46,14 +50,19 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
      * @param carts
      * @param date
      */
-    public  OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date,ArrayList<String> resturantName){
+    public  OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date,ArrayList<String> resturantName,ArrayList<byte[]> logos){
         ct = ctx;
+        this.logos=logos;
         pref = preference;
         this.order = order;
         this.carts = carts;
         this.date = date;
         this.resturantName = resturantName;
-        Log.d("asd32e4ff", ""+carts.get(0).toString());
+        String hold = "";
+        for(int i = 0 ;i<this.logos.get(0).length;i++) {
+            hold = hold+","+this.logos.get(0)[i];
+        }
+        Log.d("asd32e4ff", ""+hold);
 
     }
 
@@ -71,12 +80,17 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
     @Override
     public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderViewHolder holder, final int position) {
-        holder.order_num.setText(resturantName.get(position));
-        holder.restaurant_num.setText(Integer.toString(carts.get(position).getRestaurantID()));
-        holder.date.setText(date.get(position));
-        holder.items.setOnClickListener(new View.OnClickListener() {
+        holder.order_num.setText(resturantName.get(position));// set the text for the order tile
+
+        holder.restaurant_num.setText(Integer.toString(carts.get(position).getRestaurantID()));// set the restruant id to allow us to re order
+
+        holder.date.setText(date.get(position));// set the date in the order tile card
+
+        holder.resturant.setImageBitmap(BitmapFactory.decodeByteArray(logos.get(position),0,logos.get(position).length));// set the image of the resturant to the image view on the order_tile card
+
+        holder.items.setOnClickListener(new View.OnClickListener() {// when they user clicks on view items text view on the order tile card
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {// create pop up
                 popUp = new Dialog(ct);
                 confirmPopup = new Dialog(ct);
 
@@ -99,7 +113,9 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                 confirmYes.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         Toast.makeText(ct, "Yes Confirmed",Toast.LENGTH_LONG).show();
-                        //Clear the order
+                        //Clear the order if the item's are available during the correct time
+                        Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR);//getting current time
+
                         pref.setShoppingCart(carts.get(position));
                         confirmPopup.dismiss();
                     }
