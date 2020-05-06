@@ -1374,6 +1374,7 @@ app.post('/customer/update', verifyToken, (req, res) => {
 				i =   {
 					order_num,
 					restaurant_id,
+					restaurant_name,
 					item_id,
 					item_name,
 					price,
@@ -1407,6 +1408,7 @@ app.get('/customer/history/:id', (req, res) => {
 				response[i] =   {
 					'order_num': rows[i].order_num,
 					'restaurant_id': rows[i].restaurant_id,
+					'restaurant_name': rows[i].restaurant_name,
 					'logo': rows[i].logo,
 					'item_id': rows[i].item_id,
 					'item_name': rows[i].item_name,
@@ -2173,13 +2175,13 @@ app.get('/alexa/order/:id', (req, res) => {
 //==========================================================================//
 
 /*
-	Verifies a JSON Web Token
+	Verifies a JSON Web Token and checks if it is for a manager
 	Inputs: JWT
 	Outputs:
 		On success:
-			{
-				'message': 'Test Passed'
-			}
+			Valid manager token
+		If JWT is not for a manager:
+			Not a manager
 		On error/invalid token:
 			Must be authorized!
 */
@@ -2189,16 +2191,461 @@ app.post('/verify', verifyToken, (req, res) => {
 			res.status(401).send('Must be authorized!');
 		}   //if
 		else {
-			let response = {
-				'message': 'Test passed',
-				auth
-			};	//response
-
-			//Send Response:
-			res.type('json').send(response);
+			if (auth.staff && auth.staff.position === 'manager') {
+				res.status(200).send('Valid manager token');
+			}	//if
+			else {
+				res.status(401).send('Not a manger');
+			}	//else
 		}   //else
 	});	//verify
 }); //app.post
+
+
+//==========================================================================//
+//								TEST ENDPOINTS 								//
+//==========================================================================//
+
+/*
+	Returns restaurant information and menu items for restaurant with restaurant_id = id
+	Inputs: restaurant_id
+	Outputs:
+		On success:
+			{
+				restaurant: {
+					name,
+					address,
+					phone_number,
+					opening,
+					closing,
+					font,
+					font_color
+					primary_color,
+					secondary_color,
+					tertiary_color,
+					logo,
+					cuisine
+				}
+				menu: {
+					i: {
+						menu_id,
+						menu_name,
+						start_time,
+						end_time,
+						item_id,
+						item_name,
+						calories,
+						price,
+						category,
+						image,
+						in_stock,
+						description
+					}
+				}
+			}
+		If restaurant does not exist:
+			Error: restaurant does not exist
+		If the restaurant does not have any menus:
+			{
+				restaurant: {
+					name,
+					address,
+					phone_number,
+					opening,
+					closing,
+					font,
+					font_color,
+					primary_color,
+					secondary_color,
+					tertiary_color,
+					logo,
+					cuisine
+				}
+			}
+		On error:
+			Error retrieving restaurant information
+*/
+app.get('/test/restaurant/:id', (req, res) => {
+	//Make sure the restaurant exists:
+	let query = 'SELECT * FROM sample.restaurants WHERE restaurant_id = ?';
+
+	db.query(query, req.params.id, (err, rows) => {
+		if (err) {
+			res.status(500).send('Error retrieving restaurant information');
+		}	//if
+		else if (rows.length == 0) {
+			res.status(409).send('Error: restaurant does not exist');
+		}   //else if
+		else {
+			query = 'SELECT * FROM sample.restaurants natural join sample.menus natural join sample.items natural join sample.availabilities WHERE restaurant_id = ? ORDER BY menu_id';
+
+			//Query database:
+			db.query(query, req.params.id, (err, rows) => {
+				if (err) {
+					res.status(500).send('Error retrieving restaurant information');
+				}   //if
+				//If restaurant has no menus:
+				else if (rows.length < 1) {
+					query = 'SELECT * FROM sample.restaurants WHERE restaurant_id = ?';
+					db.query(query, req.params.id, (err, rows) => {
+						if (err) {
+
+						}	//if
+						else {
+							//Build JSON object:
+							let response = {};
+
+							//Add restaurant info to response:
+							response['restaurant'] = {
+								'name': rows[0].restaurant_name,
+								'address': rows[0].restaurant_addr,
+								'phone_number': rows[0].phone_number,
+								'opening': rows[0].opening_time,
+								'closing': rows[0].closing_time,
+								'font': rows[0].font,
+								'font_color': rows[0].font_color,
+								'primary_color': rows[0].primary_color,
+								'secondary_color': rows[0].secondary_color,
+								'tertiary_color': rows[0].tertiary_color,
+								'logo': rows[0].logo,
+								'cuisine': rows[0].cuisine
+							};	//response
+
+							//Send Response:
+							res.type('json').send(response);
+						}	//else
+					});	//db.query
+				}	//else if
+				//If restaurant has menus:
+				else {
+					//Build JSON object:
+					let response = {};
+
+					//Add restaurant info to response:
+					response['restaurant'] = {
+						'name': rows[0].restaurant_name,
+						'address': rows[0].restaurant_addr,
+						'phone_number': rows[0].phone_number,
+						'opening': rows[0].opening_time,
+						'closing': rows[0].closing_time,
+						'font': rows[0].font,
+						'font_color': rows[0].font_color,
+						'primary_color': rows[0].primary_color,
+						'secondary_color': rows[0].secondary_color,
+						'tertiary_color': rows[0].tertiary_color,
+						'logo': rows[0].logo,
+						'cuisine': rows[0].cuisine
+					};	//response
+
+					//Add menus to response:
+					response['menu'] = {};
+					for (let i=0; i<rows.length; i++) {
+						//Add each menu item to response:
+						response['menu'][i] =   {
+							'menu_id': rows[i].menu_id,
+							'menu_name': rows[i].menu_name,
+							'start_time': rows[i].start_time,
+							'end_time': rows[i].end_time,
+							'item_id': rows[i].item_id,
+							'item_name': rows[i].item_name,
+							'calories': rows[i].calorie_num,
+							'price': rows[i].price,
+							'category': rows[i].category,
+							'image': 'No image yet',
+							'in_stock': rows[i].in_stock,
+							'description': rows[i].description
+						};	//response
+					}   //for
+
+					//Send Response:
+					res.type('json').send(response);
+				}   //else
+			}); //db.query
+		}	//else
+	});	//db.query
+}); //app.get
+
+/*
+	Returns menu information for menu_id = id
+	Inputs: menu_id
+	Outputs:
+		On success:
+			{
+				i:
+				{
+					item_id,
+					item_name,
+					restaurant_id,
+					calories,
+					price,
+					category,
+					picture,
+					in_stock,
+					description
+				}
+			}
+		If menu has no items:
+			This menu has no items
+		If menu does not exist:
+			Error: menu does not exist
+		On error:
+			Error retrieving menu
+*/
+app.get('/test/menu/:id', (req, res) => {
+	//Make sure the menu exists:
+	let query = 'Select * FROM sample.menus WHERE menu_id = ?';
+
+	db.query(query, req.params.id, (err, rows) => {
+		if (err) {
+			res.status(500).send('Error retrieving menu');
+		}	//if
+		else if (rows.length == 0) {
+			res.status(409).send('Error: menu does not exist');
+		}   //else if
+		else {
+			let query = 'SELECT * FROM sample.items natural join sample.availabilities WHERE menu_id = ?';
+
+			//Query database:
+			db.query(query, req.params.id, (err, rows) => {
+				if (err) {
+					res.status(500).send('Error retrieving menu');
+				}   //if
+				else if (rows.length < 1) {
+					res.status(200).send('This menu has no items');
+				}   //else if
+				else {
+					//Build JSON object:
+					let response = {};
+
+					//Loop through each row returned from query:
+					for (let i=0; i<rows.length; i++) {
+						response[rows[i].item_name] = {
+							'item_id': rows[i].item_id,
+							'item_name': rows[i].item_name,
+							'restaurant_id': rows[i].restaurant_id,
+							'calories': rows[i].calorie_num,
+							'price': rows[i].price,
+							'category': rows[i].category,
+							'picture': 'No picture yet',
+							'in_stock': rows[i].in_stock,
+							'description': rows[i].description
+						};	//response
+					}   //for
+
+					//Send Response:
+					res.type('json').send(response);
+				}   //else
+			}); //db.query
+		}	//else
+	});	//db.query
+}); //app.get
+
+/*
+	Updates menu information
+	Inputs: menu_id, menu_name, restaurant_id, start_time, end_time
+	Outputs:
+		On success:
+			Successfully updated menu information!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: menu_id, menu_name, start_time, end_time
+		If menu does not exist:
+			Error: menu does not exist
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant of the menu:
+			Must be the restaurant manager to update menu information!
+		On error: 
+			Error updating menu information
+*/
+app.post('/test/menu/update', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.menu_id && req.body.menu_name && req.body.start_time && req.body.end_time)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: menu_id, menu_name, start_time, end_time');
+		return;
+	}   //if
+
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Make sure the restaurant exists:
+			let query = 'Select * FROM sample.menus WHERE menu_id = ?';
+			db.query(query, req.body.menu_id, (err, rows) => {
+				if (rows.length == 0) {
+					res.status(409).send('Error: menu does not exist');
+				}   //if
+				else {
+					//Check to make sure person is a manager at the restaurant:
+					if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === rows[0].restaurant_id) {
+						//Build query and parameters:
+						query = 'UPDATE sample.menus SET menu_name = ?, start_time = ?, end_time = ?';
+						query = query + ' WHERE menu_id = ?';
+						let parameters = [req.body.menu_name, req.body.start_time, req.body.end_time, req.body.menu_id];
+
+						//Update menu information in db:
+						db.query(query, parameters, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error updating menu information');
+							}	//if
+							else {
+								res.status(200).send('Successfully updated menu information!');
+							}   //else
+						});	//db.query
+					}	//if
+					else {
+						res.status(401).send('Must be the restaurant manager to update menu information!');
+					}	//else
+				}	//else
+			}); //db.query
+		}	//else
+	});	//verify
+});	//app.post
+
+/*
+	Adds a new menu
+	Inputs: menu_name, restaurant_id, start_time, end_time
+	Outputs:
+		On success:
+			Successfully added new menu! menu_id: <menu_id>
+		If item_name and restaurant_id exists already:
+			Error: menu already exists
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: restaurant_id, menu_name, start_time, end_time
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant of the menu:
+			Must be the restaurant manager to add a new menu!
+		On error:
+			Error adding new menu
+*/
+app.put('/test/menu/add', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.restaurant_id && req.body.menu_name && req.body.start_time && req.body.end_time)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, menu_name, start_time, end_time');
+		return;
+	}   //if
+
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Check to make sure person is a manager at the restaurant:
+			if (auth.staff && auth.staff.position === 'manager' && parseInt(auth.staff.restaurant_id) === parseInt(req.body.restaurant_id)) {
+				//Make sure the menu doesn't exist at the restaurant:
+				let parameters = [req.body.restaurant_id, req.body.menu_name]
+				let query = 'Select * FROM sample.menus WHERE restaurant_id = ? AND menu_name = ?';
+				db.query(query, parameters, (err, rows) => {
+					if (rows.length > 0) {
+						res.status(409).send('Error: menu already exists');
+					}   //if
+					else {
+						//Build query and parameters:
+						query = 'INSERT INTO sample.menus(menu_name, restaurant_id, start_time, end_time)';
+						query = query + " VALUES (?, ?, ?, ?)";
+						parameters = [req.body.menu_name, req.body.restaurant_id, req.body.start_time, req.body.end_time];
+
+						//Add menu in db:
+						db.query(query, parameters, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error adding new menu');
+							}	//if
+							else {
+								res.status(200).send('Successfully added new menu! menu_id: ' + rows.insertId);
+							}   //else
+						});	//db.query
+					}	//else
+				});	//db.query
+			}	//if
+			else {
+				res.status(401).send('Must be the restaurant manager to add a new menu!');
+			}	//else
+		}	//else
+	});	//verify
+});	//app.put
+
+/*
+	Adds a new menu item
+	Inputs: restaurant_id, item_name, calorie_num, category, price, description, menu_id
+	Outputs:
+		On success:
+			Successfully added new item!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description, menu_id
+		If item already exists:
+			Error: item already exists
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant of the menu:
+			Must be the restaurant manager to add a new item!
+		On error:
+			Error adding new item
+*/
+app.put('/test/menu/item/add', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.restaurant_id && req.body.item_name && req.body.calorie_num && req.body.category && req.body.price && req.body.description && req.body.menu_id)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description, menu_id');
+		return;
+	}   //if
+
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Check to make sure person is a manager at the restaurant:
+			if (auth.staff && auth.staff.position === 'manager' && parseInt(auth.staff.restaurant_id) === parseInt(req.body.restaurant_id)) {
+				//Make sure the item doesn't exist at the restaurant:
+				let parameters = [req.body.restaurant_id, req.body.item_name]
+				let query = 'Select * FROM sample.items WHERE restaurant_id = ? AND item_name = ?';
+				db.query(query, parameters, (err, rows) => {
+					if (rows.length > 0) {
+						res.status(409).send('Error: item already exists');
+					}   //if
+					else {
+						//Build query and parameters:
+						query = 'INSERT INTO sample.items(restaurant_id, item_name, calorie_num, category, in_stock, description)';
+						query = query + " VALUES (?, ?, ?, ?, 1, ?)";
+						parameters = [req.body.restaurant_id, req.body.item_name, req.body.calorie_num, req.body.category, req.body.description];
+
+						//Add item in db and get item_id:
+						db.query(query, parameters, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error adding new item');
+							}	//if
+							else {
+								//Get item_id of inserted item
+								let item_id = rows.insertId;
+
+								//Build query and parameters:
+								query = 'INSERT INTO sample.availabilities(menu_id, item_id, price)';
+								query = query + " VALUES (?, ?, ?)";
+								parameters = [req.body.menu_id, item_id, req.body.price];
+
+								//Add item to availabilities table:
+								db.query(query, parameters, (err, rows) => {
+									if (err) {
+										res.status(500).send('Error adding new item');
+									}	//if
+									else {
+										res.status(200).send('Successfully added new item!');
+									}	//else
+								})	//db.query
+							}   //else
+						});	//db.query
+					}	//else
+				});	//db.query
+			}	//if
+			else {
+				res.status(401).send('Must be the restaurant manager to add a new item!');
+			}	//else
+		}	//else
+	});	//verify
+});	//app.put
 
 /*
 	Token format:
