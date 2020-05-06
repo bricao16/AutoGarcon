@@ -34,11 +34,13 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private String primaryColor;
     private String secondaryColor;
     private String tertiaryColor;
+    private int opening;
+    private int closing;
 
     Dialog addToCartPopup;
     Dialog confirmPopup;
 
-    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor) {
+    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor,int opening,int closing) {
         this.context = context;
         this.listDataHeader = listDataHeader;
         this.listHashMap = listHashMap;
@@ -47,6 +49,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
         this.tertiaryColor = tertiaryColor;
+        this.opening=opening;
+        this.closing=closing;
     }
 
     @Override
@@ -173,6 +177,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                             }
 
                             pref.setShoppingCart(cart);
+                            pref.getShoppingCart().setEndingHour(closing);
+                            pref.getShoppingCart().setStartingHour(closing);
                         }
                         else if(pref.getShoppingCart().getRestaurantID() != restaurantID) {
                             confirmPopup.setContentView(R.layout.confirm_popup);
@@ -191,6 +197,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                     cart.setTertiaryColor(tertiaryColor);
                                     cart.addToCart(getChild(i, j));
                                     pref.setShoppingCart(cart);
+                                    pref.getShoppingCart().setEndingHour(closing);
+                                    pref.getShoppingCart().setStartingHour(closing);
                                     confirmPopup.dismiss();
                                     addToCartPopup.dismiss();
                                 }
