@@ -10,8 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/MenuOutlined';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -24,9 +22,12 @@ import GeneralIcon from '@material-ui/icons/ListAltOutlined';
 import Stats from '../Statistics/Stats';
 import Menu from '../Menu/Menu';
 import StoreInfo from '../General/StoreInfo';
+import QRCode from  '../General/QRCode';
 import CookView from '../Staff/CookView';
+import AccountSettings from '../Account/AccountSettings';
 import Customize from '../Customize/Customize';
 import LogoImage from "../../../assets/AutoGarconLogo.png";
+import CropFreeIcon from '@material-ui/icons/CropFree';
 
 import {
     Switch,
@@ -112,6 +113,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+
 export default function NavItems(props) {
   const classes = useStyles();
   const theme = useTheme();
@@ -126,6 +128,7 @@ export default function NavItems(props) {
   };
 
   return (
+
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
@@ -168,8 +171,8 @@ export default function NavItems(props) {
       >
         <div className={classes.toolbar} style={{'backgroundColor':'#f1f1f1'}}>
         <Typography variant="h6" className ='pr-4' noWrap >
-        <img src={LogoImage}  width="auto" height="45px" alt="waiter" /> 
-           <i>{props.restName}</i>
+        <img src={props.imageBlob}  width="auto" height="45px" alt="waiter" /> 
+           {/*<i>{props.restName}</i>*/}
           </Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <MenuIcon /> : <MenuIcon />}
@@ -177,39 +180,43 @@ export default function NavItems(props) {
         </div>
         <Divider />
         <List >
-            <ListItem button component="a" href ='/manager'>
-            <ListItemIcon><StatsIcon/></ListItemIcon>
-            <ListItemText primary="Statistics" />
-            </ListItem>
+          <ListItem button component="a" href ='/manager'>
+						<ListItemIcon><StatsIcon/></ListItemIcon>
+						<ListItemText primary="Statistics" />
+          </ListItem>
         </List>
         <Divider />
         <List>
-            <ListItem button component="a" href ='/menu'>
-
-            <ListItemIcon><RestaurantMenuIcon/></ListItemIcon>
-            <ListItemText primary="Menu" />
-            </ListItem>
+          <ListItem button component="a" href ='/menu'>
+						<ListItemIcon><RestaurantMenuIcon/></ListItemIcon>
+						<ListItemText primary="Menu" />
+          </ListItem>
         </List>
         <Divider />
         <List>
           <ListItem button component="a" href ='/general' >
-
             <ListItemIcon><GeneralIcon/></ListItemIcon>
             <ListItemText primary="General" />
           </ListItem>
+				<Divider />
+        <List>
+          <ListItem button component="a" href ='/QRCode'>
+            <ListItemIcon><CropFreeIcon/></ListItemIcon>
+            <ListItemText primary="QR Code Generator" />
+          </ListItem>
+        </List>
           <ListItem button component="a" href ='/general' >
             <ListItemText primary="Alexa" />
           </ListItem>
         </List>
-         <Divider />
-         <List>
-            <ListItem button component="a" href ='/customize'>
-            
+        <Divider />
+        <List>
+          <ListItem button component="a" href ='/customize'>
             <ListItemIcon><CustomIcon/></ListItemIcon>
             <ListItemText primary="Customize" />
-            </ListItem>
-          </List>
-         <Divider />
+          </ListItem>
+        </List>
+        <Divider />
         <List>
           {['Staff'].map((text, index) => (
             <ListItem button key={text} component="a" href ='/cookview'>
@@ -221,29 +228,34 @@ export default function NavItems(props) {
       </Drawer>
       <main className={classes.content} style={{'backgroundColor':'#fffffff'}}>
         <div className={classes.toolbar} />
-              <Switch>
-              <Route exact path="/manager">
-                <Stats/>
-              </Route>
-              <Route path="/menu">
-                <Menu menu = {props.restaurantInfo[0][1]}/>
-              </Route>
-              <Route path="/general">
-                <StoreInfo info = {props.restaurantInfo[1][1]} />
-              </Route>
-              <Route path="/customize">
-                <Customize info = {props.restaurantInfo[1][1]}/>
-              </Route>
-              <Route path="/cookview">
-                <CookView/>
-              </Route>
-            </Switch>
-             <footer className={classes.footerStyle}>
-              Powered by AutoGarcon
-              <img src={LogoImage} width="auto" height="50vh" alt="waiter" />
-            </footer> 
+        <Switch>
+          <Route exact path="/manager">
+            <Stats/>
+          </Route>
+          <Route path="/menu">
+            <Menu menu = {props.restaurantInfo[0][1]}/>
+          </Route>
+          <Route path="/general">
+            <StoreInfo info = {props.restaurantInfo[1][1]} />
+          </Route>
+          <Route path="/customize">
+            <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} />
+          </Route>
+          <Route path="/cookview">
+            <CookView/>
+          </Route>
+				  <Route path="/QRCode">
+					  <QRCode info = {props.restaurantInfo[1][1]} />
+				  </Route>
+          <Route path="/account">
+            <AccountSettings/>
+          </Route>
+        </Switch>
+        <footer className={classes.footerStyle}>
+          Powered by AutoGarcon
+          <img src={LogoImage} width="auto" height="50vh" alt="waiter" />
+        </footer> 
       </main>
-
     </div>
   );
 }

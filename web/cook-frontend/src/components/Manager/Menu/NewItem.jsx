@@ -67,11 +67,15 @@ class NewItem extends React.Component {
 			this.handleValidation("Calorie field isn't a number.  Please set to a number.");
 		} else if(this.state.calories > 20000){
 			this.handleValidation("Calorie field is out of range.  Please try a value less than 20,000.");
+		} else if(this.state.calories < 0){
+			this.handleValidation("Calorie field must be greater than zero.");
 		}	else if(isNaN(this.state.price)){
 			this.handleValidation("Price field isn't a number.  Please set to a number.");	
 		} else if(this.state.price > 100000){
 			this.handleValidation("Price field is too large.  Please try a value less than 100,000.");
-		} else {
+		} else if(this.state.description.length > 300){
+      this.handleValidation("Description field is too large.  Please reduce to 300 characters or less.");
+    } else {
 			
 			this.state.price = Number(this.state.price).toFixed(2);
 
@@ -86,7 +90,8 @@ class NewItem extends React.Component {
 					+'&calorie_num='+this.state.calories
 					+'&category='+this.state.category
 					+'&price='+this.state.price
-					+'&in_stock='+this.state.in_stock
+          +'&in_stock='+this.state.in_stock
+          +'&description='+this.state.description
 			}
 			// Item needs to be edited
 			else {
@@ -99,7 +104,8 @@ class NewItem extends React.Component {
 					+'&calorie_num='+this.state.calories
 					+'&category='+this.state.category
 					+'&price='+this.state.price
-					+'&in_stock='+this.state.in_stock
+          +'&in_stock='+this.state.in_stock
+          +'&description='+this.state.description
 			}
 			
 			axios({
@@ -116,13 +122,13 @@ class NewItem extends React.Component {
 			})
 			/* fetch(endpoint, requestOptions) and await response */
 			.then(async response => {
-				await response;
+        await response;
 
 				if (response.status !== 200) {this.handleShow(false);}
 				else {this.handleShow(true, message);}
 			})
 			.catch(error => {
-				this.handleShow(false);
+				this.handleShow(false, error.response.data);
 				console.error("There was an error!", error);
 			});
 		}
@@ -166,13 +172,13 @@ class NewItem extends React.Component {
     /*fetch(endpoint, requestOptions) and await response */
 		.then(async response => {
       await response;
-	  /* Unsuccessfull deletion from database */
+	    /* Unsuccessfull deletion from database */
       if (response.status !== 200) {this.handleShow(false);}
-	  /* Successfull deletion from database */
+	    /* Successfull deletion from database */
       else {this.handleShow(true, message);}
 		})
 		.catch(error => {
-      this.handleShow(false);
+      this.handleShow(false, error.response.data);
 			console.error("There was an error!", error);
 		});
   }
@@ -184,7 +190,7 @@ class NewItem extends React.Component {
       this.setState({alertVariant: 'success'});
     }
     else {
-      this.setState({response: 'Failed to update item'})
+      this.setState({response: message})
       this.setState({alertVariant: 'danger'});
     }
 
@@ -194,7 +200,7 @@ class NewItem extends React.Component {
 			this.setState({
 			show:false
 			});
-		}, 4000)
+		}, 5000)
   }
 	
   handleValidation(message){
@@ -207,7 +213,7 @@ class NewItem extends React.Component {
 			this.setState({
 			show:false
 			});
-		}, 4000)
+		}, 5000)
   }
   
 
@@ -298,7 +304,7 @@ class NewItem extends React.Component {
                 
                 <div className="form-group">
                   <label htmlFor="itemDescription">Description</label>
-                  <textarea className="form-control" id="itemDescription" rows="3"></textarea>
+                  <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} placeholder="300 Character limit"></textarea>
                 </div>
 
                 <div className="form-group">
@@ -388,7 +394,7 @@ class NewItem extends React.Component {
                 
                 <div className="form-group">
                   <label htmlFor="itemDescription">Description</label>
-                  <textarea className="form-control" id="itemDescription" rows="3"></textarea>
+                  <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} defaultValue={this.state.description} placeholder="300 Character limit"></textarea>
                 </div>
 
                 <div className="form-group">

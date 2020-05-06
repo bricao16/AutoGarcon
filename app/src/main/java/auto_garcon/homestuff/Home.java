@@ -6,7 +6,10 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -14,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +26,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -30,17 +35,22 @@ import com.squareup.seismic.ShakeDetector;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
+import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
+import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
 /*
@@ -50,23 +60,21 @@ This retrieve data of restaurant pages from database by using JASON with https c
  */
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     //data fields
-    private JSONObject obj;
     private SharedPreference pref;//a file to keep track of user data as long as it's logged in.
-    RecyclerView recyclerView;//showing a list of restaurant pages
-    HomeAdapter adapter;//generating a list of restaurant pages
+    RecyclerView favoritesRecyclerView;//showing a list of restaurant pages
+    HomeAdapter homeAdapter;//generating a list of restaurant pages
     private ArrayList<RestaurantItem> items;//RestaurantItem generated through the database connection.
     //Here is for Search box
-    SearchView searchView;//a object for searching
-    ArrayList<String> search_list;//keeping restaurant page through the database connection.
-    ArrayAdapter<String> list_adapter;//to check user input match items in the database.
     //End of Search Box
-    HashMap<Integer, String> allRestaurantList;
+    private List<String> allRestaurantNames;
+    private List<Integer> allRestaurantIDs;
+    AutoCompleteTextView searchBar;
+    Random randomGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         pref = new SharedPreference(Home.this);
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_home);
 
         //creating side nav drawer
@@ -74,27 +82,35 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
         NavigationView navigationView = findViewById(R.id.navigationView);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(Home.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+        searchBar = findViewById(R.id.search_bar);
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(Home.this);
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+
+        //shake feature
+        randomGenerator = new Random();
+        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        ShakeDetector shakeDetector = new ShakeDetector(this);
+        shakeDetector.start(sensorManager);
+
+        items = new ArrayList<>();
+        favoritesRecyclerView = findViewById(R.id.favorites_list);
+
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
-                                Intent QRcode = new Intent(Home.this, QRcode.class);
-                                startActivity(QRcode);
+                                startActivity(new Intent(Home.this, QRcode.class));
                                 return true;
                             case R.id.action_home:
-                                Intent home = new Intent(Home.this, Home.class);
-                                startActivity(home);
+                                startActivity(new Intent(Home.this, Home.class));
                                 return true;
                             case R.id.action_cart:
-                                Intent shoppingCart = new Intent(Home.this, ShoppingCart.class);
-                                startActivity(shoppingCart);
+                                startActivity(new Intent(Home.this, ShoppingCart.class));
                                 return true;
                         }
                         return false;
@@ -103,209 +119,124 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-        //shake feature
-        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        ShakeDetector shakeDetector = new ShakeDetector(this);
-        shakeDetector.start(sensorManager);
+        StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername(),
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject favoritesJSONObject = new JSONObject(response);
+                        //parsing through json from get request to add them to menu
+                        Iterator<String> keys = favoritesJSONObject.keys();
+                        while(keys.hasNext()) {
+                            String key = keys.next();
 
-        final String FavoritesURL = "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername();
+                            if (favoritesJSONObject.get(key) instanceof JSONObject) {
+                                RestaurantItem itemToBeAdded = new RestaurantItem();
+                                JSONObject item = favoritesJSONObject.getJSONObject(key);
 
-        items = new ArrayList<>();
-        recyclerView = findViewById(R.id.favorites_list);
+                                itemToBeAdded.setID(Integer.parseInt(item.get("restaurant_id").toString()));
+                                pref.addToFavorites(Integer.parseInt(item.get("restaurant_id").toString()));
 
-        JsonObjectRequest getRequestForFavorites = new JsonObjectRequest(Request.Method.GET, FavoritesURL, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
+                                itemToBeAdded.setName(item.get("restaurant_name").toString());
+                                itemToBeAdded.setAddress(item.get("address").toString());
+                                itemToBeAdded.setPhoneNumber(Long.parseLong(item.get("phone_number").toString()));
+                                itemToBeAdded.setOpeningTime(Integer.parseInt(item.get("opening_time").toString()));
+                                itemToBeAdded.setClosingTime(Integer.parseInt(item.get("closing_time").toString()));
 
-                            //parsing through json from get request to add them to menu
-                            Iterator<String> keys = response.keys();
-                            while(keys.hasNext()) {
-                                String key = keys.next();
+                                JSONObject obj = item.getJSONObject("logo");
+                                byte[] temp = new byte[obj.getJSONArray("data").length()];
 
-                                if (response.get(key) instanceof JSONObject) {
-
-                                    RestaurantItem itemToBeAdded = new RestaurantItem();
-                                    JSONObject item = response.getJSONObject(key.toString());
-
-                                    Iterator<String> inner_keys = item.keys();
-                                    while(inner_keys.hasNext()) {
-                                        String inner_key = inner_keys.next();
-
-                                        switch(inner_key){
-                                            case "restaurant_id":
-                                                itemToBeAdded.setID(Integer.parseInt(item.get(inner_key).toString()));
-                                                pref.addToFavorites(Integer.parseInt(item.get(inner_key).toString()));
-                                                break;
-                                            case "restaurant_name":
-                                                itemToBeAdded.setName(item.get(inner_key).toString());
-                                                break;
-                                            case "address":
-                                                itemToBeAdded.setAddress(item.get(inner_key).toString());
-                                                break;
-                                            case "phone_number":
-                                                itemToBeAdded.setPhoneNumber(Long.parseLong(item.get(inner_key).toString()));
-                                                break;
-                                            case "opening_time":
-                                                itemToBeAdded.setOpeningTime(Integer.parseInt(item.get(inner_key).toString()));
-                                                break;
-                                            case "closing_time":
-                                                itemToBeAdded.setClosingTime(Integer.parseInt(item.get(inner_key).toString()));
-                                                break;
-                                            case "logo":
-                                                JSONObject obj = item.getJSONObject("logo");
-                                                byte[] temp = new byte[obj.getJSONArray("data").length()];
-
-                                                for(int i = 0; i < obj.getJSONArray("data").length(); i++) {
-                                                    temp[i] = (byte) (((int) obj.getJSONArray("data").get(i)) & 0xFF);
-                                                }
-
-                                                itemToBeAdded.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
-                                                break;
-                                        }
-                                    }
-
-                                    items.add(itemToBeAdded);
-                                    if(items.size() == 0) {
-                                        setContentView(R.layout.no_favorites_home);
-                                    }
+                                for(int i = 0; i < obj.getJSONArray("data").length(); i++) {
+                                    temp[i] = (byte) (((int) obj.getJSONArray("data").get(i)) & 0xFF);
                                 }
-                            }
 
-                            recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
-                            adapter = new HomeAdapter(Home.this, items);
-                            recyclerView.setAdapter(adapter);
-
-                            if(pref.getFavorites().size() == 0 || pref.getFavorites() == null) {
-                                setContentView(R.layout.no_favorites_home);
+                                itemToBeAdded.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
+                                items.add(itemToBeAdded);
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
 
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Home.this, error.toString(),Toast.LENGTH_LONG).show();
+                        if(response.contains("Customer has no favorites")) {
+                            favoritesRecyclerView.setVisibility(View.GONE);
+                        }
+                        else {
+                            ConstraintLayout constraintLayout = findViewById(R.id.no_favorites);
+                            constraintLayout.setVisibility(View.GONE);
+                            Toast.makeText(Home.this, items.toString(),Toast.LENGTH_LONG).show();
+                            favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
+                            homeAdapter = new HomeAdapter(Home.this, items);
+                            favoritesRecyclerView.setAdapter(homeAdapter);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
-
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if(error.networkResponse.statusCode == 500) {
+                        Toast.makeText(Home.this, "Error retrieving restaurants",Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
         );
-        Log.d("asdfasdfasdf, ", pref.getFavorites().toString());
+
+        StringRequest getRequestForSearch = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/restaurants",
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject allRestaurantsJSONObject = new JSONObject(response);
+                        //parsing through json from get request to add them to menu
+                        allRestaurantNames = new ArrayList<>();
+                        allRestaurantIDs = new ArrayList<>();
+
+                        Iterator<String> keys = allRestaurantsJSONObject.keys();
+                        while(keys.hasNext()) {
+                            String key = keys.next();
+
+                            if (allRestaurantsJSONObject.get(key) instanceof JSONObject) {
+                                JSONObject item = allRestaurantsJSONObject.getJSONObject(key);
+
+                                allRestaurantIDs.add(Integer.parseInt(item.get("restaurant_id").toString()));
+                                allRestaurantNames.add(item.get("restaurant_name").toString());
+                            }
+                        }
+                        ArrayAdapter<String> searchAdapter = new ArrayAdapter<>(Home.this, android.R.layout.simple_list_item_1, allRestaurantNames);
+                        searchBar.setAdapter(searchAdapter);
+                        searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent menu = new Intent(Home.this, Menu.class);
+
+                                allRestaurantNames.indexOf(searchBar.getText().toString());
+
+                                menu.putExtra("restaurant id", allRestaurantIDs.get(allRestaurantNames.indexOf(searchBar.getText().toString())));
+                                startActivity(menu);
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if(error.networkResponse.statusCode == 500) {
+                        Toast.makeText(Home.this, "Error retrieving restaurants",Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        );
 
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForFavorites);
-
-        final String allRestaurantsURL = "http://50.19.176.137:8000/restaurants";
-
-        JsonObjectRequest getRequestForSearch = new JsonObjectRequest(Request.Method.GET, allRestaurantsURL, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            //parsing through json from get request to add them to menu
-                            allRestaurantList = new HashMap<Integer, String>();
-
-                            Iterator<String> keys = response.keys();
-                            while(keys.hasNext()) {
-                                String key = keys.next();
-
-                                if (response.get(key) instanceof JSONObject) {
-                                    JSONObject item = response.getJSONObject(key);
-
-                                    int restaurantID = 0;
-                                    String restaurantName = "";
-
-                                    Iterator<String> inner_keys = item.keys();
-
-                                    while(inner_keys.hasNext()) {
-                                        String inner_key = inner_keys.next();
-
-
-                                        switch(inner_key){
-                                            case "restaurant_id":
-                                                restaurantID = Integer.parseInt(item.get(inner_key).toString());
-                                                break;
-                                            case "restaurant_name":
-                                                restaurantName = item.get(inner_key).toString();
-                                                break;
-                                        }
-                                    }
-
-                                    allRestaurantList.put(restaurantID, restaurantName);
-                                }
-                            }
-
-                            Log.d("sdf", allRestaurantList.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Home.this, error.toString(),Toast.LENGTH_LONG).show();
-                    }
-                }
-
-        );
-
-        //Here is for Search box
-        searchView = (SearchView) findViewById(R.id.searchView);
-        searchView.onActionViewExpanded();
-        list_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,search_list);
-        items.clear();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                items.clear();
-                if(allRestaurantList.containsValue(query)){
-                    Toast.makeText(Home.this, "Yes Match found "+query,Toast.LENGTH_LONG).show();
-                    RestaurantItem itemToBeAdded = new RestaurantItem();
-
-                    //go through all restaurants
-                    for (Map.Entry mapElement : allRestaurantList.entrySet()) {
-                        int id = (int) mapElement.getKey();
-                        String name = (String) mapElement.getValue();
-                        itemToBeAdded = new RestaurantItem();
-                        //if name is same as the input
-                        if( name.equalsIgnoreCase(query) ){
-                            itemToBeAdded.setName( query );
-                            itemToBeAdded.setID( id );
-                            items.add( itemToBeAdded );
-                        }
-                    }
-                    recyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
-                    adapter = new HomeAdapter(Home.this, items);
-                    recyclerView.setAdapter(adapter);
-                }
-                else{
-                    Toast.makeText(Home.this, "No Match found "+query,Toast.LENGTH_LONG).show();
-                }
-
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                return false;
-            }
-
-        });
-
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForSearch);
     }
 
     @Override
     public void hearShake(){
-        Toast.makeText(this, "HI", Toast.LENGTH_SHORT).show();
+        allRestaurantIDs.get(randomGenerator.nextInt(allRestaurantNames.size()));
     }
 
     //onClick for side nav bar
@@ -313,23 +244,22 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Intent account = new Intent(getBaseContext(),   Account.class);
-                startActivity(account);
+                startActivity(new Intent(Home.this, Account.class));
                 break;
             case R.id.order_history:
-                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
-                startActivity(orderHistory);
+                startActivity(new Intent(Home.this, OrderHistory.class));
+                break;
+            case R.id.current_orders:
+                startActivity(new Intent(Home.this, CurrentOrders.class));
                 break;
             case R.id.settings:
-                Intent settings = new Intent(getBaseContext(),   Settings.class);
-                startActivity(settings);
+                startActivity(new Intent(Home.this, Settings.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                Intent login = new Intent(getBaseContext(),   Login.class);
-                startActivity(login);
+                startActivity(new Intent(Home.this, Login.class));
                 break;
         }
         return false;

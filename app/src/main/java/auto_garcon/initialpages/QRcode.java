@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.homestuff.Home;
 import auto_garcon.menustuff.Menu;
+import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
@@ -44,11 +45,13 @@ public class QRcode extends AppCompatActivity {
     private TextView txt_result;
     private SurfaceView surfaceView;
     private QREader QReader;
+    private SharedPreference pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qr_code_page);
+        pref = new SharedPreference(this);
 
         //request permission
     Dexter.withActivity(this)
@@ -77,16 +80,13 @@ public class QRcode extends AppCompatActivity {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
-                                Intent QRcode = new Intent(getBaseContext(),   QRcode.class);
-                                startActivity(QRcode);
+                                startActivity(new Intent(QRcode.this, QRcode.class));
                                 return true;
                             case R.id.action_home:
-                                Intent home = new Intent(getBaseContext(),   Home.class);
-                                startActivity(home);
+                                startActivity(new Intent(QRcode.this, Home.class));
                                 return true;
                             case R.id.action_cart:
-                                Intent shoppingCart = new Intent(getBaseContext(),   ShoppingCart.class);
-                                startActivity(shoppingCart);
+                                startActivity(new Intent(QRcode.this, ShoppingCart.class));
                                 return true;
                         }
                         return false;
@@ -97,24 +97,8 @@ public class QRcode extends AppCompatActivity {
     }
 
     private void setupCamera() {
-        txt_result = (TextView) findViewById(R.id.code_info);
-        //final ToggleButton btn_on_off = (ToggleButton) findViewById(R.id.btn_enable_disable);
-/*
-        btn_on_off.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(QReader.isCameraRunning()){
-                    btn_on_off.setChecked(false);
-                    QReader.stop();
-                }
-                else {
-                    btn_on_off.setChecked(true);
-                    QReader.start();
-                }
-            }
-        });
-*/
-        surfaceView = (SurfaceView) findViewById(R.id.camera_view);
+        txt_result = findViewById(R.id.code_info);
+        surfaceView = findViewById(R.id.camera_view);
         setupQREader();
     }
 
@@ -135,9 +119,10 @@ public class QRcode extends AppCompatActivity {
                                             txt_result.setText("Continue to " + restaurant);
                                             txt_result = (TextView) findViewById(R.id.code_info);
                                             //onPause();
-                                            Intent Menu = new Intent(QRcode.this, Menu.class);
-                                            Menu.putExtra("restaurant id",Integer.parseInt(data));
-                                            startActivity(Menu);
+                                            Intent menu = new Intent(QRcode.this, Menu.class);
+                                            menu.putExtra("restaurant id",Integer.parseInt(data));
+                                            pref.getUser().setRestaurantID(Integer.parseInt(data));
+                                            startActivity(menu);
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }

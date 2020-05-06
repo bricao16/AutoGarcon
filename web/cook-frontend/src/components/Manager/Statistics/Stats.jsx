@@ -1,9 +1,8 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
-import {XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries} from 'react-vis';
 import Dropdown from 'react-bootstrap/Dropdown';
 import HighestSelling from './HighestSelling';
-
+import Traffic from './Traffic';
 /*this is the stats component for the manager
 view. The stats are stored in state and rendered 
 onto cards in by statsProp
@@ -20,7 +19,7 @@ class Stats extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-              selected: "highestSelling"
+              selected: "Highest Selling Items"
         };
     }
     changeSelection(category){
@@ -30,39 +29,27 @@ class Stats extends React.Component{
     render() {
         return (
             <Container>
-             <Dropdown alignRight className="p-3">
+             <Dropdown  className="p-3">
                   <Dropdown.Toggle variant="light" id="dropdown-basic">
-                    Statistics
+                    {this.state.selected} 
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                  <div onClick={()=>this.changeSelection("highestSelling")}>
+                  <div onClick={()=>this.changeSelection("Highest Selling Items")}>
                     <Dropdown.Item href="#/action-1">Highest Selling Items</Dropdown.Item>
                     </div>
-                    <div onClick={()=>this.changeSelection("traffic")}>
+                    <div onClick={()=>this.changeSelection("Traffic")}>
                       <Dropdown.Item>Traffic</Dropdown.Item>
                     </div>
                   </Dropdown.Menu>
                 </Dropdown>
               <div style={backgroundStyle}>
-             <Container fluid style={{'minHeight': '60vh'}}>
+             <Container fluid style={{'minHeight': '70vh'}}>
                 <div className="d-flex flex-wrap">
 
-                {this.state.selected === "highestSelling" ? 
+                {this.state.selected === "Highest Selling Items" ? 
                   <HighestSelling data={data} />
                 :
-                  <XYPlot
-                    width={300}
-                    height={300}>
-                    <HorizontalGridLines />
-                    <LineSeries
-                      data={[
-                        {x: 1, y: 10},
-                        {x: 2, y: 5},
-                        {x: 3, y: 15}
-                      ]}/>
-                    <XAxis />
-                    <YAxis />
-                  </XYPlot>
+                  <Traffic data = {data} />
                 }
                 </div>
             </Container> 
@@ -73,7 +60,7 @@ class Stats extends React.Component{
 }
 
 const backgroundStyle = {
-  'backgroundColor': '#f1f1f1',
+  'paddingBottom': '4em',
   'minWidth': '70vw'
 }
 

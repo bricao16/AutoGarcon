@@ -5,7 +5,9 @@ import ManagerPage from "./components/Manager/Home/Manager";
 import MLogin from "./components/MLogin";
 import CLogin from "./components/CLogin";
 import SignUp from "./components/SignUp";
+import ForgotPassword from "./components/ForgotPassword"
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
+import ChangePassword from "./components/ChangePassword"
 
 import Home from "./components/Home";
 import PrivacyPolicy from './components/PrivacyPolicy';
@@ -19,8 +21,6 @@ well as a stock image with a circle containing a description of the product.*/
 class App extends React.Component{
     constructor(props) {
       super(props);
-      this.state = {
-      };
     }
   render(){
     return (
@@ -47,6 +47,12 @@ class App extends React.Component{
               <Route path="/login_cook">
                 <CLogin/>
               </Route>
+              <Route path="/forgot_password">
+                <ForgotPassword/>
+              </Route>
+              <Route path="/change_password">
+                <ChangePassword/>
+              </Route>
               <Route path="/privacy_policy">
                 <PrivacyPolicy/>
               </Route>
@@ -61,6 +67,10 @@ class App extends React.Component{
                 render={(props) => <Manager {...props} content={"customize"}/>} />
               <Route path="/cookview"
                 render={(props) => <Manager {...props} content={"cookview"}/>} />
+							<Route path = "/QRCode"
+								render={(props) => <Manager {...props} content={"QRCode"}/>} />
+              <Route path = "/account"
+								render={(props) => <Manager {...props} content={"AccountSettings"}/>} />
             </Switch>
           </main>
         </Router>

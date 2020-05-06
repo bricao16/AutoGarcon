@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,13 +54,13 @@ public class Register extends AppCompatActivity {
 
         pref = new SharedPreference(this);
 
-        userID = findViewById(R.id.username);// associating xml objects with the java Object equivalent
-        emailId = findViewById(R.id.email);// associating xml objects with the java Object equivalent
-        userFirst = findViewById(R.id.firstName);// associating xml objects with the java Object equivalent
-        userLast = findViewById(R.id.lastName);// associating xml objects with the java Object equivalent
-        password = findViewById(R.id.password);// associating xml objects with the java Object equivalent
-        buttonSignUp = findViewById(R.id.signUp);// associating xml objects with the java Object equivalent
-        textViewLogin = findViewById(R.id.loginLink);// associating xml objects with the java Object equivalent
+        userID = findViewById(R.id.username_enter_register);// associating xml objects with the java Object equivalent
+        emailId = findViewById(R.id.email_enter_register);// associating xml objects with the java Object equivalent
+        userFirst = findViewById(R.id.first_name_enter_register);// associating xml objects with the java Object equivalent
+        userLast = findViewById(R.id.last_name_enter_register);// associating xml objects with the java Object equivalent
+        password = findViewById(R.id.password_enter_register);// associating xml objects with the java Object equivalent
+        buttonSignUp = findViewById(R.id.sign_up_button_register);// associating xml objects with the java Object equivalent
+        textViewLogin = findViewById(R.id.yes_account_register);// associating xml objects with the java Object equivalent
 
         /**/
         buttonSignUp.setOnClickListener(new View.OnClickListener(){
@@ -71,29 +72,63 @@ public class Register extends AppCompatActivity {
                 final String username = userID.getText().toString().trim();//extracted data from xml object and converted into a string
 
                 if(TextUtils.isEmpty(firstName)){//checking if user entered there firstName
-                    emailId.setError("Please enter first name");
-                    emailId.requestFocus();
+                    userFirst.setError("Please enter first name");
+                    userFirst.requestFocus();
+                }
+                else if(firstName.length()>50){
+                    userLast.setError("First Name must be less than 50 characters");
                 }
                 else if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
-                    password.setError("Please enter last name");
-                    password.requestFocus();
+                    userLast.setError("Please enter last name");
+                    userLast.requestFocus();
+                }
+                else if(lastName.length()>50){
+                    userLast.setError("Last Name must be less than 50 characters");
+                    userLast.requestFocus();
                 }
                 else if(TextUtils.isEmpty(email)){//checking if user entered their email
                     emailId.setError("Please enter email id");
                     emailId.requestFocus();
                 }
+                else if(email.length()>50){
+                    emailId.setError("Email Must be less than 50 characters");
+                    emailId.requestFocus();
+                }
+                else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
+                    emailId.setError("Please enter a valid email");
+                    emailId.requestFocus();
+                }
                 else if(TextUtils.isEmpty(passwd)){//checking if user entered their password
+                    Log.d("Tag","test:"+Patterns.EMAIL_ADDRESS.matcher(email).matches());
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
                 else if(passwd.length()<6){//checks if the user entered a password lass than 6 characters
                     password.setError("Password Must be Greater than 6 Characters");
+                    password.requestFocus();
+
+                }
+                else if(passwd.length()>50){
+                    password.setError("Password Must be less than 50 characters");
+                    password.requestFocus();
+                }
+                else if(passwd.equals(passwd.toLowerCase())){//checks if the password contains one uppercase
+                    password.setError("Password Must contain at least one uppercase");
+                    password.requestFocus();
+                }
+                else if(passwd.equals(passwd.toUpperCase())){//checkis if password contains one lowercase
+                    password.setError("Password Must contain at least one lowercase");
+                    password.requestFocus();
+                }
+                else if(username.length()>50){
+                    userID.setError("Please enter a username with less than 50 characters");
+                    userID.requestFocus();
+
                 }
                 else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email)
                         && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirments are met than we can send our put request to the database
 
                     //put request for registering
-                    String url = "http://50.19.176.137:8000/customer/register";
                     JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
                     try{
                         obj.put("customer_id", username);
@@ -107,7 +142,7 @@ public class Register extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, url, obj,
+                    JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, "http://50.19.176.137:8000/customer/register", obj,
                             new Response.Listener<JSONObject>()
                             {
                                 @Override
@@ -122,8 +157,7 @@ public class Register extends AppCompatActivity {
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 
-                                        Intent twoButton = new Intent(Register.this, TwoButtonPage.class);// goes to two Button Page
-                                        startActivity(twoButton);
+                                        startActivity(new Intent(Register.this, TwoButtonPage.class));
                                         finish();//prevents user from coming back
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -134,8 +168,14 @@ public class Register extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
+
+                                    if(error.networkResponse.statusCode == 409){
+                                        Toast.makeText(Register.this, "Customer username already exist please enter a different username", Toast.LENGTH_LONG).show();
+                                    }
+                                    else{
+                                        Toast.makeText(Register.this,"User could not be created",Toast.LENGTH_LONG).show();
+                                    }
                                     error.printStackTrace();
-                                    Toast.makeText(Register.this, error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             }
                     );
@@ -151,8 +191,7 @@ public class Register extends AppCompatActivity {
         textViewLogin.setOnClickListener(new View.OnClickListener() {// when the user clicks on this link we change to xml to the log in layout
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Register.this, Login.class);
-                startActivity(intent);
+                startActivity(new Intent(Register.this, Login.class));
             }
         });
     }

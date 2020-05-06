@@ -1,7 +1,11 @@
 import React from "react";
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import {Container} from 'react-bootstrap';
+
 import Order from "./Order";
-import Container from 'react-bootstrap/Container';
+
 import '../../assets/orders/order.css'
+
 
 /*
   This component is used to render the orders for the Cook page.
@@ -15,15 +19,20 @@ import '../../assets/orders/order.css'
   component.
 */
 
-class Orders extends React.Component{
-
-  constructor(props) {
-    super(props);
-    this.state = {};
+const useStyles = makeStyles((theme) => ({
+  main: {
+    alignItems: 'flex-start',
+    fontSize: '1.1em'
   }
+}));
 
+function OrdersContainer(){
+
+  const theme = useTheme();
+  const classes = useStyles(theme);
+  
   // Returns an <Order /> component for each order in props.orders
-  renderOrders() {
+  function renderOrders() {
     let orderComponents = [];
     let i = 0;
     Object.values(this.props.orders).forEach(order => {
@@ -37,21 +46,12 @@ class Orders extends React.Component{
     return orderComponents;
   }
 
-  // Returns orders wrapped in a flexbox so each order wraps to the next line 
-  // when necessary
-  render() {
-    return (
-      <Container fluid className="p-0 d-flex flex-wrap" id="orders" style={ordersStyle}>
-        {this.renderOrders()}
-        {/* {this.renderConfirmDelete()} */}
-      </Container>
-    )
-  };
+  return (
+    <Container fluid className="p-0 d-flex flex-wrap" id="orders" style={classes.main}>
+      {/*{this.renderOrders()}*/}
+      {/* {this.renderConfirmDelete()} */}
+    </Container>
+  );
 }
 
-const ordersStyle = {
-  alignItems: 'flex-start',
-  fontSize: '1.1em'
-};
-
-export default Orders;
+export default OrdersContainer;

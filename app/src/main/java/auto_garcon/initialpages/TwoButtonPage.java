@@ -30,27 +30,20 @@ public class TwoButtonPage extends AppCompatActivity {
         Button scannerButton = findViewById(R.id.scanner_button);// associating xml objects with the java Object equivalent
         Button favButton = findViewById(R.id.fav_button);// associating xml objects with the java Object equivalent
 
-        //if it's not created yet
-        if(pref.getShoppingCart() == null ){
-            shoppingCart = new ShoppingCartSingleton();
-            pref.setShoppingCart(shoppingCart);
-        }
         /*
         When one of these buttons is clicked it will take the users onto either the QRcode or the Favorite Page
          */
         scannerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {//when the scannerButton is clicked this will send the user to the QrCode page
-                Intent QrCode = new Intent(TwoButtonPage.this, QRcode.class);
-                startActivity(QrCode);
+                startActivity(new Intent(TwoButtonPage.this, QRcode.class));
             }
         });
+
         favButton.setOnClickListener(new View.OnClickListener() {// when the favButton is clicked user is sent to the HomePage
             @Override
             public void onClick(View v) {
-
-                Intent home = new Intent(TwoButtonPage.this, Home.class);//creating an intent to send the user to homepage
-                startActivity(home);
+                startActivity(new Intent(TwoButtonPage.this, Home.class));
             }
         });
 

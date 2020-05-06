@@ -9,6 +9,10 @@
         android:title="@string/order_history"/>
 
     <item
+        android:id="@+id/current_orders"
+        android:title="@string/current_orders"/>
+
+    <item
         android:id="@+id/settings"
         android:title="@string/settings"/>
 
