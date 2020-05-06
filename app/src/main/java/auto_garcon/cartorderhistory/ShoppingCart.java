@@ -194,7 +194,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                                 //Clear the order
                                 shoppingCart = new ShoppingCartSingleton();
-                                pref.setShoppingCart(shoppingCart);
                                 startActivity(new Intent(ShoppingCart.this, ShoppingCart.class));
                         }
 
