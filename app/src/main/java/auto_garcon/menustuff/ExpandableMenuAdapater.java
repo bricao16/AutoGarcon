@@ -128,8 +128,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 confirmPopup = new Dialog(context);
 
                 addToCartPopup.setContentView(R.layout.menu_item_popup);
-                addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                addToCartPopup.show();
+
 
                 ConstraintLayout background = addToCartPopup.findViewById(R.id.menu_popup);
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart_menu_popup);
@@ -155,6 +154,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 if(getChild(i, j).getItemID() == 8) {
                     byte[] hi = getChild(i, j).getItemImage();
+                    
                     imageOfItem.setImageBitmap(BitmapFactory.decodeByteArray(hi, 0, getChild(i, j).getItemImage().length));
                 }
 
@@ -164,6 +164,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                     addToCart.setVisibility(View.GONE);
                   //  calorieCount.setVisibility(View.GONE);
                 }
+
+                addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                addToCartPopup.show();
 
                     addToCart.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -311,10 +311,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                         }
                                     }
 
-                                    if(menuItemCategories.getInt("item_id") == 8) {
-                                        Log.d("asdfasdf",itemToBeAdded.getItemImage()[1]+"");
-                                    }
-
                                     //if conditional filters out erroneous categories
                                     if((whereToSendItem.equals("Alcohol") || whereToSendItem.equals("Refillable Drink") || whereToSendItem.equals("Dessert") || whereToSendItem.equals("Entree") || whereToSendItem.equals("Appetizer"))
                                         && whereToSendItem.length() != 0) {
