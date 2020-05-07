@@ -25,6 +25,11 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="current_orders">Current Orders</string>
+    <string name="password_requirements1">
+    -at least 8 characters</string>
+    <string name="password_requirements2">-contain an uppercase and lowercase letter</string>
+    <string name="password_requirements3">-contain number</string>
+
 
     <string name="change_name">Change Name</string>
     <string name="first_name">First Name</string>

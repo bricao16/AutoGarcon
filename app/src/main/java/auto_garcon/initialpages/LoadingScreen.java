@@ -44,41 +44,6 @@ public class LoadingScreen extends AppCompatActivity {
 
         pref.setShoppingCart(shoppingCart);
 
-        StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername(),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject favoritesJSONObject = new JSONObject(response);
-                            //parsing through json from get request to add them to menu
-                            Iterator<String> keys = favoritesJSONObject.keys();
-                            while(keys.hasNext()) {
-                                String key = keys.next();
-
-                                if (favoritesJSONObject.get(key) instanceof JSONObject) {
-                                    JSONObject item = favoritesJSONObject.getJSONObject(key);
-
-                                    pref.addToFavorites(Integer.parseInt(item.get("restaurant_id").toString()));
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if(error.networkResponse.statusCode == 500) {
-                            Log.d("Error in loading screen", "Error retrieving favorites");
-                        }
-                    }
-                }
-        );
-
-        VolleySingleton.getInstance(LoadingScreen.this).addToRequestQueue(getRequestForFavorites);
-
-
         /** Waits for 3000 milliseconds then goes to login activity*/
         new Handler().postDelayed(new Runnable() {
             @Override

@@ -146,7 +146,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 ImageView imageOfItem = addToCartPopup.findViewById(R.id.item_image_menu_popup);
 
-             //   Log.d("SDFSDFSDF", getChild(i, j).getItemImage().length+"");
 
                 background.setBackgroundColor(Color.parseColor(secondaryColor));
 
@@ -160,7 +159,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 if(getChild(i, j).getItemID() == 8) {
                     byte[] hi = getChild(i, j).getItemImage();
-                    
+                    Log.d("SDFSDFSDF", getChild(i, j).getItemImage().length+"");
+
                     imageOfItem.setImageBitmap(BitmapFactory.decodeByteArray(hi, 0, getChild(i, j).getItemImage().length));
                 }
 

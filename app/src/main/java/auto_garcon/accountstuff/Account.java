@@ -172,7 +172,7 @@ public class Account extends AppCompatActivity {
         changePassword.setOnClickListener(new View.OnClickListener() {// when the user clicks on this link we change to xml to the log in layout
             @Override
             public void onClick(View view) {//will change password
-                Intent intent = new Intent(Account.this, Login.class);
+                Intent intent = new Intent(Account.this, PasswordChange.class);
                 startActivity(intent);
             }
         });

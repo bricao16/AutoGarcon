@@ -236,7 +236,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             }
         });
 
-
         StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/restaurant/" + getIntent().getIntExtra("restaurant id", 0),
                 new Response.Listener<String>() {
                     @Override

@@ -93,7 +93,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
                                 item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
-                                // Log.d("asdff", "" + item.getCost());
 
                                 carts.get(tracker-1).addToCart(item);
                             }

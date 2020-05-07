@@ -40,6 +40,7 @@
             android:dropDownAnchor="@id/dropdown_for_search"
             android:hint="Search For Restaurants"
             android:inputType="textAutoComplete"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

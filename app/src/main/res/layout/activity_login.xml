@@ -18,7 +18,7 @@
         android:fontFamily="@font/sanchez"
         android:text="AutoGarçon"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="25sp"
+        android:textSize="26sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,6 +34,8 @@
         android:hint="@string/username"
         android:maxLength="50"
         android:inputType="textPersonName"
+        android:textSize="16sp"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -53,6 +55,8 @@
         android:hint="@string/password"
         android:maxLength="50"
         android:inputType="textPassword"
+        android:textSize="16sp"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -80,6 +84,8 @@
         android:text="@string/new_account"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
+        android:textSize="14sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -91,6 +97,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/forgotPassword"
+        android:textSize="14sp"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
