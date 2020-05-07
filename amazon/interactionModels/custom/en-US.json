@@ -12,7 +12,10 @@
         {
           "name": "AMAZON.HelpIntent",
           "samples": [
-            "help"
+            "commands",
+            "What can I say",
+            "help",
+            "What are some commands I can use"
           ]
         },
         {
@@ -24,15 +27,6 @@
         {
           "name": "AMAZON.NavigateHomeIntent",
           "samples": []
-        },
-        {
-          "name": "MenuIntent",
-          "slots": [],
-          "samples": [
-            "what\u0027s on the menu",
-            "Can I hear the menu",
-            "menu"
-          ]
         },
         {
           "name": "ClosingTimeIntent",
@@ -151,11 +145,80 @@
             "Send my order to the kitchen",
             "Submit order"
           ]
+        },
+        {
+          "name": "RemoveItemFromOrder",
+          "slots": [
+            {
+              "name": "menuItem",
+              "type": "AMAZON.Food",
+              "samples": [
+                "remove the {menuItem}",
+                "the {menuItem}",
+                "{menuItem}"
+              ]
+            }
+          ],
+          "samples": [
+            "remove something from the order",
+            "take the {menuItem} off our order",
+            "remove {menuItem} from my order",
+            "remove the {menuItem} from the order",
+            "remove {menuItem} from order"
+          ]
+        },
+        {
+          "name": "MenuDialogIntent",
+          "slots": [
+            {
+              "name": "category",
+              "type": "Category",
+              "samples": [
+                "{category} menu",
+                "{category}",
+                "I would like to hear the {category} menu"
+              ]
+            }
+          ],
+          "samples": [
+            "I would like to hear the menu",
+            "What\u0027s on the menu",
+            "menu"
+          ]
+        },
+        {
+          "name": "CancelOrderIntent",
+          "slots": [],
+          "samples": [
+            "Cancel the order",
+            "I would like to start the order over",
+            "Start the order over"
+          ]
+        },
+        {
+          "name": "GetPendingOrderIntent",
+          "slots": [],
+          "samples": [
+            "What is in my order",
+            "What\u0027s in my order",
+            "get current order",
+            "get order",
+            "What is in my current order",
+            "What\u0027s in my current order"
+          ]
         }
       ],
       "types": [
         {
           "values": [
+            {
+              "name": {
+                "value": "full menu",
+                "synonyms": [
+                  "entire menu"
+                ]
+              }
+            },
             {
               "name": {
                 "value": "entree",
@@ -292,6 +355,48 @@
             }
           ],
           "delegationStrategy": "ALWAYS"
+        },
+        {
+          "name": "RemoveItemFromOrder",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "menuItem",
+              "type": "AMAZON.Food",
+              "elicitationRequired": true,
+              "confirmationRequired": true,
+              "prompts": {
+                "confirmation": "Confirm.Slot.1473839097850.493525012011",
+                "elicitation": "Elicit.Slot.636529680947.1157666368484"
+              }
+            }
+          ],
+          "delegationStrategy": "ALWAYS"
+        },
+        {
+          "name": "MenuDialogIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "category",
+              "type": "Category",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1517670727465.1508375572552"
+              }
+            }
+          ]
+        },
+        {
+          "name": "CancelOrderIntent",
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.190189721201"
+          },
+          "slots": []
         }
       ],
       "delegationStrategy": "ALWAYS"
@@ -352,8 +457,53 @@
             "value": "What is the table number?"
           }
         ]
+      },
+      {
+        "id": "Elicit.Slot.636529680947.1157666368484",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What would you like to remove?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.1517670727465.1508375572552",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Would you like to hear the full menu, the refillable drink menu, the alcohol menu, the appetizer menu, or the entree menu?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Intent.1473839097850",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Are you sure that you want to remove {menuItem} from the order"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Slot.1473839097850.493525012011",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Would you like to remove the {menuItem} from the order"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Intent.190189721201",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Are you sure you want to start the order over?"
+          }
+        ]
       }
     ]
   },
-  "version": "36"
+  "version": "58"
 }
