@@ -32,6 +32,7 @@ import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.homestuff.Home;
 import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
@@ -111,7 +112,9 @@ public class QRcode extends AppCompatActivity {
                     public void run() {
                         Intent menu = new Intent(QRcode.this, Menu.class);
                         menu.putExtra("restaurant id",Integer.parseInt(data));
-                        pref.getUser().setRestaurantID(Integer.parseInt(data));
+                        UserSingleton user = pref.getUser();
+                        user.setRestaurantID(Integer.parseInt(data));
+                        pref.setUser(user);
                         startActivity(menu);
                     }
                 });

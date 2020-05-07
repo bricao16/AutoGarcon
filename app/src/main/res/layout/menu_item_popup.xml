@@ -20,12 +20,12 @@
 
     <ImageView
         android:id="@+id/item_image_menu_popup"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="255dp"
+        android:layout_height="255dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_name_menu_popup"
-        app:layout_constraintBottom_toTopOf="@id/item_price_menu_popup"/>
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/order_items"

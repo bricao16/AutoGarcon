@@ -235,7 +235,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         });
 
 
-        StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/test/restaurant/" + getIntent().getIntExtra("restaurant id", 0),
+        StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/restaurant/" + getIntent().getIntExtra("restaurant id", 0),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -254,7 +254,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             restaurant.getInt("closing");
 
                             font = restaurant.getString("font");
-                            restaurant.getString("font_color");
                             primaryColor = restaurant.getString("primary_color");
 
                             restaurant.getString("cuisine");
@@ -280,67 +279,40 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             while(keys.hasNext()) {
                                 String key = keys.next();
                                 if (menuItem.get(key) instanceof JSONObject) {
-
-                                    auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
                                     JSONObject menuItemCategories = menuItem.getJSONObject(key);
-                                    String whereToSendItem = "";
 
-                                    if(menuItemCategories.getInt("start_time") == 0 && menuItemCategories.getInt("end_time") == 0) {
-                                        whereToSendItem = menuItemCategories.getString("category");
-                                        itemToBeAdded = creatingToBeAddedItem(menuItemCategories);
+                                    auto_garcon.menustuff.MenuItem itemToBeAdded = creatingToBeAddedItem(menuItemCategories);
+                                    itemToBeAdded.setNameOfItem(key);
+                                    String whereToSendItem = menuItemCategories.getString("category");
+
+                                    if(itemToBeAdded.getCategory().equals("Alcohol") && alcohol_list != null) {
+                                        for(int i = 0; i < alcohol_list.size(); i++) {
+                                                alcohol_list.get(i).setPrice(itemToBeAdded.getPrice());
+                                        }
                                     }
-                                    else if(menuItemCategories.getInt("start_time") < Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR)
-                                            && Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) < menuItemCategories.getInt("end_time")) {
-                                        whereToSendItem = menuItemCategories.getString("category");
-                                        itemToBeAdded = creatingToBeAddedItem(menuItemCategories);
+                                    else if(itemToBeAdded.getCategory().equals("Refillable Drink") && drink_list != null) {
+                                        for(int i = 0; i < drink_list.size(); i++) {
+                                                drink_list.get(i).setPrice(itemToBeAdded.getPrice());
+                                        }
+                                    }
+                                    else if(itemToBeAdded.getCategory().equals("Dessert") && dessert_list != null) {
+                                        for(int i = 0; i < dessert_list.size(); i++) {
+                                                dessert_list.get(i).setPrice(itemToBeAdded.getPrice());
+                                        }
+                                    }
+                                    else if(itemToBeAdded.getCategory().equals("Entree") && entree_list != null) {
+                                        for(int i = 0; i < entree_list.size(); i++) {
+                                            entree_list.get(i).setPrice(itemToBeAdded.getPrice());
+                                        }
+                                    }
+                                    else if(itemToBeAdded.getCategory().equals("Appetizer") && appetizer_list != null){
+                                        for(int i = 0; i < appetizer_list.size(); i++) {
+                                            appetizer_list.get(i).setPrice(itemToBeAdded.getPrice());
+                                        }
                                     }
 
-                                    if(itemToBeAdded.getCategory() != null) {
-                                        if(itemToBeAdded.getCategory().equals("Alcohol") && alcohol_list != null) {
-                                            for(int i = 0; i < alcohol_list.size(); i++) {
-                                                if(itemToBeAdded.getItemID() == alcohol_list.get(i).getItemID()){
-                                                    if(itemToBeAdded.getPrice() < alcohol_list.get(i).getPrice()) {
-                                                        alcohol_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else if(itemToBeAdded.getCategory().equals("Refillable Drink") && drink_list != null) {
-                                            for(int i = 0; i < drink_list.size(); i++) {
-                                                if(itemToBeAdded.getItemID() == drink_list.get(i).getItemID()){
-                                                    if(itemToBeAdded.getPrice() < drink_list.get(i).getPrice()) {
-                                                        drink_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else if(itemToBeAdded.getCategory().equals("Dessert") && dessert_list != null) {
-                                            for(int i = 0; i < dessert_list.size(); i++) {
-                                                if(itemToBeAdded.getItemID() == dessert_list.get(i).getItemID()){
-                                                    if(itemToBeAdded.getPrice() < drink_list.get(i).getPrice()) {
-                                                        dessert_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else if(itemToBeAdded.getCategory().equals("Entree") && entree_list != null) {
-                                            for(int i = 0; i < entree_list.size(); i++) {
-                                                if(itemToBeAdded.getItemID() == entree_list.get(i).getItemID()){
-                                                    if(itemToBeAdded.getPrice() < entree_list.get(i).getPrice()) {
-                                                        entree_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else if(itemToBeAdded.getCategory().equals("Appetizer") && appetizer_list != null){
-                                            for(int i = 0; i < appetizer_list.size(); i++) {
-                                                if(itemToBeAdded.getItemID() == appetizer_list.get(i).getItemID()){
-                                                    if(itemToBeAdded.getPrice() < appetizer_list.get(i).getPrice()) {
-                                                        appetizer_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                                    }
-                                                }
-                                            }
-                                        }
+                                    if(menuItemCategories.getInt("item_id") == 8) {
+                                        Log.d("asdfasdf",itemToBeAdded.getItemImage()[1]+"");
                                     }
 
                                     //if conditional filters out erroneous categories
@@ -470,9 +442,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private auto_garcon.menustuff.MenuItem creatingToBeAddedItem(JSONObject menuItemCategories) {
         auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
 
-        try{
+        try {
             itemToBeAdded.setItemID(menuItemCategories.getInt("item_id"));
-            itemToBeAdded.setNameOfItem(menuItemCategories.getString("item_name"));
             itemToBeAdded.setCalories(menuItemCategories.getInt("calories"));
             itemToBeAdded.setPrice(menuItemCategories.getDouble("price"));
             itemToBeAdded.setCategory(menuItemCategories.getString("category"));
@@ -480,10 +451,14 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             itemToBeAdded.setAmountInStock(menuItemCategories.getInt("in_stock"));
             itemToBeAdded.setDescription(menuItemCategories.getString("description"));
 
-            byte[] menuItemImageByteArray = new byte[menuItemCategories.getJSONObject("image").getJSONArray("data").length()];
+            byte[] menuItemImageByteArray = new byte[menuItemCategories.getJSONObject("picture").getJSONArray("data").length()];
 
             for(int i = 0; i < menuItemImageByteArray.length; i++) {
-                menuItemImageByteArray[i] = (byte) (((int) menuItemCategories.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
+                menuItemImageByteArray[i] = (byte) (((int) menuItemCategories.getJSONObject("picture").getJSONArray("data").get(i)) & 0xFF);
+            }
+
+            if(menuItemCategories.getInt("item_id") == 8) {
+                itemToBeAdded.setItemImage(menuItemImageByteArray);
             }
         }
         catch (JSONException e) {
