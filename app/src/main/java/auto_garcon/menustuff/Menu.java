@@ -71,6 +71,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private List<auto_garcon.menustuff.MenuItem> alcohol_list;
     private HashMap<String, List<auto_garcon.menustuff.MenuItem>> listHash;
     private JSONObject obj;
+    private String addOrRemoveFavoritesURL;
+    private Button addOrRemoveFavorite;
     private TextView restaurantName;
     private ImageView restaurantLogo;
     Dialog removeFromFavoritesPopup;
@@ -108,15 +110,22 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         drink_list = new ArrayList<>();
         alcohol_list = new ArrayList<>();
 
-        Button addOrRemoveFavorite = findViewById(R.id.add_restaurant);
+        addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
         if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
             addOrRemoveFavorite.setText("Remove from favorites");
-            pref.removeFromFavorites(getIntent().getIntExtra("restaurant id", 0));
+        }
+        else {
+            addOrRemoveFavorite.setText("Add to favorites");
+        }
 
-            addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
+                    addOrRemoveFavorite.setText("Add to favorites");
+                    pref.removeFromFavorites(getIntent().getIntExtra("restaurant id", 0));
+
                     removeFromFavoritesPopup = new Dialog(Menu.this);
 
                     removeFromFavoritesPopup.setContentView(R.layout.remove_from_favorites_popup);
@@ -145,8 +154,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                         public void onResponse(String response) {
                                             Toast.makeText(Menu.this, response, Toast.LENGTH_LONG).show();
                                             removeFromFavoritesPopup.dismiss();
-                                            finish();
-                                            startActivity(getIntent());
                                         }
                                     },
                                     new Response.ErrorListener() {
@@ -179,15 +186,10 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                         }
                     });
                 }
-            });
-        }
-        else {
-            addOrRemoveFavorite.setText("Add to favorites");
-            pref.addToFavorites(getIntent().getIntExtra("restaurant id", 0));
+                else {
+                    addOrRemoveFavorite.setText("Remove from favorites");
+                    pref.addToFavorites(getIntent().getIntExtra("restaurant id", 0));
 
-            addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
                     obj = new JSONObject();//json object that will be sent as the request parameter
 
                     try {
@@ -205,8 +207,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 public void onResponse(String response) {
                                     // response
                                     Toast.makeText(Menu.this,response,Toast.LENGTH_LONG).show();
-                                    finish();
-                                    startActivity(getIntent());
                                 }
                             },
                             new Response.ErrorListener() {
@@ -217,12 +217,23 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                     Toast.makeText(Menu.this,error.toString(),Toast.LENGTH_LONG).show();
                                 }
                             }
-                    );
+                    ) {
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            return obj.toString().getBytes();
+                        }
+
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json";
+                        }
+                    };
 
                     VolleySingleton.getInstance(Menu.this).addToRequestQueue(putRequest);// making the actual request
                 }
-            });
-        }
+            }
+        });
+
 
         StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/test/restaurant/" + getIntent().getIntExtra("restaurant id", 0),
                 new Response.Listener<String>() {
