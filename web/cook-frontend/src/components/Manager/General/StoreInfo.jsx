@@ -5,7 +5,6 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Alert from 'react-bootstrap/Alert';
-
 /* This component is used to render the 
 resturant information for the manager view.
 The resturant information is being called from the database in the
@@ -239,7 +238,7 @@ class StoreInfo extends React.Component{
                        
                   }
               </div>
-              
+ 
           </Card.Body>
       </Card>
         

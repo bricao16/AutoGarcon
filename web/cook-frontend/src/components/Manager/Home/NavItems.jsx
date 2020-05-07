@@ -19,6 +19,7 @@ import AccountDropdown from "../../AccountDropdown";
 import StaffIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import CustomIcon from '@material-ui/icons/ColorLensOutlined';
 import GeneralIcon from '@material-ui/icons/ListAltOutlined';
+import SettingsVoiceIcon from '@material-ui/icons/SettingsVoice';
 import Stats from '../Statistics/Stats';
 import Menu from '../Menu/Menu';
 import StoreInfo from '../General/StoreInfo';
@@ -107,9 +108,10 @@ const useStyles = makeStyles((theme) => ({
   paddingRight: '12px',
   paddingTop: '12px',
   textAlign: 'right',
-  fontFamily: 'Kefa',
   height: '67px'
   },
+
+
 
 }));
 
@@ -118,6 +120,13 @@ export default function NavItems(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+
+  //get the styles for the current restuarant
+  const primary = props.restaurantInfo[1][1].primary_color;
+  const secondary = props.restaurantInfo[1][1].secondary_color;
+  const teritary = props.restaurantInfo[1][1].teritary_color;
+  const font = props.restaurantInfo[1][1].font;
+  const font_color = props.restaurantInfo[1][1].font_color
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -129,7 +138,7 @@ export default function NavItems(props) {
 
   return (
 
-    <div className={classes.root}>
+    <div className={classes.root} style={{'fontFamily' :font}}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -137,7 +146,7 @@ export default function NavItems(props) {
           [classes.appBarShift]: open,
         })}
       >
-        <Toolbar>
+        <Toolbar >
         <div className="col">
           <IconButton
             aria-label="open drawer"
@@ -150,12 +159,12 @@ export default function NavItems(props) {
             <MenuIcon />
           </IconButton>
           </div>
-          <div className="col text-right">
+          <div className="col text-right" style={{'fontFamily' :font}}>
           {/* this.props.loggedIn */ true && <AccountDropdown firstName={props.firstName} lastName={props.lastName} className="pl-5 align-right"></AccountDropdown>}
           </div>
         </Toolbar>
         
-      </AppBar>
+      </AppBar >
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -168,8 +177,9 @@ export default function NavItems(props) {
             [classes.drawerClose]: !open,
           }),
         }}
+
       >
-        <div className={classes.toolbar} style={{'backgroundColor':'#f1f1f1'}}>
+        <div className={classes.toolbar} style={{'backgroundColor' :'#f1f1f1' }}>
         <Typography variant="h6" className ='pr-4' noWrap >
         <img src={props.imageBlob}  width="auto" height="45px" alt="waiter" /> 
            {/*<i>{props.restName}</i>*/}
@@ -180,50 +190,46 @@ export default function NavItems(props) {
         </div>
         <Divider />
         <List >
-          <ListItem button component="a" href ='/manager'>
+          <ListItem button component="a" href ='/manager' >
 						<ListItemIcon><StatsIcon/></ListItemIcon>
-						<ListItemText primary="Statistics" />
+						<ListItemText disableTypography primary="Statistics" style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
         </List>
         <Divider />
         <List>
           <ListItem button component="a" href ='/menu'>
 						<ListItemIcon><RestaurantMenuIcon/></ListItemIcon>
-						<ListItemText primary="Menu" />
+						<ListItemText disableTypography primary="Menu"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
         </List>
         <Divider />
         <List>
           <ListItem button component="a" href ='/general' >
             <ListItemIcon><GeneralIcon/></ListItemIcon>
-            <ListItemText primary="General" />
+            <ListItemText disableTypography primary="General"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
 				<Divider />
         <List>
+          <ListItem button component="a" href ='/customize'>
+            <ListItemIcon><CustomIcon/></ListItemIcon>
+            <ListItemText disableTypography primary="Customize"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
+          </ListItem>
           <ListItem button component="a" href ='/QRCode'>
             <ListItemIcon><CropFreeIcon/></ListItemIcon>
-            <ListItemText primary="QR Code Generator" />
+            <ListItemText disableTypography primary="QR Code Generator"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
         </List>
           <ListItem button component="a" href ='/general' >
-            <ListItemText primary="Alexa" />
+           <ListItemIcon><SettingsVoiceIcon/></ListItemIcon>
+            <ListItemText disableTypography primary="Alexa"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
         </List>
         <Divider />
         <List>
-          <ListItem button component="a" href ='/customize'>
-            <ListItemIcon><CustomIcon/></ListItemIcon>
-            <ListItemText primary="Customize" />
+          <ListItem button component="a" href ='/cookview'>
+            <ListItemIcon><StaffIcon/></ListItemIcon>
+            <ListItemText disableTypography primary="Staff"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
-        </List>
-        <Divider />
-        <List>
-          {['Staff'].map((text, index) => (
-            <ListItem button key={text} component="a" href ='/cookview'>
-              <ListItemIcon>{index % 2 === 0 ? <StaffIcon /> : <StaffIcon />  }</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
         </List>
       </Drawer>
       <main className={classes.content} style={{'backgroundColor':'#fffffff'}}>
@@ -233,7 +239,7 @@ export default function NavItems(props) {
             <Stats/>
           </Route>
           <Route path="/menu">
-            <Menu menu = {props.restaurantInfo[0][1]}/>
+            <Menu menu = {props.restaurantInfo[0][1]} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
           </Route>
           <Route path="/general">
             <StoreInfo info = {props.restaurantInfo[1][1]} />

@@ -73,6 +73,7 @@ class Customize extends React.Component{
       else if(this.state.sectionEdit ==="Font")
       {
         this.setState({ 'temp_font':  e.target.value});
+        console.log("here");
       }
       else if(this.state.sectionEdit ==="Font Color")
       {

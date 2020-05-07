@@ -55,6 +55,12 @@ class MenuItem extends React.Component {
   }
 
   render(){
+      //get the styles
+      const primary = this.props.primary;
+      const secondary = this.props.secondary;
+      const teritary = this.props.teritary;
+      const font = this.props.font;
+      const font_color = this.props.font_color
       if(this.props.menu[1].category === this.props.category)
       {
           return(
@@ -86,7 +92,7 @@ class MenuItem extends React.Component {
             
             <Card className="text-center m-2" style={itemStyle}>
 
-                <Card.Header onClick={this.handleModalShow} style={cardHeaderStyle}>
+                <Card.Header onClick={this.handleModalShow} style ={{'fontFamily' :font, 'backgroundColor': secondary, 'font_color': font_color, 'textAlign' : 'center','display': 'flex'}}>
                   {this.props.menu[0]}
                 </Card.Header>
                 <div onClick={() => this.NewItemForm()} style={editButtonStyle} className='p-1'>
