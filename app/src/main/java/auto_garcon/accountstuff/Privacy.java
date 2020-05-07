@@ -81,6 +81,7 @@ public class Privacy extends AppCompatActivity implements NavigationView.OnNavig
                         return false;
                     }
                 };
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
 
     //onClick for side nav bar
