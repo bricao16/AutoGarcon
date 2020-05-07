@@ -141,7 +141,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 ImageView imageOfItem = addToCartPopup.findViewById(R.id.item_image_menu_popup);
 
-                Log.d("SDFSDFSDF", getChild(i, j).getItemImage().length+"");
+//                Log.d("SDFSDFSDF", getChild(i, j).getItemImage().length+"");
 
                 background.setBackgroundColor(Color.parseColor(secondaryColor));
 
@@ -208,7 +208,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                     cart.addToCart(getChild(i, j));
                                     pref.setShoppingCart(cart);
                                     pref.getShoppingCart().setEndingHour(closing);
-                                    pref.getShoppingCart().setStartingHour(closing);
+                                    pref.getShoppingCart().setStartingHour(opening);
                                     confirmPopup.dismiss();
                                     addToCartPopup.dismiss();
                                 }
