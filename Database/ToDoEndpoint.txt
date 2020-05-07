@@ -1,8 +1,19 @@
 Last Updated: 05/06/2020
 
 RECENTLY FINISHED:
+Web:
+-PUT  /restaurant/new add a new restaurant
+-EDIT update menu to include images
+-EDIT update information to include cuisine
+-EDIT update restaurant to include logo
+-GET stats has been added (please check CurrentEndpoints.txt for information)
 
-Database Redesign Test
+Android:
+-Edits to endpoints as requested
+
+Alexa:
+
+Database Redesign Test (Ignore as we will not pursue at this current time)
 -GET  /test/restaurant/:restaurant_id gives restaurant information and full item information (with menu)
 -GET  /test/menu/:id  gives list of items in a menu
 -POST /test/menu/update update a menu
@@ -13,25 +24,22 @@ Database Redesign Test
 
 TODO:
 Web
--PUT  /restaurant/register
--EDIT post customization to include (cuisine and greeting)
--EDIT upload images
--EDIT get/menu | description, photos, allergen
--EDIT customize to include cuisine and greeting
--EDIT error check for emails if already exists.
+-POST allergen
+-POST change position
 -GET  services
--POST alexa greeting
--GET  addon
+-EDIT customization of order
+-EDIT emails must be unique
+-POST send message to customer
 
 Android
--GET  in progress orders
 -POST forget password endpoint | create temp password
 -POST image for user
--PUT  message from customer
+-PUT  customizations for orders
 
 Alexa
 -POST assistance
--GET greeting
+-GET  allergens
+-EDIT GET/alexa/restaurant_id to include greeting
 
 ##################################################
 
