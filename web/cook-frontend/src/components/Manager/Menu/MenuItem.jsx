@@ -45,7 +45,8 @@ class MenuItem extends React.Component {
           "category": this.props.menu[1].category,
           "price" : this.props.menu[1].price,
           "calories": this.props.menu[1].calories,
-          "in_stock": this.props.menu[1].in_stock
+          "in_stock": this.props.menu[1].in_stock,
+          "description": this.props.menu[1].description
         }
       }
         

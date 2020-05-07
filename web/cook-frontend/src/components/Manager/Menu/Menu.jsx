@@ -99,7 +99,8 @@ class Menu extends React.Component {
           "category":"Category",
           "price" : "Price",
           "calories": "Calories",
-          "in_stock": 0
+          "in_stock": 0,
+          "description": ""
         }
       }
     })

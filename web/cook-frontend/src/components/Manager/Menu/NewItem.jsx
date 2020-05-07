@@ -75,6 +75,8 @@ class NewItem extends React.Component {
 			this.handleValidation("Price field is too large.  Please try a value less than 100,000.");
 		} else if(this.state.description.length > 300){
       this.handleValidation("Description field is too large.  Please reduce to 300 characters or less.");
+    } else if(this.state.description.length < 1){
+      this.handleValidation("Description field is required.");
     } else {
 			
 			this.state.price = Number(this.state.price).toFixed(2);
