@@ -22,9 +22,12 @@ class Order extends React.Component {
       let key2 = 0;
       this.props.order.items[category].forEach(item => {
         items.push(
-          <div key={key2++}>
-            <span className="pr-3">{item.quantity}</span>
-            <span>{item.title}</span>
+          <div>
+            <div key={key2++}>
+              <span className="pr-3">{item.quantity}</span>
+              <span>{item.title}</span>
+            </div>
+            <div style={customizationStyle} className="pl-4">No tomatoes</div>
           </div>
         );
       });
@@ -175,6 +178,10 @@ const itemCategoryStyle = {
   fontWeight: 500,
   borderBottom: '1px solid rgba(0,0,0,.125)',
   borderTop: '1px solid rgba(0,0,0,.125)'
+};
+
+const customizationStyle = {
+  color: 'grey'
 };
 
 const cardFooterStyle = {
