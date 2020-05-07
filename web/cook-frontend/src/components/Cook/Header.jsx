@@ -1,53 +1,70 @@
-import React from "react";
-import Button from 'react-bootstrap/Button';
+import React from 'react';
+import { makeStyles, useTheme, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import red from '@material-ui/core/colors/red';
+import {AppBar, Toolbar, Tabs, Tab} from '@material-ui/core'
+import {Link} from 'react-router-dom'
 
-class Header extends React.Component {
+import exampleCompanyLogo from '../../assets/exampleCompanyLogo.png'
 
-  constructor(props) {
-    super(props);
-    this.props = props;
+import AccountDropdown from "../AccountDropdown";
+
+const useStyles = makeStyles((theme) => ({
+  appBar: {
+    backgroundColor: '#f1f1f1',
+  },
+  toolbar: {
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+  },
+  tabs: {
+    margin: theme.spacing(0,3)
+  },
+  tab: {
+    outline: 'none!important',
+    padding: theme.spacing(3,0,2,0),
+    textDecoration: 'none!important'
+  },
+  account: {
+    marginLeft: 'auto'
   }
+}));
 
-  renderTabs(){
-    if(this.props.path === '/active'){
-      return <Button variant="secondary" size="sm" className="mr-3" onClick={() => this.props.handleStatusChangeClick('Complete')}>Complete</Button>;
-    } else if(this.props.path === '/completed') {
-      return <Button variant="secondary" size="sm" className="mr-3" onClick={() => this.props.handleStatusChangeClick('In Progress')}>Restore</Button>;
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#0b658a'
     }
-  }
+  },
+});
 
-  renderTitle(){
-    if(this.props.path === '/active'){
-      return <h2 className="m-0 mx-2 mr-4">Active Orders</h2>;
-    } else if(this.props.path === '/completed') {
-      return <h2 className="m-0 mx-2 mr-4">Completed Orders</h2>;
-    }
-  }
+function Header(props){
 
-  render() {
-    return (
-      <React.Fragment>
-        <div className="d-flex flex-wrap mb-2" style={headerStyle}>
-          { this.renderTitle() }
-          <div className="d-flex flex-nowrap" style={buttonsContainerStyle}>
-            {/*<Button variant="secondary" size="sm" className="mr-3">In-Progress</Button>*/}
-            { this.renderTabs() }
-            {/*<Button variant="secondary" size="sm" className="mr-3" onClick={() => this.props.handleStatusChangeClick('Complete')}>Complete (C)</Button>*/}
-            {/*<Button variant="secondary" size="sm" className="mr-3" onClick={() => this.props.handleStatusChangeClick('In Progress')}>Restore (R)</Button>*/}
-            {/*<Button variant="secondary" size="sm" className="mr-3" onClick={this.props.handleExpandClick}>Expand (E)</Button>*/}
+  // const theme = useTheme();
+  const classes = useStyles(theme);
+
+  const {cookies} = props;
+
+  const [value, setValue] = React.useState(0);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  return(
+    <ThemeProvider theme={theme}>
+      <AppBar className={classes.appBar} position="sticky">
+        <Toolbar className={classes.toolbar}>
+          <img src={exampleCompanyLogo}  width="auto" height="40px" alt="waiter" />
+          <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
+            <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
+            <Tab label="Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />
+          </Tabs>
+          <div className={classes.account}>
+            <AccountDropdown firstName={cookies.staff.first_name} lastName={cookies.staff.last_name} />
           </div>
-        </div>
-        {/*<p className="mb-2 mx-2">Use arrow keys or mouse to select an order</p>*/}
-      </React.Fragment>
-    )
-  }
+        </Toolbar>
+      </AppBar>
+    </ThemeProvider>
+  )
 }
-
-const headerStyle = {
-  alignItems: 'center'
-};
-const buttonsContainerStyle = {
-  flex: 1
-};
 
 export default Header;

@@ -1,16 +1,21 @@
 package auto_garcon.singleton;
-
+/**
+ * Class for holding user information
+ *
+ */
 public class UserSingleton {
     private String firstName;
     private String lastName;
     private String username;
     private String email;
+    private int restaurantID;
 
     public UserSingleton(String firstName, String lastName, String username, String email){
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
+        this.restaurantID = -1;
     }
 
     public void setFirstName(String firstName) {
@@ -43,5 +48,13 @@ public class UserSingleton {
 
     public String getEmail() {
         return email;
+    }
+
+    public void setRestaurantID(int restaurantID) {
+        this.restaurantID = restaurantID;
+    }
+
+    public int getRestaurantID() {
+        return this.restaurantID;
     }
 }

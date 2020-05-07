@@ -1,28 +1,24 @@
 package auto_garcon.menustuff;
 
 import java.io.Serializable;
-
+/**
+ * Sorts out information for menu items
+ *
+ */
 public class MenuItem implements Serializable{
     private String category;
     private String nameOfItem;
+    private String description;
     private int amountInStock;
     private int calories;
-    private int restaurantID;
     private double price;
     private double cost;
     private int quantity;
+    private int itemID;
+    private byte[] itemImage;
 
     public MenuItem() {
-        this.quantity = 1;
-    }
-
-    public MenuItem(String category, String nameOfItem,  int amountInStock,  int calories, int restaurantID, double price) {
-        this.nameOfItem = nameOfItem;
-        this.restaurantID = restaurantID;
-        this.calories = calories;
-        this.price = price;
-        this.category = category;
-        this.amountInStock = amountInStock;
+        this.description = "";
         this.quantity = 1;
     }
 
@@ -32,14 +28,6 @@ public class MenuItem implements Serializable{
 
     public String getNameOfItem(){
         return this.nameOfItem;
-    }
-
-    public void setRestaurantID(int restaurantID) {
-        this.restaurantID = restaurantID;
-    }
-
-    public int getRestaurantID(){
-        return this.restaurantID;
     }
 
     public void setCalories(int calories) {
@@ -52,6 +40,9 @@ public class MenuItem implements Serializable{
 
     public void setPrice(double price) {
         this.price = price;
+    }
+    public void setQuantity(int quantity){
+        this.quantity=quantity;
     }
 
     public double getPrice() {
@@ -82,6 +73,14 @@ public class MenuItem implements Serializable{
         return this.amountInStock;
     }
 
+    public void setItemID(int itemID) {
+        this.itemID = itemID;
+    }
+
+    public int getItemID() {
+        return this.itemID;
+    }
+
     public int getQuantity() {
         return this.quantity;
     }
@@ -94,5 +93,21 @@ public class MenuItem implements Serializable{
         if(this.quantity > 0) {
             this.quantity = this.quantity - 1;
         }
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setItemImage(byte[] itemImage){
+        this.itemImage = itemImage;
+    }
+
+    public byte[] getItemImage() {
+        return this.itemImage;
     }
 }

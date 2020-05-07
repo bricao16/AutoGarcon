@@ -3,18 +3,31 @@ package auto_garcon.singleton;
 import java.util.ArrayList;
 
 import auto_garcon.menustuff.MenuItem;
-
+/**
+ * Class for viewing and modifying shopping cart.
+ *
+ */
 public class ShoppingCartSingleton {
     private  ArrayList<MenuItem> items;
     private int restaurantID;
+    private int startingHour;
+    private int endingHour;
+    private String font;
+    private String primaryColor;
+    private String secondaryColor;
+    private String tertiaryColor;
 
     public ShoppingCartSingleton(){
         this.items = new ArrayList<MenuItem>();
+        this.startingHour=0;
+        this.endingHour=0;
     }
 
     public ShoppingCartSingleton(int restaurantID){
         this.items = new ArrayList<MenuItem>();
         this.restaurantID = restaurantID;
+        this.startingHour=0;
+        this.endingHour=0;
     }
 
     public ArrayList<MenuItem> getCart(){
@@ -45,7 +58,7 @@ public class ShoppingCartSingleton {
         double cost = 0;
 
         for(int i = 0; i < items.size(); i++) {
-            cost = cost + items.get(i).getPrice();
+            cost = cost + items.get(i).getCost();
         }
 
         return cost;
@@ -67,5 +80,48 @@ public class ShoppingCartSingleton {
 
     public int getRestaurantID() {
         return this.restaurantID;
+    }
+    public void setStartingHour(int time){ this.startingHour=time; }
+    public int  getStartingHour(){return this.startingHour;}
+    public void setEndingHour(int time){this.endingHour=time;}
+    public int  getEndingHour(){return this.endingHour;}
+    public String toString(){
+        String toReturn ="";
+        for(int i= 0; i<items.size();i++){
+            toReturn= toReturn+items.get(i).getNameOfItem()+ " Qty("+items.get(i).getQuantity()+")"+"\n";
+        }
+        return toReturn;
+    }
+
+    public void setFont(String font) {
+        this.font = font;
+    }
+
+    public String getFont() {
+        return this.font;
+    }
+
+    public void setPrimaryColor(String primaryColor) {
+        this.primaryColor = primaryColor;
+    }
+
+    public String getPrimaryColor() {
+        return this.primaryColor;
+    }
+
+    public void setSecondaryColor(String secondaryColor) {
+        this.secondaryColor = secondaryColor;
+    }
+
+    public String getSecondaryColor() {
+        return this.secondaryColor;
+    }
+
+    public void setTertiaryColor(String tertiaryColor) {
+        this.tertiaryColor = tertiaryColor;
+    }
+
+    public String getTertiaryColor() {
+        return this.tertiaryColor;
     }
 }

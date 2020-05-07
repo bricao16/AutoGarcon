@@ -1,0 +1,61 @@
+Last Updated: 05/06/2020
+
+RECENTLY FINISHED:
+Web:
+-PUT  /restaurant/new add a new restaurant
+-EDIT update menu to include images
+-EDIT update information to include cuisine
+-EDIT update restaurant to include logo
+-GET stats has been added (please check CurrentEndpoints.txt for information)
+
+Android:
+-Edits to endpoints as requested
+
+Alexa:
+
+Database Redesign Test (Ignore as we will not pursue at this current time)
+-GET  /test/restaurant/:restaurant_id gives restaurant information and full item information (with menu)
+-GET  /test/menu/:id  gives list of items in a menu
+-POST /test/menu/update update a menu
+-PUT  /test/menu/add
+-PUT  /test/menu/item/add add a item to a menu
+
+##################################################
+
+TODO:
+Web
+-POST allergen
+-POST change position
+-GET  services
+-EDIT customization of order
+-EDIT emails must be unique
+-POST send message to customer
+
+Android
+-POST forget password endpoint | create temp password
+-POST image for user
+-PUT  customizations for orders
+
+Alexa
+-POST assistance
+-GET  allergens
+-EDIT GET/alexa/restaurant_id to include greeting
+
+##################################################
+
+FINISHED Up to 05/05/2020:
+Web
+-Get fonts
+-Get&Post customization (logo upload not done)
+-Edit menu/add & menu/update now include a description 
+-Post staff account information (cannot change position)
+-Sides endpoint
+
+Android
+-Edit GET order history to include order history
+-Get inprogress orders
+
+Alexa
+-Edit endpoints to take in 'item_id' instead of 'item'
+-Get items from pending order
+

@@ -21,7 +21,8 @@ GET /restaurant/:id
 					primary_color,
 					secondary_color,
 					tertiary_color,
-					logo
+					logo,
+					cuisine
 				}
 				menu:
 				{
@@ -31,14 +32,15 @@ GET /restaurant/:id
 						price,
 						category,
 						picture,
-						in_stock
+						in_stock,
+						description
 					}
 				}
 			}
 		If restaurant is invalid:
-			Invalid restaurant_id
+			(409) Invalid restaurant_id
 		On error:
-			Error retrieving restaurant information
+			(500) Error retrieving restaurant information
 
 GET /restaurants
 	Returns restaurant_id and restaurant_name of all restaurants
@@ -53,7 +55,7 @@ GET /restaurants
 				}	
 			}
 		On error:
-			Error retrieving restaurants
+			(500) Error retrieving restaurants
 
 POST /restaurant/update
 	Updates restaurant information
@@ -61,17 +63,48 @@ POST /restaurant/update
 	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
-			Successfully updated restaurant information!
+			(200) Successfully updated restaurant information!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing
+			(400) Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing
 		If restaurant does not exist:
-			Error: restaurant does not exist
+			(409) Error: restaurant does not exist
 		If JWT is not valid:
-			Must be authorized!
+			(401) Must be authorized!
 		If JWT is not a manager token for the restaurant of the item:
-			Must be the restaurant manager to update restaurant information!
+			(401) Must be the restaurant manager to update restaurant information!
 		On error: 
-			Error updating restaurant information
+			(500) Error updating restaurant information
+
+GET /fonts
+	Returns font options
+	Inputs: none
+	Outputs:
+		On success:
+			{
+				i:
+				{
+					font_id,
+					font_name
+				}
+			}
+		On error:
+			(500) Error retrieving fonts
+
+POST /restaurant/customization
+	Inputs (in body of request): restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, logo (optional)
+	Outputs:
+		On success:
+			(200) Successfully updated restaurant customization!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, logo (optional)
+		If restaurant does not exist:
+			(409) Error: restaurant does not exist
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant of the item:
+			(400) Must be the restaurant manager to update restaurant information!
+		On error: 
+			(500) Error updating restaurant customization
 
 
 //==================================================================================//
@@ -94,9 +127,9 @@ GET /orders/:id
 				}	
 			}
 		If no in progress orders exist:
-			No in progress orders
+			(200) No in progress orders
 		On error:
-			Error retrieving orders
+			(500) Error retrieving orders
 
 GET /orders/complete/:id
 	Returns complete orders for restaurant with restaurant_id = id
@@ -113,9 +146,9 @@ GET /orders/complete/:id
 				}	
 			}
 		If no complete orders exist:
-			No completed orders
+			(200) No completed orders
 		On error:
-			Error retrieving orders
+			(500) Error retrieving orders
 
 PUT /orders/place
 	Places a new order
@@ -133,11 +166,11 @@ PUT /orders/place
 			}
 	Outputs:
 		On success:
-			Successfully placed order!
+			(200) Successfully placed order!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, customer_id, table_num, order
+			(400) Error: Missing parameter. Required parameters: restaurant_id, customer_id, table_num, order
 		On error:
-			Error placing order
+			(500) Error placing order
 
 POST /orders/update
 	Updates the status of an order
@@ -149,13 +182,15 @@ POST /orders/update
 			"Cancelled"
 	Outputs:
 		On success:
-			Successfully updated order!
+			(200) Successfully updated order!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: order_num, order_status
+			(400) Error: Missing parameter. Required parameters: order_num, order_status
+		If invalid status is entered:
+			(409) Error: Invalid status. Valid statuses: Complete, In Progress, Pending, Cancelled
 		If the order doesn't exist:
-			Error: order does not exist
+			(409) Error: order does not exist
 		On error:
-			Error updating order
+			(500) Error updating order
 
 
 //==================================================================================//
@@ -179,20 +214,20 @@ GET /favorites/:id
 				}
 			}
 		If customer has no favorites:
-			Customer has no favorites
+			(200) Customer has no favorites
 		On error:
-			Error retrieving favorites
+			(500) Error retrieving favorites
 
 PUT /favorites/add
 	Adds a restaurant to a customer's favorites
 	Inputs (in body of request): customer_id, restaurant_id
 	Outputs:
 		On success:
-			Error adding restaurant to favorites
+			(200) Succesfully added restaurant to favorites!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: customer_id, restaurant_id
+			(400) Error: Missing parameter. Required parameters: customer_id, restaurant_id
 		On error:
-			Succesfully added restaurant to favorites!
+			(500) Error adding restaurant to favorites
 
 POST /favorites/delete
 	Deletes a restaurant from a customer's favorites
@@ -200,17 +235,17 @@ POST /favorites/delete
 	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
-			Successfully deleted favorite!
+			(200) Successfully deleted favorite!
 		If JWT is not valid or not supplied: 
-			Must be authorized!
+			(401) Must be authorized!
 		If JWT is for a different customer:
-			Can't delete other customer's favorites!
+			(401) Can't delete other customer's favorites!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: customer_id, restaurant_id
+			(400) Error: Missing parameter. Required parameters: customer_id, restaurant_id
 		If favorite does not exist:
-			Error: favorite does not exist
+			(409) Error: favorite does not exist
 		On error:
-			Error deleting favorite
+			(500) Error deleting favorite
 
 
 
@@ -238,9 +273,9 @@ POST /staff/login
 				}
 			}
 		On error:
-			Error logging in
+			(500) Error logging in
 		If username/password is wrong:
-			No user with that username/password
+			(401) No user with that username/password
 
 PUT /staff/register
 	Creates a new staff member
@@ -262,11 +297,40 @@ PUT /staff/register
 				}
 			}
 		If staff_id exists already:
-			Error: staff_id already exists
+			(409) Error: staff_id already exists
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password
+			(400) Error: Missing parameter. Required parameters: staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password
 		On error:
-			Error creating new staff member
+			(500) Error creating new staff member
+
+POST /staff/update
+	Updates staff info including staff_id, first_name, last_name, contact_num, email, password
+	Inputs (in body of request): staff_id, first_name, last_name, contact_num, email, password (optional) 
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			{
+				token:
+				{
+					token
+				}
+				staff:
+				{
+					staff_id,
+					first_name,
+					last_name,
+					contact_num,
+					email
+				}
+			}
+		If JWT is not valid or not supplied:
+			(401) Must be authorized!
+		If JWT is not a staff token:
+			(401) Must be signed in as a staff member!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: staff_id, first_name, last_name, contact_num, email, password (optional)
+		On error:
+			(500) Error updating staff info
 
 
 //==================================================================================//
@@ -290,9 +354,9 @@ POST /customer/login
 				}
 			}
 		On error:
-			Error logging in
+			(500) Error logging in
 		If username/password is wrong:
-			No customer with that username/password
+			(401) No customer with that username/password
 
 PUT /customer/register
 	Creates a new customer
@@ -311,11 +375,11 @@ PUT /customer/register
 				}
 			}
 		If customer_id exists already:
-			Error: customer_id already exists
+			(409) Error: customer_id already exists
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password
+			(400) Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password
 		On error:
-			Error creating new customer
+			(500) Error creating new customer
 
 POST /customer/update
 	Updates customer info including customer_id, first_name, last_name, email, password
@@ -337,13 +401,13 @@ POST /customer/update
 				}
 			}
 		If JWT is not valid or not supplied: 
-			Must be authorized!
+			(401) Must be authorized!
 		If JWT is not a customer token:
-			Must be signed in as a customer!
+			(401) Must be signed in as a customer!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)
+			(400) Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)
 		On error:
-			Error updating customer info
+			(500) Error updating customer info
 
 GET /customer/history/:id
 	Retrieves a customer's order history
@@ -354,17 +418,47 @@ GET /customer/history/:id
 				i =   {
 					order_num,
 					restaurant_id,
+					restaurant_name,
 					logo,
+					item_id,
 					item_name,
+					price,
 					quantity,
 					order_date,
 					table_num
 				}
 			}
 		If a user has no history:
-			No order history for this customer
+			(200) No order history for this customer
 		On error:
-			Error retrieving order history
+			(500) Error retrieving order history
+
+GET /customer/inprogress/:id
+	Retrieves a customer's in progress orders
+	Inputs: customer_id
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			{
+				i =   {
+					order_num,
+					restaurant_id,
+					item_id,
+					item_name,
+					price,
+					quantity,
+					order_date,
+					table_num
+				}
+			}
+		If a user has no in progress orders:
+			(200) This customer has no in progress orders
+		If JWT is not valid or not supplied: 
+			(401) Must be authorized!
+		If JWT is for a different customer:
+			(401) Can't retrieve other customer's favorites!
+		On error:
+			(500) Error retrieving in progress orders
 
 
 //==============================================================================//
@@ -384,39 +478,40 @@ GET /menu/:id
 					price,
 					category,
 					picture,
-					in_stock
+					in_stock,
+					description
 				}
 			}
 		If restaurant has no menu items:
-			This restaurant has no menu items
+			(200) This restaurant has no menu items
 		On error:
-			Error retrieving menu
+			(500) Error retrieving menu
 
 PUT /menu/add
 	Adds a new item to the menu
-	Inputs (in body of request): restaurant_id, item_name, calorie_num, category, price
+	Inputs (in body of request): restaurant_id, item_name, calorie_num, category, price, description
 	Outputs:
 		On success:
-			Successfully added new menu item!
+			(200) Successfully added new menu item!
 		If item_name and restaurant_id exists already:
-			Error: item already exists
+			(409) Error: item already exists
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price
+			(400) Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description
 		On error:
-			Error adding new menu item
+			(500) Error adding new menu item
 
 POST /menu/update
 	Updates an existing menu item
-	Inputs (in body of request): item_id, restaurant_id, item_name, calorie_num, category, in_stock, price
+	Inputs (in body of request): item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description
 	Outputs:
 		On success:
-			Successfully updated menu item!
+			(200) Successfully updated menu item!
 		If the item does not exist at the restaurant:
-			Error: item does not exist
+			(409) Error: item does not exist
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price
+			(400) Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description
 		On error:
-			Error updating menu item
+			(500) Error updating menu item
 
 DELETE /menu/delete
 	Deletes a menu item
@@ -424,15 +519,36 @@ DELETE /menu/delete
 	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
-			Successfully deleted menu item!
+			(200) Successfully deleted menu item!
 		If menu item does not exist:
-			Error: menu item does not exist
+			(409) Error: menu item does not exist
 		If JWT is not valid:
-			Must be authorized!
+			(401) Must be authorized!
 		If JWT is not a manager token for the restaurant of the item:
-			Must be the restaurant manager to delete menu items!
+			(401) Must be the restaurant manager to delete menu items!
 		On error: 
-			Error deleting menu item
+			(500) Error deleting menu item
+
+GET /menu/sides/:id
+	Returns sides for an item with item_id = id
+	Inputs: item_id
+	Outputs:
+		On success:
+			{
+				i:
+				{
+					item_id,
+					item_name,
+					calories,
+					picture,
+					in_stock,
+					description
+				}
+			}
+		If item has no menu sides:
+			(200) This item has no sides
+		On error:
+			(500) Error retrieving sides
 
 
 //==================================================================================//
@@ -451,22 +567,22 @@ GET /alexa/:id
 				}
 			}
 		On error:
-			Error retrieving alexa information
+			(500) Error retrieving alexa information
 		If alexa doesn't exist:
-			This alexa does not exist
+			(200) This alexa does not exist
 
 PUT /alexa/register
 	Registers a new alexa
 	Inputs (in body of request): alexa_id, restaurant_id, table_num
 	Outputs:
 		On success:
-			Successfully added new alexa!
+			(200) Successfully added new alexa!
 		If the alexa_id already exists:
-			Error: alexa_id already exists
+			(409) Error: alexa_id already exists
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: alexa_id, restaurant_id, table_num
+			(400) Error: Missing parameter. Required parameters: alexa_id, restaurant_id, table_num
 		On error:
-			Error adding new alexa
+			(500) Error adding new alexa
 
 GET /alexa/pending/:id
 	Checks to see if an alexa has a pending order
@@ -482,7 +598,7 @@ GET /alexa/pending/:id
 				'message': 'No pending order exists'
 			}
 		On error:
-			Error retrieving pending order
+			(500) Error retrieving pending order
 
 PUT /alexa/order/new
 	Creates a new pending order for an alexa
@@ -494,22 +610,57 @@ PUT /alexa/order/new
 				'order_num': order_num
 			}
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, alexa_id, table_num
+			(400) Error: Missing parameter. Required parameters: restaurant_id, alexa_id, table_num
 		On error:
-			Error placing order
+			(500) Error placing order
 
 PUT /alexa/order/update
 	Updates an existing pending order for an alexa
-	Inputs (in body of request): order_num, item, quantity
+	Inputs (in body of request): order_num, item_id, quantity
 	Outputs:
 		On sucess:
-			Successfully updated order!
+			(200) Successfully updated order!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: order_num, item, quantity
+			(400) Error: Missing parameter. Required parameters: order_num, item_id, quantity
 		If order_num does not exist:
-			Error: order does not exist or is not pending
+			(409) Error: order does not exist or is not pending
 		On error:
-			Error updating order
+			(500) Error updating order
+
+POST /alexa/order/remove
+	Updates the quantity of an item in an alexa order
+	Inputs (in body of request): order_num, item_id, quantity (new quantity)
+	Outputs:
+		On sucess:
+			(200) Successfully updated order!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: order_num, item_id, quantity
+		If order_num and item_id does not exist:
+			(409) Error: item does not exist in the order
+		If quantity is negative:
+			(409) Quantity can't be negative
+		On error:
+			(500) Error updating order
+
+GET /alexa/order/:id
+	Returns items in a pending alexa order
+	Inputs: alexa_id
+	Outputs:
+		On success:
+			{
+				i: {
+					order_num,
+					item_id,
+					item_name,
+					quantity,
+					order_date,
+					table_num
+				}
+			}
+		If no in progress orders exist:
+			(200) No pending order
+		On error:
+			(500) Error retrieving order
 
 
 //==========================================================================//
@@ -517,15 +668,159 @@ PUT /alexa/order/update
 //==========================================================================//
 
 POST /verify
-	Verifies a JSON Web Token
-	Inputs: JWT
+	Verifies a JSON Web Token and checks if it is for a manager
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			(200) Valid manager token
+		If JWT is not for a manager:
+			(401) Not a manager
+		On error/invalid token:
+			(401) Must be authorized!
+
+
+//==========================================================================//
+//								TEST ENDPOINTS 								//
+//==========================================================================//
+
+GET /test/restaurant/:id
+	Returns restaurant information and menu items for restaurant with restaurant_id = id
+	Inputs: restaurant_id
 	Outputs:
 		On success:
 			{
-				'message': 'Test Passed'
+				restaurant: {
+					name,
+					address,
+					phone_number,
+					opening,
+					closing,
+					font,
+					font_color,
+					primary_color,
+					secondary_color,
+					tertiary_color,
+					logo,
+					cuisine
+				}
+				menu: {
+					i: {
+						menu_id,
+						menu_name,
+						start_time,
+						end_time,
+						item_id,
+						item_name,
+						calories,
+						price,
+						category,
+						image,
+						in_stock,
+						description
+					}
+				}
 			}
-		On error/invalid token:
-			Must be authorized!
+		If restaurant does not exist:
+			(409) Error: restaurant does not exist
+		If the restaurant does not have any menus:
+			{
+				restaurant: {
+					name,
+					address,
+					phone_number,
+					opening,
+					closing,
+					font,
+					font_color,
+					primary_color,
+					secondary_color,
+					tertiary_color,
+					logo,
+					cuisine
+				}
+			}
+		On error:
+			(500) Error retrieving restaurant information
+
+GET /test/menu/:id
+	Returns menu information for menu_id = id
+	Inputs: menu_id
+	Outputs:
+		On success:
+			{
+				i:
+				{
+					item_id,
+					item_name,
+					restaurant_id,
+					calories,
+					price,
+					category,
+					picture,
+					in_stock,
+					description
+				}
+			}
+		If menu has no items:
+			(200) This menu has no items
+		If menu does not exist:
+			(409) Error: menu does not exist
+		On error:
+			(500) Error retrieving menu
+
+POST /test/menu/update
+	Updates menu information
+	Inputs (in body of request): menu_id, menu_name, restaurant_id, start_time, end_time
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			(200) Successfully updated menu information!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: menu_id, menu_name, start_time, end_time
+		If menu does not exist:
+			(409) Error: menu does not exist
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant of the menu:
+			(401) Must be the restaurant manager to update menu information!
+		On error: 
+			(500) Error updating menu information
+
+PUT /test/menu/add
+	Adds a new menu
+	Inputs (in body of request): menu_name, restaurant_id, start_time, end_time
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			(200) Successfully added new menu! menu_id: <menu_id>
+		If item_name and restaurant_id exists already:
+			(409) Error: menu already exists
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: restaurant_id, menu_name, start_time, end_time
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant of the menu:
+			(401) Must be the restaurant manager to add a new menu!
+		On error:
+			(500) Error adding new menu
+
+PUT /test/menu/item/add
+	Adds a new menu item
+	Inputs (in body of request): restaurant_id, item_name, calorie_num, category, price, description, menu_id
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			(200) Successfully added new item!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description, menu_id
+		If item already exists:
+			(409) Error: item already exists
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant of the menu:
+			(401) Must be the restaurant manager to add a new item!
+		On error:
+			(500) Error adding new item
 
 Added testing user for both /staff/login and /customers/login
 	user:password

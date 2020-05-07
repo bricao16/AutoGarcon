@@ -1,55 +1,35 @@
-import React, {useState, useEffect} from 'react';
-import { Container, Row, Col, Image } from 'react-bootstrap';
-import moment from 'moment'; // Used for getting and formatting time
-import logoImage from "../../assets/AutoGarconLogoHome.png";
+import React from "react";
+import LogoImage from "../../assets/AutoGarconLogoCrop.png";
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 
-// React hook component
-function Footer() {
-  // Time is current time formatted like '8:43 PM'
-  const [time, setTime] = useState(moment().format('LT'));
-
-  useEffect(() => {
-    // updates clock every 30 seconds
-    const interval = setInterval(updateTime, 30000); // after mounting
-    return () => clearInterval(interval); // after unmounting
-  }, []);
-
-  function updateTime() {
-    setTime(moment().format('LT'));
+const useStyles = makeStyles(theme => ({
+  footerStyle: {
+    padding: '12px',
+    height: '67px',
+  },
+  container: {
+    display: 'flex',
+    float: 'right',
+    alignItems: 'center'
+  },
+  image: {
+    margin: theme.spacing(0,0,0,2)
   }
+}));
 
-  return (
-    <Container fluid style={footerStyle} className="py-2">
-      <Row>
-        <Col className="d-flex" style={logoContainerStyle}>
-            <Image src={logoImage} height="30px"/>
-            <h1 style={titleStyle} className="mb-0 ml-2">AutoGarcon</h1>
-        </Col>
-        <Col>
-          <h1 style={timeStyle}>{time}</h1>
-        </Col>
-        <Col className="d-none d-md-block">
-        </Col>
-      </Row>
-    </Container>
-  );
+function Footer(){
+
+  const theme = useTheme();
+  const classes = useStyles(theme);
+
+  return(
+    <footer className={classes.footerStyle}>
+      <div className={classes.container}>
+        <p className="m-0">Powered by AutoGarcon</p>
+        <img src={LogoImage} width="auto" height="40" alt="waiter" className={classes.image} />
+      </div>
+    </footer>
+  )
 }
-
-const footerStyle = {
-  background: 'white',
-};
-
-const logoContainerStyle = {
-  alignItems: 'center'
-};
-
-const titleStyle = {
-  fontFamily: 'Kefa',
-  fontSize: '2em'
-};
-
-const timeStyle = {
-  textAlign: 'center'
-};
 
 export default Footer;

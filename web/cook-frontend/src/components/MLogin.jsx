@@ -100,8 +100,9 @@ class MLogin extends React.Component {
       })
       .catch(error =>{
         this.setState({alertVariant: 'danger'});
-        this.setState({response: "Unknown error"});
+        this.setState({response: error.response.data});
         this.setState({redirect: false});
+        this.setState({show: true});
         console.error("There was an error!", error);
       });
   }
@@ -137,9 +138,10 @@ class MLogin extends React.Component {
   render(){
   	/*redirect to manager*/
 	if(this.state.redirect === true){
-    	//set the cookies and redirect to the cook page
-		cookies.set('mystaff', this.state.staff, { path: '/' });
-		cookies.set('mytoken', this.state.token, { path: '/' });
+    	//set the cookies and redirect to the cook page timeout after 1 hr
+		cookies.set('mystaff', this.state.staff, { path: '/' }, {maxAge: 3600} );
+		cookies.set('mytoken', this.state.token, { path: '/' }, {maxAge: 3600} );
+		// Will expire after 1hr (value is in number of sec.)
 		return  <Redirect to='/manager'/> 		
 	}  
 	return (
@@ -206,10 +208,16 @@ class MLogin extends React.Component {
 			Sign In
 		  </Button>
 		  <Grid container>
-			<Grid item>
+			<Grid item xs> 
 			  {/* Create an account link */}
 			  <Link href="/sign_up" variant="body2" style={{color: '#0B658A'}}>
 				{"Don't have an account? Sign Up"}
+			  </Link>
+			</Grid>
+			<Grid item>
+			  {/* Create an account link */}
+			  <Link href="/forgot_password" variant="body2" style={{color: '#0B658A'}}>
+				{"Forgot Password?"}
 			  </Link>
 			</Grid>
 		  </Grid>

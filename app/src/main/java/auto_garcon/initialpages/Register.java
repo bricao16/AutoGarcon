@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,13 +16,14 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.auto_garcon.R;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 
 /**
@@ -51,13 +54,13 @@ public class Register extends AppCompatActivity {
 
         pref = new SharedPreference(this);
 
-        userID = findViewById(R.id.username);// associating xml objects with the java Object equivalent
-        emailId = findViewById(R.id.email);// associating xml objects with the java Object equivalent
-        userFirst = findViewById(R.id.firstName);// associating xml objects with the java Object equivalent
-        userLast = findViewById(R.id.lastName);// associating xml objects with the java Object equivalent
-        password = findViewById(R.id.password);// associating xml objects with the java Object equivalent
-        buttonSignUp = findViewById(R.id.signUp);// associating xml objects with the java Object equivalent
-        textViewLogin = findViewById(R.id.loginLink);// associating xml objects with the java Object equivalent
+        userID = findViewById(R.id.username_enter_register);// associating xml objects with the java Object equivalent
+        emailId = findViewById(R.id.email_enter_register);// associating xml objects with the java Object equivalent
+        userFirst = findViewById(R.id.first_name_enter_register);// associating xml objects with the java Object equivalent
+        userLast = findViewById(R.id.last_name_enter_register);// associating xml objects with the java Object equivalent
+        password = findViewById(R.id.password_enter_register);// associating xml objects with the java Object equivalent
+        buttonSignUp = findViewById(R.id.sign_up_button_register);// associating xml objects with the java Object equivalent
+        textViewLogin = findViewById(R.id.yes_account_register);// associating xml objects with the java Object equivalent
 
         /**/
         buttonSignUp.setOnClickListener(new View.OnClickListener(){
@@ -69,83 +72,126 @@ public class Register extends AppCompatActivity {
                 final String username = userID.getText().toString().trim();//extracted data from xml object and converted into a string
 
                 if(TextUtils.isEmpty(firstName)){//checking if user entered there firstName
-                    emailId.setError("Please enter first name");
-                    emailId.requestFocus();
+                    userFirst.setError("Please enter first name");
+                    userFirst.requestFocus();
+                }
+                else if(firstName.length()>50){
+                    userLast.setError("First Name must be less than 50 characters");
                 }
                 else if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
-                    password.setError("Please enter last name");
-                    password.requestFocus();
+                    userLast.setError("Please enter last name");
+                    userLast.requestFocus();
+                }
+                else if(lastName.length()>50){
+                    userLast.setError("Last Name must be less than 50 characters");
+                    userLast.requestFocus();
                 }
                 else if(TextUtils.isEmpty(email)){//checking if user entered their email
                     emailId.setError("Please enter email id");
                     emailId.requestFocus();
                 }
+                else if(email.length()>50){
+                    emailId.setError("Email Must be less than 50 characters");
+                    emailId.requestFocus();
+                }
+                else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
+                    emailId.setError("Please enter a valid email");
+                    emailId.requestFocus();
+                }
                 else if(TextUtils.isEmpty(passwd)){//checking if user entered their password
+                    Log.d("Tag","test:"+Patterns.EMAIL_ADDRESS.matcher(email).matches());
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
                 else if(passwd.length()<6){//checks if the user entered a password lass than 6 characters
                     password.setError("Password Must be Greater than 6 Characters");
+                    password.requestFocus();
+
+                }
+                else if(passwd.length()>50){
+                    password.setError("Password Must be less than 50 characters");
+                    password.requestFocus();
+                }
+                else if(passwd.equals(passwd.toLowerCase())){//checks if the password contains one uppercase
+                    password.setError("Password Must contain at least one uppercase");
+                    password.requestFocus();
+                }
+                else if(passwd.equals(passwd.toUpperCase())){//checkis if password contains one lowercase
+                    password.setError("Password Must contain at least one lowercase");
+                    password.requestFocus();
+                }
+                else if(username.length()>50){
+                    userID.setError("Please enter a username with less than 50 characters");
+                    userID.requestFocus();
+
                 }
                 else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email)
                         && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirments are met than we can send our put request to the database
 
                     //put request for registering
-                    String url = "http://50.19.176.137:8000/customer/register";
+                    JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
+                    try{
+                        obj.put("customer_id", username);
+                        obj.put("first_name",firstName);
+                        obj.put("last_name",lastName);
+                        obj.put("email",email);
+                        obj.put("password", passwd);
+                    }
+                    catch (JSONException e){
+                        //TODO figure out how to handle this other than stack trace
+                        e.printStackTrace();
+                    }
 
-                    StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
-                            new Response.Listener<String>()
+                    JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, "http://50.19.176.137:8000/customer/register", obj,
+                            new Response.Listener<JSONObject>()
                             {
                                 @Override
-                                public void onResponse(String response) {
+                                public void onResponse(JSONObject response) {
                                     // response
-                                    Toast.makeText(Register.this,response.toString(),Toast.LENGTH_LONG).show();
+                                    try {
+                                        JSONObject object = response.getJSONObject("customer");
+                                        String token = response.getString("token");
 
-                                    //pref.writeUserName(username);
-                                    //pref.changeLogStatus(true);
+                                        pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
+                                                object.get("customer_id").toString(), object.get("email").toString()));
+                                        pref.setAuthToken(token);
+                                        pref.changeLogStatus(true);
 
-                                    Intent twoButton = new Intent(Register.this, Login.class);// creating an intent to change to the twoButton xml
-                                    startActivity(twoButton);// move to the two button page
-                                    finish();// this prevents the user from coming back to the register page if the successfully register
+                                        startActivity(new Intent(Register.this, TwoButtonPage.class));
+                                        finish();//prevents user from coming back
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             },
                             new Response.ErrorListener() {
                                 @Override
-                                public void onErrorResponse(VolleyError error) {//if our put request is un-successful we want display that there was an error to the user
-                                    // error
+                                public void onErrorResponse(VolleyError error) {
+                                    // error if the request fails
+
+                                    if(error.networkResponse.statusCode == 409){
+                                        Toast.makeText(Register.this, "Customer username already exist please enter a different username", Toast.LENGTH_LONG).show();
+                                    }
+                                    else{
+                                        Toast.makeText(Register.this,"User could not be created",Toast.LENGTH_LONG).show();
+                                    }
                                     error.printStackTrace();
-                                    Toast.makeText(Register.this, error.toString(),Toast.LENGTH_LONG).show();
                                 }
                             }
-                    ) {
+                    );
 
-                        @Override
-                        protected Map<String, String> getParams() {// inserting parameters for the put request
-                            Map<String, String> params = new HashMap<String, String>();
-                            params.put("customer_id", username);
-                            params.put("first_name", firstName);
-                            params.put("last_name", lastName);
-                            params.put("email", email);
-                            params.put("password", passwd);
-
-                            return params;
-                        }
-                    };
-
-                    VolleySingleton.getInstance(Register.this).addToRequestQueue(putRequest);// sending the request to the database
+                    VolleySingleton.getInstance(Register.this).addToRequestQueue(putRequest);// making the actual request
                 }
-                else {
-                    Toast.makeText(Register.this, "Error Occured", Toast.LENGTH_SHORT).show();//if the request couldn't be made show an error to the user
+                else{
+                    Toast.makeText(Register.this, "Error Occurred", Toast.LENGTH_SHORT).show();// if something fails with our request display error
                 }
-
             }
         });
 
         textViewLogin.setOnClickListener(new View.OnClickListener() {// when the user clicks on this link we change to xml to the log in layout
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Register.this, Login.class);
-                startActivity(intent);
+                startActivity(new Intent(Register.this, Login.class));
             }
         });
     }
