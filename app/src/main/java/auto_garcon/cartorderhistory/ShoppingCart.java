@@ -176,7 +176,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                     public void onClick(View v) {
 
                         /** Sending the actual putRequest. */
-                        if(pref.getShoppingCart().getStartingHour() > Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) || Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) > pref.getShoppingCart().getEndingHour()){
+                        if(pref.getShoppingCart().getStartingHour() > Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) && Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) < pref.getShoppingCart().getEndingHour()){
                             Toast.makeText(ShoppingCart.this,"The restaurant is Currently closed",Toast.LENGTH_LONG).show();
                         }
                         else if(pref.getUser().getRestaurantID() != pref.getShoppingCart().getRestaurantID()){

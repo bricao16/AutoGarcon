@@ -166,7 +166,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                         else {
                             ConstraintLayout constraintLayout = findViewById(R.id.no_favorites);
                             constraintLayout.setVisibility(View.GONE);
-                            Toast.makeText(Home.this, items.toString(),Toast.LENGTH_LONG).show();
+
                             favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
                             homeAdapter = new HomeAdapter(Home.this, items);
                             favoritesRecyclerView.setAdapter(homeAdapter);
