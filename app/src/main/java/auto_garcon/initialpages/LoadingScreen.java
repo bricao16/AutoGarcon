@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import auto_garcon.homestuff.HomeAdapter;
 import auto_garcon.homestuff.RestaurantItem;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
+import auto_garcon.singleton.VolleySingleton;
 
 /** Initial loading screen. */
 public class LoadingScreen extends AppCompatActivity {
@@ -68,11 +70,14 @@ public class LoadingScreen extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if(error.networkResponse.statusCode == 500) {
-                            Toast.makeText(LoadingScreen.this, "Error retrieving favorites",Toast.LENGTH_LONG).show();
+                            Log.d("Error in loading screen", "Error retrieving favorites");
                         }
                     }
                 }
         );
+
+        VolleySingleton.getInstance(LoadingScreen.this).addToRequestQueue(getRequestForFavorites);
+
 
         /** Waits for 3000 milliseconds then goes to login activity*/
         new Handler().postDelayed(new Runnable() {

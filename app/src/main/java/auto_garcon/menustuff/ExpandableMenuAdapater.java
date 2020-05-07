@@ -2,14 +2,17 @@ package auto_garcon.menustuff;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -93,8 +96,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         String headerTitle = (String) getGroup(i);
 
         if(view == null) {
-            LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.expandable_menu_header, null);
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.expandable_menu_header, viewGroup, false);
             view.setBackgroundColor(Color.parseColor(secondaryColor));
         }
 
@@ -109,8 +111,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         final String childText = getChild(i, j).getNameOfItem();
 
         if(view == null) {
-            LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.expandable_menu_item, null);
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.expandable_menu_item, viewGroup, false);
             view.setBackgroundColor(Color.parseColor(tertiaryColor));
         }
 
@@ -138,6 +139,10 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 TextView itemPrice = addToCartPopup.findViewById(R.id.item_price_menu_popup);
                 TextView itemDescription = addToCartPopup.findViewById(R.id.item_description_menu_popup);
 
+                ImageView imageOfItem = addToCartPopup.findViewById(R.id.item_image_menu_popup);
+
+                Log.d("SDFSDFSDF", getChild(i, j).getItemImage().length+"");
+
                 background.setBackgroundColor(Color.parseColor(secondaryColor));
 
                 calorieCount.setText("Calories: " + getChild(i, j).getCalories());
@@ -147,6 +152,11 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 itemPrice.setText("Price: " + String.format("$%.02f", getChild(i, j).getPrice()));
                 itemPrice.setTextColor(Color.WHITE);
                 itemDescription.setText(getChild(i, j).getDescription());
+
+                if(getChild(i, j).getItemID() == 8) {
+                    byte[] hi = getChild(i, j).getItemImage();
+                    imageOfItem.setImageBitmap(BitmapFactory.decodeByteArray(hi, 0, getChild(i, j).getItemImage().length));
+                }
 
                 //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
                 if(getChild(i, j).getAmountInStock() == 0) {
