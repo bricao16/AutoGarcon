@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#f1f1f1'
+      main: '#f1f1f1',
     }
   },
 });
