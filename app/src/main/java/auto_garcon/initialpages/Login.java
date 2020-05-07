@@ -83,11 +83,6 @@ public class Login extends AppCompatActivity {
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
-                else if(username.length()>50){
-                    usernameId.setError("Please enter a username with less than 50 characters");
-                    usernameId.requestFocus();
-                }
-
                 else if (!(username.isEmpty() && passwd.isEmpty())) {//if everything is good we proceed with the get request
 
                     //post request for logging in

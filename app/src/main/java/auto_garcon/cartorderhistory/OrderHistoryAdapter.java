@@ -109,7 +109,6 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                     public void onClick(View v) {
                         Toast.makeText(ct, "Yes Confirmed",Toast.LENGTH_LONG).show();
                         //Clear the order if the item's are available during the correct time
-                        Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR);//getting current time
 
                         pref.setShoppingCart(carts.get(position));
                         confirmPopup.dismiss();
