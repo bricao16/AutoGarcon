@@ -50,6 +50,6 @@
     <string name="quantity">Qty(0)</string>
     <string name="item">Item</string>
     <string name="Remove">Remove</string>
-
+    <string name="privacy">privacy</string>
 
 </resources>
