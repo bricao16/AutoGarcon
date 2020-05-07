@@ -24,6 +24,7 @@ import java.util.List;
 /*
 This is a container for menu pages that the user can see.
  */
+import auto_garcon.ExcpetionHandler;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 
@@ -44,7 +45,10 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     Dialog confirmPopup;
 
     public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor,int opening,int closing) {
+
         this.context = context;
+        Thread.setDefaultUncaughtExceptionHandler(new ExcpetionHandler(this.context));//error handling for unexpected crashes
+
         this.listDataHeader = listDataHeader;
         this.listHashMap = listHashMap;
         this.pref = new SharedPreference(context);
@@ -108,6 +112,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(final int i, final int j, boolean b, View view, ViewGroup viewGroup) {
+        Thread.setDefaultUncaughtExceptionHandler(new ExcpetionHandler(this.context));//error handling for unexpected crashes
+
         final String childText = getChild(i, j).getNameOfItem();
 
         if(view == null) {
@@ -140,7 +146,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 ImageView imageOfItem = addToCartPopup.findViewById(R.id.item_image_menu_popup);
 
-                Log.d("SDFSDFSDF", getChild(i, j).getItemImage().length+"");
+             //   Log.d("SDFSDFSDF", getChild(i, j).getItemImage().length+"");
 
                 background.setBackgroundColor(Color.parseColor(secondaryColor));
 
@@ -211,7 +217,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                     cart.addToCart(getChild(i, j));
                                     pref.setShoppingCart(cart);
                                     pref.getShoppingCart().setEndingHour(closing);
-                                    pref.getShoppingCart().setStartingHour(closing);
+                                    pref.getShoppingCart().setStartingHour(opening);
                                     confirmPopup.dismiss();
                                     addToCartPopup.dismiss();
                                 }

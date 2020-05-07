@@ -174,7 +174,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                 confirmYes.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        Toast.makeText(ShoppingCart.this, "Yes Confirmed",Toast.LENGTH_LONG).show();
 
                         /** Sending the actual putRequest. */
                         if(pref.getShoppingCart().getStartingHour() > Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) || Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) > pref.getShoppingCart().getEndingHour()){
@@ -186,7 +185,10 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                         else {
                                 VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
 
-                                //Clear the order
+                            Toast.makeText(ShoppingCart.this, "Your order has been placed",Toast.LENGTH_LONG).show();
+
+
+                            //Clear the order
                                 shoppingCart = new ShoppingCartSingleton();
                                 startActivity(new Intent(ShoppingCart.this, ShoppingCart.class));
                         }

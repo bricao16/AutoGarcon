@@ -16,9 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="auto_garcon.cartorderhistory.CurrentOrders"></activity>
+        <activity android:name="auto_garcon.ExcpetionHandler"></activity>
+        <activity android:name="auto_garcon.cartorderhistory.CurrentOrders" />
         <activity android:name="auto_garcon.accountstuff.PasswordChange" />
         <activity android:name="auto_garcon.initialpages.TwoButtonPage" />
+        <activity android:name="auto_garcon.accountstuff.Privacy" />
         <activity android:name="auto_garcon.initialpages.LoadingScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

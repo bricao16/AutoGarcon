@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import auto_garcon.ExcpetionHandler;
 import auto_garcon.accountstuff.*;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.cartorderhistory.CurrentOrders;
@@ -81,6 +82,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        Thread.setDefaultUncaughtExceptionHandler(new ExcpetionHandler(this));//error handling for unexpected crashes
 
         pref = new SharedPreference(this);
 
