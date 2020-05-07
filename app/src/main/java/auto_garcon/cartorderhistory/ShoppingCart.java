@@ -177,10 +177,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                         Toast.makeText(ShoppingCart.this, "Yes Confirmed",Toast.LENGTH_LONG).show();
 
                         /** Sending the actual putRequest. */
-                        if(pref.getShoppingCart().getStartingHour() > Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) || Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) > pref.getShoppingCart().getEndingHour()){
-                            Toast.makeText(ShoppingCart.this,"The restaurant is Currently closed",Toast.LENGTH_LONG).show();
-                        }
-                        else if(pref.getUser().getRestaurantID() != pref.getShoppingCart().getRestaurantID()){
+                        if(pref.getUser().getRestaurantID() != pref.getShoppingCart().getRestaurantID()){
                             Toast.makeText(ShoppingCart.this,"Please scan The QR code of the Targeted Restaurant",Toast.LENGTH_LONG).show();
                         }
                         else {
