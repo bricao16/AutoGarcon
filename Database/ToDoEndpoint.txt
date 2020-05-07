@@ -20,15 +20,14 @@ Web
 -EDIT customize to include cuisine and greeting
 -EDIT error check for emails if already exists.
 -GET  services
--GET  customer experience (Alexa launch)
--POST customer experience
--GET  message_from_customer
--PUT  message_to_customer
+-POST alexa greeting
+-GET  addon
 
 Android
 -GET  in progress orders
 -POST forget password endpoint | create temp password
 -POST image for user
+-PUT  message from customer
 
 Alexa
 -POST assistance
