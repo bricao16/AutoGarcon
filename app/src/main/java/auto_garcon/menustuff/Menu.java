@@ -120,21 +120,26 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             @Override
             public void onClick(View v) {
                 if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
-                    addOrRemoveFavorite.setText("Add to favorites");
                     pref.removeFromFavorites(getIntent().getIntExtra("restaurant id", 0));
 
                     removeFromFavoritesPopup = new Dialog(Menu.this);
 
-                    removeFromFavoritesPopup.setContentView(R.layout.remove_from_favorites_popup);
+                    removeFromFavoritesPopup.setContentView(R.layout.confirm_popup);
                     removeFromFavoritesPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     removeFromFavoritesPopup.show();
 
-                    Button removeFromFavorites = removeFromFavoritesPopup.findViewById(R.id.remove_yes);
+                    TextView dynamicPopupText = removeFromFavoritesPopup.findViewById(R.id.text_confirm_popup);
+
+                    dynamicPopupText.setText("Are you sure you want to remove from favorites?");
+
+                    Button removeFromFavorites = removeFromFavoritesPopup.findViewById(R.id.popup_yes);
                     Button confirmClose = removeFromFavoritesPopup.findViewById(R.id.confirm_close);
 
                     removeFromFavorites.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            addOrRemoveFavorite.setText("Add to favorites");
+
                             obj = new JSONObject();//json object that will be sent as the request parameter
 
                             try {
@@ -185,7 +190,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     });
                     confirmClose.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
-                            Toast.makeText(Menu.this, "Confirm closed",Toast.LENGTH_LONG).show();
                             removeFromFavoritesPopup.dismiss();
                         }
                     });
