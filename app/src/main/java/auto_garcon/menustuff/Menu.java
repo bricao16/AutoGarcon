@@ -1,18 +1,11 @@
 package auto_garcon.menustuff;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,11 +15,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -36,24 +34,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import auto_garcon.ExcpetionHandler;
-import auto_garcon.accountstuff.*;
+import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
-import auto_garcon.homestuff.*;
-import auto_garcon.initialpages.Login;
 import auto_garcon.cartorderhistory.ShoppingCart;
+import auto_garcon.homestuff.Home;
+import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
-import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
 /**
  * Class setting up the menu
@@ -135,6 +130,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     removeFromFavoritesPopup.show();
 
                     Button removeFromFavorites = removeFromFavoritesPopup.findViewById(R.id.remove_yes);
+                    Button confirmClose = removeFromFavoritesPopup.findViewById(R.id.confirm_close);
 
                     removeFromFavorites.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -185,6 +181,12 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             };
 
                             VolleySingleton.getInstance(Menu.this).addToRequestQueue(deleteRequest);// making the actual request
+                        }
+                    });
+                    confirmClose.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            Toast.makeText(Menu.this, "Confirm closed",Toast.LENGTH_LONG).show();
+                            removeFromFavoritesPopup.dismiss();
                         }
                     });
                 }

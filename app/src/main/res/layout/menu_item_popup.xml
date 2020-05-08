@@ -84,4 +84,16 @@
         app:layout_constraintTop_toBottomOf="@+id/item_description_menu_popup"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <Button
+        android:id="@+id/confirm_close"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="380dp"
+        android:background="@drawable/ic_close_black_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_image_menu_popup"
+        app:layout_constraintBottom_toTopOf="parent"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

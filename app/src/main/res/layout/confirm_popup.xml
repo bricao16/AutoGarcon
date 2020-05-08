@@ -31,4 +31,11 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/confirm"/>
 
+    <Button
+        android:id="@+id/confirm_close"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="170dp"
+        android:background="@drawable/ic_close_black_24dp"/>
+
 </androidx.cardview.widget.CardView>

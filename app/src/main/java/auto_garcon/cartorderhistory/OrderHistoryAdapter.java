@@ -19,8 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.auto_garcon.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
@@ -104,6 +102,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                 confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 confirmPopup.show();
                 Button confirmYes = confirmPopup.findViewById(R.id.confirm_clear);
+                Button confirmClose = confirmPopup.findViewById(R.id.confirm_close);
 
                 confirmYes.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -111,6 +110,12 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                         //Clear the order if the item's are available during the correct time
 
                         pref.setShoppingCart(carts.get(position));
+                        confirmPopup.dismiss();
+                    }
+                });
+                confirmClose.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(ct, "Confirm closed",Toast.LENGTH_LONG).show();
                         confirmPopup.dismiss();
                     }
                 });
