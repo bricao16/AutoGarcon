@@ -22,7 +22,8 @@ GET /restaurant/:id
 					secondary_color,
 					tertiary_color,
 					logo,
-					cuisine
+					cuisine,
+					greeting
 				}
 				menu:
 				{
@@ -59,13 +60,13 @@ GET /restaurants
 
 POST /restaurant/update
 	Updates restaurant information
-	Inputs (in body of request): restaurant_id, name, address, phone, opening, closing
+	Inputs (in body of request): restaurant_id, name, address, phone, opening, closing, cuisine
 	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			(200) Successfully updated restaurant information!
 		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing
+			(400) Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing, cuisine
 		If restaurant does not exist:
 			(409) Error: restaurant does not exist
 		If JWT is not valid:
@@ -91,20 +92,43 @@ GET /fonts
 			(500) Error retrieving fonts
 
 POST /restaurant/customization
-	Inputs (in body of request): restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, logo (optional)
+	Inputs (in body of request): restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, greeting, logo (optional)
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			(200) Successfully updated restaurant customization!
 		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, logo (optional)
+			(400) Error: Missing parameter. Required parameters: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, greeting, logo (optional)
 		If restaurant does not exist:
 			(409) Error: restaurant does not exist
+		If logo is not an image file:
+			(409) Error: invalid image format. Accepted formats: png, jpg, jpeg
 		If JWT is not valid:
 			(401) Must be authorized!
 		If JWT is not a manager token for the restaurant of the item:
 			(400) Must be the restaurant manager to update restaurant information!
 		On error: 
 			(500) Error updating restaurant customization
+
+PUT /restaurant/new
+	Creates a new restaurant
+	Inputs (in body of request) : restaurant_name, restaurant_addr, phone_number, opening_time, closing_time, font, font_color, logo, primary_color, secondary_color, tertiary_color, cuisine
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			(200) Successfully added new resaturant! restaurant_id = <restaurant_id>
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: restaurant_name, restaurant_addr, phone_number, opening_time, closing_time, font, font_color, logo, primary_color, secondary_color, tertiary_color, cuisine
+		If restaurant already exists:
+			(409) Error: resatuarnt_name already exists
+		If logo is not an image file:
+			(409) Error: invalid image format. Accepted formats: png, jpg, jpeg
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant of the menu:
+			(401) Must be a restaurant manager to create a new restaurant!
+		On error:
+			(500) Error adding new restaurant
 
 
 //==================================================================================//
@@ -191,6 +215,55 @@ POST /orders/update
 			(409) Error: order does not exist
 		On error:
 			(500) Error updating order
+
+GET /services/:id
+	Returns the service status of all the tables at the restaurant with restaurant_id = id
+	Inputs: restaurant_id
+	Outputs:
+		On success:
+			{
+				i: {
+					table_num,
+					status
+				}
+			}
+		If no tables exist:
+			(200) No tables exist
+		On error:
+			(500) Error retrieving statuses
+
+POST /services/update
+	Updates the service status of a table
+	Inputs: restaurant_id, table_num, status
+	Outputs:
+		On success:
+			(200) Successfully updated status!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: restaurant_id, order_num, order_status
+		If the restaurant/table doesn't exist:
+			(409) Error: table does not exist at restaurant
+		If invalid status is entered:
+			(409) Error: Invalid status. Valid statuses: Good, Help, Bill
+		On error:
+			(500) Error updating status
+
+PUT /services/new
+	Adds a new table to the services table
+	Inputs (in body of request): restaurant_id, table_num
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			(200) Successfully added new table!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: restaurant_id, table_num
+		If the restaurant doesn't exist:
+			(409) Error: restaurant does not exist
+		If JWT is not valid or not supplied: 
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant supplied:
+			(401) Must be the restaurant manager to add a new table!
+		On error:
+			(500) Error adding table
 
 
 //==================================================================================//
@@ -563,7 +636,8 @@ GET /alexa/:id
 			{
 				alexa_id: {
 					restaurant_id,
-					table_num
+					table_num,
+					greeting
 				}
 			}
 		On error:
@@ -701,7 +775,8 @@ GET /test/restaurant/:id
 					secondary_color,
 					tertiary_color,
 					logo,
-					cuisine
+					cuisine,
+					greeting
 				}
 				menu: {
 					i: {
@@ -736,7 +811,8 @@ GET /test/restaurant/:id
 					secondary_color,
 					tertiary_color,
 					logo,
-					cuisine
+					cuisine,
+					greeting
 				}
 			}
 		On error:
@@ -821,6 +897,25 @@ PUT /test/menu/item/add
 			(401) Must be the restaurant manager to add a new item!
 		On error:
 			(500) Error adding new item
+
+GET /orderstats/:id
+	Returns stats on which things were ordered the most per category at each restaurant
+	Inputs: restaurant_id
+	Outputs:
+		On success:
+			{
+				i: {
+					restaurant_id
+					category
+					item_name
+					item_id
+					total_ordered
+				}
+			}
+		If no items ordered:
+			(200) Restaurant has no orders
+		On error:
+			(500) Error retrieving stats
 
 Added testing user for both /staff/login and /customers/login
 	user:password
