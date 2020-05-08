@@ -79,7 +79,7 @@ class StoreInfo extends React.Component{
             <Alert show={this.state.show} variant={this.state.alertVariant}>
               {this.state.response}
             </Alert>
-            <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'font_color': font_color, 'textAlign' : 'center','height':'54px', 'paddingTop':'8px'}}>
+            <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','height':'54px', 'paddingTop':'8px'}}>
               QR Code Generator
             </h2>
 						<input className="form-control col" type="text" name="myValue" value={this.state.myValue} onChange={this.onChange}>

@@ -219,10 +219,6 @@ export default function NavItems(props) {
             <ListItemText disableTypography primary="QR Code Generator"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
         </List>
-          <ListItem button component="a" href ='/general' >
-           <ListItemIcon><SettingsVoiceIcon/></ListItemIcon>
-            <ListItemText disableTypography primary="Alexa"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
-          </ListItem>
         </List>
         <Divider />
         <List>

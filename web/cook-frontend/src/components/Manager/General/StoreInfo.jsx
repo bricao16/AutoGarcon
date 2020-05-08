@@ -261,11 +261,11 @@ class StoreInfo extends React.Component{
 
         return (
             <Container style = {backgroundStyle}>
-                <div style ={{'fontFamily' :font, 'backgroundColor': primary, 'font_color': font_color,'paddingTop':'8px','height':'54px'}}>
+                <div style ={{'fontFamily' :font, 'backgroundColor': primary, 'paddingTop':'8px','height':'54px'}}>
                 <Alert show={this.state.show} variant={this.state.alertVariant}>
                   {this.state.response}
                 </Alert>
-                <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'font_color': font_color, 'textAlign' : 'center'}}>
+                <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center'}}>
                   Restaurant Information
                 </h2>
                     <Container fluid style={{'minWidth': '70vh'}}>

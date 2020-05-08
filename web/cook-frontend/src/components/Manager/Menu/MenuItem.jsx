@@ -92,7 +92,7 @@ class MenuItem extends React.Component {
             
             <Card className="text-center m-2" style={itemStyle}>
 
-                <Card.Header onClick={this.handleModalShow} style ={{'fontFamily' :font, 'backgroundColor': secondary, 'font_color': font_color, 'textAlign' : 'center','display': 'flex'}}>
+                <Card.Header onClick={this.handleModalShow} style ={{'fontFamily' :font, 'backgroundColor': secondary,  'textAlign' : 'center','display': 'flex'}}>
                   {this.props.menu[0]}
                 </Card.Header>
                 <div onClick={() => this.NewItemForm()} style={editButtonStyle} className='p-1'>

@@ -85,7 +85,7 @@ class Menu extends React.Component {
       <Col sm={6} className="p-3" style={{'minWidth':'225px'}}>
         <Card className="text-center" >
           <div onClick={() => this.changeCategory(item) }>                     
-            <Card.Header style ={{'fontFamily' :font, 'backgroundColor': secondary, 'font_color': font_color, 'textAlign' : 'center','display': 'flex'}}>{item}</Card.Header>
+            <Card.Header style ={{'fontFamily' :font, 'backgroundColor': secondary, 'textAlign' : 'center','display': 'flex'}}>{item}</Card.Header>
           </div>
         </Card>
       </Col>  
@@ -153,7 +153,7 @@ class Menu extends React.Component {
       return (
           <Container>
             <div style={backgroundStyle}>
-            <h2  style={{'fontFamily' :font, 'backgroundColor': primary, 'font_color': font_color, 'textAlign' : 'center','height':'54px', 'paddingTop':'8px'}}>
+            <h2  style={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','height':'54px', 'paddingTop':'8px'}}>
               Menu
             </h2>
               <Container fluid style={{'minHeight': '70vh'}}>
@@ -177,7 +177,7 @@ class Menu extends React.Component {
       return ( 
         <Container>
           <div style={backgroundStyle}>
-            <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'font_color': font_color, 'textAlign' : 'center','display': 'flex'}}>
+            <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','display': 'flex'}}>
               <button type="button" onClick={() => window.location.href="/menu" } className="btn btn-outline-light m-2">Back</button>
               <div style={menuTextStyle}>{renderCategory}</div>
             </h2>
@@ -201,7 +201,7 @@ class Menu extends React.Component {
       //render a form for the new menu item(s)
       return (
         <div style={backgroundStyle}>
-          <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'font_color': font_color, 'textAlign' : 'center','display': 'flex'}}>
+          <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','display': 'flex'}}>
             <button type="button" onClick={() => window.location.href="/menu"} className="btn btn-outline-light m-2">Back</button>
             <div style={menuTextStyle}>Menu Item</div>
           </h2>

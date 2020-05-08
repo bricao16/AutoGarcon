@@ -41,7 +41,7 @@ class CookView extends React.Component{
           <Card className="text-center w-50" style={itemStyle}>
             {this.state.section !== "cook" ? 
                 <button  onClick={() => this.viewCategory("cook") } className="btn btn-dark btn-lg "> 
-                  <Card.Header style ={{'fontFamily' :font, 'backgroundColor': primary, 'font_color': font_color,'paddingTop':'8px','height':'54px'}}>
+                  <Card.Header style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color,'paddingTop':'8px','height':'54px'}}>
                     Go to cook view
                   </Card.Header>
                   <Card.Body >
@@ -55,7 +55,7 @@ class CookView extends React.Component{
           <Card className="text-center m-2 w-50" style={itemStyle}>
             {this.state.section !== "acct" ? 
                 <button  onClick={() => this.viewCategory("acct") } className="btn-dark  btn-lg"> 
-                  <Card.Header style ={{'fontFamily' :font, 'backgroundColor': primary, 'font_color': font_color,'paddingTop':'8px','height':'54px'}}>
+                  <Card.Header style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color,'paddingTop':'8px','height':'54px'}}>
                     Create New Staff Account
                   </Card.Header>
                 </button> 
