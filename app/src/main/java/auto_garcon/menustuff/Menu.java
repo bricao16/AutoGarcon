@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -72,13 +73,13 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private TextView restaurantName;
     private ImageView restaurantLogo;
     Dialog removeFromFavoritesPopup;
+    private TextView cartCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu);
         Thread.setDefaultUncaughtExceptionHandler(new ExcpetionHandler(this));//error handling for unexpected crashes
-
+        setContentView(R.layout.activity_menu);
         pref = new SharedPreference(this);
 
         /**
@@ -106,7 +107,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         dessert_list = new ArrayList<>();
         drink_list = new ArrayList<>();
         alcohol_list = new ArrayList<>();
-
         addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
         if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
@@ -360,6 +360,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
         VolleySingleton.getInstance(Menu.this).addToRequestQueue(getRequest);
 
+
         /**
          * It ties the bottom navigation bar xml element to a Java object and provides it with its
          * onClick functionality to other activities and sets the listener.
@@ -384,6 +385,67 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 };
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+    }
+
+    /**
+     * Initialize the contents of the Activity's standard options menu.  You
+     * should place your menu items in to <var>menu</var>.
+     *
+     * <p>This is only called once, the first time the options menu is
+     * displayed.  To update the menu every time it is displayed, see
+     * {@link #onPrepareOptionsMenu}.
+     *
+     * <p>The default implementation populates the menu with standard system
+     * menu items.  These are placed in the {@link android.view.Menu#CATEGORY_SYSTEM} group so that
+     * they will be correctly ordered with application-defined menu items.
+     * Deriving classes should always call through to the base implementation.
+     *
+     * <p>You can safely hold on to <var>menu</var> (and any items created
+     * from it), making modifications to it as desired, until the next
+     * time onCreateOptionsMenu() is called.
+     *
+     * <p>When you add items to the menu, you can implement the Activity's
+     * {@link #onOptionsItemSelected} method to handle them there.
+     *
+     * @param menu The options menu in which you place your items.
+     *
+     * @return You must return true for the menu to be displayed;
+     *         if you return false it will not be shown.
+     *
+     * @see #onPrepareOptionsMenu
+     * @see #onOptionsItemSelected
+     */
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        Log.d("Adsd","Hello");
+
+        getMenuInflater().inflate(R.menu.bottom_nav_menu, menu);
+        final MenuItem menuItem = menu.findItem(R.id.cart_badge);
+
+        View actionView = menuItem.getActionView();
+        cartCounter =(TextView) actionView.findViewById(R.id.cart_badge);
+
+        setUpBadge();
+
+
+        return  true;
+    }
+
+    private void setUpBadge(){
+        if(cartCounter!= null){
+            if(pref.getShoppingCart().getCart().size()==0){
+                if(cartCounter.getVisibility()!=View.GONE){
+                    cartCounter.setVisibility((View.GONE));
+                }
+
+            }
+            else {
+                cartCounter.setText(String.valueOf(Math.min(pref.getShoppingCart().getCart().size(),99)));// setting max to 99
+                if(cartCounter.getVisibility()!=View.VISIBLE){
+                    cartCounter.setVisibility((View.VISIBLE));
+                }
+            }
+        }
     }
 
     /**
@@ -413,6 +475,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         }
         return false;
     }
+
+
 
     /**
      * The method is what filters the restaurant items that are displayed on the menu. If the
