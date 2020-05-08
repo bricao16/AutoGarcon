@@ -65,7 +65,7 @@ class Manager extends React.Component{
       //instance.get("https://50.19.176.137:8001/restaurant/124");
     axios({
         method: 'get',
-        url: process.env.REACT_APP_HTTPS_DB + '/restaurant/' + this.state.staff.restaurant_id,
+        url: process.env.REACT_APP_DB + '/restaurant/' + this.state.staff.restaurant_id,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },

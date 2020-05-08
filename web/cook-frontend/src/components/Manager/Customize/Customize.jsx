@@ -5,6 +5,7 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import { ChromePicker } from 'react-color';
 import Modal from 'react-bootstrap/Modal';
 import Alert from 'react-bootstrap/Alert';
@@ -37,11 +38,13 @@ class Customize extends React.Component{
           temp_secondary: this.props.info.secondary_color,
           temp_tertiary:this.props.info.tertiary_color,
           temp_font : this.props.info.font,
-          font_color : '#111111',
-          temp_font_color: '#111111',
+          font_color : this.props.info.font_color,
+          temp_font_color: this.props.info.font_color,
           file: this.props.logo,
           temp_file:this.props.logo,
           fileName:"Choose file",
+          alexaGreeting: this.props.info.greeting,
+          temp_alexaGreeting: this.props.info.greeting,
           restaurant_id :cookies.get("mystaff").restaurant_id,
           token:cookies.get('mytoken')
         };
@@ -79,6 +82,10 @@ class Customize extends React.Component{
       {
         this.setState({ 'temp_font_color':  e.hex});
       }
+      else if(this.state.sectionEdit ==="Alexa Greeting")
+      {
+        this.setState({ 'temp_alexaGreeting':  e.target.value});
+      }
       
     }
 
@@ -110,7 +117,7 @@ class Customize extends React.Component{
       //+'&logo='+this.state.file
       data: 'restaurant_id='+this.state.restaurant_id+'&primary_color='+this.state.primary+
       '&secondary_color='+this.state.secondary+'&tertiary_color='+this.state.tertiary+
-      '&font='+this.state.font+'&font_color='+this.state.font_color+'&logo='+this.state.file,
+      '&font='+this.state.font+'&font_color='+this.state.font_color+'&logo='+this.state.file+'&greeting='+this.state.alexaGreeting,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer ' + this.state.token
@@ -167,6 +174,11 @@ class Customize extends React.Component{
          this.setState({ 'file': this.state.temp_file},
           this.submitToDB);
       }
+      else if(this.state.sectionEdit ==="Alexa Greeting")
+      {
+         this.setState({ 'alexaGreeting': this.state.temp_alexaGreeting},
+          this.submitToDB);
+      }
     console.log(this.state);
     this.editForm("");
 }
@@ -194,6 +206,7 @@ class Customize extends React.Component{
 
 //change the category of which is being edited
 editForm = (category) => {
+  console.log(category);
     this.setState({
       sectionEdit: category
   });
@@ -223,6 +236,7 @@ loadXHR(url) {
   handleModalShow = () => this.setState({ModalShow: true});
 
 renderInfo(){
+  console.log(this.state.sectionEdit)
     return (
           <>
             <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
@@ -309,58 +323,75 @@ renderInfo(){
                         </div>
                       </Modal.Body>
                     }
+                   {/*Alexa Greeting*/}
+                    {this.state.sectionEdit === "Alexa Greeting" && 
+                    <Modal.Body>
+                      <div className="container">
+                          <form onSubmit = {this.handleSubmit}>
+                            <input  className="form-control" type="text" name = "address" defaultValue={this.state.alexaGreeting} onChange={this.onChange}></input>
+                              <div className="row m-2">
+                                  <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                              </div>
+                          </form>
+                        </div>
+                      </Modal.Body>
+                    }
+
 
             </Modal>
            <Container >
-            <Row>
-            <Card className="text-center m-2 w-50" style={itemStyle}>
-                <Card.Header >Font 
-                <button onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                </Card.Header>
-                    <Card.Body>
-                        {/* if Font is not the section to edit render the database info and a button to edit*/}
+            <Row className = "align-items-start">
+            <Col>
+              <Card className="text-center m-2" style={itemStyle}>
+                  <Card.Header >Font 
+                  <button onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                  </Card.Header>
+                      <Card.Body style = {{minHeight:'20vh'}}>
+                          {/* if Font is not the section to edit render the database info and a button to edit*/}
 
-                        {this.state.sectionEdit !== "Font" ?
-                          <p style={{margin: "0", padding: "0.8em"}}>{this.state.font}</p>
-                            :   
-                            <form className="form-inline" >
-                            {/* choose font and submit to change font */}
-                            <div style= {{float: 'left'}}>
-                                <select id="lang" onChange={this.onChange} >
-                                    {/* <option value="Selected">{this.state.customizeInfo[5][1]}</option> */}
-                                    
-                                    {/* dropdown menu options */}
-                                    <option value="Oswald">{this.state.fonts[0]}</option>
-                                    <option value="Raleway">{this.state.fonts[1]}</option>
-                                    <option value="Open Sans">{this.state.fonts[2]}</option>
-                                    <option value="Lato">{this.state.fonts[3]}</option>
-                                    <option value="Pt Sans">{this.state.fonts[4]}</option>
-                                    <option value="Lora">{this.state.fonts[5]}</option>
-                                    <option value="Montserrat">{this.state.fonts[6]}</option>
-                                    <option value="Playfair Display">{this.state.fonts[7]}</option>
-                                    <option value="Benchnine">{this.state.fonts[8]}</option>
-                                    <option value="Merriweather">{this.state.fonts[9]}</option>
+                          {this.state.sectionEdit !== "Font" ?
+                            <p style={{margin: "0", padding: "0.8em"}}>{this.state.font}</p>
+                              :   
+                              <form className="form-inline" >
+                              {/* choose font and submit to change font */}
+                              <div style= {{float: 'left'}}>
+                                  <select id="lang" onChange={this.onChange} >
+                                      {/* <option value="Selected">{this.state.customizeInfo[5][1]}</option> */}
+                                      
+                                      {/* dropdown menu options */}
+                                      <option value="Oswald">{this.state.fonts[0]}</option>
+                                      <option value="Raleway">{this.state.fonts[1]}</option>
+                                      <option value="Open Sans">{this.state.fonts[2]}</option>
+                                      <option value="Lato">{this.state.fonts[3]}</option>
+                                      <option value="Pt Sans">{this.state.fonts[4]}</option>
+                                      <option value="Lora">{this.state.fonts[5]}</option>
+                                      <option value="Montserrat">{this.state.fonts[6]}</option>
+                                      <option value="Playfair Display">{this.state.fonts[7]}</option>
+                                      <option value="Benchnine">{this.state.fonts[8]}</option>
+                                      <option value="Merriweather">{this.state.fonts[9]}</option>
 
 
-                                </select>     
-                            </div>
-                            <br></br>
-                            <div className="row m-2">
-                                <button onClick = {this.handleSubmit} type="button" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                            </div>
-                            <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
-                                </form>
-                        }
-                    </Card.Body>
-                </Card>
-                  <Card className="text-center m-2 w-45" style={itemStyle}>
+                                  </select>     
+                              </div>
+                              <br></br>
+                              <div className="row m-2">
+                                  <button onClick = {this.handleSubmit} type="button" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                              </div>
+                              <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
+                                  </form>
+                          }
+                      </Card.Body>
+                  </Card>
+                  </Col>
+                  <Col>
+                  <Card className="text-center  m-2" style={itemStyle}>
                     <Card.Header >Logo
                       <button  onClick={() => this.editForm("Logo") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
-                    <Card.Body >
+                    <Card.Body style = {{minHeight:'20vh'}}>
                       <div className = "p-3">
                         {this.state.sectionEdit !== "Logo" ? 
-                            <img src={this.state.file}  width="auto" height="45px" alt="waiter" /> 
+                            <img src={this.state.file}  width="auto" height="40vh" alt="waiter" /> 
                              :
                              <Container>
                             <div className="input-group">
@@ -389,19 +420,33 @@ renderInfo(){
                     </div> 
                     </Card.Body>
                    </Card>
+                  </Col>
+                   <Col>
+                   <Card className="text-center m-2" style={itemStyle}>
+                    <Card.Header onClick={this.handleModalShow}>Alexa Greeting
+                      <button  onClick={() => this.editForm("Alexa Greeting") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                    </Card.Header>
+                    <Card.Body style = {{minHeight:'20vh'}}>
+                      <p> {this.state.alexaGreeting} </p>
+                    </Card.Body>
+                    </Card>
+                  </Col>
                 </Row>
 
-                <Row>
-                  <Card className="text-center m-2 w-20" style={itemStyle} >
+                 <Row className = "align-items-start">
+
+                  <Col>
+                  <Card className="text-center m-2" style={itemStyle} >
                     <Card.Header onClick={this.handleModalShow}>Primary
                       <button onClick={() => this.editForm("Primary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
-                    <Card.Body style={{backgroundColor:this.state.primary}}>
+                    <Card.Body style={{backgroundColor:this.state.primary,minHeight:'10vh'}}>
 
                     </Card.Body>
                    </Card>
-
-                  <Card className="text-center m-2 w-20" style={itemStyle}>
+                  </Col>
+                  <Col>
+                  <Card className="text-center m-2" style={itemStyle}>
                     <Card.Header onClick={this.handleModalShow}>Secondary
                       <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -409,23 +454,26 @@ renderInfo(){
 
                     </Card.Body>
                    </Card>
-    
-                   <Card className="text-center m-2 w-20" style={itemStyle}>
+                  </Col>
+                   <Col>
+                   <Card className="text-center m-2" style={itemStyle}>
                     <Card.Header onClick={this.handleModalShow}>Tertiary
                       <button  onClick={() => this.editForm("Tertiary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
-                    <Card.Body style={{backgroundColor:this.state.tertiary }}>
+                    <Card.Body style={{backgroundColor:this.state.tertiary,minHeight:'10vh' }}>
 
                     </Card.Body>
                    </Card>
-                   <Card className="text-center m-2 w-20" style={itemStyle}>
+                   </Col>
+                  <Col>
+                   <Card className="text-center m-2" style={itemStyle}>
                     <Card.Header onClick={this.handleModalShow}>Font Color
                       <button  onClick={() => this.editForm("Font Color") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
                     <Card.Body style={{backgroundColor:this.state.font_color, minHeight:'10vh'}}>
-
                     </Card.Body>
                    </Card>
+                   </Col>
                   </Row>
                 </Container>
             </>
@@ -435,6 +483,12 @@ renderInfo(){
     render() {
         const {customizeInfo } = this.state;
         const resturantInfo = this.props.info;
+        //get the styles
+        const primary = this.props.primary;
+        const secondary = this.props.secondary;
+        const teritary = this.props.teritary;
+        const font = this.props.font;
+        const font_color = this.props.font_color
         //put resturant info into an array
         Object.keys(resturantInfo).forEach(function(key) {
             customizeInfo.push([key ,resturantInfo[key]]);
@@ -442,7 +496,7 @@ renderInfo(){
         return (
             <Container>
                 <div style={backgroundStyle}>
-                <h2 style ={menuHeaderStyle}>
+                <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','height':'54px', 'paddingTop':'8px'}}>
                   Customize
                 </h2>
                 <Alert show={this.state.show} variant={this.state.alertVariant}>
@@ -462,7 +516,7 @@ renderInfo(){
 
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1',
-  'minWidth': '70vw'
+  'minWidth': '75vw'
 }
 
 const itemStyle = {

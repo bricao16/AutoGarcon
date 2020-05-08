@@ -236,25 +236,25 @@ export default function NavItems(props) {
         <div className={classes.toolbar} />
         <Switch>
           <Route exact path="/manager">
-            <Stats/>
+            <Stats primary ={primary} font_color = {font_color} font ={font} />
           </Route>
           <Route path="/menu">
             <Menu menu = {props.restaurantInfo[0][1]} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
           </Route>
           <Route path="/general">
-            <StoreInfo info = {props.restaurantInfo[1][1]} />
+            <StoreInfo info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font}  />
           </Route>
           <Route path="/customize">
-            <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} />
+            <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
           </Route>
           <Route path="/cookview">
-            <CookView/>
+            <CookView primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
           </Route>
 				  <Route path="/QRCode">
-					  <QRCode info = {props.restaurantInfo[1][1]} />
+					  <QRCode info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
 				  </Route>
           <Route path="/account">
-            <AccountSettings/>
+            <AccountSettings primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
           </Route>
         </Switch>
         <footer className={classes.footerStyle}>

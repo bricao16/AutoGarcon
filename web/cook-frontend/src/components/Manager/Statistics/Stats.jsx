@@ -47,9 +47,9 @@ class Stats extends React.Component{
                 <div className="d-flex flex-wrap">
 
                 {this.state.selected === "Highest Selling Items" ? 
-                  <HighestSelling data={data} />
+                  <HighestSelling data={data} primary ={this.props.primary} font_color = {this.props.font_color} font ={this.props.font} />
                 :
-                  <Traffic data = {data} />
+                  <Traffic data = {data} primary ={this.props.primary} font_color = {this.props.font_color} font ={this.props.font} />
                 }
                 </div>
             </Container> 

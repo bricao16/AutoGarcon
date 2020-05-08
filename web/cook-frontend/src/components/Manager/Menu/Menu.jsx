@@ -201,7 +201,7 @@ class Menu extends React.Component {
       //render a form for the new menu item(s)
       return (
         <div style={backgroundStyle}>
-          <h2 tyle ={{'fontFamily' :font, 'backgroundColor': primary, 'font_color': font_color, 'textAlign' : 'center','display': 'flex'}}>
+          <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'font_color': font_color, 'textAlign' : 'center','display': 'flex'}}>
             <button type="button" onClick={() => window.location.href="/menu"} className="btn btn-outline-light m-2">Back</button>
             <div style={menuTextStyle}>Menu Item</div>
           </h2>

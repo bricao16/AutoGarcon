@@ -93,6 +93,7 @@ class HighestSelling extends React.Component {
             <VerticalBarSeries 
                 data={this.state.data}
                  style={{opacity: '0.80'}}
+                 color = {this.props.primary}
             />
             <ChartLabel
                 text="Categories"
