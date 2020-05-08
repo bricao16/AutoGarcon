@@ -57,6 +57,7 @@ function Header(props){
           <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
             <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
             <Tab label="Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />
+            <Tab label="Messages" color="primary" className={classes.tab} component={Link} to={'/cook/messages'} />
           </Tabs>
           <div className={classes.account}>
             <AccountDropdown firstName={cookies.staff.first_name} lastName={cookies.staff.last_name} />

@@ -130,7 +130,7 @@ class Order extends React.Component {
 
   render() {
     return (
-      <div className="p-1 m-2 order" style={this.variableOrderStyles()} onClick={() => this.props.handleCardClick(this.props.cardId)}>
+      <div className="p-1 mr-2 order" style={this.variableOrderStyles()} onClick={() => this.props.handleCardClick(this.props.cardId)}>
         <Card>
           <Card.Header style={cardHeaderStyle} className="p-0 d-flex">
             <span className="px-2 py-1" style={cardIdStyle}>{this.props.cardId + 1}</span>
