@@ -2,7 +2,7 @@
 	REST-API Server
 	Tucker Urbanski
 	Date Created: 3/2/2020
-	Last Modified: 5/5/2020
+	Last Modified: 5/7/2020
 */
 
 // Built-in Node.js modules
@@ -19,8 +19,10 @@ var mysql = require('mysql');
 var dotenv = require('dotenv');
 var jwt = require('jsonwebtoken');
 var luxon = require('luxon');
+var multer = require('multer');
 
 var app = express();
+var upload = multer();
 
 app.use(cors());
 app.use(express.json());
@@ -72,7 +74,8 @@ console.log('Now listening on port 8000');
 					secondary_color,
 					tertiary_color,
 					logo,
-					cuisine
+					cuisine,
+					greeting
 				}
 				menu: {
 					dish_name: {
@@ -115,7 +118,8 @@ app.get('/restaurant/:id', (req, res) => {
 				'secondary_color': rows[0].secondary_color,
 				'tertiary_color': rows[0].tertiary_color,
 				'logo': rows[0].logo,
-				'cuisine': rows[0].cuisine
+				'cuisine': rows[0].cuisine,
+				'greeting': rows[0].alexa_greeting
 			};	//response
 
 			//Add menu to response:
@@ -127,7 +131,7 @@ app.get('/restaurant/:id', (req, res) => {
 					'calories': rows[i].calorie_num,
 					'price': rows[i].price,
 					'category': rows[i].category,
-					'picture': 'No picture yet',
+					'picture': rows[i].image,
 					'in_stock': rows[i].in_stock,
 					'description': rows[i].description
 				};	//response
@@ -188,7 +192,7 @@ app.get('/restaurants', (req, res) => {
 		On success:
 			Successfully updated restaurant information!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing
+			Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing, cuisine
 		If restaurant does not exist:
 			Error: restaurant does not exist
 		If JWT is not valid:
@@ -200,8 +204,8 @@ app.get('/restaurants', (req, res) => {
 */
 app.post('/restaurant/update', verifyToken, (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.restaurant_id && req.body.name && req.body.address && req.body.phone && req.body.opening && req.body.closing)) {
-		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing');
+	if(!(req.body.restaurant_id !== undefined && req.body.name !== undefined && req.body.address !== undefined && req.body.phone !== undefined && req.body.opening !== undefined && req.body.closing !== undefined && req.body.cuisine !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing, cuisine');
 		return;
 	}   //if
 
@@ -221,9 +225,9 @@ app.post('/restaurant/update', verifyToken, (req, res) => {
 					//Check to make sure person is a manager at the restaurant:
 					if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === rows[0].restaurant_id) {
 						//Build query and parameters:
-						query = 'UPDATE sample.restaurants SET restaurant_name = ?, restaurant_addr = ?, phone_number = ?, opening_time = ?, closing_time = ?';
+						query = 'UPDATE sample.restaurants SET restaurant_name = ?, restaurant_addr = ?, phone_number = ?, opening_time = ?, closing_time = ?, cuisine = ?';
 						query = query + ' WHERE restaurant_id = ?';
-						let parameters = [req.body.name, req.body.address, req.body.phone, req.body.opening, req.body.closing, req.body.restaurant_id];
+						let parameters = [req.body.name, req.body.address, req.body.phone, req.body.opening, req.body.closing, req.body.cuisine, req.body.restaurant_id];
 
 						//Update restaurant information in db:
 						db.query(query, parameters, (err, rows) => {
@@ -288,14 +292,16 @@ app.get('/fonts', (req, res) => {
 
 /*
 	Updates restaurant customization
-	Inputs: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, logo (optional)
+	Inputs: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, greeting, logo (optional)
 	Outputs:
 		On success:
 			Successfully updated restaurant customization!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, logo (optional)
+			Error: Missing parameter. Required parameters: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, greeting, logo (optional)
 		If restaurant does not exist:
 			Error: restaurant does not exist
+		If logo is not an image file:
+			Error: invalid image format. Accepted formats: png, jpg, jpeg
 		If JWT is not valid:
 			Must be authorized!
 		If JWT is not a manager token for the restaurant of the item:
@@ -303,19 +309,18 @@ app.get('/fonts', (req, res) => {
 		On error: 
 			Error updating restaurant customization
 */
-app.post('/restaurant/customization', verifyToken, (req, res) => {
-	//Make sure right number of parameters are entered:
-	if(!(req.body.restaurant_id && req.body.primary_color && req.body.secondary_color && req.body.tertiary_color && req.body.font && req.body.font_color)) {
-		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, logo (optional)');
-		return;
-	}   //if
-
+app.post('/restaurant/customization', verifyToken, upload.single('logo'), (req, res) => {
 	//Verify that the JWT is valid:
 	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
 			res.status(401).send('Must be authorized!');
 		}   //if
 		else {
+			//Make sure right number of parameters are entered:
+			if(!(req.body.restaurant_id !== undefined && req.body.primary_color !== undefined && req.body.secondary_color !== undefined && req.body.tertiary_color !== undefined && req.body.font !== undefined && req.body.font_color !== undefined && req.body.greeting !== undefined)) {
+				res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, greeting, logo (optional)');
+				return;
+			}   //if
 			//Make sure the restaurant exists:
 			let query = 'Select * FROM sample.restaurants WHERE restaurant_id = ?';
 			db.query(query, req.body.restaurant_id, (err, rows) => {
@@ -325,12 +330,17 @@ app.post('/restaurant/customization', verifyToken, (req, res) => {
 				else {
 					//Check to make sure person is a manager at the restaurant:
 					if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === rows[0].restaurant_id) {
-						//If no logo is supplied:
-						if (!(req.body.logo)) {
+						//If a logo is supplied:
+						if (req.file !== undefined) {
+							//If not an image file:
+							if (!(req.file.mimetype === 'image/png' || req.file.mimetype === 'image/jpg' || req.file.mimetype === 'image/jpeg')) {
+								res.status(409).send('Error: invalid image format. Accepted formats: png, jpg, jpeg');
+								return;
+							}	//if
 							//Build query and parameters:
-							query = 'UPDATE sample.restaurants SET primary_color = ?, secondary_color = ?, tertiary_color = ?, font = ?, font_color = ?';
+							query = 'UPDATE sample.restaurants SET primary_color = ?, secondary_color = ?, tertiary_color = ?, font = ?, font_color = ?, logo = ?, alexa_greeting = ?';
 							query = query + ' WHERE restaurant_id = ?';
-							let parameters = [req.body.primary_color, req.body.secondary_color, req.body.tertiary_color, req.body.font, req.body.font_color, req.body.restaurant_id];
+							let parameters = [req.body.primary_color, req.body.secondary_color, req.body.tertiary_color, req.body.font, req.body.font_color, req.file.buffer, req.body.greeting, req.body.restaurant_id];
 
 							//Update restaurant information in db:
 							db.query(query, parameters, (err, rows) => {
@@ -342,12 +352,12 @@ app.post('/restaurant/customization', verifyToken, (req, res) => {
 								}   //else
 							});	//db.query
 						}	//if
-						//If logo is supplied:
+						//If no logo is supplied:
 						else {
 							//Build query and parameters:
-							query = 'UPDATE sample.restaurants SET primary_color = ?, secondary_color = ?, tertiary_color = ?, font = ?, font_color = ?, logo = ?';
+							query = 'UPDATE sample.restaurants SET primary_color = ?, secondary_color = ?, tertiary_color = ?, font = ?, font_color = ?, alexa_greeting = ?';
 							query = query + ' WHERE restaurant_id = ?';
-							let parameters = [req.body.primary_color, req.body.secondary_color, req.body.tertiary_color, req.body.font, req.body.font_color, req.body.logo, req.body.restaurant_id];
+							let parameters = [req.body.primary_color, req.body.secondary_color, req.body.tertiary_color, req.body.font, req.body.font_color, req.body.greeting, req.body.restaurant_id];
 
 							//Update restaurant information in db:
 							db.query(query, parameters, (err, rows) => {
@@ -368,6 +378,79 @@ app.post('/restaurant/customization', verifyToken, (req, res) => {
 		}	//else
 	});	//verify
 });	//app.post
+
+/*
+	Creates a new restaurant
+	Inputs: restaurant_name, restaurant_addr, phone_number, opening_time, closing_time, font, font_color, logo, primary_color, secondary_color, tertiary_color, cuisine, JWT
+	Outputs:
+		On success:
+			Successfully added new resaturant! restaurant_id = <restaurant_id>
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: restaurant_name, restaurant_addr, phone_number, opening_time, closing_time, font, font_color, logo, primary_color, secondary_color, tertiary_color, cuisine
+		If restaurant already exists:
+			Error: resatuarnt_name already exists
+		If logo is not an image file:
+			Error: invalid image format. Accepted formats: png, jpg, jpeg
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant of the menu:
+			Must be a restaurant manager to create a new restaurant!
+		On error:
+			Error adding new restaurant
+*/
+app.put('/restaurant/new', verifyToken, upload.single('logo'), (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.restaurant_name !== undefined && req.body.restaurant_addr !== undefined && req.body.phone_number !== undefined && req.body.opening_time !== undefined && req.body.closing_time !== undefined && req.body.font !== undefined && req.body.font_color !== undefined && req.file !== undefined && req.body.primary_color !== undefined && req.body.secondary_color !== undefined && req.body.tertiary_color !== undefined && req.body.cuisine !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_name, restaurant_addr, phone_number, opening_time, closing_time, font, font_color, logo, primary_color, secondary_color, tertiary_color, cuisine');
+		return;
+	}   //if
+
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Check to make sure person is a manager:
+			if (auth.staff && auth.staff.position === 'manager') {
+				//Make sure the restaurant doesn't exist:
+				let query = 'Select * FROM sample.restaurants WHERE restaurant_name = ?';
+				db.query(query, req.body.restaurant_name, (err, rows) => {
+					if (rows.length > 0) {
+						res.status(409).send('Error: resatuarnt_name already exists');
+					}   //if
+					else {
+						//If logo is not an image file:
+						if (!(req.file.mimetype === 'image/png' || req.file.mimetype === 'image/jpg' || req.file.mimetype === 'image/jpeg')) {
+							res.status(409).send('Error: invalid image format. Accepted formats: png, jpg, jpeg');
+							return;
+						}	//if
+
+						//Build query and parameters:
+						query = 'INSERT INTO sample.restaurants(restaurant_name, restaurant_addr, phone_number, opening_time, closing_time, font, font_color, logo, primary_color, secondary_color, tertiary_color, cuisine)';
+						query = query + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+						parameters = [req.body.restaurant_name, req.body.restaurant_addr, req.body.phone_number, req.body.opening_time, req.body.closing_time, req.body.font, req.body.font_color, req.file.buffer, req.body.primary_color, req.body.secondary_color, req.body.tertiary_color, req.body.cuisine];
+
+						//Add restaurant in db and get restaurant_id:
+						db.query(query, parameters, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error adding new restaurant');
+							}	//if
+							else {
+								//Get restaurant_id of new restaurant
+								let restaurant_id = rows.insertId;
+								res.status(200).send('Successfully added new resaturant! restaurant_id = ' + restaurant_id);
+							}   //else
+						});	//db.query
+					}	//else
+				});	//db.query
+			}	//if
+			else {
+				res.status(401).send('Must be a restaurant manager to create a new restaurant!');
+			}	//else
+		}	//else
+	});	//verify
+});	//app.put
 
 
 //==================================================================================//
@@ -491,7 +574,7 @@ app.get('/orders/complete/:id', (req, res) => {
 */
 app.put('/orders/place', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.restaurant_id && req.body.customer_id && req.body.table_num && req.body.order)) {
+	if(!(req.body.restaurant_id !== undefined && req.body.customer_id !== undefined && req.body.table_num !== undefined && req.body.order !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, customer_id, table_num, order');
 		return;
 	}   //if
@@ -558,6 +641,8 @@ app.put('/orders/place', (req, res) => {
 			Successfully updated order!
 		If any inputs are missing:
 			Error: Missing parameter. Required parameters: order_num, order_status
+		If invalid status is entered:
+			Error: Invalid status. Valid statuses: Complete, In Progress, Pending, Cancelled
 		If the order doesn't exist:
 			Error: order does not exist
 		On error:
@@ -565,7 +650,7 @@ app.put('/orders/place', (req, res) => {
 */
 app.post('/orders/update', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.order_num && req.body.order_status)) {
+	if(!(req.body.order_num !== undefined && req.body.order_status !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: order_num, order_status');
 		return;
 	}   //if
@@ -585,7 +670,7 @@ app.post('/orders/update', (req, res) => {
 			let parameters = [req.body.order_status, req.body.order_num];
 			query = 'UPDATE sample.orders SET order_status = ? WHERE order_num = ?';
 
-			//Edit menu item in db:
+			//Edit order in db:
 			db.query(query, parameters, (err, rows) => {
 				if (err) {
 					res.status(500).send('Error updating order');
@@ -597,6 +682,167 @@ app.post('/orders/update', (req, res) => {
 		}   //else
 	}); //db.query
 });	//app.post
+
+/*
+	Returns the service status of all the tables at the restaurant with restaurant_id = id
+	Inputs: restaurant_id
+	Outputs:
+		On success:
+			{
+				i: {
+					table_num,
+					status
+				}
+			}
+		If no tables exist:
+			No tables exist
+		On error:
+			Error retrieving statuses
+*/
+app.get('/services/:id', (req, res) => {
+	let query = 'SELECT * FROM sample.services WHERE restaurant_id = ?';
+
+	//Query database:
+	db.query(query, req.params.id, (err, rows) => {
+		if (err) {
+			res.status(500).send('Error retrieving statuses');
+		}   //if
+		else if (rows.length < 1) {
+			res.status(200).send('No tables exist');
+		}   //else if
+		else {
+			//Build JSON object:
+			let response = {};
+
+			//Loop through each row returned from query:
+			for (let i=0; i<rows.length; i++) {
+				//Add each part of every order to response:
+				response[i] =   {
+					'table_num': rows[i].table_num,
+					'status': rows[i].service_status
+				};	//response
+			}   //for
+
+			//Send Response:
+			res.type('json').send(response);
+		}   //else
+	}); //db.query
+}); //app.get
+
+/*
+	Updates the service status of a table
+	Inputs: restaurant_id, table_num, status
+	Outputs:
+		On success:
+			Successfully updated status!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: restaurant_id, order_num, order_status
+		If the restaurant/table doesn't exist:
+			Error: table does not exist at restaurant
+		If invalid status is entered:
+			Error: Invalid status. Valid statuses: Good, Help, Bill
+		On error:
+			Error updating status
+*/
+app.post('/services/update', (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.restaurant_id !== undefined && req.body.table_num !== undefined && req.body.status !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, table_num, status');
+		return;
+	}   //if
+
+	//Make sure the restaurant and table exists:
+	let query = 'Select * FROM sample.services WHERE restaurant_id = ? AND table_num = ?';
+	let parameters = [req.body.restaurant_id, req.body.table_num];
+	db.query(query, parameters, (err, rows) => {
+		if (rows.length == 0) {
+			res.status(409).send('Error: table does not exist at restaurant');
+		}   //if
+		else {
+			//Make sure valid status is entered:
+			if (!(req.body.status === 'Good' || req.body.status === 'Help' || req.body.status === 'Bill')) {
+				res.status(409).send('Error: Invalid status. Valid statuses: Good, Help, Bill');
+				return;
+			}	//if
+
+			query = 'UPDATE sample.services SET service_status = ? WHERE restaurant_id = ? AND table_num = ?';
+			parameters = [req.body.status, req.body.restaurant_id, req.body.table_num];
+
+			//Edit status in db:
+			db.query(query, parameters, (err, rows) => {
+				if (err) {
+					res.status(500).send('Error updating status');
+				}   //if
+				else {
+					res.status(200).send('Successfully updated status!');
+				}   //else
+			}); //db.query
+		}   //else
+	}); //db.query
+});	//app.post
+
+/*
+	Adds a new table to the services table
+	Inputs: restaurant_id, table_num, JWT
+	Outputs:
+		On success:
+			Successfully added new table!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: restaurant_id, table_num
+		If the restaurant doesn't exist:
+			Error: restaurant does not exist
+		If JWT is not valid or not supplied: 
+			Must be authorized!
+		If JWT is not a manager token for the restaurant supplied:
+			Must be the restaurant manager to add a new table!
+		On error:
+			Error adding table
+*/
+app.put('/services/new', verifyToken, (req, res) => {
+	//Verify that the person is a manager at the restaurant
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Check to make sure person is a manager at the restaurant:
+			if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === req.body.restaurant_id) {
+				//Make sure right number of parameters are entered:
+				if(!(req.body.restaurant_id !== undefined && req.body.table_num !== undefined)) {
+					res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, table_num');
+					return;
+				}   //if
+
+				//Make sure the restaurant exists:
+				let query = 'Select * FROM sample.restaurants WHERE restaurant_id = ?';
+				db.query(query, req.body.restaurant_id, (err, rows) => {
+					if (rows.length == 0) {
+						res.status(409).send('Error: restaurant does not exist');
+					}   //if
+					else {
+						//Build query and parameters:
+						query = 'INSERT INTO sample.services(restaurant_id, table_num, service_status)';
+						query = query + ' VALUES (?, ?, ?);';
+						let parameters = [req.body.restaurant_id, req.body.table_num, 'Good'];
+
+						//Add table in db:
+						db.query(query, parameters, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error adding table');
+							}   //if
+							else {
+								res.status(200).send('Successfully added new table!');
+							}   //else
+						}); //db.query
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Must be the restaurant manager to add a new table!');
+			}	//else
+		}	//else
+	});	//verify
+});	//app.put
 
 
 //==================================================================================//
@@ -712,7 +958,7 @@ app.put('/favorites/add', (req, res) => {
 */
 app.post('/favorites/delete', verifyToken, (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.customer_id && req.body.restaurant_id)) {
+	if(!(req.body.customer_id !== undefined && req.body.restaurant_id !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, restaurant_id');
 		return;
 	}   //if
@@ -864,7 +1110,7 @@ app.post('/staff/login', (req, res) => {
 */
 app.put('/staff/register', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.staff_id && req.body.restaurant_id && req.body.first_name && req.body.last_name && req.body.contact_num && req.body.email && req.body.position && req.body.password)) {
+	if(!(req.body.staff_id !== undefined && req.body.restaurant_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.contact_num !== undefined && req.body.email !== undefined && req.body.position !== undefined && req.body.password !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password');
 		return;
 	}   //if
@@ -966,7 +1212,7 @@ app.post('/staff/update', verifyToken, (req, res) => {
 			//Make sure the JWT is for a staff member:
 			if (auth.staff) {
 				//Make sure right number of parameters are entered:
-				if(!(req.body.staff_id && req.body.restaurant_id && req.body.first_name && req.body.last_name && req.body.contact_num && req.body.email)) {
+				if(!(req.body.staff_id !== undefined && req.body.restaurant_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.contact_num !== undefined && req.body.email !== undefined)) {
 					res.status(400).send('Error: Missing parameter. Required parameters: staff_id, restaurant_id, first_name, last_name, contact_num, email, password (optional))');
 					return;
 				}   //if
@@ -1169,7 +1415,7 @@ app.post('/customer/login', (req, res) => {
 */
 app.put('/customer/register', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.customer_id && req.body.first_name && req.body.last_name && req.body.email && req.body.password)) {
+	if(!(req.body.customer_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.email !== undefined && req.body.password !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password');
 		return;
 	}   //if
@@ -1265,7 +1511,7 @@ app.post('/customer/update', verifyToken, (req, res) => {
 			//Make sure the JWT is for a customer:
 			if (auth.customer) {
 				//Make sure right number of parameters are entered:
-				if(!(req.body.customer_id && req.body.first_name && req.body.last_name && req.body.email)) {
+				if(!(req.body.customer_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.email !== undefined)) {
 					res.status(500).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)');
 					return;
 				}   //if
@@ -1486,7 +1732,7 @@ app.get('/customer/inprogress/:id', verifyToken, (req, res) => {
 								'price': rows[i].price,
 								'quantity': rows[i].quantity,
 								'order_date': rows[i].order_date,
-								'table': rows[i].table_num
+								'table_num': rows[i].table_num
 							};	//response
 						}   //for
 
@@ -1515,6 +1761,7 @@ app.get('/customer/inprogress/:id', verifyToken, (req, res) => {
 			{
 				dish_name:
 				{
+					item_id,
 					restaurant,
 					calories,
 					price,
@@ -1552,7 +1799,7 @@ app.get('/menu/:id', (req, res) => {
 					'calories': rows[i].calorie_num,
 					'price': rows[i].price,
 					'category': rows[i].category,
-					'picture': 'No picture yet',
+					'picture': rows[i].image,
 					'in_stock': rows[i].in_stock,
 					'description': rows[i].description
 				};	//response
@@ -1579,7 +1826,7 @@ app.get('/menu/:id', (req, res) => {
 */
 app.put('/menu/add', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.restaurant_id && req.body.item_name && req.body.calorie_num && req.body.category && req.body.price && req.body.description)) {
+	if(!(req.body.restaurant_id !== undefined && req.body.item_name !== undefined && req.body.calorie_num !== undefined && req.body.category !== undefined && req.body.price !== undefined && req.body.description !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description');
 		return;
 	}   //if
@@ -1628,7 +1875,7 @@ app.put('/menu/add', (req, res) => {
 */
 app.post('/menu/update', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.item_id && req.body.restaurant_id && req.body.item_name && req.body.calorie_num && req.body.category && req.body.in_stock && req.body.price && req.body.description)) {
+	if(!(req.body.item_id !== undefined && req.body.restaurant_id !== undefined && req.body.item_name !== undefined && req.body.calorie_num !== undefined && req.body.category !== undefined && req.body.in_stock !== undefined && req.body.price !== undefined && req.body.description !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description');
 		return;
 	}   //if
@@ -1779,7 +2026,8 @@ app.get('/menu/sides/:id', (req, res) => {
 			{
 				alexa_id: {
 					restaurant_id,
-					table_num
+					table_num,
+					greeting
 				}
 			}
 		On error:
@@ -1788,7 +2036,7 @@ app.get('/menu/sides/:id', (req, res) => {
 			This alexa does not exist
 */
 app.get('/alexa/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.alexas WHERE alexa_id = ?';
+	let query = 'SELECT * FROM sample.alexas natural join sample.restaurants WHERE alexa_id = ?';
 
 	//Query database:
 	db.query(query, req.params.id, (err, rows) => {
@@ -1805,7 +2053,8 @@ app.get('/alexa/:id', (req, res) => {
 			//Add restaurant and table info to response:
 			response[rows[0].alexa_id] = {
 				'restaurant_id': rows[0].restaurant_id,
-				'table_num': rows[0].table_num
+				'table_num': rows[0].table_num,
+				'greeting': rows[0].alexa_greeting
 			};	//response
 
 			//Send Response:
@@ -1829,7 +2078,7 @@ app.get('/alexa/:id', (req, res) => {
 */
 app.put('/alexa/register', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.alexa_id && req.body.restaurant_id && req.body.table_num)) {
+	if(!(req.body.alexa_id !== undefined && req.body.restaurant_id !== undefined && req.body.table_num !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: alexa_id, restaurant_id, table_num');
 		return;
 	}   //if
@@ -1936,7 +2185,7 @@ app.get('/alexa/pending/:id', (req, res) => {
 */
 app.put('/alexa/order/new', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.restaurant_id && req.body.alexa_id && req.body.table_num)) {
+	if(!(req.body.restaurant_id !== undefined && req.body.alexa_id !== undefined && req.body.table_num !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, alexa_id, table_num');
 		return;
 	}   //if
@@ -1987,7 +2236,7 @@ app.put('/alexa/order/new', (req, res) => {
 */
 app.put('/alexa/order/update', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.order_num && req.body.item_id && req.body.quantity)) {
+	if(!(req.body.order_num !== undefined && req.body.item_id !== undefined && req.body.quantity !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: order_num, item_id, quantity');
 		return;
 	}   //if
@@ -2063,7 +2312,7 @@ app.put('/alexa/order/update', (req, res) => {
 //POST request handler for removing items in an alexa order
 app.post('/alexa/order/remove', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.order_num && req.body.item_id && req.body.quantity)) {
+	if(!(req.body.order_num !== undefined && req.body.item_id !== undefined && req.body.quantity !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: order_num, item_id, quantity');
 		return;
 	}   //if
@@ -2224,7 +2473,8 @@ app.post('/verify', verifyToken, (req, res) => {
 					secondary_color,
 					tertiary_color,
 					logo,
-					cuisine
+					cuisine,
+					greeting
 				}
 				menu: {
 					i: {
@@ -2259,7 +2509,8 @@ app.post('/verify', verifyToken, (req, res) => {
 					secondary_color,
 					tertiary_color,
 					logo,
-					cuisine
+					cuisine,
+					greeting
 				}
 			}
 		On error:
@@ -2308,7 +2559,8 @@ app.get('/test/restaurant/:id', (req, res) => {
 								'secondary_color': rows[0].secondary_color,
 								'tertiary_color': rows[0].tertiary_color,
 								'logo': rows[0].logo,
-								'cuisine': rows[0].cuisine
+								'cuisine': rows[0].cuisine,
+								'greeting': rows[0].alexa_greeting
 							};	//response
 
 							//Send Response:
@@ -2334,7 +2586,8 @@ app.get('/test/restaurant/:id', (req, res) => {
 						'secondary_color': rows[0].secondary_color,
 						'tertiary_color': rows[0].tertiary_color,
 						'logo': rows[0].logo,
-						'cuisine': rows[0].cuisine
+						'cuisine': rows[0].cuisine,
+						'greeting': rows[0].alexa_greeting
 					};	//response
 
 					//Add menus to response:
@@ -2351,7 +2604,7 @@ app.get('/test/restaurant/:id', (req, res) => {
 							'calories': rows[i].calorie_num,
 							'price': rows[i].price,
 							'category': rows[i].category,
-							'image': 'No image yet',
+							'image': rows[i].image,
 							'in_stock': rows[i].in_stock,
 							'description': rows[i].description
 						};	//response
@@ -2426,7 +2679,7 @@ app.get('/test/menu/:id', (req, res) => {
 							'calories': rows[i].calorie_num,
 							'price': rows[i].price,
 							'category': rows[i].category,
-							'picture': 'No picture yet',
+							'picture': rows[i].image,
 							'in_stock': rows[i].in_stock,
 							'description': rows[i].description
 						};	//response
@@ -2646,6 +2899,57 @@ app.put('/test/menu/item/add', verifyToken, (req, res) => {
 		}	//else
 	});	//verify
 });	//app.put
+
+/*
+	Returns stats on which things were ordered the most per category at each restaurant
+	Inputs: restaurant_id
+	Outputs:
+		On success:
+			{
+				i: {
+					restaurant_id
+					category
+					item_name
+					item_id
+					total_ordered
+				}
+			}
+		If no items ordered:
+			Restaurant has no orders
+		On error:
+			Error retrieving stats
+*/
+app.get('/orderstats/:id', (req, res) => {
+	let query = 'CALL sample.GetOrderStats(?)';
+
+	//Query database:
+	db.query(query, req.params.id, (err, rows) => {
+		if (err) {
+			res.status(500).send('Error retrieving stats');
+		}   //if
+		else if (rows.length < 1) {
+			res.status(200).send('This restaurant has no orders');
+		}   //else if
+		else {
+			//Build JSON object:
+			let response = {};
+
+			//Loop through each row returned from query:
+			for (let i=0; i<rows[0].length; i++) {
+				response[i] = {
+					'restaurant_id': rows[0][i].restaurant_id,
+					'category': rows[0][i].category,
+					'item_name': rows[0][i].item_name,
+					'item_id': rows[0][i].item_id,
+					'total_ordered': rows[0][i].total_ordered
+				};	//response
+			}   //for
+
+			//Send Response:
+			res.type('json').send(response);
+		}   //else
+	}); //db.query
+}); //app.get
 
 /*
 	Token format:
