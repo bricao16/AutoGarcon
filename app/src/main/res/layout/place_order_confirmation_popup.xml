@@ -22,27 +22,35 @@
         android:layout_marginTop="30dp"
         android:background="@color/colorAccent"
         android:layout_gravity="center_horizontal"
-        android:text="Sending the Order ?"
+        android:text="Sending the Order? "
         android:textSize="16sp" />
 
     <Button
-    android:id="@+id/confirm_yes"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="70dp"
-    android:layout_marginBottom="15dp"
-    android:layout_gravity="center_horizontal"
+        android:id="@+id/confirm_yes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="55dp"
         android:background="@color/colorAccent"
-    android:text="@string/confirm"/>
+        android:text="@string/confirm"/>
 
     <Button
         android:id="@+id/confirm_not"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="70dp"
         android:layout_marginBottom="15dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="155dp"
         android:background="@color/colorAccent"
         android:text="Not Confirm"/>
+
+    <Button
+        android:id="@+id/confirm_close"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="265dp"
+        android:background="@drawable/ic_close_black_24dp"/>
+
 
 </androidx.cardview.widget.CardView>

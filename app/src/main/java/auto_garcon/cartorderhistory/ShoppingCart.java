@@ -171,6 +171,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 confirmPopup.show();
                 Button confirmYes = confirmPopup.findViewById(R.id.confirm_yes);
                 Button confirmNo = confirmPopup.findViewById(R.id.confirm_not);
+                Button confirmClose = confirmPopup.findViewById(R.id.confirm_close);
 
                 confirmYes.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -203,6 +204,13 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                         confirmPopup.dismiss();
                     }
                 });
+
+                confirmClose.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(ShoppingCart.this, "Confirm closed",Toast.LENGTH_LONG).show();
+                        confirmPopup.dismiss();
+                    }
+                });
             }
         });
 
@@ -216,7 +224,8 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 clearCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 clearCartPopup.show();
                 Button confirmYes = clearCartPopup.findViewById(R.id.confirm_yes);
-                Button confirmNo = clearCartPopup.findViewById(R.id.confirm_no);
+                Button confirmNo = clearCartPopup.findViewById(R.id.confirm_not);
+                Button confirmClose = clearCartPopup.findViewById(R.id.confirm_close);
 
                 confirmYes.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -234,6 +243,12 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 confirmNo.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         Toast.makeText(ShoppingCart.this, "Not Confirmed yet",Toast.LENGTH_LONG).show();
+                        clearCartPopup.dismiss();
+                    }
+                });
+                confirmClose.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(ShoppingCart.this, "Confirm closed",Toast.LENGTH_LONG).show();
                         clearCartPopup.dismiss();
                     }
                 });
