@@ -17,6 +17,7 @@
         android:id="@+id/action_cart"
         android:enabled="true"
         android:icon="@drawable/ic_cart"
+        app:actionLayout ="@layout/action_item_layout"
         android:title="Cart"
         app:showAsAction="ifRoom" />
 </menu>
