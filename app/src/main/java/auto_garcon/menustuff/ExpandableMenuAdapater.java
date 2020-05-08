@@ -14,6 +14,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -21,12 +22,14 @@ import com.example.auto_garcon.R;
 
 import java.util.HashMap;
 import java.util.List;
-/*
-This is a container for menu pages that the user can see.
- */
+
 import auto_garcon.ExcpetionHandler;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
+
+/*
+This is a container for menu pages that the user can see.
+ */
 
 public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private Context context;
@@ -173,7 +176,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 addToCartPopup.show();
-
+                Button confirmClose = addToCartPopup.findViewById(R.id.confirm_close);
                     addToCart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -223,6 +226,13 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 }
                             });
                         }
+                    }
+                });
+                confirmClose.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(context, "Confirm closed",Toast.LENGTH_LONG).show();
+                        confirmPopup.dismiss();
+                        addToCartPopup.dismiss();
                     }
                 });
             }
