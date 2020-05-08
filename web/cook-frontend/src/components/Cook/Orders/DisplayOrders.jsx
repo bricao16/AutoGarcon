@@ -11,22 +11,26 @@ import Order from "./Order";
 const useStyles = makeStyles(theme => ({
   main: {
     display: 'flex',
-    padding: theme.spacing(3,3)
+    padding: theme.spacing(0)
   }
 }));
 
-function DisplayOrders(){
+function DisplayOrders(props){
 
   const theme = useTheme();
   const classes = useStyles(theme);
 
+  const {type, path} = props;
+
   const cookies = new Cookies();
+
   const restaurant_id = cookies.get('mystaff').restaurant_id;
-  const serverUrl = process.env.REACT_APP_DB;
 
-  const completedOrderUrl = serverUrl + '/orders/update';
 
-  const [ordersPath, setOrdersPath] = useState('/orders/'+restaurant_id);
+
+  // const completedOrderUrl = serverUrl + '/orders/update';
+
+  // const [ordersPath, setOrdersPath] = useState('/orders/'+restaurant_id);
   const [orders, setOrders] = useState({});
 
   const [completed, setCompleted] = useState(false);
@@ -39,9 +43,8 @@ function DisplayOrders(){
   // Get 'in progress' orders from db
   function getDatabaseOrders(){
     // Null until calculated by effect hook
-    console.log(ordersPath);
-    if(ordersPath){
-      const url = serverUrl + ordersPath;
+    if(path){
+      const url = path;
       console.log('Fetching ' + url);
       axios.get(url, {
         httpsAgent: new https.Agent({
