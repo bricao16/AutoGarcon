@@ -143,7 +143,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onClick(View v) {
                             //Clear the order
-                            startActivity(new Intent(ShoppingCart.this, QRcode.class));
+
+                            Intent QRcode = new Intent(ShoppingCart.this, QRcode.class);
+                            QRcode.putExtra("is from cart activity", true);
+
+                            startActivity(QRcode);
                             goToQRScannerPopup.dismiss();
                         }
                     });
