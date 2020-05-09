@@ -336,6 +336,34 @@ renderInfo(){
                         </div>
                       </Modal.Body>
                     }
+                    {/*Logo*/}
+                    {this.state.sectionEdit === "Logo" && 
+                    <Modal.Body>
+                        <Container>
+                            <div className="input-group">
+                              <div className="custom-file">
+                                <input
+                                  onChange={this.onChangeFile}
+                                  type="file"
+                                  className="custom-file-input"
+                                  id="inputGroupFile01"
+                                  aria-describedby="inputGroupFileAddon01"
+                                  multiple = {false}
+                                />
+                                <label className="custom-file-label" htmlFor="inputGroupFile01">
+                                  {this.state.fileName}
+                                </label>
+
+                              </div>
+                            </div>
+                            <br/>
+                            <div className="row m-2">
+                               <button  onClick = {this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                            <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
+                             </div>
+                         </Container>
+                      </Modal.Body>
+                    }
 
 
             </Modal>
@@ -377,47 +405,21 @@ renderInfo(){
                               <div className="row m-2">
                                   <button onClick = {this.handleSubmit} type="button" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
                               </div>
-                              <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
-                                  </form>
+                              
+                           </form>
                           }
                       </Card.Body>
                   </Card>
                   </Col>
                   <Col>
                   <Card className="text-center  m-2" style={itemStyle}>
-                    <Card.Header >Logo
+                    <Card.Header onClick={this.handleModalShow} >Logo
                       <button  onClick={() => this.editForm("Logo") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
                     <Card.Body style = {{minHeight:'20vh'}}>
                       <div className = "p-3">
-                        {this.state.sectionEdit !== "Logo" ? 
                             <img src={this.state.file}  width="auto" height="40vh" alt="waiter" /> 
-                             :
-                             <Container>
-                            <div className="input-group">
-                              <div className="custom-file">
-                                <input
-                                  onChange={this.onChangeFile}
-                                  type="file"
-                                  className="custom-file-input"
-                                  id="inputGroupFile01"
-                                  aria-describedby="inputGroupFileAddon01"
-                                  multiple = {false}
-                                />
-                                <label className="custom-file-label" htmlFor="inputGroupFile01">
-                                  {this.state.fileName}
-                                </label>
-
-                              </div>
-                            </div>
-                            <br/>
-                            <div className="row m-2">
-                               <button  onClick = {this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                            <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
-                             </div>
-                         </Container>
-                        }
-                    </div> 
+                      </div> 
                     </Card.Body>
                    </Card>
                   </Col>
