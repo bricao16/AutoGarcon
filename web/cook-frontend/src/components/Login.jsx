@@ -31,6 +31,8 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3,0),
+    backgroundColor: '#0B658A',
+    color: "#FFFFFF"
   },
 
 }));
@@ -43,7 +45,7 @@ export default function Login(props) {
   const classes = useStyles(theme);
 
   const [staffID, setStaffID] = useState('');
-  const [passwd, setPasswd] = useState('');
+  const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
   const [show, setShow] = useState(false);
   const [staff, setStaff] = useState(null);
@@ -59,7 +61,7 @@ export default function Login(props) {
     axios({
       method: 'post',
       url: process.env.REACT_APP_DB + '/staff/login',
-      data: 'username=' + staffID + '&password=' + passwd,
+      data: 'username=' + staffID + '&password=' + password,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
@@ -97,7 +99,7 @@ export default function Login(props) {
 
   //on change of password update state
   function handlePasswd(event) {
-    setPasswd(event.target.value);
+    setPassword(event.target.value);
   }
 
   /* Used to show the correct alert after failing to log in */
@@ -116,7 +118,7 @@ export default function Login(props) {
       })
   }
 
-  if (redirect === true) {
+  if (redirect) {
     /*set the cookies and redirect to the cook page- no validation need
     cook and manager can log in to cook page cookie timesout after 8 hours*/
     cookies.set('mystaff', staff, {path: '/'}, {maxAge: props.cookieAge});
@@ -166,7 +168,7 @@ export default function Login(props) {
                      autoFocus
           />
           <TextField onChange={handlePasswd}
-                     value={passwd}
+                     value={password}
                      variant="outlined"
                      margin="normal"
                      required
@@ -187,7 +189,6 @@ export default function Login(props) {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  style={{backgroundColor: '#0B658A', color: "#FFFFFF"}}
                   className={classes.submit}
           >
             Sign In

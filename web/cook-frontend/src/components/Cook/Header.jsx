@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles, useTheme, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import {AppBar, Toolbar, Tabs, Tab} from '@material-ui/core'
@@ -42,9 +42,15 @@ function Header(props){
   // const theme = useTheme();
   const classes = useStyles(theme);
 
-  const {cookies} = props;
+  const {cookies, restaurantData} = props;
 
-  const [value, setValue] = React.useState(0);
+  const logoData = restaurantData.restaurant.logo.data;
+  const buffer = Buffer.from(logoData).toString('base64');
+  const companyLogo = "data:image/png;base64,"+buffer;
+
+
+  // Changes which tab is highlighted
+  const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -53,7 +59,7 @@ function Header(props){
     <ThemeProvider theme={theme}>
       <AppBar className={classes.appBar} position="sticky">
         <Toolbar className={classes.toolbar}>
-          <img src={exampleCompanyLogo}  width="auto" height="40px" alt="waiter" />
+          <img src={companyLogo}  width="auto" height="45px" alt="company logo" />
           <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
             <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
             <Tab label="Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />
