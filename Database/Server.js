@@ -70,6 +70,7 @@ console.log('Now listening on port 8000');
 					opening,
 					closing,
 					font,
+					font_color,
 					primary_color,
 					secondary_color,
 					tertiary_color,
@@ -82,9 +83,9 @@ console.log('Now listening on port 8000');
 						calories,
 						price,
 						category,
-						picture,
 						in_stock,
-						description
+						description,
+						allergens
 					}
 				}
 			}
@@ -114,6 +115,7 @@ app.get('/restaurant/:id', (req, res) => {
 				'opening': rows[0].opening_time,
 				'closing': rows[0].closing_time,
 				'font': rows[0].font,
+				'font_color': rows[0].font_color,
 				'primary_color': rows[0].primary_color,
 				'secondary_color': rows[0].secondary_color,
 				'tertiary_color': rows[0].tertiary_color,
@@ -131,14 +133,27 @@ app.get('/restaurant/:id', (req, res) => {
 					'calories': rows[i].calorie_num,
 					'price': rows[i].price,
 					'category': rows[i].category,
-					'picture': rows[i].image,
 					'in_stock': rows[i].in_stock,
-					'description': rows[i].description
+					'description': rows[i].description,
+					'allergens': []
 				};	//response
 			}   //for
 
-			//Send Response:
-			res.type('json').send(response);
+			//Add allergens:
+			query = 'SELECT * FROM sample.menu natural join sample.allergens WHERE restaurant_id = ? ORDER BY item_id';
+			db.query(query, req.params.id, (err, rows) => {
+				if (err) {
+					res.status(500).send('Error retrieving menu');
+				}	//if
+				else {
+					for (let i=0; i<rows.length; i++) {
+						response['menu'][rows[i].item_name].allergens.push(rows[i].allergen_name);
+					}	//for
+
+					//Send Response:
+					res.type('json').send(response);
+				}	//else
+			});	//db.query
 		}   //else
 	}); //db.query
 }); //app.get
@@ -468,7 +483,8 @@ app.put('/restaurant/new', verifyToken, upload.single('logo'), (req, res) => {
 					item_name,
 					quantity,
 					order_date,
-					table_num
+					table_num,
+					customization
 				}
 			}
 		If no in progress orders exist:
@@ -499,7 +515,8 @@ app.get('/orders/:id', (req, res) => {
 					'item_name': rows[i].item_name,
 					'quantity': rows[i].quantity,
 					'order_date': rows[i].order_date,
-					'table': rows[i].table_num
+					'table': rows[i].table_num,
+					'customization': rows[i].customization
 				};	//response
 			}   //for
 
@@ -520,7 +537,8 @@ app.get('/orders/:id', (req, res) => {
 					item_name,
 					quantity,
 					order_date,
-					table_num
+					table_num,
+					customization
 				}
 			}
 		If no complete orders exist:
@@ -551,7 +569,8 @@ app.get('/orders/complete/:id', (req, res) => {
 					'item_name': rows[i].item_name,
 					'quantity': rows[i].quantity,
 					'order_date': rows[i].order_date,
-					'table': rows[i].table_num
+					'table': rows[i].table_num,
+					'customization': rows[i].customization
 				};	//response
 			}   //for
 
@@ -563,74 +582,93 @@ app.get('/orders/complete/:id', (req, res) => {
 
 /*
 	Places a new order
-	Inputs: restaurant_id, customer_id, table_num, order
+	Inputs: restaurant_id, customer_id, table_num, order, JWT
 	Outputs:
 		On success:
 			Successfully placed order!
 		If any inputs are missing:
 			Error: Missing parameter. Required parameters: restaurant_id, customer_id, table_num, order
+		If JWT is not valid or not supplied: 
+			Must be authorized!
+		If JWT is for another customer:
+			Can't order with a different customer's id!
 		On error:
 			Error placing order
 */
-app.put('/orders/place', (req, res) => {
+app.put('/orders/place', verifyToken, (req, res) => {
 	//Make sure right number of parameters are entered:
 	if(!(req.body.restaurant_id !== undefined && req.body.customer_id !== undefined && req.body.table_num !== undefined && req.body.order !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, customer_id, table_num, order');
 		return;
 	}   //if
 
-	//Create timestamp
-	let date = luxon.DateTime.local().setZone('America/Chicago');
-	let timestamp = date.toString();
-
-	let parameters = [req.body.restaurant_id, req.body.customer_id, 'In Progress', timestamp, req.body.table_num];
-
-	//Query to add order to orders table and retrieve the order_num
-	let query = ' INSERT INTO sample.orders(restaurant_id, customer_id, order_status, order_date, table_num)';
-	query = query + ' VALUES (?, ?, ?, ?, ?);';
-
-	//Add order to orders table in db:
-	db.query(query, parameters, (err, rows) => {
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
-			res.status(500).send('Error placing order');
+			res.status(401).send('Must be authorized!');
 		}   //if
 		else {
-			//Check to make sure there are items in the order (Necessary for new Alexa orders)
-			if (!isEmptyObject(req.body.order)) {
-				let order_num = rows.insertId;
-				parameters = [];
-				query = 'INSERT INTO sample.orderdetails(order_num, item_id, quantity)';
-				query = query + ' VALUES';
+			//Make sure person isn't ordering with a different customer_id:
+			if (auth.customer && auth.customer.customer_id === req.body.customer_id) {
+				//Create timestamp
+				let date = luxon.DateTime.local().setZone('America/Chicago');
+				let timestamp = date.toString();
 
-				//Loop through all items in order:
-				for (let key in req.body.order) {
-					if (req.body.order.hasOwnProperty(key)) {
-						parameters.push(order_num);
-						parameters.push(req.body.order[key].item);
-						parameters.push(req.body.order[key].quantity);
+				let parameters = [req.body.restaurant_id, req.body.customer_id, 'In Progress', timestamp, req.body.table_num];
 
-						//Check if it is the last item for formatting
-						if (key === Object.keys(req.body.order)[Object.keys(req.body.order).length-1]) {
-							query = query + ' (?,?,?);';
-						}	//if
-						else {
-							query = query + ' (?,?,?),';
-						}	//else]
-					}	//if
-				}	//for
+				//Query to add order to orders table and retrieve the order_num
+				let query = ' INSERT INTO sample.orders(restaurant_id, customer_id, order_status, order_date, table_num)';
+				query = query + ' VALUES (?, ?, ?, ?, ?);';
 
-				//Add to orderdetails table
+				//Add order to orders table in db:
 				db.query(query, parameters, (err, rows) => {
 					if (err) {
 						res.status(500).send('Error placing order');
-					}	//if
+					}   //if
 					else {
-						res.status(200).send('Successfully placed order!');
-					}	//else
-				});	//query
+						//Check to make sure there are items in the order (Necessary for new Alexa orders)
+						if (!isEmptyObject(req.body.order)) {
+							let order_num = rows.insertId;
+							parameters = [];
+							query = 'INSERT INTO sample.orderdetails(order_num, item_id, quantity, customization)';
+							query = query + ' VALUES';
+
+							//Loop through all items in order:
+							for (let key in req.body.order) {
+								if (req.body.order.hasOwnProperty(key)) {
+									parameters.push(order_num);
+									parameters.push(req.body.order[key].item);
+									parameters.push(req.body.order[key].quantity);
+									parameters.push(req.body.order[key].customization);
+
+									//Check if it is the last item for formatting
+									if (key === Object.keys(req.body.order)[Object.keys(req.body.order).length-1]) {
+										query = query + ' (?,?,?,?);';
+									}	//if
+									else {
+										query = query + ' (?,?,?,?),';
+									}	//else]
+								}	//if
+							}	//for
+
+							//Add to orderdetails table
+							db.query(query, parameters, (err, rows) => {
+								if (err) {
+									res.status(500).send('Error placing order');
+								}	//if
+								else {
+									res.status(200).send('Successfully placed order!');
+								}	//else
+							});	//query
+						}	//if
+					}   //else
+				}); //db.query
 			}	//if
-		}   //else
-	}); //db.query
+			else {
+				res.status(401).send('Can\'t order with a different customer\'s id!');
+			}	//else
+		}	//else
+	});	//verify
 });	//app.put
 
 /*
@@ -907,36 +945,67 @@ app.get('/favorites/:id', (req, res) => {
 
 /*
 	Adds a restaurant to a customer's favorites
-	Inputs: customer_id, restaurant_id
+	Inputs: customer_id, restaurant_id, JWT
 	Outputs:
-		If any inputs are missing:
-			Error: Missing parameter. Required parameters: customer_id, restaurant_id
 		On success:
 			Succesfully added restaurant to favorites!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: customer_id, restaurant_id
+		If favorite already exists:
+			Favorite already exists
+		If JWT is not valid or not supplied: 
+			Must be authorized!
+		If JWT is for another customer:
+			Can't add to other customer's favorites!
 		On error:
 			Error adding restaurant to favorites
 */
-app.put('/favorites/add', (req, res) => {
-	let query = 'INSERT INTO sample.favorites (customer_id, restaurant_id)';
-	query = query + ' VALUES(?,?)';
-	let parameters = [req.body.customer_id, req.body.restaurant_id];
-
+app.put('/favorites/add', verifyToken, (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.customer_id && req.body.restaurant_id))
-	{
+	if(!(req.body.customer_id !== undefined && req.body.restaurant_id !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, restaurant_id');
 		return;
 	}   //if
 
-	db.query(query, parameters, (err, rows) => {
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
-			res.status(500).send('Error adding restaurant to favorites');
+			res.status(401).send('Must be authorized!');
 		}   //if
 		else {
-			//Send Response:
-			res.status(200).send('Successfully added restaurant to favorites!');
-		}   //else
-	}); //db.query
+			//Make sure person isn't adding to another customer's favorites:
+			if (auth.customer && auth.customer.customer_id === req.body.customer_id) {
+				//Make sure the favorite does not exist:
+				let query = 'SELECT * FROM sample.favorites WHERE customer_id = ? AND restaurant_id = ?'
+				let parameters = [req.body.customer_id, req.body.restaurant_id];
+				db.query(query, parameters, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error adding restaurant to favorites');
+					}   //if
+					else if (rows.length > 0) {
+						res.status(409).send('Favorite already exists');
+					}	//else if
+					else {
+						//Add to favorites:
+						query = 'INSERT INTO sample.favorites (customer_id, restaurant_id)';
+						query = query + ' VALUES(?,?)';
+						db.query(query, parameters, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error adding restaurant to favorites');
+							}   //if
+							else {
+								//Send Response:
+								res.status(200).send('Successfully added restaurant to favorites!');
+							}   //else
+						}); //db.query
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Can\'t add to other customer\'s favorites!');
+			}	//else
+		}	//else
+	});	//verify
 }); //app.put
 
 /*
@@ -1626,7 +1695,8 @@ app.post('/customer/update', verifyToken, (req, res) => {
 					price,
 					quantity,
 					order_date,
-					table_num
+					table_num,
+					customization
 				}
 			}
 		If a user has no history:
@@ -1661,7 +1731,8 @@ app.get('/customer/history/:id', (req, res) => {
 					'price': rows[i].price,
 					'quantity': rows[i].quantity,
 					'order_date': rows[i].order_date,
-					'table': rows[i].table_num
+					'table': rows[i].table_num,
+					'customization': rows[i].customization
 				};	//response
 			}   //for
 
@@ -1685,7 +1756,8 @@ app.get('/customer/history/:id', (req, res) => {
 					price,
 					quantity,
 					order_date,
-					table_num
+					table_num,
+					customization
 				}
 			}
 		If a user has no in progress orders:
@@ -1732,7 +1804,8 @@ app.get('/customer/inprogress/:id', verifyToken, (req, res) => {
 								'price': rows[i].price,
 								'quantity': rows[i].quantity,
 								'order_date': rows[i].order_date,
-								'table_num': rows[i].table_num
+								'table_num': rows[i].table_num,
+								'customization': rows[i].customization
 							};	//response
 						}   //for
 
@@ -1766,9 +1839,9 @@ app.get('/customer/inprogress/:id', verifyToken, (req, res) => {
 					calories,
 					price,
 					category,
-					picture,
 					in_stock,
-					description
+					description,
+					allergens
 				}
 			}
 		If restaurant has no menu items:
@@ -1799,14 +1872,27 @@ app.get('/menu/:id', (req, res) => {
 					'calories': rows[i].calorie_num,
 					'price': rows[i].price,
 					'category': rows[i].category,
-					'picture': rows[i].image,
 					'in_stock': rows[i].in_stock,
-					'description': rows[i].description
+					'description': rows[i].description,
+					'allergens': []
 				};	//response
 			}   //for
 
-			//Send Response:
-			res.type('json').send(response);
+			//Add allergens:
+			query = 'SELECT * FROM sample.menu natural join sample.allergens WHERE restaurant_id = ? ORDER BY item_id';
+			db.query(query, req.params.id, (err, rows) => {
+				if (err) {
+					res.status(500).send('Error retrieving menu');
+				}	//if
+				else {
+					for (let i=0; i<rows.length; i++) {
+						response[rows[i].item_name].allergens.push(rows[i].allergen_name);
+					}	//for
+
+					//Send Response:
+					res.type('json').send(response);
+				}	//else
+			});	//db.query
 		}   //else
 	}); //db.query
 }); //app.get
@@ -2012,6 +2098,112 @@ app.get('/menu/sides/:id', (req, res) => {
 		}   //else
 	}); //db.query
 }); //app.get
+
+/*
+	Returns the image for the menu item with item_id = id
+	Inputs: item_id
+	Outputs:
+		On success:
+			{
+				item_id,
+				image
+			}
+		If the item does not exist:
+			This item does not exist
+		On error:
+			Error retrieving image
+*/
+app.get('/menu/image/:id', (req, res) => {
+	let query = 'SELECT * FROM sample.menu WHERE item_id = ?';
+
+	//Query database:
+	db.query(query, req.params.id, (err, rows) => {
+		if (err) {
+			res.status(500).send('Error retrieving image');
+		}   //if
+		else if (rows.length < 1) {
+			res.status(409).send('This item does not exist');
+		}   //else if
+		else {
+			//Build JSON object:
+			let response = {
+				'item_id': rows[0].item_id,
+				'image': rows[0].image
+			};
+
+			//Send Response:
+			res.type('json').send(response);
+		}   //else
+	}); //db.query
+}); //app.get
+
+/*
+	Adds a new allergen for a menu item
+	Inputs: item_id, allergen, JWT
+	Outputs:
+		On success:
+			Successfully added new allergen!
+		If item_id does not exist:
+			Error: item does not exist
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: item_id, allergen
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant they are adding an allergen to:
+			Must be the restaurant manager to add a new allergen!
+		On error:
+			Error adding new allergen
+*/
+app.put('/menu/allergens/add', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.item_id !== undefined && req.body.allergen !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: item_id, allergen');
+		return;
+	}   //if
+
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Make sure item exists:
+			let query = 'Select * FROM sample.menu WHERE item_id = ?';
+			db.query(query, req.body.item_id, (err, rows) => {
+				if (err) {
+					res.status(500).send('Error adding new allergen');
+				}	//if
+				else {
+					//Check to make sure person is a manager at the restaurant:
+					if (auth.staff && auth.staff.position === 'manager' && parseInt(auth.staff.restaurant_id) === parseInt(rows[0].restaurant_id)) {
+						if (rows.length < 1) {
+							res.status(409).send('Error: item does not exist');
+						}	//if
+						else {
+							//Build query and parameters:
+							query = 'INSERT INTO sample.allergens(item_id, allergen_name)';
+							query = query + ' VALUES (?, ?)';
+							let parameters = [req.body.item_id, req.body.allergen];
+
+							//Add allergen:
+							db.query(query, parameters, (err, rows) => {
+								if (err) {
+									res.status(500).send('Error adding new allergen');
+								}   //if
+								else {
+									res.status(200).send('Successfully added new allergen!');
+								}	//else
+							});	//db.query
+						}	//else
+					}	//if
+					else {
+						res.status(401).send('Must be the restaurant manager to add a new allergen!');
+					}	//else
+				}	//else
+			});	//db.query
+		}	//else
+	});	//verify
+});	//app.put
 
 
 //==================================================================================//
@@ -2223,12 +2415,12 @@ app.put('/alexa/order/new', (req, res) => {
 
 /*
 	Updates an existing pending order for an alexa
-	Inputs: order_num, item_id, quantity
+	Inputs: order_num, item_id, quantity, customization
 	Outputs:
 		On sucess:
 			Successfully updated order!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: order_num, item_id, quantity
+			Error: Missing parameter. Required parameters: order_num, item_id, quantity, customization
 		If order_num does not exist:
 			Error: order does not exist or is not pending
 		On error:
@@ -2236,8 +2428,8 @@ app.put('/alexa/order/new', (req, res) => {
 */
 app.put('/alexa/order/update', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.order_num !== undefined && req.body.item_id !== undefined && req.body.quantity !== undefined)) {
-		res.status(400).send('Error: Missing parameter. Required parameters: order_num, item_id, quantity');
+	if(!(req.body.order_num !== undefined && req.body.item_id !== undefined && req.body.quantity !== undefined && req.body.customization !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: order_num, item_id, quantity, customization');
 		return;
 	}   //if
 
@@ -2254,9 +2446,9 @@ app.put('/alexa/order/update', (req, res) => {
 			db.query(query, parameters, (err, rows) => {
 				//Item does not exist in order:
 				if (rows.length < 1) {
-					parameters = [req.body.order_num, req.body.item_id, req.body.quantity];
-					query = 'INSERT INTO sample.orderdetails (order_num, item_id, quantity)';
-					query = query + ' VALUES (?,?,?)'
+					parameters = [req.body.order_num, req.body.item_id, req.body.quantity, req.body.customization];
+					query = 'INSERT INTO sample.orderdetails (order_num, item_id, quantity, customization)';
+					query = query + ' VALUES (?,?,?,?)'
 
 					//Update order in db:
 					db.query(query, parameters, (err, rows) => {
@@ -2273,11 +2465,18 @@ app.put('/alexa/order/update', (req, res) => {
 					//Updated quantity:
 					let quantity = parseInt(rows[0].quantity);
 					let updated = quantity + parseInt(req.body.quantity);
+					let customization = rows[0].customization;
+					if (customization !== '') {
+						customization = customization + '; ' + req.body.customization;
+					}	//if
+					else {
+						customization = req.body.customization;
+					}	//else
 
 					//Build query and parameters:
-					query = 'UPDATE sample.orderdetails SET quantity = ?';
+					query = 'UPDATE sample.orderdetails SET quantity = ?, customization = ?';
 					query = query + ' WHERE order_num = ? AND item_id = ?';
-					parameters = [updated, req.body.order_num, req.body.item_id];
+					parameters = [updated, customization, req.body.order_num, req.body.item_id];
 
 					//Update quantity in db:
 					db.query(query, parameters, (err, rows) => {
