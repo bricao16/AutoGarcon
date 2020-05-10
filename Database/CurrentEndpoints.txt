@@ -386,10 +386,14 @@ PUT /staff/register
 					position
 				}
 			}
-		If staff_id exists already:
-			(409) Error: staff_id already exists
 		If any inputs are missing:
 			(400) Error: Missing parameter. Required parameters: staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password
+		If staff_id and email already exist:
+			(409) Error: staff_id and email already exist
+		If staff_id already exists:
+			(409) Error: staff_id already exists
+		If email already exists:
+			(409) Error: email already exists
 		On error:
 			(500) Error creating new staff member
 
@@ -419,6 +423,12 @@ POST /staff/update
 			(401) Must be signed in as a staff member!
 		If any inputs are missing:
 			(400) Error: Missing parameter. Required parameters: staff_id, first_name, last_name, contact_num, email, password (optional)
+		If staff_id and email already exist:
+			(409) Error: staff_id and email already exist
+		If staff_id already exists:
+			(409) Error: staff_id already exists
+		If email already exists:
+			(409) Error: email already exists
 		On error:
 			(500) Error updating staff info
 
@@ -464,10 +474,14 @@ PUT /customer/register
 					email
 				}
 			}
-		If customer_id exists already:
-			(409) Error: customer_id already exists
 		If any inputs are missing:
 			(400) Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password
+		If customer_id and email already exist:
+			(409) Error: customer_id and email already exist
+		If customer_id already exists:
+			(409) Error: customer_id already exists
+		If email already exists:
+			(409) Error: email already exists
 		On error:
 			(500) Error creating new customer
 
@@ -496,6 +510,12 @@ POST /customer/update
 			(401) Must be signed in as a customer!
 		If any inputs are missing:
 			(400) Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)
+		If customer_id and email already exist:
+			(409) Error: customer_id and email already exist
+		If customer_id already exists:
+			(409) Error: customer_id already exists
+		If email already exists:
+			(409) Error: email already exists
 		On error:
 			(500) Error updating customer info
 
