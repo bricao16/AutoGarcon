@@ -3,8 +3,8 @@ import React from "react";
 import Header from './Header'
 import {Redirect, Route, Switch} from "react-router-dom";
 
-import ActiveOrders from "./ActiveOrders";
-import CompletedOrders from "./CompletedOrders";
+// import ActiveOrders from "./ActiveOrders";
+// import CompletedOrders from "./CompletedOrders";
 import Body from "./Body";
 
 function Orders(){

@@ -5,47 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock } from '@fortawesome/free-regular-svg-icons';
 import  'moment-duration-format';
 
-import "../../../assets/orders/order.css"
 import {makeStyles} from "@material-ui/core";
 import {useTheme} from "@material-ui/core/styles";
-
-const orderStyle = {
-  borderRadius: '0.25rem',
-  cursor: 'pointer',
-  userSelect: 'none'
-};
-
-const cardHeaderStyle = {
-  backgroundColor: '#0b658a',
-  color: '#ffffff',
-  borderBottom: 'none'
-  // justifyContent: 'space-evenly',
-  // alignItems: 'center'
-};
-
-const cardIdStyle = {
-  background: '#ffffff6e',
-  borderTopLeftRadius: 'calc(.25rem - 1px)',
-  fontWeight: 500
-};
-
-const itemCategoryStyle = {
-  textAlign: 'center',
-  backgroundColor: 'rgba(0,0,0,.03)',
-  fontWeight: 500,
-  borderBottom: '1px solid rgba(0,0,0,.125)',
-  borderTop: '1px solid rgba(0,0,0,.125)'
-};
-
-const customizationStyle = {
-  color: 'grey'
-};
-
-const cardFooterStyle = {
-  backgroundColor: '#0b658a',
-  color: '#ffffff',
-  justifyContent: 'space-between',
-};
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -53,13 +14,50 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap',
     alignItems: 'start',
     padding: theme.spacing(0)
+  },
+  order: {
+    borderRadius: '0.25rem',
+    cursor: 'pointer',
+    userSelect: 'none',
+    padding: theme.spacing(1),
+    '&:hover': {
+      background: 'rgba(126, 126, 126, 0.4)'
+    }
+  },
+  cardHeader: {
+    backgroundColor: '#0b658a',
+    color: '#ffffff',
+    borderBottom: 'none'
+  },
+  cardId: {
+    background: '#ffffff6e',
+    borderTopLeftRadius: 'calc(.25rem - 1px)',
+    fontWeight: 500
+  },
+  itemCategory: {
+    textAlign: 'center',
+    backgroundColor: 'rgba(0,0,0,.03)',
+    fontWeight: 500,
+    borderBottom: '1px solid rgba(0,0,0,.125)',
+    borderTop: '1px solid rgba(0,0,0,.125)'
+  },
+  itemCustomization: {
+    color: 'grey'
+  },
+  cardFooter: {
+    backgroundColor: '#0b658a',
+    color: '#ffffff',
+    justifyContent: 'space-between',
+  },
+  selected: {
+    background: 'red'
   }
 }));
 
 function OrderCard(props) {
 
-  // const theme = useTheme();
-  // const classes = useStyles(theme);
+  const theme = useTheme();
+  const classes = useStyles(theme);
 
   const {order, isSelected, isCompleted} = props;
 
@@ -81,14 +79,14 @@ function OrderCard(props) {
               <span className="pr-3">{item.quantity}</span>
               <span>{item.title}</span>
             </div>
-            <div style={customizationStyle} className="pl-4">No tomatoes</div>
+            <div className={"pl-4 " + classes.itemCustomization}>No tomatoes</div>
           </div>
         );
       });
       allItems.push(
         // Category with children items
         <div key={categoryKey++}>
-          <p style={itemCategoryStyle} className="m-0">{category}</p>
+          <p className={"m-0 " + classes.itemCategory} >{category}</p>
           <div className="px-2">
             {items}
           </div>
@@ -99,23 +97,18 @@ function OrderCard(props) {
   }
 
   function variableOrderStyles(){
-    let style = Object.assign({}, orderStyle);
+    // let style = {background: 'red'};
+    // if(isSelected){
+    //   // style.background = '#7e7e7e';
+    //   style.background = 'red';
+    // }
+    // style.background = 'red';
+    // if(order.expand){
+    //   style.fontSize = '1.6em';
+    // }
     if(isSelected){
-      // style.background = '#7e7e7e';
-      style.background = 'red';
+      return classes.selected;
     }
-    if(order.expand){
-      style.fontSize = '1.6em';
-    }
-    return style;
-  }
-
-  function initializeTime() {
-    // Make Moment object out of order placed time
-    // const momentOrderDate = moment(order.order_date, 'YYYY-MM-DD HH:mm:ss');
-    // setOrderTime(momentOrderDate);
-    // Convert to string that displays as 12 hour time with AM/PM
-    // setOrderTimeString(orderTime.format('LT'));
   }
 
   function setupTimeInterval() {
@@ -154,7 +147,7 @@ function OrderCard(props) {
   function renderCompletedFooter(){
     if(isCompleted) {
       return (
-        <Card.Footer className="py-1 px-2 d-flex" style={statusStyle()}>
+        <Card.Footer className={"py-1 px-2 d-flex" + statusStyle()}>
           Completed
         </Card.Footer>
       )
@@ -169,7 +162,6 @@ function OrderCard(props) {
   }
 
   useEffect(() => {
-    // initializeTime();
     setupTimeInterval();
     return () => {
       clearInterval(timeInterval.current);
@@ -177,10 +169,10 @@ function OrderCard(props) {
   }, []);
 
   return (
-    <div className="p-1 mr-3 mb-2 order" style={variableOrderStyles()} onClick={() => props.handleOrderClick(props.cardId)}>
+    <div className={"mr-3 mb-2 " + classes.order + " " + variableOrderStyles()} onClick={() => props.handleOrderClick(props.cardId)}>
       <Card>
-        <Card.Header style={cardHeaderStyle} className="p-0 d-flex">
-          <span className="px-2 py-1" style={cardIdStyle}>{props.cardId + 1}</span>
+        <Card.Header className={"p-0 d-flex " + classes.cardHeader}>
+          <span className={"px-2 py-1 " + classes.cardId}>{props.cardId + 1}</span>
           <div style={{flexGrow: 1, display: 'flex', justifyContent: 'space-between'}}>
             <span className="px-2 py-1">Table {order.table}</span>
             <span className="px-2 py-1">#{order.order_num}</span>
@@ -189,7 +181,7 @@ function OrderCard(props) {
         <Card.Body className="p-0">
           {renderItems()}
         </Card.Body>
-        <Card.Footer className="py-1 px-2 d-flex" style={cardFooterStyle}>
+        <Card.Footer className={"py-1 px-2 d-flex " + classes.cardFooter}>
           {renderTime()}
         </Card.Footer>
         {renderCompletedFooter()}

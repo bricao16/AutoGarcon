@@ -23,14 +23,18 @@ function OrderCards(props){
   const theme = useTheme();
   const classes = useStyles(theme);
 
-  const {orders} = props;
+  const {orders, selectedCard} = props;
 
   let orderCards = [];
   if(Object.keys(orders).length) {
     let index = 0;
     Object.values(orders).forEach(order => {
+      let isSelected = false;
+      if(index === selectedCard){
+        isSelected = true;
+      }
       orderCards.push(
-        <OrderCard key={index} cardId={index} order={order} handleOrderClick={props.handleOrderClick} />
+        <OrderCard key={index} cardId={index} order={order} handleOrderClick={props.handleOrderClick} isSelected={isSelected} />
       );
       index++;
     });

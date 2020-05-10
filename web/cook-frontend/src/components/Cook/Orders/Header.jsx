@@ -1,7 +1,15 @@
 import React from "react";
 import {makeStyles, AppBar, Tab, Tabs, Toolbar} from "@material-ui/core";
 import {Link} from "react-router-dom";
-import {useTheme, ThemeProvider, createMuiTheme} from "@material-ui/core/styles";
+import {useTheme, ThemeProvider, createMuiTheme, withStyles} from "@material-ui/core/styles";
+
+
+const StyledTabs = withStyles({
+  indicator: {
+    height: '5px'
+  },
+})((props) => <Tabs {...props} />);
+
 
 const useStyles = makeStyles((theme) => ({
   appbar: {
@@ -31,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#f1f1f1',
+      main: '#ffffff',
     }
   },
 });
@@ -51,10 +59,11 @@ function Header(){
       <AppBar className={classes.appbar} position="static">
         <Toolbar className={classes.toolbar}>
           <h3 className={classes.title}>Orders</h3>
-          <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
+          <StyledTabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary"
+                className={classes.tabs} classes={{indicator: {height: "5px"}}}>
             <Tab label="Active" color="primary" className={classes.tab} component={Link} to={'/cook/orders/active'} />
             <Tab label="Completed" color="primary" className={classes.tab} component={Link} to={'/cook/orders/completed'} />
-          </Tabs>
+          </StyledTabs>
         </Toolbar>
       </AppBar>
     </ThemeProvider>

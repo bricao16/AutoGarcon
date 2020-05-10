@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Orders from "./Orders";
-// import OrdersHeader from "./OrdersHeader";
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
 import Toolbar from "./Toolbar";
 import OrderCards from "./OrderCards";
-import {makeStyles} from "@material-ui/core";
+import {makeStyles, Button} from "@material-ui/core";
 // import $ from "jquery"; will be used in future
 
 const useStyles = makeStyles((theme) => ({
@@ -19,6 +17,10 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbarContainer:{
 
+  },
+  button: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(3)
   },
   separator: {
     margin: theme.spacing(3, 0),
@@ -58,7 +60,7 @@ function Body(props){
   // Holds orders from database in object
   const [orders, setOrders] = useState({});
 
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedCard, setSelectedCard] = useState(null);
 
   // If path changes (because of switching tabs: active or complete)
   // or restaurant_id updates for some reason, the correct orders will be pulled from database
@@ -76,7 +78,7 @@ function Body(props){
   // Will happen when switching tabs
   useEffect(() => {
     getDatabaseOrders();
-    // changeSelectedOrder(0);
+    changeSelectedOrder(0);
   }, );
 
   // Set up things for componentDidMount() componentWillUnmount()
@@ -141,47 +143,45 @@ function Body(props){
 
   }
 
-  /*
+
   function changeSelectedOrder(cardId){
     // Check if cardId exists, 0 cards will result in cardId of null
-    if(cardId >=0 && cardId < Object.keys(orders).length){
-      setSelectedOrder(cardId);
-    } else {
-      cardId = null;
+    if(0 <= cardId && cardId < Object.keys(orders).length){
+      setSelectedCard(cardId);
     }
   }
-
-  function changeOrderStatus(status){
-    if(selectedOrder !== null){
-      const orderNum = Object.keys(orders)[selectedOrder];
-      console.log('Changing order ' + orderNum + ' to ' + status + ', post to ' + completedOrderUrl);
-      const data = 'order_num=' + orderNum + '&order_status=' + status;
-      axios.post(completedOrderUrl,
-        data,
-        {
-          httpsAgent: new https.Agent({
-            rejectUnauthorized: false,
-          }),
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cancelToken: source.token
-        })
-        .then(() => {
-          if(isMounted) {
-            getOrders(); // grab orders from database
-            changeSelectedOrder(0);
-          } else {
-            source.cancel('component unmounted');
-          }
-        })
-        .catch(error =>{
-          console.log('post request error');
-          console.error(error);
-        });
-    }
-  }
-  */
+  /*
+   function changeOrderStatus(status){
+     if(selectedOrder !== null){
+       const orderNum = Object.keys(orders)[selectedOrder];
+       console.log('Changing order ' + orderNum + ' to ' + status + ', post to ' + completedOrderUrl);
+       const data = 'order_num=' + orderNum + '&order_status=' + status;
+       axios.post(completedOrderUrl,
+         data,
+         {
+           httpsAgent: new https.Agent({
+             rejectUnauthorized: false,
+           }),
+           headers: {
+             'Content-Type': 'application/x-www-form-urlencoded'
+           },
+           cancelToken: source.token
+         })
+         .then(() => {
+           if(isMounted) {
+             getOrders(); // grab orders from database
+             changeSelectedOrder(0);
+           } else {
+             source.cancel('component unmounted');
+           }
+         })
+         .catch(error =>{
+           console.log('post request error');
+           console.error(error);
+         });
+     }
+   }
+   */
   // The following features will be added in the future
   /*
   function setupKeyPresses(){
@@ -244,17 +244,24 @@ function Body(props){
   }
   */
 
+  function toolbarButtons(){
+    return [
+      <Button key={0} variant="contained" color="primary" className={classes.button}>Completed</Button>,
+      <Button key={1} variant="contained" color="primary" className={classes.button}>Expand</Button>,
+    ];
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.main}>
         {/*<OrdersHeader handleStatusChangeClick={changeOrderStatus} path={props.path} />*/}
         {/*<Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={markOrderComplete} />*/}
         <div className={classes.toolbarContainer} >
-          <Toolbar />
+          <Toolbar buttons={toolbarButtons()}/>
         </div>
         <div className={classes.separator}/>
         <div className={classes.cardsContainer} >
-          <OrderCards orders={orders} handleOrderClick={orderClicked}/>
+          <OrderCards orders={orders} handleOrderClick={orderClicked} selectedCard={selectedCard}/>
         </div>
       </div>
     </ThemeProvider>
