@@ -1170,10 +1170,14 @@ app.post('/staff/login', (req, res) => {
 					position
 				}
 			}
-		If staff_id exists already:
-			Error: staff_id already exists
 		If any inputs are missing:
 			Error: Missing parameter. Required parameters: staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password
+		If staff_id and email already exist:
+			Error: staff_id and email already exist
+		If staff_id already exists:
+			Error: staff_id already exists
+		If email already exists:
+			Error: email already exists
 		On error:
 			Error creating new staff member
 */
@@ -1184,14 +1188,18 @@ app.put('/staff/register', (req, res) => {
 		return;
 	}   //if
 
-	//Make sure the staff_id doesn't exist:
-	let query = 'Select * FROM sample.staff WHERE staff_id = ?';
-
-	//Query database:
-	db.query(query, req.body.staff_id, (err, rows) => {
-		if (rows.length > 0) {
-			res.status(409).send('Error: staff_id already exists');
+	//Make sure the staff_id and email don't exist:
+	let query = 'SELECT * FROM sample.staff WHERE staff_id = ?; SELECT * FROM sample.staff WHERE email = ?';
+	db.query(query, [req.body.staff_id, req.body.email], (err, rows) => {
+		if (rows[0].length > 0 && rows[1].length > 0) {
+			res.status(409).send('Error: staff_id and email already exist');
 		}   //if
+		else if (rows[0].length > 0) {
+			res.status(409).send('Error: staff_id already exists');
+		}	//else if
+		else if (rows[1].length > 0) {
+			res.status(409).send('Error: email already exists');
+		}	//else if
 		else {
 			//Create a new salt
 			let salt = genSalt();
@@ -1268,6 +1276,12 @@ app.put('/staff/register', (req, res) => {
 			Must be signed in as a staff member!
 		If any inputs are missing:
 			Error: Missing parameter. Required parameters: staff_id, first_name, last_name, contact_num, email, password (optional)
+		If staff_id and email already exist:
+			Error: staff_id and email already exist
+		If staff_id already exists:
+			Error: staff_id already exists
+		If email already exists:
+			Error: email already exists
 		On error:
 			Error updating staff info
 */
@@ -1286,32 +1300,84 @@ app.post('/staff/update', verifyToken, (req, res) => {
 					return;
 				}   //if
 
-				//Build query and store staff_id:
-				let staff_id = auth.staff.staff_id;
-				let query = 'UPDATE sample.staff SET staff_id = ?, first_name = ?, last_name = ?, contact_num = ?, email = ?';
+				//Make sure the supplied staff_id and email are unique:
+				let query = 'SELECT * FROM sample.staff WHERE staff_id = ?; SELECT * FROM sample.staff WHERE email = ?';
+				db.query(query, [req.body.staff_id, req.body.email], (err, rows) => {
+					if ((rows[0].length > 0 && (req.body.staff_id !== auth.staff.staff_id)) && (rows[1].length > 0 && (req.body.email !== auth.staff.email))) {
+						res.status(409).send('Error: staff_id and email already exist');
+					}   //if
+					else if (rows[0].length > 0 && (req.body.staff_id !== auth.staff.staff_id)) {
+						res.status(409).send('Error: staff_id already exists');
+					}	//else if
+					else if (rows[1].length > 0 && (req.body.email !== auth.staff.email)) {
+						res.status(409).send('Error: email already exists');
+					}	//else if
+					else {
+						//Build query and store staff_id:
+						let staff_id = auth.staff.staff_id;
+						let query = 'UPDATE sample.staff SET staff_id = ?, first_name = ?, last_name = ?, contact_num = ?, email = ?';
 
-				//Check if the staff member wants to change their password:
-				if (req.body.password) {
-					//Create a new salt
-					let salt = genSalt();
-					//Hash supplied password with salt
-					let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
-						if (err) {
-							res.status(500).send('Error updating staff info');
+						//Check if the staff member wants to change their password:
+						if (req.body.password) {
+							//Create a new salt
+							let salt = genSalt();
+							//Hash supplied password with salt
+							let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+								if (err) {
+									res.status(500).send('Error updating staff info');
+								}	//if
+								else {
+									//Build query and parameters:
+									query = query + ', salt = ?, password = ?';
+									query = query + ' WHERE staff_id = ?';
+									let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, salt, derivedKey.toString('hex'), staff_id];
+
+									//Add new staff information to db:
+									db.query(query, parameters, (err, rows) => {
+										if (err) {
+											res.status(500).send('Error updating staff info');
+										}   //if
+										else {
+											//Build staff object:
+											let staff = {
+												'staff_id': req.body.staff_id,
+												'first_name': req.body.first_name,
+												'last_name': req.body.last_name,
+												'contact_num': req.body.contact_num,
+												'email': req.body.email
+											};  //staff
+
+											//Sign JWT and send token
+											//To add expiration date: jwt.sign({staff}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+											jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
+												//Build response
+												let response = {
+													'token': token,
+													staff
+												};  //response
+
+												//Send Response:
+												res.type('json').send(response);
+											});	//sign
+										}   //else
+									}); //db.query
+								}   //else
+							}); //hashed
 						}	//if
+
+						//If staff doesn't want to change password:
 						else {
 							//Build query and parameters:
-							query = query + ', salt = ?, password = ?';
 							query = query + ' WHERE staff_id = ?';
-							let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, salt, derivedKey.toString('hex'), staff_id];
+							let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, staff_id];
 
-							//Add new staff information to db:
+							//Update staff info in db:
 							db.query(query, parameters, (err, rows) => {
 								if (err) {
 									res.status(500).send('Error updating staff info');
 								}   //if
 								else {
-									//Build staff object:
+									//Build user object:
 									let staff = {
 										'staff_id': req.body.staff_id,
 										'first_name': req.body.first_name,
@@ -1321,7 +1387,7 @@ app.post('/staff/update', verifyToken, (req, res) => {
 									};  //staff
 
 									//Sign JWT and send token
-									//To add expiration date: jwt.sign({staff}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+									//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
 									jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
 										//Build response
 										let response = {
@@ -1334,46 +1400,9 @@ app.post('/staff/update', verifyToken, (req, res) => {
 									});	//sign
 								}   //else
 							}); //db.query
-						}   //else
-					}); //hashed
-				}	//if
-
-				//If staff doesn't want to change password:
-				else {
-					//Build query and parameters:
-					query = query + ' WHERE staff_id = ?';
-					let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, staff_id];
-
-					//Update staff info in db:
-					db.query(query, parameters, (err, rows) => {
-						if (err) {
-							res.status(500).send('Error updating staff info');
-						}   //if
-						else {
-							//Build user object:
-							let staff = {
-								'staff_id': req.body.staff_id,
-								'first_name': req.body.first_name,
-								'last_name': req.body.last_name,
-								'contact_num': req.body.contact_num,
-								'email': req.body.email
-							};  //staff
-
-							//Sign JWT and send token
-							//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-							jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
-								//Build response
-								let response = {
-									'token': token,
-									staff
-								};  //response
-
-								//Send Response:
-								res.type('json').send(response);
-							});	//sign
-						}   //else
-					}); //db.query
-				}	//else
+						}	//else
+					}	//else
+				});	//db.query
 			}	//if
 			//If JWT is not for a staff member:
 			else {
@@ -1475,8 +1504,12 @@ app.post('/customer/login', (req, res) => {
 					email
 				}
 			}
-		If customer_id exists already:
+		If customer_id and email already exist:
+			Error: customer_id and email already exist
+		If customer_id already exists:
 			Error: customer_id already exists
+		If email already exists:
+			Error: email already exists
 		If any inputs are missing:
 			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password
 		On error:
@@ -1489,12 +1522,18 @@ app.put('/customer/register', (req, res) => {
 		return;
 	}   //if
 
-	//Make sure the customer_id doesn't exist:
-	let query = 'Select * FROM sample.customers WHERE customer_id = ?';
-	db.query(query, req.body.customer_id, (err, rows) => {
-		if (rows.length > 0) {
-			res.status(409).send('Error: customer_id already exists');
+	//Make sure the customer_id and email don't exist:
+	let query = 'SELECT * FROM sample.customers WHERE customer_id = ?; SELECT * FROM sample.customers WHERE email = ?';
+	db.query(query, [req.body.customer_id, req.body.email], (err, rows) => {
+		if (rows[0].length > 0 && rows[1].length > 0) {
+			res.status(409).send('Error: customer_id and email already exist');
 		}   //if
+		else if (rows[0].length > 0) {
+			res.status(409).send('Error: customer_id already exists');
+		}	//else if
+		else if (rows[1].length > 0) {
+			res.status(409).send('Error: email already exists');
+		}	//else if
 		else {
 			//Create a new salt
 			let salt = genSalt();
@@ -1567,6 +1606,12 @@ app.put('/customer/register', (req, res) => {
 			Must be signed in as a customer!
 		If any inputs are missing:
 			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)
+		If customer_id and email already exist:
+			Error: customer_id and email already exist
+		If customer_id already exists:
+			Error: customer_id already exists
+		If email already exists:
+			Error: email already exists
 		On error:
 			Error updating customer info
 */
@@ -1581,30 +1626,81 @@ app.post('/customer/update', verifyToken, (req, res) => {
 			if (auth.customer) {
 				//Make sure right number of parameters are entered:
 				if(!(req.body.customer_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.email !== undefined)) {
-					res.status(500).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)');
+					res.status(400).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)');
 					return;
 				}   //if
 
-				//Build query and store customer_id:
-				let customer_id = auth.customer.customer_id;
-				let query = 'UPDATE sample.customers SET customer_id = ?, first_name = ?, last_name = ?, email = ?';
+				//Make sure the supplied customer_id and email are unique:
+				let query = 'SELECT * FROM sample.customers WHERE customer_id = ?; SELECT * FROM sample.customers WHERE email = ?';
+				db.query(query, [req.body.customer_id, req.body.email], (err, rows) => {
+					if ((rows[0].length > 0 && (req.body.customer_id !== auth.customer.customer_id)) && (rows[1].length > 0 && (req.body.email !== auth.customer.email))) {
+						res.status(409).send('Error: customer_id and email already exist');
+					}   //if
+					else if (rows[0].length > 0 && (req.body.customer_id !== auth.customer.customer_id)) {
+						res.status(409).send('Error: customer_id already exists');
+					}	//else if
+					else if (rows[1].length > 0 && (req.body.email !== auth.customer.email)) {
+						res.status(409).send('Error: email already exists');
+					}	//else if
+					else {
+						//Build query and store customer_id:
+						let customer_id = auth.customer.customer_id;
+						let query = 'UPDATE sample.customers SET customer_id = ?, first_name = ?, last_name = ?, email = ?';
 
-				//Check if the user wants to change their password:
-				if (req.body.password) {
-					//Create a new salt
-					let salt = genSalt();
-					//Hash supplied password with salt
-					let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
-						if (err) {
-							res.status(500).send('Error updating customer info');
+						//Check if the user wants to change their password:
+						if (req.body.password) {
+							//Create a new salt
+							let salt = genSalt();
+							//Hash supplied password with salt
+							let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+								if (err) {
+									res.status(500).send('Error updating customer info');
+								}	//if
+								else {
+									//Build query and parameters:
+									query = query + ', salt = ?, password = ?';
+									query = query + ' WHERE customer_id = ?';
+									let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex'), customer_id];
+
+									//Add new customer to db:
+									db.query(query, parameters, (err, rows) => {
+										if (err) {
+											res.status(500).send('Error updating customer info');
+										}   //if
+										else {
+											//Build user object:
+											let customer = {
+												'customer_id': req.body.customer_id,
+												'first_name': req.body.first_name,
+												'last_name': req.body.last_name,
+												'email': req.body.email
+											};  //customer
+
+											//Sign JWT and send token
+											//To add expiration date: jwt.sign({customer}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+											jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
+												//Build response
+												let response = {
+													'token': token,
+													customer
+												};  //response
+
+												//Send Response:
+												res.type('json').send(response);
+											});	//sign
+										}   //else
+									}); //db.query
+								}   //else
+							}); //hashed
 						}	//if
+
+						//If customer doesn't want to change password:
 						else {
 							//Build query and parameters:
-							query = query + ', salt = ?, password = ?';
 							query = query + ' WHERE customer_id = ?';
-							let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex'), customer_id];
+							let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, customer_id];
 
-							//Add new customer to db:
+							//Update customer info in db:
 							db.query(query, parameters, (err, rows) => {
 								if (err) {
 									res.status(500).send('Error updating customer info');
@@ -1619,7 +1715,7 @@ app.post('/customer/update', verifyToken, (req, res) => {
 									};  //customer
 
 									//Sign JWT and send token
-									//To add expiration date: jwt.sign({customer}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+									//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
 									jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
 										//Build response
 										let response = {
@@ -1632,45 +1728,9 @@ app.post('/customer/update', verifyToken, (req, res) => {
 									});	//sign
 								}   //else
 							}); //db.query
-						}   //else
-					}); //hashed
-				}	//if
-
-				//If customer doesn't want to change password:
-				else {
-					//Build query and parameters:
-					query = query + ' WHERE customer_id = ?';
-					let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, customer_id];
-
-					//Update customer info in db:
-					db.query(query, parameters, (err, rows) => {
-						if (err) {
-							res.status(500).send('Error updating customer info');
-						}   //if
-						else {
-							//Build user object:
-							let customer = {
-								'customer_id': req.body.customer_id,
-								'first_name': req.body.first_name,
-								'last_name': req.body.last_name,
-								'email': req.body.email
-							};  //customer
-
-							//Sign JWT and send token
-							//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-							jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
-								//Build response
-								let response = {
-									'token': token,
-									customer
-								};  //response
-
-								//Send Response:
-								res.type('json').send(response);
-							});	//sign
-						}   //else
-					}); //db.query
-				}	//else
+						}	//else
+					}	//else
+				});	//db.query
 			}	//if
 			//If JWT is not for a customer:
 			else {
