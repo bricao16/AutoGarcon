@@ -8,7 +8,7 @@ const StyledTabs = withStyles({
   indicator: {
     height: '5px'
   },
-})((props) => <Tabs {...props} />);
+})(props => <Tabs {...props} />);
 
 const useStyles = makeStyles((theme) => ({
   appBar: {

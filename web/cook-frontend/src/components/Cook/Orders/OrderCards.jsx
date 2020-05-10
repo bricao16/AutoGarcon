@@ -30,11 +30,12 @@ function OrderCards(props){
     let index = 0;
     Object.values(orders).forEach(order => {
       let isSelected = false;
+      let isExpanded = order.expand;
       if(index === selectedCard){
         isSelected = true;
       }
       orderCards.push(
-        <OrderCard key={index} cardId={index} order={order} handleOrderClick={props.handleOrderClick} isSelected={isSelected} />
+        <OrderCard key={index} cardId={index} order={order} handleOrderClick={props.handleOrderClick} isSelected={isSelected} isExpanded={isExpanded}/>
       );
       index++;
     });

@@ -53,14 +53,22 @@ function Body(props){
   // Switch between HTTP and HTTPS
   const serverUrl = process.env.REACT_APP_DB;
   // either /orders/ or /orders/complete/
-  const [ordersEndpoint, setOrdersEndpoint] = useState(serverUrl + '/orders/' + restaurant_id);
+  const [ordersEndpoint, setOrdersEndpoint] = useState(serverUrl + props.ordersEndpoint + restaurant_id);
   const markCompletedEndpoint = serverUrl + '/orders/update';
   // if on completed tab
   // const [completed, setCompleted] = useState(false);
   // Holds orders from database in object
   const [orders, setOrders] = useState({});
 
-  const [selectedCard, setSelectedCard] = useState(null);
+  const [selectedCard, setSelectedCard] = useState(0);
+
+  const getOrdersInterval = useRef();
+
+  useEffect(() => {
+    setOrdersEndpoint(serverUrl + props.ordersEndpoint + restaurant_id);
+    console.log(props.ordersEndpoint);
+    getDatabaseOrders();
+  }, [props.ordersEndpoint]);
 
   // If path changes (because of switching tabs: active or complete)
   // or restaurant_id updates for some reason, the correct orders will be pulled from database
@@ -78,21 +86,19 @@ function Body(props){
   // Will happen when switching tabs
   useEffect(() => {
     getDatabaseOrders();
-    changeSelectedOrder(0);
-  }, );
+  }, []);
 
   // Set up things for componentDidMount() componentWillUnmount()
   // Creates method to re-pull orders from database every 10 seconds
-  // useEffect(() => {
-  //   // setupKeyPresses(); <- This will be added in the future
-  //   // updates orders every 10 seconds
-  //   const interval = setInterval(getOrders, 10000); // start interval after mounting
-  //   // While unmounting do this
-  //   return () => {
-  //     isMounted.current = false;
-  //     clearInterval(interval); // clear interval after unmounting
-  //   }
-  // }, []);
+  useEffect(() => {
+    // setupKeyPresses(); <- This will be added in the future
+    // updates orders every 10 seconds
+    getOrdersInterval.current = setInterval(getDatabaseOrders, 10000); // start interval after mounting
+    // While unmounting do this
+    return () => {
+      clearInterval(getOrdersInterval.current); // clear interval after unmounting
+    }
+  }, []);
 
 
 
@@ -139,8 +145,8 @@ function Body(props){
     setOrders(orders);
   }
 
-  function orderClicked(){
-
+  function orderClicked(cardId){
+    changeSelectedOrder(cardId);
   }
 
 
@@ -150,38 +156,33 @@ function Body(props){
       setSelectedCard(cardId);
     }
   }
-  /*
-   function changeOrderStatus(status){
-     if(selectedOrder !== null){
-       const orderNum = Object.keys(orders)[selectedOrder];
-       console.log('Changing order ' + orderNum + ' to ' + status + ', post to ' + completedOrderUrl);
-       const data = 'order_num=' + orderNum + '&order_status=' + status;
-       axios.post(completedOrderUrl,
-         data,
-         {
-           httpsAgent: new https.Agent({
-             rejectUnauthorized: false,
-           }),
-           headers: {
-             'Content-Type': 'application/x-www-form-urlencoded'
-           },
-           cancelToken: source.token
-         })
-         .then(() => {
-           if(isMounted) {
-             getOrders(); // grab orders from database
-             changeSelectedOrder(0);
-           } else {
-             source.cancel('component unmounted');
-           }
-         })
-         .catch(error =>{
-           console.log('post request error');
-           console.error(error);
-         });
-     }
+
+ function changeOrderStatus(status){
+   if(selectedCard !== null){
+     const orderNum = Object.keys(orders)[selectedCard];
+     const data = 'order_num=' + orderNum + '&order_status=' + status;
+     console.log(data);
+     console.log(markCompletedEndpoint);
+     axios.post(markCompletedEndpoint,
+     data,
+{
+          httpsAgent: new https.Agent({
+            rejectUnauthorized: false
+          }),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+        })
+       .then(() => {
+         getDatabaseOrders();// grab updated orders from database
+         changeSelectedOrder(0);
+       })
+       .catch(error =>{
+         console.log('post request error');
+         console.error(error);
+       });
    }
-   */
+ }
   // The following features will be added in the future
   /*
   function setupKeyPresses(){
@@ -234,20 +235,21 @@ function Body(props){
     const newSelectedOrder = key.which - 49;
     changeSelectedOrder(newSelectedOrder);
   }
+*/
 
-  toggleExpandOrder(){
-    const index = this.state.selectedOrder;
-    const orderNum = Object.keys(this.state.orders)[index];
-    let newState = this.state;
-    newState.orders[orderNum].expand = !newState.orders[orderNum].expand;
-    this.setState(newState);
+  function toggleExpandOrder(){
+    const newOrders = {...orders};
+    const orderNum = Object.keys(newOrders)[selectedCard];
+    newOrders[orderNum].expand = !newOrders[orderNum].expand;
+    setOrders(newOrders);
   }
-  */
+
 
   function toolbarButtons(){
     return [
-      <Button key={0} variant="contained" color="primary" className={classes.button}>Completed</Button>,
-      <Button key={1} variant="contained" color="primary" className={classes.button}>Expand</Button>,
+      <Button key={0} variant="contained" color="primary" className={classes.button} onClick={()=>changeOrderStatus('Complete')}>Completed</Button>,
+      <Button key={1} variant="contained" color="primary" className={classes.button} onClick={toggleExpandOrder}>Expand</Button>,
+      <Button key={2} variant="contained" color="primary" className={classes.button} onClick={()=>changeOrderStatus('In Progress')}>Restore</Button>,
     ];
   }
 

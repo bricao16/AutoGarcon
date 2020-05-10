@@ -8,8 +8,7 @@ const StyledTabs = withStyles({
   indicator: {
     height: '5px'
   },
-})((props) => <Tabs {...props} />);
-
+})(props => <Tabs {...props} />);
 
 const useStyles = makeStyles((theme) => ({
   appbar: {
@@ -32,7 +31,17 @@ const useStyles = makeStyles((theme) => ({
   },
   tab: {
     outline: 'none!important',
-    textDecoration: 'none!important'
+    textDecoration: 'none!important',
+    color: '#d8d8d8',
+    '&:hover': {
+      color: '#b7b7b7'
+    }
+  },
+  selected: {
+    color: 'white',
+    '&:hover': {
+      color: 'white'
+    }
   }
 }));
 
@@ -44,7 +53,7 @@ const theme = createMuiTheme({
   },
 });
 
-function Header(){
+function Header(props){
 
   // const theme = useTheme();
   const classes = useStyles(theme);
@@ -61,7 +70,7 @@ function Header(){
           <h3 className={classes.title}>Orders</h3>
           <StyledTabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary"
                 className={classes.tabs} classes={{indicator: {height: "5px"}}}>
-            <Tab label="Active" color="primary" className={classes.tab} component={Link} to={'/cook/orders/active'} />
+            <Tab label="Active" color="primary" className={classes.tab} classes={{selected: classes.selected}} component={Link} to={'/cook/orders/active'} />
             <Tab label="Completed" color="primary" className={classes.tab} component={Link} to={'/cook/orders/completed'} />
           </StyledTabs>
         </Toolbar>

@@ -9,6 +9,9 @@ import Body from "./Body";
 
 function Orders(){
 
+  const activeOrdersEndpoint = "/orders/";
+  const completedOrdersEndpoint = "/orders/complete/";
+
   return(
     <div>
       <Header/>
@@ -18,11 +21,11 @@ function Orders(){
         </Route>
         <Route exact path="/cook/orders/active">
           {/*<ActiveOrders />*/}
-          <Body />
+          <Body ordersEndpoint={activeOrdersEndpoint}/>
         </Route>
         <Route exact path="/cook/orders/completed">
           {/*<CompletedOrders />*/}
-          <Body />
+          <Body ordersEndpoint={completedOrdersEndpoint}/>
         </Route>
       </Switch>
     </div>

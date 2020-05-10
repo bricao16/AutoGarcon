@@ -50,7 +50,10 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'space-between',
   },
   selected: {
-    background: 'red'
+    background: '#00000070'
+  },
+  expanded: {
+    fontSize: '1.5em'
   }
 }));
 
@@ -59,7 +62,7 @@ function OrderCard(props) {
   const theme = useTheme();
   const classes = useStyles(theme);
 
-  const {order, isSelected, isCompleted} = props;
+  const {order, isSelected, isExpanded, isCompleted} = props;
 
   const orderTime = moment(order.order_date, 'YYYY-MM-DD HH:mm:ss');
   const orderTimeString = orderTime.format('LT');
@@ -97,18 +100,14 @@ function OrderCard(props) {
   }
 
   function variableOrderStyles(){
-    // let style = {background: 'red'};
-    // if(isSelected){
-    //   // style.background = '#7e7e7e';
-    //   style.background = 'red';
-    // }
-    // style.background = 'red';
-    // if(order.expand){
-    //   style.fontSize = '1.6em';
-    // }
+    let style = "";
     if(isSelected){
-      return classes.selected;
+      style += classes.selected;
     }
+    if(isExpanded){
+      style += " " + classes.expanded;
+    }
+    return style;
   }
 
   function setupTimeInterval() {
