@@ -1,5 +1,5 @@
 import React from "react";
-import DisplayOrders from "./DisplayOrders";
+import OrderCards from "./OrderCards";
 import Toolbar from "./Toolbar";
 
 function CompletedOrders(){
@@ -14,7 +14,7 @@ function CompletedOrders(){
     <div>
       <p>Completed Orders</p>
       <Toolbar />
-      <DisplayOrders type="completed" path={path} />
+      <OrderCards type="completed" path={path} />
     </div>
   );
 }

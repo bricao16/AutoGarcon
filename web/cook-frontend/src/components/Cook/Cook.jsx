@@ -80,7 +80,11 @@ function Cook() {
 
   // While loading, display loading message
   if(loading){
-    return <p>Loading...</p>
+    return(
+      <div className="spinner-border" role="status">
+        <span className="sr-only">Loading...</span>
+      </div>
+    );
   }
 
   // After being verified and loading restaurant info is done

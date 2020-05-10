@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
   },
   account: {
     marginLeft: 'auto'
+  },
+  logo: {
+    color: 'black'
   }
 }));
 
@@ -59,7 +62,7 @@ function Header(props){
     <ThemeProvider theme={theme}>
       <AppBar className={classes.appBar} position="sticky">
         <Toolbar className={classes.toolbar}>
-          <img src={companyLogo}  width="auto" height="45px" alt="company logo" />
+          <img src={companyLogo}  width="auto" height="45px" alt="company logo" className={classes.logo}/>
           <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
             <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
             <Tab label="Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />

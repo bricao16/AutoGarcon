@@ -4,17 +4,46 @@ import Orders from "./Orders";
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
+import Toolbar from "./Toolbar";
+import OrderCards from "./OrderCards";
+import {makeStyles} from "@material-ui/core";
 // import $ from "jquery"; will be used in future
 
-/*
+const useStyles = makeStyles((theme) => ({
+  main: {
+    margin: theme.spacing(3)
+  },
+  cardsContainer: {
 
- */
+  },
+  toolbarContainer:{
+
+  },
+  separator: {
+    margin: theme.spacing(3, 0),
+    borderBottom: "solid 2px #7e7e7e66"
+  }
+}));
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#0b658a',
+    }
+  },
+});
+
+
 function Body(props){
+
+  const classes = useStyles(theme);
+
   // says where react is in lifecycle, mounted or not
-  const isMounted = useRef(true);
+  // const isMounted = useRef(true);
   // For canceling server request
-  const CancelToken = axios.CancelToken;
-  const source = CancelToken.source();
+  // const CancelToken = axios.CancelToken;
+  // const source = CancelToken.source();
   // Cookies for getting user info
   const cookies = new Cookies();
   // restaurant id obtained from logged in user's cookies
@@ -22,113 +51,103 @@ function Body(props){
   // Switch between HTTP and HTTPS
   const serverUrl = process.env.REACT_APP_DB;
   // either /orders/ or /orders/complete/
-  // const [ordersPath, setOrdersPath] = useState(null);
-  const ordersPath = useRef(null);
-  // server_url concatenated with /orders/update
-  const completedOrderUrl = serverUrl + '/orders/update';
+  const [ordersEndpoint, setOrdersEndpoint] = useState(serverUrl + '/orders/' + restaurant_id);
+  const markCompletedEndpoint = serverUrl + '/orders/update';
   // if on completed tab
-  const [completed, setCompleted] = useState(false);
+  // const [completed, setCompleted] = useState(false);
+  // Holds orders from database in object
+  const [orders, setOrders] = useState({});
+
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   // If path changes (because of switching tabs: active or complete)
   // or restaurant_id updates for some reason, the correct orders will be pulled from database
-  useEffect(() => {
-    if(props.path === '/active'){
-      ordersPath.current = '/orders/' + restaurant_id;
-      setCompleted(false);
-    } else if (props.path === '/completed'){
-      ordersPath.current = '/orders/complete/' + restaurant_id;
-      setCompleted(true);
-    }
-  }, [props.path, restaurant_id]);
+  // useEffect(() => {
+  //   if(props.path === '/active'){
+  //     ordersPath.current = '/orders/' + restaurant_id;
+  //     setCompleted(false);
+  //   } else if (props.path === '/completed'){
+  //     ordersPath.current = '/orders/complete/' + restaurant_id;
+  //     setCompleted(true);
+  //   }
+  // }, [props.path, restaurant_id]);
 
   // When orders database url changes, pull orders
   // Will happen when switching tabs
   useEffect(() => {
-    getOrders();
-    changeSelectedOrder(0);
-  }, [ordersPath.current]);
+    getDatabaseOrders();
+    // changeSelectedOrder(0);
+  }, );
 
   // Set up things for componentDidMount() componentWillUnmount()
   // Creates method to re-pull orders from database every 10 seconds
-  useEffect(() => {
-    // setupKeyPresses(); <- This will be added in the future
-    // updates orders every 10 seconds
-    const interval = setInterval(getOrders, 10000); // start interval after mounting
-    // While unmounting do this
-    return () => {
-      isMounted.current = false;
-      clearInterval(interval); // clear interval after unmounting
-    }
-  }, []);
+  // useEffect(() => {
+  //   // setupKeyPresses(); <- This will be added in the future
+  //   // updates orders every 10 seconds
+  //   const interval = setInterval(getOrders, 10000); // start interval after mounting
+  //   // While unmounting do this
+  //   return () => {
+  //     isMounted.current = false;
+  //     clearInterval(interval); // clear interval after unmounting
+  //   }
+  // }, []);
 
-  // Holds orders from database in object
-  const [orders, setOrders] = useState({});
+
+
+  // Get 'in progress' orders from db
+  function getDatabaseOrders(){
+    // Null until calculated by effect hook
+    axios.get(ordersEndpoint, {
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false,
+      })
+    })
+      .then(res => res.data)
+      .then(orders => {
+        configureOrders(orders);
+      })
+      .catch(error =>{
+        console.log('server request error');
+        console.error(error);
+      });
+  }
 
   // Converts orders returned from database into object that can easily be turned into Order components
-  function configureOrders(orders_database){
-    if(typeof orders_database === 'object'){
-      let ordersState = {};
+  function configureOrders(databaseOrders){
+    let orders = {};
+    if(typeof databaseOrders === 'object'){
       // Iterate over each order
-      Object.values(orders_database).forEach(order => {
+      Object.values(databaseOrders).forEach(order => {
         // Check if that order_num exists
-        if(!(order.order_num in ordersState)){
+        if(!(order.order_num in orders)){
           // Create new order with empty items
-          ordersState[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
+          orders[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
         }
         // If no category provided
         if(!order.category){
           order.category = 'Category';
         }
-        if(!(order.category in ordersState[order.order_num].items)){
-          ordersState[order.order_num].items[order.category] = [];
+        if(!(order.category in orders[order.order_num].items)){
+          orders[order.order_num].items[order.category] = [];
         }
         // Add item to order
-        ordersState[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name});
+        orders[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name});
       });
-      // save orders in orders state
-      setOrders(ordersState);
-    } else {
-      // set orders state to empty because return from database was empty or invalid
-      setOrders({})
     }
+    setOrders(orders);
   }
 
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  function orderClicked(){
 
+  }
+
+  /*
   function changeSelectedOrder(cardId){
     // Check if cardId exists, 0 cards will result in cardId of null
     if(cardId >=0 && cardId < Object.keys(orders).length){
       setSelectedOrder(cardId);
     } else {
       cardId = null;
-    }
-  }
-
-  // Get 'in progress' orders from db
-  function getOrders(){
-    // Null until calculated by effect hook
-    if(ordersPath.current){
-      const url = serverUrl + ordersPath.current;
-      console.log('Fetching ' + url);
-      axios.get(url, {
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false,
-        }),
-        cancelToken: source.token
-      })
-        .then(res => res.data)
-        .then(orders => {
-          if(isMounted) {
-            setOrders({});
-            configureOrders(orders);
-          } else {
-            source.cancel('component unmounted');
-          }
-        })
-        .catch(error =>{
-        console.log('server request error');
-        console.error(error);
-      });
     }
   }
 
@@ -162,7 +181,7 @@ function Body(props){
         });
     }
   }
-
+  */
   // The following features will be added in the future
   /*
   function setupKeyPresses(){
@@ -225,21 +244,20 @@ function Body(props){
   }
   */
 
-  function renderOrders(){
-    // Check if there are orders in orders, if not just write 'No orders'
-    if(Object.keys(orders).length) {
-      return <Orders orders={orders} selectedOrder={selectedOrder} handleCardClick={changeSelectedOrder} completed={completed}/>;
-    }
-    let string = completed ? "No completed orders" : "No active orders";
-    return <p className="px-2">{string}</p>
-  }
-
   return (
-    <div className="p-3">
-      {/*<OrdersHeader handleStatusChangeClick={changeOrderStatus} path={props.path} />*/}
-      {/*<Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={markOrderComplete} />*/}
-      {renderOrders()}
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className={classes.main}>
+        {/*<OrdersHeader handleStatusChangeClick={changeOrderStatus} path={props.path} />*/}
+        {/*<Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={markOrderComplete} />*/}
+        <div className={classes.toolbarContainer} >
+          <Toolbar />
+        </div>
+        <div className={classes.separator}/>
+        <div className={classes.cardsContainer} >
+          <OrderCards orders={orders} handleOrderClick={orderClicked}/>
+        </div>
+      </div>
+    </ThemeProvider>
   )
 }
 

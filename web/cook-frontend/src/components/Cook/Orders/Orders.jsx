@@ -5,6 +5,7 @@ import {Redirect, Route, Switch} from "react-router-dom";
 
 import ActiveOrders from "./ActiveOrders";
 import CompletedOrders from "./CompletedOrders";
+import Body from "./Body";
 
 function Orders(){
 
@@ -16,10 +17,12 @@ function Orders(){
           <Redirect to="/cook/orders/active" />
         </Route>
         <Route exact path="/cook/orders/active">
-          <ActiveOrders />
+          {/*<ActiveOrders />*/}
+          <Body />
         </Route>
         <Route exact path="/cook/orders/completed">
-          <CompletedOrders />
+          {/*<CompletedOrders />*/}
+          <Body />
         </Route>
       </Switch>
     </div>

@@ -1,0 +1,48 @@
+import React, {useEffect, useRef, useState} from "react";
+import Cookies from 'universal-cookie';
+import {makeStyles, Container} from '@material-ui/core'
+import {useTheme} from "@material-ui/core/styles";
+
+// import Orders from "./Orders";
+import axios from "axios";
+import https from "https";
+import OrderCard from "./OrderCard";
+
+
+const useStyles = makeStyles(theme => ({
+  main: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'start',
+    padding: theme.spacing(0)
+  }
+}));
+
+function OrderCards(props){
+
+  const theme = useTheme();
+  const classes = useStyles(theme);
+
+  const {orders} = props;
+
+  let orderCards = [];
+  if(Object.keys(orders).length) {
+    let index = 0;
+    Object.values(orders).forEach(order => {
+      orderCards.push(
+        <OrderCard key={index} cardId={index} order={order} handleOrderClick={props.handleOrderClick} />
+      );
+      index++;
+    });
+    return (
+      <Container maxWidth={false} className={classes.main}>
+        { orderCards }
+      </Container>
+    );
+  }
+  // If there are no orders
+  return <h4>No orders</h4>
+
+}
+
+export default OrderCards;

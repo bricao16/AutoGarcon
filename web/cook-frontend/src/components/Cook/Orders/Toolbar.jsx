@@ -4,7 +4,6 @@ import {createMuiTheme, useTheme} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   main: {
-    marginBottom: theme.spacing(3)
   }
 }));
 
