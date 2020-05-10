@@ -18,6 +18,7 @@ GET /restaurant/:id
 					opening,
 					closing,
 					font,
+					font_color,
 					primary_color,
 					secondary_color,
 					tertiary_color,
@@ -147,7 +148,8 @@ GET /orders/:id
 					item_name,
 					quantity,
 					order_date,
-					table_num
+					table_num,
+					customization
 				}	
 			}
 		If no in progress orders exist:
@@ -166,7 +168,8 @@ GET /orders/complete/:id
 					item_name,
 					quantity,
 					order_date,
-					table_num
+					table_num,
+					customization
 				}	
 			}
 		If no complete orders exist:
@@ -181,18 +184,25 @@ PUT /orders/place
 			"order": {
 				"0": {
 					"item": "22",
-					"quantity": "5"
+					"quantity": "5",
+					"customization": "No pickles, no onion; No ketchup" (Separate customization for each item with a semicolon)
 				},
 				"1": {
 					"item": "1",
-					"quantity": "5"
+					"quantity": "5",
+					"customization": "" (Empty string if no customization needed)
 				}
 			}
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			(200) Successfully placed order!
 		If any inputs are missing:
 			(400) Error: Missing parameter. Required parameters: restaurant_id, customer_id, table_num, order
+		If JWT is not valid or not supplied: 
+			(401) Must be authorized!
+		If JWT is for another customer:
+			(401) Can't order with a different customer's id!
 		On error:
 			(500) Error placing order
 
@@ -294,11 +304,18 @@ GET /favorites/:id
 PUT /favorites/add
 	Adds a restaurant to a customer's favorites
 	Inputs (in body of request): customer_id, restaurant_id
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			(200) Succesfully added restaurant to favorites!
 		If any inputs are missing:
 			(400) Error: Missing parameter. Required parameters: customer_id, restaurant_id
+		If favorite already exists:
+			(409) Favorite already exists
+		If JWT is not valid or not supplied: 
+			(401) Must be authorized!
+		If JWT is for another customer:
+			(401) Can't add to other customer's favorites!
 		On error:
 			(500) Error adding restaurant to favorites
 
@@ -498,7 +515,8 @@ GET /customer/history/:id
 					price,
 					quantity,
 					order_date,
-					table_num
+					table_num,
+					customization
 				}
 			}
 		If a user has no history:
@@ -521,7 +539,8 @@ GET /customer/inprogress/:id
 					price,
 					quantity,
 					order_date,
-					table_num
+					table_num,
+					customization
 				}
 			}
 		If a user has no in progress orders:
@@ -546,13 +565,14 @@ GET /menu/:id
 			{
 				dish_name:
 				{
+					item_id,
 					restaurant,
 					calories,
 					price,
 					category,
-					picture,
 					in_stock,
-					description
+					description,
+					allergens
 				}
 			}
 		If restaurant has no menu items:
@@ -623,6 +643,38 @@ GET /menu/sides/:id
 		On error:
 			(500) Error retrieving sides
 
+GET /menu/image/:id
+	Returns the image for the menu item with item_id = id
+	Inputs: item_id
+	Outputs:
+		On success:
+			{
+				item_id,
+				image
+			}
+		If the item does not exist:
+			(409) This item does not exist
+		On error:
+			(500) Error retrieving image
+
+PUT /menu/allergens/add
+	Adds a new allergen for a menu item
+	Inputs (in body of request): item_id, allergen
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			(200) Successfully added new allergen!
+		If item_id does not exist:
+			(409) Error: item does not exist
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: item_id, allergen
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant they are adding an allergen to:
+			(401) Must be the restaurant manager to add a new allergen!
+		On error:
+			(500) Error adding new allergen
+
 
 //==================================================================================//
 //							ENDPOINTS RELATING TO ALEXAS							//
@@ -690,12 +742,12 @@ PUT /alexa/order/new
 
 PUT /alexa/order/update
 	Updates an existing pending order for an alexa
-	Inputs (in body of request): order_num, item_id, quantity
+	Inputs (in body of request): order_num, item_id, quantity, customization
 	Outputs:
 		On sucess:
 			(200) Successfully updated order!
 		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: order_num, item_id, quantity
+			(400) Error: Missing parameter. Required parameters: order_num, item_id, quantity, customization
 		If order_num does not exist:
 			(409) Error: order does not exist or is not pending
 		On error:
@@ -832,9 +884,9 @@ GET /test/menu/:id
 					calories,
 					price,
 					category,
-					picture,
 					in_stock,
-					description
+					description,
+					allergens (array)
 				}
 			}
 		If menu has no items:
