@@ -40,9 +40,8 @@ public class LoadingScreen extends AppCompatActivity {
         setContentView(R.layout.activity_loading_screen);
 
         pref = new SharedPreference(LoadingScreen.this);
-        ShoppingCartSingleton shoppingCart = new ShoppingCartSingleton();
 
-        pref.setShoppingCart(shoppingCart);
+        pref.setShoppingCart(new ShoppingCartSingleton());
 
         /** Waits for 3000 milliseconds then goes to login activity*/
         new Handler().postDelayed(new Runnable() {

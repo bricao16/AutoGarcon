@@ -1,10 +1,12 @@
 package auto_garcon.cartorderhistory;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,7 +48,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     @Override
     public ShoppingCartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(ct);//this allows the list expand dynamically
-            View view = inflater.inflate(R.layout.shopping_cart_tile,parent,false);//make the list visible
+        View view = inflater.inflate(R.layout.shopping_cart_tile,parent,false);//make the list visible
+
         return new ShoppingCartViewHolder(view);//set visibility on the ShoppingCart
     }
 
@@ -56,6 +59,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         cart = preference.getShoppingCart();
         //Creating a view of a menu item specified by each position.
         //Set the cost and the quantity to the view.
+        holder.itemImage.setImageBitmap(BitmapFactory.decodeByteArray(menuItemArrayList.get(position).getItemImage(), 0, menuItemArrayList.get(position).getItemImage().length));
+
         holder.name.setText(menuItemArrayList.get(position).getNameOfItem());
         menuItemArrayList.get(position).setCost();
         holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
@@ -123,6 +128,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 notifyDataSetChanged();
             }
         });
+
+        holder.editItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
     }
 
     @Override
@@ -138,6 +149,9 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         ImageButton add;//Set actionListener to add button
         ImageButton remove;//Set actionListener to remove (decrement) button
         TextView removeItem;//Set actionListener to remove button
+        TextView editItem;
+        ImageView itemImage;
+
         //set the above variables to each tag on the xml file.
         public ShoppingCartViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -147,6 +161,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             remove = itemView.findViewById(R.id.removeButton);
             price = itemView.findViewById(R.id.price);
             removeItem = itemView.findViewById(R.id.removeItem);
+            editItem = itemView.findViewById(R.id.editItem);
+            itemImage = itemView.findViewById(R.id.item_image_shopping_cart_tile);
         }
     }
 
