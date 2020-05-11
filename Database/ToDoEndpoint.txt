@@ -50,6 +50,7 @@ Web
 
 Android
 -POST image for user profile
+-POST change password
 
 Alexa
 
