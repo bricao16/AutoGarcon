@@ -444,6 +444,24 @@ POST /staff/password/forgot
 		On error:
 			(500) Error recovering password
 
+POST /staff/password/update
+	Updates a staff member's password
+	Inputs (in body of request): staff_id, current_password, new_password
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			(200) Successfully updated password!
+		If JWT is not valid or not supplied:
+			(401) Must be authorized!
+		If JWT is not for staff member trying to change password:
+			(401) Can't change other people's passwords!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: staff_id, current_password, new_password
+		If staff_id/password is wrong:
+			(401) No staff member with that username/password
+		On error:
+			(500) Error updating password
+
 
 //==================================================================================//
 //							ENDPOINTS RELATING TO CUSTOMERS 						//
@@ -595,6 +613,24 @@ POST /customer/password/forgot
 			(400) Error: Missing parameter. Required parameters: customer_id
 		On error:
 			(500) Error recovering password
+
+POST /customer/password/update
+	Updates a customer's password
+	Inputs (in body of request): customer_id, current_password, new_password
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			(200) Successfully updated password!
+		If JWT is not valid or not supplied:
+			(401) Must be authorized!
+		If JWT is not for customer trying to change password:
+			(401) Can't change other people's passwords!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: customer_id, current_password, new_password
+		If customer_id/password is wrong:
+			(401) No customer with that username/password
+		On error:
+			(500) Error updating password
 
 
 //==============================================================================//
