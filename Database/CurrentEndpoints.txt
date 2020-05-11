@@ -359,7 +359,8 @@ POST /staff/login
 					last_name,
 					contact_num,
 					email,
-					position
+					position,
+					temp_password
 				}
 			}
 		On error:
@@ -432,6 +433,17 @@ POST /staff/update
 		On error:
 			(500) Error updating staff info
 
+POST /staff/forgot
+	Resets a forgotten password for a staff member
+	Inputs (in body of request) : staff_id
+	Outputs:
+		On success:
+			(200) Sent an email with instructions for resetting password
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: staff_id
+		On error:
+			(500) Error recovering password
+
 
 //==================================================================================//
 //							ENDPOINTS RELATING TO CUSTOMERS 						//
@@ -450,7 +462,8 @@ POST /customer/login
 					customer_id,
 					first_name,
 					last_name,
-					email
+					email,
+					temp_password
 				}
 			}
 		On error:
@@ -571,6 +584,17 @@ GET /customer/inprogress/:id
 			(401) Can't retrieve other customer's favorites!
 		On error:
 			(500) Error retrieving in progress orders
+
+POST /customer/forgot
+	Resets a forgotten password for a customer
+	Inputs (in body of request): customer_id
+	Outputs:
+		On success:
+			(200) Sent an email with instructions for resetting password
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: customer_id
+		On error:
+			(500) Error recovering password
 
 
 //==============================================================================//

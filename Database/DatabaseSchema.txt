@@ -1,29 +1,26 @@
 Last Updated: 3/31/20
 
 alexas
-  alexa_id          KEY             INT
+  alexa_id          KEY             varchar(350)
   restaurant_id     FOREIGN KEY     INT
-  table_num                         INT
+  table_num                         INT(120)
   
 allergens
   item_id           FOREIGN KEY     INT
   allergen_name     KEY             VARCHAR(50)
-
-availability
-  item_id           FOREIGN KEY         
-  time_name         FOREIGN KEY
-  
-  
+ 
 customers
-  customer_id       KEY             VARCHAR(50)
+  customer_id       KEY             VARCHAR(350)
   first_name                        VARCHAR(50)
   last_name                         VARCHAR(50)
-  salt                              VARCHAR(50)
-  password                          VARCHAR(50)
+  salt                              VARCHAR(128)
+  password                          VARCHAR(128)
   email                             VARCHAR(50)
+  image                             MEDIUMBLOB
+  temp_password                     TINYINT
   
 favorites
-  customer_id       KEY             VARCHAR(50)
+  customer_id       KEY             VARCHAR(350)
   restaurant_id     KEY             INT
 
 fonts
@@ -36,37 +33,40 @@ menu
   item_name                         VARCHAR(50)  
   calorie_num                       INT
   category                          VARCHAR(50) // Alcohol, Appetizer, Dessert, Drink, Entree, Food, Refillable Drink
-  image                             BLOB  
-  in_stock                          BOOLEAN
-  price                             DOUBLE(10,2) // XX,XXX,XXX.XX
+  image                             MEDIUMBLOB  
+  in_stock                          TINYINT
+  price                             DOUBLE
   description                       VARCHAR(300)
 
 orderdetails
   order_num         FOREIGN KEY     INT
   item_id           FOREIGN KEY     INT
   quantity                          INT
-
+  customization                     VARCHAR(300)
+  
 orders
   order_num         KEY             INT
   restaurant_id     FOREIGN KEY     INT
-  customer_id       FOREIGN KEY     VARCHAR(50)
+  customer_id       FOREIGN KEY     VARCHAR(350)
   order_status                      VARCHAR(50) // Cancelled, Complete, In Progress, Pending 
   order_date                        TIMESTAMP // "YYYY-MM-DD HH:MM:SS"
   table_num                         INT
 
 restaurants
   restaurant_id     KEY             INT
-  restaurant_name                   VARCHAR(50)
-  restaurant_addr                   VARCHAR(50)
-  phone_number                      INT
-  opening_time                      TIME
-  closing_time                      TIME
+  restaurant_name                   TEXT
+  restaurant_addr                   TEXT
+  phone_number                      BIFINT
+  opening_time                      BIGINT
+  closing_time                      BIGINT
   font                              VARCHAR(50)
-  logo                              BLOB
+  font_color                        VARCHAR(50)
+  logo                              MEDIUMBLOB
   primary_color                     VARCHAR(50)
   secondary_color                   VARCHAR(50)
   tertiary_color                    VARCHAR(50)
   cuisine                           VARCHAR(50)
+  alexa_greeting                    VARCHAR(100)
   
 services
   restaurant_id     FOREIGN KEY     INT
@@ -85,11 +85,6 @@ staff
   contact_num                       BIGINT
   email                             VARCHAR(50)
   position                          VARCHAR(50) // Cook, Manager
-  password                          VARCHAR(50)
-  salt                              VARCHAR(50)
-
-times
-  time_name         KEY             VARCHAR(50) // Breakfast, Dinner, Lunch, Overnight, All Day
-  restaurant_id     FOREIGN KEY     INT
-  start                             TIME //HH:MM:SS
-  end                               TIME
+  salt                              VARCHAR(128)
+  password                          VARCHAR(128)
+  temp_password                     TINYINT

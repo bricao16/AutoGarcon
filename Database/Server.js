@@ -2,7 +2,7 @@
 	REST-API Server
 	Tucker Urbanski
 	Date Created: 3/2/2020
-	Last Modified: 5/7/2020
+	Last Modified: 5/10/2020
 */
 
 // Built-in Node.js modules
@@ -20,6 +20,8 @@ var dotenv = require('dotenv');
 var jwt = require('jsonwebtoken');
 var luxon = require('luxon');
 var multer = require('multer');
+var nodemailer = require('nodemailer');
+var generator = require('generate-password');
 
 var app = express();
 var upload = multer();
@@ -28,6 +30,15 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}));
 dotenv.config();
+
+//Configure nodemailer
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
 //Create db connection
 var db = mysql.createConnection({
@@ -1090,7 +1101,8 @@ app.post('/favorites/delete', verifyToken, (req, res) => {
 					last_name,
 					contact_num,
 					email,
-					position
+					position,
+					temp_password
 				}
 			}
 		On error:
@@ -1132,6 +1144,8 @@ app.post('/staff/login', (req, res) => {
 						//Sign JWT and send token
 						//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
 						jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
+							//Add temp password flag to staff
+							staff['temp_password'] = rows[0].temp_password;
 							//Build response
 							let response = {
 								'token': token,
@@ -1328,9 +1342,10 @@ app.post('/staff/update', verifyToken, (req, res) => {
 								}	//if
 								else {
 									//Build query and parameters:
-									query = query + ', salt = ?, password = ?';
+									query = query + ', salt = ?, password = ?, temp_password = ?';
 									query = query + ' WHERE staff_id = ?';
-									let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, salt, derivedKey.toString('hex'), staff_id];
+									let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, salt, derivedKey.toString('hex'), '0'
+									, staff_id];
 
 									//Add new staff information to db:
 									db.query(query, parameters, (err, rows) => {
@@ -1412,6 +1427,86 @@ app.post('/staff/update', verifyToken, (req, res) => {
 	});	//verify
 });	//app.post
 
+/*
+	Resets a forgotten password for a staff member
+	Inputs: staff_id
+	Outputs:
+		On success:
+			Sent an email with instructions for resetting password
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: staff_id
+		On error:
+			Error recovering password
+*/
+app.post('/staff/forgot', (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.staff_id !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: staff_id');
+		return;
+	}   //if
+
+	//Make sure the staff_id exists:
+	let query = 'SELECT * FROM sample.staff WHERE staff_id = ?';
+	db.query(query, req.body.staff_id, (err, rows) => {
+		if (rows.length < 1) {
+			res.status(200).send('Sent an email with instructions for resetting password');
+		}   //if
+		else {
+			//Save email
+			let email = rows[0].email;
+
+			//Create a new salt
+			let salt = genSalt();
+
+			//Generate temporary password
+			var password = generator.generate({
+				length: 10,
+				numbers: true,
+				symbols: true,
+				lowercase: true,
+				uppercase: true
+			});	//password
+
+			//Hash password with salt
+			let hashed = crypto.pbkdf2(password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+				if (err) {
+					res.status(500).send('Error recovering password');
+				}	//if
+				else {
+					//Build query and parameters:
+					let parameters = [salt, derivedKey.toString('hex'), '1', req.body.staff_id];
+					let query = 'UPDATE sample.staff SET salt = ?, password = ?, temp_password = ? WHERE staff_id = ?';
+
+					//Add new temp password to db:
+					db.query(query, parameters, (err, rows) => {
+						if (err) {
+							res.status(500).send('Error recovering password');
+						}   //if
+						else {
+							//Send email with temp password
+							let mailOptions = {
+								from: process.env.EMAIL_USER,
+								to: email,
+								subject: 'Autogarcon Password Recovery',
+								text: 'Your password has been reset! Use this temporary password to login: ' + password
+							};	//mailOptions
+
+							transporter.sendMail(mailOptions, (err, info) => {
+								if (err) {
+									res.status(500).send('Error recovering password');
+								}	//if
+								else {
+									res.status(200).send('Sent an email with instructions for resetting password');
+								}	//else
+							});	//sendMail
+						}   //else
+					}); //db.query
+				}   //else
+			}); //hashed
+		}   //else
+	}); //db.query
+});	//app.post
+
 
 //==================================================================================//
 //							ENDPOINTS RELATING TO CUSTOMERS 						//
@@ -1430,7 +1525,8 @@ app.post('/staff/update', verifyToken, (req, res) => {
 					customer_id,
 					first_name,
 					last_name,
-					email
+					email,
+					temp_password
 				}
 			}
 		On error:
@@ -1469,6 +1565,8 @@ app.post('/customer/login', (req, res) => {
 						//Sign JWT and send token
 						//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
 						jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
+							//Add temp password flag to customer
+							customer['temp_password'] = rows[0].temp_password;
 							//Build response
 							let response = {
 								'token': token,
@@ -1658,9 +1756,9 @@ app.post('/customer/update', verifyToken, (req, res) => {
 								}	//if
 								else {
 									//Build query and parameters:
-									query = query + ', salt = ?, password = ?';
+									query = query + ', salt = ?, password = ?, temp_password = ?';
 									query = query + ' WHERE customer_id = ?';
-									let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex'), customer_id];
+									let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex'), '0', customer_id];
 
 									//Add new customer to db:
 									db.query(query, parameters, (err, rows) => {
@@ -1880,6 +1978,86 @@ app.get('/customer/inprogress/:id', verifyToken, (req, res) => {
 		}	//else
 	});	//verify
 }); //app.get
+
+/*
+	Resets a forgotten password for a customer
+	Inputs: customer_id
+	Outputs:
+		On success:
+			Sent an email with instructions for resetting password
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: customer_id
+		On error:
+			Error recovering password
+*/
+app.post('/customer/forgot', (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.customer_id !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: customer_id');
+		return;
+	}   //if
+
+	//Make sure the staff_id exists:
+	let query = 'SELECT * FROM sample.customers WHERE customer_id = ?';
+	db.query(query, req.body.customer_id, (err, rows) => {
+		if (rows.length < 1) {
+			res.status(200).send('Sent an email with instructions for resetting password');
+		}   //if
+		else {
+			//Save email
+			let email = rows[0].email;
+
+			//Create a new salt
+			let salt = genSalt();
+
+			//Generate temporary password
+			var password = generator.generate({
+				length: 10,
+				numbers: true,
+				symbols: true,
+				lowercase: true,
+				uppercase: true
+			});	//password
+
+			//Hash password with salt
+			let hashed = crypto.pbkdf2(password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+				if (err) {
+					res.status(500).send('Error recovering password');
+				}	//if
+				else {
+					//Build query and parameters:
+					let parameters = [salt, derivedKey.toString('hex'), '1', req.body.customer_id];
+					let query = 'UPDATE sample.customers SET salt = ?, password = ?, temp_password = ? WHERE customer_id = ?';
+
+					//Add new temp password to db:
+					db.query(query, parameters, (err, rows) => {
+						if (err) {
+							res.status(500).send('Error recovering password');
+						}   //if
+						else {
+							//Send email with temp password
+							let mailOptions = {
+								from: process.env.EMAIL_USER,
+								to: email,
+								subject: 'Autogarcon Password Recovery',
+								text: 'Your password has been reset! Use this temporary password to login: ' + password
+							};	//mailOptions
+
+							transporter.sendMail(mailOptions, (err, info) => {
+								if (err) {
+									res.status(500).send('Error recovering password');
+								}	//if
+								else {
+									res.status(200).send('Sent an email with instructions for resetting password');
+								}	//else
+							});	//sendMail
+						}   //else
+					}); //db.query
+				}   //else
+			}); //hashed
+		}   //else
+	}); //db.query
+});	//app.post
 
 
 //==============================================================================//
