@@ -1,38 +1,57 @@
-Last Updated: 05/06/2020
+Last Updated: 05/11/2020
 
 RECENTLY FINISHED:
+Web:
+-EDIT /restaurant/update to include cuisine
+-PUT /restaurant/new
+-EDIT /restaurant/customization to include alexa greeting and logo
+-POST /services/update - Updates service status for table
+-GET /services/:id - Retrieves service status for all tables
+-PUT /services/new - Creates a new table in the services table
+-PUT  /menu/allergens/add
+-EDIT /orders/:id and /orders/complete/:id to return customization
+-EDIT /staff/register and /staff/update to make sure email and staff_id are unique
+-POST /staff/forgot (Create temp password)
+  On password forget --> Flag is set to true, create temp password, send email
+  On password update --> Flag is set to false
+  Include flag on login
+  
+Android:
+-POST /services/update - Updates service status for table
+-EDIT /customer/inprogress/:id to include table number
+-EDIT /restaurant/:id to include alexa greeting
+-GET  /menu/image/:id for retrieving images
+-EDIT /menu/:id and /restaurant/:id endpoints to include allergens 
+-EDIT /restaurant/:id and /menu/:id to not return menu images
+-EDIT /favorites/add to make sure the favorite doesn't exist and add JWT verification
+-EDIT /orders/place to add allergens and JWT verification
+-EDIT /customer/inprogress/:id and /customer/history/:id to include customization
+-EDIT /customer/register and /customer/update to make sure email and customer_id are unique
+-POST /customer/forgot (Create temp password)
+  On password forget --> Flag is set to true, create temp password, send email
+  On password update --> Flag is set to false
+  Include flag on login
 
-Database Redesign Test
--GET  /test/restaurant/:restaurant_id gives restaurant information and full item information (with menu)
--GET  /test/menu/:id  gives list of items in a menu
--POST /test/menu/update update a menu
--PUT  /test/menu/add
--PUT  /test/menu/item/add add a item to a menu
+Alexa:
+-POST /services/update - Updates service status for table
+-EDIT /alexa/:id to include alexa greeting
+-EDIT /menu/:id and /restaurant/:id endpoints to add allergens 
+-EDIT /alexa/order/update to add allergens 
 
 ##################################################
 
 TODO:
 Web
--PUT  /restaurant/register
--EDIT post customization to include (cuisine and greeting)
--EDIT upload images
--EDIT get/menu | description, photos, allergen
--EDIT customize to include cuisine and greeting
--EDIT error check for emails if already exists.
--GET  services
--GET  customer experience (Alexa launch)
--POST customer experience
--GET  message_from_customer
--PUT  message_to_customer
+-Add email to new restaurant
+-Update menu/update and menu/add to include optional image
+-Set up defaults for customization
+-POST /staff/position to edit the staff position
+-PUT  message_to_customer (?)
 
 Android
--GET  in progress orders
--POST forget password endpoint | create temp password
--POST image for user
+-POST image for user profile
 
 Alexa
--POST assistance
--GET greeting
 
 ##################################################
 
