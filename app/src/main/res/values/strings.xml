@@ -56,5 +56,8 @@
     <string name="item">Item</string>
     <string name="Remove">Remove</string>
     <string name="privacy">privacy</string>
+    <string name ="error">Oops! Something went wrong. </string>
+    <string name = "errorBody">Please enter a short description of what happened</string>
+    <string name ="errorSubject">Please tell us what your problem relates too</string>
 
 </resources>

@@ -40,7 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import auto_garcon.ExcpetionHandler;
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.cartorderhistory.CurrentOrders;
@@ -78,7 +78,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Thread.setDefaultUncaughtExceptionHandler(new ExcpetionHandler(this));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
         setContentView(R.layout.activity_menu);
         pref = new SharedPreference(this);
 
@@ -419,7 +419,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      */
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        Log.d("hello","HELLLL");
 
         getMenuInflater().inflate(R.menu.bottom_nav_menu,menu);
 

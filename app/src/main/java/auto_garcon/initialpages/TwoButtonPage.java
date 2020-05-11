@@ -37,7 +37,7 @@ public class TwoButtonPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_two_button_page);
         pref = new SharedPreference(this);//file for keeping track of cart
-
+        Log.d("testing"," "+getIntent().getStringExtra("error"));
         StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername(),
                 new Response.Listener<String>() {
                     @Override

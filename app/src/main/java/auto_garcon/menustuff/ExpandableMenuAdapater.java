@@ -23,7 +23,7 @@ import com.example.auto_garcon.R;
 import java.util.HashMap;
 import java.util.List;
 
-import auto_garcon.ExcpetionHandler;
+import auto_garcon.ExceptionHandler;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 
@@ -50,7 +50,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor,int opening,int closing) {
 
         this.context = context;
-        Thread.setDefaultUncaughtExceptionHandler(new ExcpetionHandler(this.context));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
 
         this.listDataHeader = listDataHeader;
         this.listHashMap = listHashMap;
@@ -115,7 +115,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(final int i, final int j, boolean b, View view, ViewGroup viewGroup) {
-        Thread.setDefaultUncaughtExceptionHandler(new ExcpetionHandler(this.context));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
 
         final String childText = getChild(i, j).getNameOfItem();
 
