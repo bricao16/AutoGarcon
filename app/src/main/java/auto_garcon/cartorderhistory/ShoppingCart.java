@@ -110,6 +110,8 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+
         /**
          * Ties the cart xml to a Java object and sets the adapter, which will manage each
          * individual item in the cart.
@@ -117,7 +119,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         adapter = new ShoppingCartAdapter(this,shoppingCart.getCart());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         Button PlaceOrderButton = findViewById(R.id.btn_placeorder);
 
         PlaceOrderButton.setOnClickListener(new View.OnClickListener() {

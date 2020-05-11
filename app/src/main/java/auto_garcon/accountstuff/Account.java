@@ -79,7 +79,6 @@ public class Account extends AppCompatActivity {
                 final String firstName = changeFirstName.getText().toString().trim();
                 final String lastName = changeLastName.getText().toString().trim();
                 final String email = changeEmail.getText().toString().trim();
-                final String passwd = changePassword.getText().toString().trim();
                 final String username = changeUsername.getText().toString().trim();
 
                 if(TextUtils.isEmpty(firstName)){//checking if user entered their firstName

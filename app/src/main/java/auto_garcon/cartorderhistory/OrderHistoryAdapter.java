@@ -69,15 +69,11 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         return new OrderHistoryViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderHistoryViewHolder holder, final int position) {
         holder.order_num.setText(restaurantName.get(position));// set the text for the order tile
-
         holder.restaurant_num.setText(Integer.toString(carts.get(position).getRestaurantID()));// set the restruant id to allow us to re order
-
         holder.date.setText(date.get(position));// set the date in the order tile card
-
         holder.restaurant.setImageBitmap(BitmapFactory.decodeByteArray(logos.get(position),0,logos.get(position).length));// set the image of the resturant to the image view on the order_tile card
 
         holder.items.setOnClickListener(new View.OnClickListener() {// when they user clicks on view items text view on the order tile card

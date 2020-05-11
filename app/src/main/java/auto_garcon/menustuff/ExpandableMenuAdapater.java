@@ -18,7 +18,14 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +33,7 @@ import java.util.List;
 import auto_garcon.ExcpetionHandler;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
+import auto_garcon.singleton.VolleySingleton;
 
 /*
 This is a container for menu pages that the user can see.
@@ -43,6 +51,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private String tertiaryColor;
     private int opening;
     private int closing;
+    private byte[] itemImageByteArray;
 
     Dialog addToCartPopup;
     Dialog confirmPopup;
@@ -139,13 +148,44 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 ConstraintLayout background = addToCartPopup.findViewById(R.id.menu_popup);
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart_menu_popup);
+                Button closeMenuItemPopup = addToCartPopup.findViewById(R.id.add_to_cart_popup_close);
                 TextView outOfStock = addToCartPopup.findViewById(R.id.order_items);
                 TextView calorieCount = addToCartPopup.findViewById(R.id.item_calories_menu_popup);
                 TextView itemName = addToCartPopup.findViewById(R.id.item_name_menu_popup);
                 TextView itemPrice = addToCartPopup.findViewById(R.id.item_price_menu_popup);
                 TextView itemDescription = addToCartPopup.findViewById(R.id.item_description_menu_popup);
 
-                ImageView imageOfItem = addToCartPopup.findViewById(R.id.item_image_menu_popup);
+                final ImageView imageOfItem = addToCartPopup.findViewById(R.id.item_image_menu_popup);
+                StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/menu/image/" + getChild(i, j).getItemID(),
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject imageData = new JSONObject(response);
+
+                                    itemImageByteArray = new byte[imageData.getJSONObject("image").getJSONArray("data").length()];
+
+                                    for(int i = 0; i < itemImageByteArray.length; i++) {
+                                        itemImageByteArray[i] = (byte) (((int) imageData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
+                                    }
+
+                                    imageOfItem.setImageBitmap(BitmapFactory.decodeByteArray(itemImageByteArray, 0, itemImageByteArray.length));
+                                }
+                                catch(JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+                        }
+                );
+
+                VolleySingleton.getInstance(context).addToRequestQueue(getItemImageRequest);
 
                 background.setBackgroundColor(Color.parseColor(secondaryColor));
 
@@ -156,11 +196,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 itemPrice.setText("Price: " + String.format("$%.02f", getChild(i, j).getPrice()));
                 itemPrice.setTextColor(Color.WHITE);
                 itemDescription.setText(getChild(i, j).getDescription());
-
-                if(getChild(i, j).getItemID() == 8) {
-                    byte[] hi = getChild(i, j).getItemImage();
-                    imageOfItem.setImageBitmap(BitmapFactory.decodeByteArray(hi, 0, getChild(i, j).getItemImage().length));
-                }
 
                 //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
                 if(getChild(i, j).getAmountInStock() == 0) {
@@ -180,7 +215,11 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                         cart.setPrimaryColor(primaryColor);
                         cart.setSecondaryColor(secondaryColor);
                         cart.setTertiaryColor(tertiaryColor);
-                        cart.addToCart(getChild(i, j));
+
+                        MenuItem itemToBeAdded = getChild(i, j);
+                        itemToBeAdded.setItemImage(itemImageByteArray);
+
+                        cart.addToCart(itemToBeAdded);
                         pref.setShoppingCart(cart);
                         addToCartPopup.dismiss();
                     }
@@ -191,7 +230,10 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                             cart.cartContainsItem(getChild(i, j)).incrementQuantity();
                         }
                         else {
-                            cart.addToCart(getChild(i, j));
+                            MenuItem itemToBeAdded = getChild(i, j);
+                            itemToBeAdded.setItemImage(itemImageByteArray);
+
+                            cart.addToCart(itemToBeAdded);
                         }
 
                         pref.setShoppingCart(cart);
@@ -220,7 +262,11 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 cart.setPrimaryColor(primaryColor);
                                 cart.setSecondaryColor(secondaryColor);
                                 cart.setTertiaryColor(tertiaryColor);
-                                cart.addToCart(getChild(i, j));
+
+                                MenuItem itemToBeAdded = getChild(i, j);
+                                itemToBeAdded.setItemImage(itemImageByteArray);
+                                cart.addToCart(itemToBeAdded);
+
                                 pref.setShoppingCart(cart);
                                 pref.getShoppingCart().setEndingHour(closing);
                                 pref.getShoppingCart().setStartingHour(opening);
@@ -239,6 +285,13 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                             }
                         });
                     }
+                    }
+                });
+
+                closeMenuItemPopup.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addToCartPopup.dismiss();
                     }
                 });
             }

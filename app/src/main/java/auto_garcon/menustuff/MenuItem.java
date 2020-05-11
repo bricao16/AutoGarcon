@@ -16,9 +16,10 @@ public class MenuItem implements Serializable{
     private int quantity;
     private int itemID;
     private byte[] itemImage;
+    private String customization;
 
     public MenuItem() {
-        this.description = "";
+        this.customization = "";
         this.quantity = 1;
     }
 

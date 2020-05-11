@@ -140,17 +140,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                         public void onClick(View v) {
                             addOrRemoveFavorite.setText("Add to favorites");
 
-                            obj = new JSONObject();//json object that will be sent as the request parameter
-
-                            try {
-                                obj.put("customer_id", pref.getUser().getUsername());
-                                obj.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0));
-                            }
-                            catch (JSONException e) {
-                                //TODO figure out how to handle this other than stack trace
-                                e.printStackTrace();
-                            }
-
                             StringRequest deleteRequest = new StringRequest(Request.Method.POST, "http://50.19.176.137:8000/favorites/delete",
                                     new Response.Listener<String>() {
                                         @Override
@@ -168,13 +157,11 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                     }
                             ) {
                                 @Override
-                                public byte[] getBody() throws AuthFailureError {
-                                    return obj.toString().getBytes();
-                                }
-
-                                @Override
-                                public String getBodyContentType() {
-                                    return "application/json";
+                                protected Map<String, String> getParams() {// inserting parameters for the put request
+                                    Map<String, String> params = new HashMap<String, String>();
+                                    params.put("customer_id", pref.getUser().getUsername());
+                                    params.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0)+"");
+                                    return params;
                                 }
 
                                 @Override
@@ -198,15 +185,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     addOrRemoveFavorite.setText("Remove from favorites");
                     pref.addToFavorites(getIntent().getIntExtra("restaurant id", 0));
 
-                    obj = new JSONObject();//json object that will be sent as the request parameter
-
-                    try {
-                        obj.put("customer_id", pref.getUser().getUsername());
-                        obj.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0));
-                    }catch (JSONException e){
-                        //TODO figure out how to handle this other than stack trace
-                        e.printStackTrace();
-                    }
 
                     StringRequest putRequest = new StringRequest(Request.Method.PUT, "http://50.19.176.137:8000/favorites/add",
                             new Response.Listener<String>()
@@ -227,13 +205,18 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             }
                     ) {
                         @Override
-                        public byte[] getBody() throws AuthFailureError {
-                            return obj.toString().getBytes();
+                        protected Map<String, String> getParams() {// inserting parameters for the put request
+                            Map<String, String> params = new HashMap<String, String>();
+                            params.put("customer_id", pref.getUser().getUsername());
+                            params.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0)+"");
+                            return params;
                         }
 
                         @Override
-                        public String getBodyContentType() {
-                            return "application/json";
+                        public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                            HashMap<String,String> headers = new HashMap<String,String>();
+                            headers.put("Authorization","Bearer " + pref.getAuth());
+                            return headers;
                         }
                     };
 
@@ -517,16 +500,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
             itemToBeAdded.setAmountInStock(menuItemCategories.getInt("in_stock"));
             itemToBeAdded.setDescription(menuItemCategories.getString("description"));
-
-            byte[] menuItemImageByteArray = new byte[menuItemCategories.getJSONObject("picture").getJSONArray("data").length()];
-
-            for(int i = 0; i < menuItemImageByteArray.length; i++) {
-                menuItemImageByteArray[i] = (byte) (((int) menuItemCategories.getJSONObject("picture").getJSONArray("data").get(i)) & 0xFF);
-            }
-
-            if(menuItemCategories.getInt("item_id") == 8) {
-                itemToBeAdded.setItemImage(menuItemImageByteArray);
-            }
         }
         catch (JSONException e) {
             e.printStackTrace();
