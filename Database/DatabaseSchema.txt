@@ -1,9 +1,9 @@
 Last Updated: 3/31/20
 
 alexas
-  alexa_id          KEY             varchar(350
+  alexa_id          KEY             varchar(350)
   restaurant_id     FOREIGN KEY     INT
-  table_num                         INT(120
+  table_num                         INT(120)
   
 allergens
   item_id           FOREIGN KEY     INT
