@@ -110,11 +110,16 @@ public class QRcode extends AppCompatActivity {
                 txt_result.post(new Runnable() {
                     @Override
                     public void run() {
-                        Intent menu = new Intent(QRcode.this, Menu.class);
-                        menu.putExtra("restaurant id",Integer.parseInt(data));
                         UserSingleton user = pref.getUser();
                         user.setRestaurantID(Integer.parseInt(data));
                         pref.setUser(user);
+
+                        if(getIntent().getBooleanExtra("is from cart activity", false)) {
+                            startActivity(new Intent(QRcode.this, ShoppingCart.class));
+                        }
+
+                        Intent menu = new Intent(QRcode.this, Menu.class);
+                        menu.putExtra("restaurant id", Integer.parseInt(data));
                         startActivity(menu);
                     }
                 });

@@ -59,6 +59,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     private ShoppingCartAdapter adapter;
     private StringRequest putRequest;
     private Dialog confirmPopup;
+    private Dialog goToQRScannerPopup;
     private Dialog clearCartPopup;
     DrawerLayout drawerLayout;
     Toolbar toolbar;
@@ -90,6 +91,8 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          */
         if(shoppingCart.getCart().size() == 0 || shoppingCart.getCart() == null) {
             recyclerView.setVisibility(View.GONE);
+            findViewById(R.id.btn_placeorder).setVisibility(View.GONE);
+            findViewById(R.id.btn_cancel).setVisibility(View.GONE);
         }
         else{
             findViewById(R.id.no_items_in_cart).setVisibility(View.GONE);
@@ -120,97 +123,122 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         PlaceOrderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /** Where the put request starts to get created. */
-                obj = new JSONObject();
-
-                /** Creates and builds the JSON object that will eventually be sent to the database. */
-                try {
-                    JSONObject order = new JSONObject();
-                    for (int i = 0; i < shoppingCart.getCart().size(); i++) {
-                        JSONObject item = new JSONObject();
-
-                        item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
-                        item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
-                        order.put(Integer.toString(i), item);
-                    }
-
-                    obj.put("restaurant_id", Integer.toString(shoppingCart.getRestaurantID()));
-                    obj.put("customer_id", pref.getUser().getUsername());
-                    obj.put("table_num", 6);
-                    obj.put("order", order);
-                } catch (JSONException e) {
-                    //TODO figure out how to handle this other than stack trace
-                    e.printStackTrace();
-                    Toast.makeText(ShoppingCart.this, "Error occured", Toast.LENGTH_LONG).show();
-
+                if(pref.getShoppingCart().getStartingHour() > Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) && Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) < pref.getShoppingCart().getEndingHour()){
+                    Toast.makeText(ShoppingCart.this,"The restaurant is currently closed.",Toast.LENGTH_LONG).show();
                 }
+                else if(pref.getUser().getRestaurantID() != pref.getShoppingCart().getRestaurantID()){
+                    goToQRScannerPopup = new Dialog(ShoppingCart.this);
+                    goToQRScannerPopup.setContentView(R.layout.confirm_popup);
+                    goToQRScannerPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    goToQRScannerPopup.show();
 
-                /**
-                 * Builds the StringRequest that will be sent to the database. As well as
-                 * overriding the onResponse and onErrorResponse for our own use.
-                 */
-                putRequest = new StringRequest(Request.Method.PUT, "http://50.19.176.137:8000/orders/place",
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Toast.makeText(ShoppingCart.this, response, Toast.LENGTH_LONG).show();
+                    Button confirmYes = goToQRScannerPopup.findViewById(R.id.popup_yes);
+                    Button confirmClose = goToQRScannerPopup.findViewById(R.id.confirm_close);
+
+                    TextView dynamicPopupText = goToQRScannerPopup.findViewById(R.id.text_confirm_popup);
+
+                    dynamicPopupText.setText("Restaurant code has not been scanned, go to scanner page?");
+
+                    confirmYes.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //Clear the order
+
+                            Intent QRcode = new Intent(ShoppingCart.this, QRcode.class);
+                            QRcode.putExtra("is from cart activity", true);
+
+                            startActivity(QRcode);
+                            goToQRScannerPopup.dismiss();
+                        }
+                    });
+
+                    confirmClose.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            goToQRScannerPopup.dismiss();
+                        }
+                    });
+                }
+                else {
+                    confirmPopup = new Dialog(ShoppingCart.this);
+                    confirmPopup.setContentView(R.layout.confirm_popup);
+                    confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    confirmPopup.show();
+                    Button confirmYes = confirmPopup.findViewById(R.id.popup_yes);
+                    Button confirmClose = confirmPopup.findViewById(R.id.confirm_close);
+
+                    TextView dynamicPopupText = confirmPopup.findViewById(R.id.text_confirm_popup);
+
+                    dynamicPopupText.setText("Confirm Order?");
+
+                    confirmYes.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            /** Where the put request starts to get created. */
+                            obj = new JSONObject();
+
+                            /** Creates and builds the JSON object that will eventually be sent to the database. */
+                            try {
+                                JSONObject order = new JSONObject();
+                                for (int i = 0; i < shoppingCart.getCart().size(); i++) {
+                                    JSONObject item = new JSONObject();
+
+                                    item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
+                                    item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
+                                    order.put(Integer.toString(i), item);
+                                }
+
+                                obj.put("restaurant_id", Integer.toString(shoppingCart.getRestaurantID()));
+                                obj.put("customer_id", pref.getUser().getUsername());
+                                obj.put("table_num", 6);
+                                obj.put("order", order);
+                            } catch (JSONException e) {
+                                //TODO figure out how to handle this other than stack trace
+                                e.printStackTrace();
+                                Toast.makeText(ShoppingCart.this, "Error occured", Toast.LENGTH_LONG).show();
                             }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                error.printStackTrace();
-                                Toast.makeText(ShoppingCart.this, error.toString(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                );
 
-                confirmPopup = new Dialog(ShoppingCart.this);
-                confirmPopup.setContentView(R.layout.place_order_confirmation_popup);
-                confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                confirmPopup.show();
-                Button confirmYes = confirmPopup.findViewById(R.id.confirm_yes);
-                Button confirmNo = confirmPopup.findViewById(R.id.confirm_not);
-                Button confirmClose = confirmPopup.findViewById(R.id.confirm_close);
+                            /**
+                             * Builds the StringRequest that will be sent to the database. As well as
+                             * overriding the onResponse and onErrorResponse for our own use.
+                             */
+                            putRequest = new StringRequest(Request.Method.PUT, "http://50.19.176.137:8000/orders/place",
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            Toast.makeText(ShoppingCart.this, response, Toast.LENGTH_LONG).show();
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            error.printStackTrace();
+                                            Toast.makeText(ShoppingCart.this, error.toString(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                            );
 
-                confirmYes.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-
-                        /** Sending the actual putRequest. */
-                        if(pref.getShoppingCart().getStartingHour() > Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) && Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) < pref.getShoppingCart().getEndingHour()){
-                            Toast.makeText(ShoppingCart.this,"The restaurant is Currently closed",Toast.LENGTH_LONG).show();
-                        }
-                        else if(pref.getUser().getRestaurantID() != pref.getShoppingCart().getRestaurantID()){
-                            Toast.makeText(ShoppingCart.this,"Please scan The QR code of the Targeted Restaurant",Toast.LENGTH_LONG).show();
-                        }
-                        else {
-                                VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
+                            VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
 
                             Toast.makeText(ShoppingCart.this, "Your order has been placed",Toast.LENGTH_LONG).show();
 
-
                             //Clear the order
-                                shoppingCart = new ShoppingCartSingleton();
-                                startActivity(new Intent(ShoppingCart.this, ShoppingCart.class));
+                            shoppingCart = new ShoppingCartSingleton();
+                            findViewById(R.id.shopping_cart_list).setVisibility(View.GONE);
+                            findViewById(R.id.btn_placeorder).setVisibility(View.GONE);
+                            findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+                            findViewById(R.id.no_items_in_cart).setVisibility(View.VISIBLE);
+                            confirmPopup.dismiss();
                         }
+                    });
 
-                        confirmPopup.dismiss();
-                    }
-                });
-
-                confirmNo.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Toast.makeText(ShoppingCart.this, "Not Confirmed yet",Toast.LENGTH_LONG).show();
-                        confirmPopup.dismiss();
-                    }
-                });
-
-                confirmClose.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Toast.makeText(ShoppingCart.this, "Confirm closed",Toast.LENGTH_LONG).show();
-                        confirmPopup.dismiss();
-                    }
-                });
+                    confirmClose.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            confirmPopup.dismiss();
+                        }
+                    });
+                }
             }
         });
 
@@ -220,35 +248,33 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 clearCartPopup = new Dialog(ShoppingCart.this);
-                clearCartPopup.setContentView(R.layout.clear_cart_popup);
+                clearCartPopup.setContentView(R.layout.confirm_popup);
                 clearCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 clearCartPopup.show();
-                Button confirmYes = clearCartPopup.findViewById(R.id.confirm_yes);
-                Button confirmNo = clearCartPopup.findViewById(R.id.confirm_not);
+                Button confirmYes = clearCartPopup.findViewById(R.id.popup_yes);
                 Button confirmClose = clearCartPopup.findViewById(R.id.confirm_close);
+
+                TextView dynamicPopupText = clearCartPopup.findViewById(R.id.text_confirm_popup);
+
+                dynamicPopupText.setText("Are you sure you want to clear your cart?");
 
                 confirmYes.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        Toast.makeText(ShoppingCart.this, "Yes Confirmed",Toast.LENGTH_LONG).show();
+                        Toast.makeText(ShoppingCart.this, "Cart has been cleared",Toast.LENGTH_LONG).show();
                         //Clear the order
                         shoppingCart = new ShoppingCartSingleton();
                         pref.setShoppingCart(shoppingCart);
 
-                        startActivity(new Intent(ShoppingCart.this, ShoppingCart.class));
-
+                        findViewById(R.id.shopping_cart_list).setVisibility(View.GONE);
+                        findViewById(R.id.btn_placeorder).setVisibility(View.GONE);
+                        findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+                        findViewById(R.id.no_items_in_cart).setVisibility(View.VISIBLE);
                         clearCartPopup.dismiss();
                     }
                 });
 
-                confirmNo.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Toast.makeText(ShoppingCart.this, "Not Confirmed yet",Toast.LENGTH_LONG).show();
-                        clearCartPopup.dismiss();
-                    }
-                });
                 confirmClose.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        Toast.makeText(ShoppingCart.this, "Confirm closed",Toast.LENGTH_LONG).show();
                         clearCartPopup.dismiss();
                     }
                 });

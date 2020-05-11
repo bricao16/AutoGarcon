@@ -48,7 +48,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     public  OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date,ArrayList<String> restaurantName,ArrayList<byte[]> logos){
         ct = ctx;
         this.logos = logos;
-        pref = preference;
+        this.pref = preference;
         this.order = order;
         this.carts = carts;
         this.date = date;
@@ -97,31 +97,40 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         holder.reOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                confirmPopup = new Dialog(ct);
-                confirmPopup.setContentView(R.layout.confirm_popup);
-                confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                confirmPopup.show();
-                Button confirmYes = confirmPopup.findViewById(R.id.confirm_clear);
-                Button confirmClose = confirmPopup.findViewById(R.id.confirm_close);
+                if(pref.getShoppingCart().getCart().size() > 0) {
+                    confirmPopup = new Dialog(ct);
+                    confirmPopup.setContentView(R.layout.confirm_popup);
+                    confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    confirmPopup.show();
+                    Button confirmYes = confirmPopup.findViewById(R.id.popup_yes);
+                    Button confirmClose = confirmPopup.findViewById(R.id.confirm_close);
 
-                confirmYes.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Toast.makeText(ct, "Yes Confirmed",Toast.LENGTH_LONG).show();
-                        //Clear the order if the item's are available during the correct time
+                    confirmYes.setText("Confirm");
+                    TextView dynamicPopupText= confirmPopup.findViewById(R.id.text_confirm_popup);
+                    dynamicPopupText.setText("Adding this item will remove the other items currently in cart.");
 
-                        pref.setShoppingCart(carts.get(position));
-                        confirmPopup.dismiss();
-                    }
-                });
-                confirmClose.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Toast.makeText(ct, "Confirm closed",Toast.LENGTH_LONG).show();
-                        confirmPopup.dismiss();
-                    }
-                });
+                    confirmYes.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            Toast.makeText(ct, "Successfully added to cart.",Toast.LENGTH_LONG).show();
+                            //Clear the order if the item's are available during the correct time
+
+                            pref.setShoppingCart(carts.get(position));
+                            confirmPopup.dismiss();
+                        }
+                    });
+                    confirmClose.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            confirmPopup.dismiss();
+                        }
+                    });
+                }
+                else {
+                    Toast.makeText(ct, "Successfully added to cart.",Toast.LENGTH_LONG).show();
+                    //Clear the order if the item's are available during the correct time
+
+                    pref.setShoppingCart(carts.get(position));
+                }
             }
-
-
         });
     }
 

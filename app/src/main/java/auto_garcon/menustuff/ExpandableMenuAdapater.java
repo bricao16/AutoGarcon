@@ -134,10 +134,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 addToCartPopup = new Dialog(context);
-                confirmPopup = new Dialog(context);
 
                 addToCartPopup.setContentView(R.layout.menu_item_popup);
-
 
                 ConstraintLayout background = addToCartPopup.findViewById(R.id.menu_popup);
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart_menu_popup);
@@ -148,7 +146,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 TextView itemDescription = addToCartPopup.findViewById(R.id.item_description_menu_popup);
 
                 ImageView imageOfItem = addToCartPopup.findViewById(R.id.item_image_menu_popup);
-
 
                 background.setBackgroundColor(Color.parseColor(secondaryColor));
 
@@ -162,8 +159,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 if(getChild(i, j).getItemID() == 8) {
                     byte[] hi = getChild(i, j).getItemImage();
-                    Log.d("SDFSDFSDF", getChild(i, j).getItemImage().length+"");
-
                     imageOfItem.setImageBitmap(BitmapFactory.decodeByteArray(hi, 0, getChild(i, j).getItemImage().length));
                 }
 
@@ -176,63 +171,74 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 addToCartPopup.show();
-                Button confirmClose = addToCartPopup.findViewById(R.id.confirm_close);
-                    addToCart.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(pref.getShoppingCart().getCart().size() == 0) {
-                            cart = new ShoppingCartSingleton(restaurantID);
-                            cart.setPrimaryColor(primaryColor);
-                            cart.setSecondaryColor(secondaryColor);
-                            cart.setTertiaryColor(tertiaryColor);
-                            cart.addToCart(getChild(i, j));
-                            pref.setShoppingCart(cart);
-                        }
-                        else if(pref.getShoppingCart().getRestaurantID() == restaurantID) {
-                            cart = pref.getShoppingCart();
 
-                            if(cart.cartContainsItem(getChild(i, j)) != null) {
-                                cart.cartContainsItem(getChild(i, j)).incrementQuantity();
-                            }
-                            else {
-                                cart.addToCart(getChild(i, j));
-                            }
-
-                            pref.setShoppingCart(cart);
-                            pref.getShoppingCart().setEndingHour(closing);
-                            pref.getShoppingCart().setStartingHour(closing);
-                        }
-                        else if(pref.getShoppingCart().getRestaurantID() != restaurantID) {
-                            confirmPopup.setContentView(R.layout.confirm_popup);
-
-                            confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                            confirmPopup.show();
-
-                            Button confirmClearCart = confirmPopup.findViewById(R.id.confirm_clear);
-
-                            confirmClearCart.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    cart = new ShoppingCartSingleton(restaurantID);
-                                    cart.setPrimaryColor(primaryColor);
-                                    cart.setSecondaryColor(secondaryColor);
-                                    cart.setTertiaryColor(tertiaryColor);
-                                    cart.addToCart(getChild(i, j));
-                                    pref.setShoppingCart(cart);
-                                    pref.getShoppingCart().setEndingHour(closing);
-                                    pref.getShoppingCart().setStartingHour(opening);
-                                    confirmPopup.dismiss();
-                                    addToCartPopup.dismiss();
-                                }
-                            });
-                        }
-                    }
-                });
-                confirmClose.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Toast.makeText(context, "Confirm closed",Toast.LENGTH_LONG).show();
-                        confirmPopup.dismiss();
+                addToCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(pref.getShoppingCart().getCart().size() == 0) {
+                        cart = new ShoppingCartSingleton(restaurantID);
+                        cart.setPrimaryColor(primaryColor);
+                        cart.setSecondaryColor(secondaryColor);
+                        cart.setTertiaryColor(tertiaryColor);
+                        cart.addToCart(getChild(i, j));
+                        pref.setShoppingCart(cart);
                         addToCartPopup.dismiss();
+                    }
+                    else if(pref.getShoppingCart().getRestaurantID() == restaurantID) {
+                        cart = pref.getShoppingCart();
+
+                        if(cart.cartContainsItem(getChild(i, j)) != null) {
+                            cart.cartContainsItem(getChild(i, j)).incrementQuantity();
+                        }
+                        else {
+                            cart.addToCart(getChild(i, j));
+                        }
+
+                        pref.setShoppingCart(cart);
+                        pref.getShoppingCart().setEndingHour(closing);
+                        pref.getShoppingCart().setStartingHour(closing);
+                        addToCartPopup.dismiss();
+                    }
+                    else if(pref.getShoppingCart().getRestaurantID() != restaurantID) {
+                        confirmPopup = new Dialog(context);
+                        confirmPopup.setContentView(R.layout.confirm_popup);
+
+                        TextView dynamicPopupText = confirmPopup.findViewById(R.id.text_confirm_popup);
+
+                        dynamicPopupText.setText("Adding this item will remove the other items currently in cart.");
+
+                        confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        confirmPopup.show();
+
+                        Button confirmClearCart = confirmPopup.findViewById(R.id.popup_yes);
+                        confirmClearCart.setText("Confirm");
+
+                        confirmClearCart.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                cart = new ShoppingCartSingleton(restaurantID);
+                                cart.setPrimaryColor(primaryColor);
+                                cart.setSecondaryColor(secondaryColor);
+                                cart.setTertiaryColor(tertiaryColor);
+                                cart.addToCart(getChild(i, j));
+                                pref.setShoppingCart(cart);
+                                pref.getShoppingCart().setEndingHour(closing);
+                                pref.getShoppingCart().setStartingHour(opening);
+                                confirmPopup.dismiss();
+                                addToCartPopup.dismiss();
+                                Toast.makeText(context, "Successfully added to cart.",Toast.LENGTH_LONG).show();
+
+                            }
+                        });
+
+                        Button confirmClose = confirmPopup.findViewById(R.id.confirm_close);
+
+                        confirmClose.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                confirmPopup.dismiss();
+                            }
+                        });
+                    }
                     }
                 });
             }
