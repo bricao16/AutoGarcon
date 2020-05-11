@@ -88,6 +88,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
          */
         final DrawerLayout drawerLayout = findViewById(R.id.restaurant_main);// associating xml objects with the java Object equivalent
         Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
@@ -381,8 +383,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 };
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-    }
 
+    }
     /**
      * Initialize the contents of the Activity's standard options menu.  You
      * should place your menu items in to <var>menu</var>.
@@ -413,24 +415,30 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      */
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        Log.d("Adsd","Hello");
+        Log.d("hello","HELLLL");
 
-        getMenuInflater().inflate(R.menu.bottom_nav_menu, menu);
-        final MenuItem menuItem = menu.findItem(R.id.cart_badge);
+        getMenuInflater().inflate(R.menu.bottom_nav_menu,menu);
 
-        View actionView = menuItem.getActionView();
-        cartCounter =(TextView) actionView.findViewById(R.id.cart_badge);
+        MenuItem item = menu.findItem(R.id.action_cart);
+        Log.d("hello","testing "+item);
 
+        cartCounter =  item.getActionView().findViewById(R.id.cart_badge);
         setUpBadge();
-
-
-        return  true;
+        return super.onCreateOptionsMenu(menu);
     }
 
+
+
     private void setUpBadge(){
+
         if(cartCounter!= null){
+
             if(pref.getShoppingCart().getCart().size()==0){
+                Log.d("hell1o","HELLLL");
+
                 if(cartCounter.getVisibility()!=View.GONE){
+                    Log.d("hell2o","HELLLL");
+
                     cartCounter.setVisibility((View.GONE));
                 }
 
