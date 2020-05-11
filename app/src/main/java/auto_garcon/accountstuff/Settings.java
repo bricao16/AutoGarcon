@@ -76,6 +76,7 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 
         Button faqButton = findViewById(R.id.faqButton);// associating xml objects with the java Object equivalent
         Button privacyLegalButton = findViewById(R.id.privacyLegalButton);// associating xml objects with the java Object equivalent
+        Button termsLegalButton = findViewById(R.id.termsLegalButton);// associating xml objects with the java Object equivalent
 
         faqButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +90,15 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
             @Override
             public void onClick(View v) {
                 Intent privacy = new Intent(getBaseContext(),   Privacy.class);
+                startActivity(privacy);
+
+            }
+        });
+
+        termsLegalButton.setOnClickListener(new View.OnClickListener() {// when the legal button is clicked user is sent to the legal page
+            @Override
+            public void onClick(View v) {
+                Intent privacy = new Intent(getBaseContext(),   Terms.class);
                 startActivity(privacy);
 
             }
