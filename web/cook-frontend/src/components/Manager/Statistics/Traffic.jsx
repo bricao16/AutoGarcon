@@ -59,7 +59,7 @@ class HighestSelling extends React.Component {
         const MSEC_DAILY = 6000000;
         const timestamp = new Date('May 4 2020').getTime();
         return(
-            <XYPlot xType="time" width={800} height={400} margin={{bottom: 50}}>
+            <XYPlot xType="time" width={800} height={400} margin={{bottom: 50}} >
               <HorizontalGridLines />
               <VerticalGridLines />
               <XAxis title="Hour"  tickTotal = {8} />
@@ -75,6 +75,7 @@ class HighestSelling extends React.Component {
                   {x: timestamp + MSEC_DAILY * 7, y: 14},
                   {x: timestamp + MSEC_DAILY * 8, y: 9}
                 ]}
+                color = {this.props.primary}
               />
 
             </XYPlot>

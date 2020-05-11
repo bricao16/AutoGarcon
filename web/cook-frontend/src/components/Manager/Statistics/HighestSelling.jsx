@@ -5,14 +5,19 @@ import {
     YAxis, // Shows the values on y axis
     VerticalBarSeries,
     ChartLabel,
-    LabelSeries
+    LabelSeries,
+    FlexibleHeightXYPlot
 } from 'react-vis';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
+import https from 'https';
+import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 const chartWidth = 800;
-const chartHeight = 400;
-const chartDomain = [0, chartHeight];
+
+
+const cookies = new Cookies();
 
 class HighestSelling extends React.Component {
     constructor(props) {
@@ -20,8 +25,12 @@ class HighestSelling extends React.Component {
         this.state = {
               selectedTime: "Week",
               unselectedCategories: [],
-              data:this.props.data,
-              checked:true
+              full_data: null,
+              data:null,
+              checked:true,
+              staff: cookies.get('mystaff'),
+              chartHeight:null,
+              isLoaded :false
 
         };
         this.checkboxHandler = this.checkboxHandler.bind(this);
@@ -53,9 +62,52 @@ class HighestSelling extends React.Component {
 
 
     }
+    /* Used for connecting to Resturant in database */
+    componentDidMount() {
+      const https = require('https');
+
+    axios({
+        method: 'get',
+        url: process.env.REACT_APP_DB + '/orderstats/' + this.state.staff.restaurant_id,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        httpsAgent: new https.Agent({  
+          rejectUnauthorized: false,
+        }),
+      })
+        .then(res => {  
+        console.log(res.data);
+          var dataFormat = [];
+          var maxHeight = 0;
+          var i;
+          for (i = 0; i < Object.keys(res.data).length-1; i++) {
+                dataFormat.push({"y":res.data[i].total_ordered, "x":res.data[i].category, "label":res.data[i].item_name});
+                //find the max count to set the height of graph
+                if(res.data[i].total_ordered> maxHeight)
+                {
+                    maxHeight = res.data[i].total_ordered;
+                }
+            }
+        
+        console.log(this.state.data);
+         this.setState({
+            data: dataFormat,
+            full_data: dataFormat,
+            chartHeight:maxHeight,
+            isLoaded :true
+          });
+        })
+        .catch((error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        })
+    }
     //create a checkbox for every category of menu item
     renderCheckBoxes(){
-        return this.props.data.map((item) => 
+        return this.state.full_data.map((item) => 
             <Col key={item.x.toString()}>
                 <div className="custom-control custom-checkbox">
                   <input type="checkbox" className="custom-control-input" id={item.x} defaultChecked={ this.state.checked } onChange={ this.checkboxHandler} ></input>
@@ -69,7 +121,7 @@ class HighestSelling extends React.Component {
         //reset the data
         var joined = [];
         var categories = this.state.unselectedCategories;
-        this.props.data.map(function(item){
+        this.state.full_data.map(function(item){
             if(!(categories.includes(item.x)))
             {
                 //if its not unselected then add to data
@@ -81,18 +133,18 @@ class HighestSelling extends React.Component {
     }
     renderPlot(){
         return(
-        <XYPlot 
+        <FlexibleHeightXYPlot 
             xType="ordinal" 
             width={chartWidth} 
-            height={chartHeight } 
-            yDomain={chartDomain}
-
+            height = {400}
+            
         >
             <XAxis />
-            <YAxis />
+            <YAxis tickTotal = {8} />
             <VerticalBarSeries 
                 data={this.state.data}
                  style={{opacity: '0.80'}}
+                 color = {this.props.primary}
             />
             <ChartLabel
                 text="Categories"
@@ -119,27 +171,39 @@ class HighestSelling extends React.Component {
                 labelAnchorX="middle"
                 labelAnchorY="text-before-edge"
             />
-        </XYPlot>
+        </FlexibleHeightXYPlot>
         );
     }
     render() {
-        return (
-            <Container>
-                {/*Dropdown of week and month*/}
-                <div className="form-group p-3" style={{'width':'10vw', 'float':'right'}}>
-                  <select className="form-control">
-                    <option onClick={()=>this.changeSelection("Week")}>Week</option>
-                    <option onClick={()=>this.changeSelection("Month")}>Month</option>
-                  </select>
-                </div>
+        //spinner while loading
+        if (!this.state.isLoaded) {
+           return (
+            <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
+            </div>
+            )
+        }
+        else
+        {
+            return (
+                <Container>
+                    {/*Dropdown of week and month*/}
+                    <div className="form-group p-3" style={{'width':'10vw', 'float':'right'}}>
+                      <select className="form-control">
+                        <option onClick={()=>this.changeSelection("Week")}>Week</option>
+                        <option onClick={()=>this.changeSelection("Month")}>Month</option>
+                      </select>
+                    </div>
 
-                 <div className="d-flex flex-wrap pt-3">
-                    {this.renderCheckBoxes()}                
-                </div>
-                {this.renderPlot()}
-
-            </Container>
-        );
+                     <div className="d-flex flex-wrap pt-3">
+                        {this.renderCheckBoxes()}                
+                    </div>
+                    <div style = {{'height':'100%'}}>
+                        {this.renderPlot()}
+                    </div>
+                </Container>
+            );
+        }
     }
 }
 export default HighestSelling;

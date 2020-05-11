@@ -66,6 +66,12 @@ class StoreInfo extends React.Component{
       Object.keys(fullResturantInfo.info).forEach(function(key) {
           restaurantInfo.push([key ,fullResturantInfo.info[key]]);
       });
+      //get the styles
+      const primary = this.props.primary;
+      const secondary = this.props.secondary;
+      const teritary = this.props.teritary;
+      const font = this.props.font;
+      const font_color = this.props.font_color
 
       return (
         <Container>
@@ -73,7 +79,7 @@ class StoreInfo extends React.Component{
             <Alert show={this.state.show} variant={this.state.alertVariant}>
               {this.state.response}
             </Alert>
-            <h2 style={mainMenuHeaderStyle}>
+            <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','height':'54px', 'paddingTop':'8px'}}>
               QR Code Generator
             </h2>
 						<input className="form-control col" type="text" name="myValue" value={this.state.myValue} onChange={this.onChange}>
@@ -97,7 +103,9 @@ const QRCodeStyle = {
 }
 
 const backgroundStyle = {
-  'backgroundColor': '#f1f1f1'
+  'backgroundColor': '#f1f1f1',
+  'minWidth': '70vw',
+  'minHeight':'70vh'
 }
 
 const cardHeaderStyle = {
@@ -109,13 +117,7 @@ const itemStyle = {
     'borderBottom': 'grey solid 1px',
     'width':'200px'
 };
-const mainMenuHeaderStyle = {
-  'backgroundColor': '#102644',
-  'color': '#ffffff',
-  'fontFamily': 'Kefa',
-  'textAlign' : 'center',
-  'padding':'8px'
-}
+
 export default StoreInfo;
  {/*
         */}

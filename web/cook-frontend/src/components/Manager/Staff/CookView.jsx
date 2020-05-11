@@ -3,7 +3,8 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import {Redirect} from "react-router-dom";
 import CSignUp from './CSignUp';
-
+import CookViewImg from '../../../assets/cookview.png';
+import Cook from '../../Cook/Cook'
 /*
 this view in the manager page allows a manager
 to either
@@ -28,24 +29,33 @@ class CookView extends React.Component{
     })
 	}
   renderInfo(){
+    //get the styles
+    const primary = this.props.primary;
+    const secondary = this.props.secondary;
+    const teritary = this.props.teritary;
+    const font = this.props.font;
+    const font_color = this.props.font_color
     return(
       //render the two buttons to either go to cook view or sign up
       <React.Fragment>
-          <Card className="text-center m-2 w-100" style={itemStyle}>
+          <Card className="text-center w-50" style={itemStyle}>
             {this.state.section !== "cook" ? 
-                <button  onClick={() => this.viewCategory("cook") } className="btn btn-outline-dark btn-lg "> 
-                  <Card.Header>
-                    Cook View
+                <button  onClick={() => this.viewCategory("cook") } className="btn btn-dark btn-lg "> 
+                  <Card.Header style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color,'paddingTop':'8px','height':'54px'}}>
+                    Go to cook view
                   </Card.Header>
+                  <Card.Body >
+                    <img src = {CookViewImg} width = {'100%'}/>
+                  </Card.Body>
                 </button> 
                 :   
                 <Redirect to='/cook'/>
             }     
           </Card>
-          <Card className="text-center m-2 w-100" style={itemStyle}>
+          <Card className="text-center m-2 w-50" style={itemStyle}>
             {this.state.section !== "acct" ? 
-                <button  onClick={() => this.viewCategory("acct") } className="btn btn-outline-dark btn-lg "> 
-                  <Card.Header>
+                <button  onClick={() => this.viewCategory("acct") } className="btn-dark  btn-lg"> 
+                  <Card.Header style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color,'paddingTop':'8px','height':'54px'}}>
                     Create New Staff Account
                   </Card.Header>
                 </button> 
@@ -76,7 +86,6 @@ class CookView extends React.Component{
 }
 const itemStyle = {
     'borderBottom': 'grey solid 1px',
-    'width':'200px'
 };
 
 export default CookView;

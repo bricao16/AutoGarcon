@@ -12,6 +12,7 @@ import ChangePassword from "./components/ChangePassword"
 import Home from "./components/Home";
 import PrivacyPolicy from './components/PrivacyPolicy';
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
  /*
 This is the main page for AutoGarcon. It contains the routing for all the different
 pages by their components. It also serves as the landing page defined in Home()

@@ -75,6 +75,8 @@ class NewItem extends React.Component {
 			this.handleValidation("Price field is too large.  Please try a value less than 100,000.");
 		} else if(this.state.description.length > 300){
       this.handleValidation("Description field is too large.  Please reduce to 300 characters or less.");
+    } else if(this.state.description.length < 1){
+      this.handleValidation("Description field is required.");
     } else {
 			
 			this.state.price = Number(this.state.price).toFixed(2);
@@ -195,11 +197,9 @@ class NewItem extends React.Component {
     }
 
     this.setState({show: true});
-		
+		console.log("here")
 		setTimeout(() => {
-			this.setState({
-			show:false
-			});
+			if (this.state.show) this.setState({show:false});
 		}, 5000)
   }
 	
@@ -210,9 +210,7 @@ class NewItem extends React.Component {
 		this.setState({show: true});
 		
 		setTimeout(() => {
-			this.setState({
-			show:false
-			});
+			if (this.state.show) this.setState({show:false});
 		}, 5000)
   }
   
@@ -262,7 +260,7 @@ class NewItem extends React.Component {
             </Modal>
 
             <div>
-              <form class="pb-1">
+              <form className="pb-1">
 
                 <div className="form-group row">
                   <label className="col ">Name </label>
@@ -272,7 +270,7 @@ class NewItem extends React.Component {
 
                 <div className="form-group row">
                   <label className="col">Category </label>
-                  <select name="category" class="form-control col" onChange={this.handleInputChange} placeholder={this.state.category}>
+                  <select name="category" className="form-control col" onChange={this.handleInputChange} placeholder={this.state.category}>
                     {this.getCategories()}
                     <option value="New Category">New Category</option>
                   </select>
@@ -295,10 +293,10 @@ class NewItem extends React.Component {
                     </div>
                 </div>
 
-                <div class="pretty p-switch p-fill d-flex flex-row-reverse">
+                <div className="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
                     <input type="checkbox" id="in_stock" name="in_stock" onChange={this.handleInputChange} checked={this.state.in_stock}/> 
-                    <label class="pl-2" for="in_stock">In stock</label>
+                    <label className="pl-2" htmlFor="in_stock">In stock</label>
                   </div>
                 </div>
                 
@@ -308,7 +306,7 @@ class NewItem extends React.Component {
                 </div>
 
                 <div className="form-group">
-                  <label hmtlfor="exampleFormControlFile1">Picture</label>
+                  <label htmlFor="exampleFormControlFile1">Picture</label>
                   <input type="file" className="form-control-file" id="exampleFormControlFile1">
                   </input>
                 </div>
@@ -352,7 +350,7 @@ class NewItem extends React.Component {
             </div>
 
             <div>
-              <form class="pb-1">
+              <form className="pb-1">
 
                 <div className="form-group row">
                   <label className="col ">Name </label>
@@ -362,7 +360,7 @@ class NewItem extends React.Component {
 
                 <div className="form-group row">
                   <label className="col">Category </label>
-                  <select name="category" class="form-control col" value={this.state.category} onChange={this.handleInputChange} placeholder={this.state.category}>
+                  <select name="category" className="form-control col" value={this.state.category} onChange={this.handleInputChange} placeholder={this.state.category}>
                     {this.getCategories()}
                     <option value="New Category">New Category</option>
                   </select>
@@ -385,10 +383,10 @@ class NewItem extends React.Component {
                     </div>
                 </div>
 
-                <div class="pretty p-switch p-fill d-flex flex-row-reverse">
+                <div className="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
                     <input type="checkbox" id="in_stock" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} checked={this.state.in_stock}/> 
-                    <label class="pl-2" for="in_stock">In stock</label>
+                    <label className="pl-2" htmlFor="in_stock">In stock</label>
                   </div>
                 </div>
                 
@@ -398,7 +396,7 @@ class NewItem extends React.Component {
                 </div>
 
                 <div className="form-group">
-                  <label hmtlfor="exampleFormControlFile1">Picture</label>
+                  <label htmlFor="exampleFormControlFile1">Picture</label>
                   <input type="file" className="form-control-file" id="exampleFormControlFile1">
                   </input>
                 </div>

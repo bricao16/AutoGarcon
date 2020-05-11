@@ -78,11 +78,14 @@ class Menu extends React.Component {
   }
   /* Aggregate all the menu categories onto cards and call the change which menu to display is clicked */
   renderMenuCategories(){
+    const secondary = this.props.secondary;
+    const font = this.props.font;
+    const font_color = this.props.font_color
     return this.state.categories.map((item) =>
       <Col sm={6} className="p-3" style={{'minWidth':'225px'}}>
         <Card className="text-center" >
           <div onClick={() => this.changeCategory(item) }>                     
-            <Card.Header style={cardHeaderStyle}>{item}</Card.Header>
+            <Card.Header style ={{'fontFamily' :font, 'backgroundColor': secondary, 'textAlign' : 'center','display': 'flex'}}>{item}</Card.Header>
           </div>
         </Card>
       </Col>  
@@ -99,7 +102,8 @@ class Menu extends React.Component {
           "category":"Category",
           "price" : "Price",
           "calories": "Calories",
-          "in_stock": 0
+          "in_stock": 0,
+          "description": ""
         }
       }
     })
@@ -108,7 +112,7 @@ class Menu extends React.Component {
   renderMenu(){
     //onNew is a callback passed to call the new item form if it is edit is clicked
     return this.state.menu.map((item, key) =>
-        <MenuItem menu={item} category={this.state.renderCategory} onNew={this.toggleNewItem.bind(this)}/>
+        <MenuItem menu={item} category={this.state.renderCategory} onNew={this.toggleNewItem.bind(this)} primary ={this.props.primary}  secondary ={this.props.secondary}  teritary ={this.props.teritary}  font_color = {this.props.font_color} font ={this.props.font}/>
     );
   }
   //generate form for new item with prefilled of whats already on the menu for this item
@@ -124,6 +128,12 @@ class Menu extends React.Component {
 
     const {menu,categories,renderCategory, newItem} = this.state;
     const menuJSON = this.props.menu;
+    //get the styles
+    const primary = this.props.primary;
+    const secondary = this.props.secondary;
+    const teritary = this.props.teritary;
+    const font = this.props.font;
+    const font_color = this.props.font_color
 
     //map the menu json from Mtasks to an array
     Object.keys(menuJSON).forEach(function(key) {
@@ -143,7 +153,7 @@ class Menu extends React.Component {
       return (
           <Container>
             <div style={backgroundStyle}>
-            <h2 style={mainMenuHeaderStyle}>
+            <h2  style={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','height':'54px', 'paddingTop':'8px'}}>
               Menu
             </h2>
               <Container fluid style={{'minHeight': '70vh'}}>
@@ -167,7 +177,7 @@ class Menu extends React.Component {
       return ( 
         <Container>
           <div style={backgroundStyle}>
-            <h2 style ={categoryHeaderStyle}>
+            <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','display': 'flex'}}>
               <button type="button" onClick={() => window.location.href="/menu" } className="btn btn-outline-light m-2">Back</button>
               <div style={menuTextStyle}>{renderCategory}</div>
             </h2>
@@ -191,7 +201,7 @@ class Menu extends React.Component {
       //render a form for the new menu item(s)
       return (
         <div style={backgroundStyle}>
-          <h2 style ={categoryHeaderStyle}>
+          <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','display': 'flex'}}>
             <button type="button" onClick={() => window.location.href="/menu"} className="btn btn-outline-light m-2">Back</button>
             <div style={menuTextStyle}>Menu Item</div>
           </h2>
@@ -210,29 +220,6 @@ const backgroundStyle = {
 const createNewStyle = {
   'opacity' : '.9'
 };
-const cardHeaderStyle = {
-  'backgroundColor': '#0b658a',
-  'color': '#ffffff',
-  'fontFamily': 'Kefa'
-};
-const menuHeaderStyle = {
-  'backgroundColor': '#102644',
-  'color': '#ffffff',
-  'fontFamily': 'Kefa',
-  'textAlign' : 'center',
-  'height':'54px'
-};
-const mainMenuHeaderStyle = {
-  'backgroundColor': '#102644',
-  'color': '#ffffff',
-  'fontFamily': 'Kefa',
-  'textAlign' : 'center',
-  'height':'54px',
-  'paddingTop':'8px'
-}
-const categoryHeaderStyle = Object.assign({
-  'display': 'flex',
-}, menuHeaderStyle);
 const menuTextStyle = {
   'flex': '1',
   'paddingRight': '69px',

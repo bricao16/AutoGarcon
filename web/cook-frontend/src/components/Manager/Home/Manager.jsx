@@ -12,7 +12,7 @@ import Cookies from 'universal-cookie';
 import MLogin from '../../MLogin';
 import CookieConsent from "react-cookie-consent";
 import NavItems from './NavItems';
-  
+
 /* This is the main component for the manager
 view. This component creates the nav bar with routes to
 the managers different views (menu, stats, hours...)
@@ -57,7 +57,13 @@ class Manager extends React.Component{
             </Container>
         );
       }
-      axios({
+
+      const https = require('https');
+
+      console.log(https.Agent)
+      
+      //instance.get("https://50.19.176.137:8001/restaurant/124");
+    axios({
         method: 'get',
         url: process.env.REACT_APP_DB + '/restaurant/' + this.state.staff.restaurant_id,
         headers: {
@@ -201,9 +207,11 @@ class Manager extends React.Component{
         const blob = new Blob([binary], {type : 'image/png'});
         const blobUrl =URL.createObjectURL(blob);
         console.log(this.state);
+
+
       return (
 
-        <React.Fragment>
+        <React.Fragment >
           {/*if cookies havent been accepted yet ask them*/}
           
 
@@ -234,6 +242,7 @@ class Manager extends React.Component{
       );
     }
   }
+
 const sectionStyle = {
   'backgroundColor': '#ffffff',
   'color':'#102644'

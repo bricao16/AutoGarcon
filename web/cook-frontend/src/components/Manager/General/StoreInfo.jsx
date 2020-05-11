@@ -5,7 +5,6 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Alert from 'react-bootstrap/Alert';
-
 /* This component is used to render the 
 resturant information for the manager view.
 The resturant information is being called from the database in the
@@ -239,7 +238,7 @@ class StoreInfo extends React.Component{
                        
                   }
               </div>
-              
+ 
           </Card.Body>
       </Card>
         
@@ -249,18 +248,24 @@ class StoreInfo extends React.Component{
     render() {
         const {restaurantInfo } = this.state;
         const fullResturantInfo = this.props;
+        //get the styles
+        const primary = this.props.primary;
+        const secondary = this.props.secondary;
+        const teritary = this.props.teritary;
+        const font = this.props.font;
+        const font_color = this.props.font_color
         //put resturant info into an array
         Object.keys(fullResturantInfo.info).forEach(function(key) {
             restaurantInfo.push([key ,fullResturantInfo.info[key]]);
         });
 
         return (
-            <Container>
-                <div style={backgroundStyle}>
+            <Container style = {backgroundStyle}>
+                <div style ={{'fontFamily' :font, 'backgroundColor': primary, 'paddingTop':'8px','height':'54px'}}>
                 <Alert show={this.state.show} variant={this.state.alertVariant}>
                   {this.state.response}
                 </Alert>
-                <h2 style={mainMenuHeaderStyle}>
+                <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center'}}>
                   Restaurant Information
                 </h2>
                     <Container fluid style={{'minWidth': '70vh'}}>
@@ -276,18 +281,13 @@ class StoreInfo extends React.Component{
 }
 
 const backgroundStyle = {
-  'backgroundColor': '#f1f1f1'
-}
-
+  'backgroundColor': '#f1f1f1',
+  'minWidth': '70vw',
+  'minHeight':'70vh'
+};
 const itemStyle = {
     'borderBottom': 'grey solid 1px',
     'width':'200px'
 };
-const mainMenuHeaderStyle = {
-  'backgroundColor': '#102644',
-  'color': '#ffffff',
-  'fontFamily': 'Kefa',
-  'textAlign' : 'center',
-  'padding':'8px'
-}
+
 export default StoreInfo;

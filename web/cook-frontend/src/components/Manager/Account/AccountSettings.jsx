@@ -2,7 +2,10 @@ import React from "react";
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-import EditFieldIcon from '@material-ui/icons/ChevronRight';
+import Form from 'react-bootstrap/Form';
+import EditFieldRightIcon from '@material-ui/icons/ChevronRight';
+import EditFieldDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import snakeCase from "lodash.snakecase";
 
 /*this is the customize component for the currently logged in
 account. The info is prefilled from the cookies stored
@@ -15,7 +18,16 @@ class AccountSettings extends React.Component{
     
     this.cookies = new Cookies();
     this.state = {
-      token: this.cookies.get('mytoken')
+      showEmail: false,
+      showFirstName: false,
+      showLastName: false,
+      showPhoneNumber: false,
+      token: this.cookies.get('mytoken'),
+      email: this.cookies.get('mytoken').email,
+      first_name: this.cookies.get('mytoken').first_name,
+      last_name: this.cookies.get('mytoken').last_name,
+      contact_num: this.cookies.get('mytoken').contact_num,
+      edited: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -24,8 +36,6 @@ class AccountSettings extends React.Component{
 
   /* Used for connecting to Customization in database */
   handleSubmit(event) {
-    console.log(this.state);
-
     //event.preventDefault();
     
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
@@ -93,11 +103,64 @@ class AccountSettings extends React.Component{
     });
   }
 
-  handleModalClose = () => this.setState({ModalShow: false});
-  handleModalShow = () => this.setState({ModalShow: true});
+  fieldStatus(field) {
+    if (this.state['show'+field]) {
+      return (
+        <div className="py-2 pr-2">
+          <Form.Control onChange={() => {if (this.state.edited == false) this.setState({edited: true})}} defaultValue={this.cookies.get("mystaff")[snakeCase(field)]} />
+        </div>
+      )
+    }
+    else return (<></>)
+  }
+
+  labelStatus(field) {
+    let snakeCaseField = snakeCase(field)
+
+    if (!this.state['show'+field]) {
+      return (
+        <small className="text-secondary">{this.cookies.get("mystaff")[snakeCaseField]}</small>
+      )
+    }
+    else return (<></>)
+  }
+
+  showField(event) {
+    event.preventDefault();
+    const target = event.target;
+    //const value = target.value;
+    const name = target.name;
+
+    let stateField = "show" + name;
+
+    this.setState({
+      [stateField]: !this.state[stateField]
+    });
+  }
+
+  toggleEditIcon(field) {
+    if (this.state["show"+field]) {
+      return (
+        <EditFieldDownIcon style={{"pointer-events": "none"}} fontSize="large"></EditFieldDownIcon>
+      )
+    }
+    else {
+      return (
+        <EditFieldRightIcon style={{"pointer-events": "none"}} fontSize="large"></EditFieldRightIcon>
+      )
+    }
+  }
+
+  updateButton() {
+    if (this.state.edited) {
+      return (
+        <button type="button" className="btn btn-primary" style={{"width":"33%"}}>Update</button>
+      )
+    }
+    else return (<></>)
+  }
 
   render() {
-    console.log(this.cookies.get("mystaff"))
     return(
       <div style={{"width": "70vw"}}>
         <div className="p-3 text-center">
@@ -105,71 +168,71 @@ class AccountSettings extends React.Component{
         </div>
 
         <div>
-        <ul className="list-group-flush" style={{"fontSize": "1.25rem"}}>
-          <li className="list-group-item">
-            <div>{this.capitalizeFirstLetter(this.cookies.get("mystaff").position)}</div>
-          </li>
+          <ul className="list-group-flush" style={{"fontSize": "1.25rem"}}>
+            <li className="list-group-item">
+              <div>{this.capitalizeFirstLetter(this.cookies.get("mystaff").position)}</div>
+            </li>
 
-          <li className="list-group-item">
-            <div className="d-flex">
-              <div className="flex-grow-1">
-                <div>Email</div>
-                <small className="text-secondary">{this.cookies.get("mystaff").email}</small>
+            <li className="list-group-item">
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <div>Email</div>
+                  {this.labelStatus("Email")}
+                  {this.fieldStatus("Email")}
+                </div>
+                <button onClick={(event) => this.showField(event)} className="btn btn-link" name="Email" style={{"cursor": "pointer"}}>
+                  {this.toggleEditIcon("Email")}
+                </button>
               </div>
-              <div style={{"cursor": "pointer"}}>
-                <EditFieldIcon fontSize="large"></EditFieldIcon>
-              </div>
-            </div>
-          </li>
+            </li>
 
-          <li className="list-group-item">
-            <div className="d-flex">
-              <div className="flex-grow-1">
-                <div>First name</div>
-                <small className="text-secondary">{this.cookies.get("mystaff").first_name}</small>
+            <li className="list-group-item">
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <div>First name</div>
+                  {this.labelStatus("FirstName")}
+                  {this.fieldStatus("FirstName")}
+                </div>
+                <button onClick={(event) => this.showField(event)} className="btn btn-link" name="FirstName" style={{"cursor": "pointer"}}>
+                  {this.toggleEditIcon("FirstName")}
+                </button>
               </div>
-              <div style={{"cursor": "pointer"}}>
-                <EditFieldIcon fontSize="large"></EditFieldIcon>
-              </div>
-            </div>
-          </li>
+            </li>
 
-          <li className="list-group-item">
-            <div className="d-flex">
-              <div className="flex-grow-1">
-                <div>Last name</div>
-                <small className="text-secondary">{this.cookies.get("mystaff").last_name}</small>
+            <li className="list-group-item">
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <div>Last name</div>
+                  {this.labelStatus("LastName")}
+                  {this.fieldStatus("LastName")}
+                </div>
+                <button onClick={(event) => this.showField(event)} className="btn btn-link" name="LastName" style={{"cursor": "pointer"}}>
+                  {this.toggleEditIcon("LastName")}
+                </button>
               </div>
-              <div style={{"cursor": "pointer"}}>
-                <EditFieldIcon fontSize="large"></EditFieldIcon>
-              </div>
-            </div>
-          </li>
+            </li>
 
-          <li className="list-group-item">
-            <div className="d-flex">
-              <div className="flex-grow-1">
-                <div>Phone number</div>
-                <small className="text-secondary">{this.cookies.get("mystaff").contact_num}</small>
+            <li className="list-group-item">
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <div>Phone number</div>
+                  {this.labelStatus("ContactNum")}
+                  {this.fieldStatus("ContactNum")}
+                </div>
+                <button onClick={(event) => this.showField(event)} className="btn btn-link" name="ContactNum" style={{"cursor": "pointer"}}>
+                  {this.toggleEditIcon("ContactNum")}
+                </button>
               </div>
-              <div style={{"cursor": "pointer"}}>
-                <EditFieldIcon fontSize="large"></EditFieldIcon>
-              </div>
-            </div>
-          </li>
-        </ul>
+            </li>
+          </ul>
+
+          <div className="d-flex justify-content-center">
+            {this.updateButton()}
+          </div>
         </div>
       </div>
     )
   }
 }
-
-const editButtonStyle = {
-  'cursor':'pointer',
-  'font-size': '1rem',
-  'position': 'absolute',
-  'right': '0',
-  'top': '0'
-};
 
 export default AccountSettings;

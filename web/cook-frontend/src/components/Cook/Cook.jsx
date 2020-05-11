@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import {Switch, Route, Redirect} from "react-router-dom";
+import {makeStyles, ThemeProvider, useTheme} from '@material-ui/core/styles';
 import Cookies from 'universal-cookie';
 import clsx from 'clsx';
 import axios from "axios";
@@ -16,7 +16,9 @@ const useStyles = makeStyles({
   main: {
     flex: 1,
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    // background: '#fafafa'
   },
   content: {
     flex: 1
@@ -26,29 +28,30 @@ const useStyles = makeStyles({
 
 const universalCookies = new Cookies();
 
-function Cook(){
-
-  const classes = useStyles();
+function Cook() {
+  const theme = useTheme();
+  const classes = useStyles(theme);
 
   const cookies = {
     token: universalCookies.get('mytoken'),
     staff: universalCookies.get('mystaff')
   };
 
-  /*
+  const verified = useRef(false);
+  // const tokenVerified = useRef(false);
+  const [loading, setLoading] = useState(true);
   const [restaurantData, setRestaurantData] = useState({});
 
-  const [logoData, setLogoData] = useState("");
+  // Verify user is a manager or cook
+  verifyCook(cookies.token).then(res => {
+    verified.current = res;
+  });
 
-  useEffect(() =>{
-    getRestaurantData();
-  }, []);
-
-  useEffect(() =>{
-    if(restaurantData.restaurant){
-      changeLogoData();
+  useEffect(() => {
+    if(verified){
+      getRestaurantData();
     }
-  }, [restaurantData]);
+  }, [verified]);
 
   function getRestaurantData(){
     const url = process.env.REACT_APP_DB + '/restaurant/' + cookies.staff.restaurant_id;
@@ -59,96 +62,90 @@ function Cook(){
     })
       .then(res => res.data)
       .then(data => {
-        console.log(data);
         setRestaurantData(data);
+        setLoading(false);
       })
       .catch(error =>{
         console.error(error);
       });
   }
-  */
 
   // Check if user is logged in
   // If they aren't then send them to log in page
-  const tokenVerify = verifyCook(cookies.token);
-  if(tokenVerify === false) {
-    return(
-      <Redirect to="/login_cook" />
+  if (!verified) {
+    return (
+      <Redirect to="/login_cook"/>
     );
   }
 
-  return (
-    <div className={classes.main}>
-      {/* Header with navigation and account drop down*/}
-      <Header cookies={cookies} />
-      <div className={classes.content}>
-        <Switch>
-          {/* If navigate to /cook redirect to /cook/orders */}
-          <Route exact path="/cook">
-            <Redirect to="/cook/orders" />
-          </Route>
-          {/* Render cook order page when on /cook/orders */}
-          <Route path="/cook/orders">
-            <Orders />
-          </Route>
-          {/* Render cook menu page when on /cook/menu */}
-          <Route exact path="/cook/menu">
-            <Menu />
-          </Route>
-        </Switch>
+  // While loading, display loading message
+  if(loading){
+    return(
+      <div className="spinner-border" role="status">
+        <span className="sr-only">Loading...</span>
       </div>
-      <Footer />
-    </div>
+    );
+  }
+
+  // After being verified and loading restaurant info is done
+  // Render Cook view
+  return (
+    <ThemeProvider theme={theme}>
+      <div className={classes.main}>
+        {/* Header with navigation and account drop down*/}
+        <Header cookies={cookies} restaurantData={restaurantData}/>
+        <div className={classes.content}>
+          <Switch>
+            {/* If navigate to /cook redirect to /cook/orders */}
+            <Route exact path="/cook">
+              <Redirect to="/cook/orders"/>
+            </Route>
+            {/* Render cook order page when on /cook/orders */}
+            <Route path="/cook/orders">
+              <Orders/>
+            </Route>
+            {/* Render cook menu page when on /cook/menu */}
+            <Route exact path="/cook/menu">
+              <Menu/>
+            </Route>
+          </Switch>
+        </div>
+        <Footer/>
+      </div>
+    </ThemeProvider>
   )
 
 }
-function verifyCook(token)
-  {
-    //verify the token is a valid token
-    /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
-    if(token === undefined )
-    {
-      //if they dont even have a token return false
-      return false;
-    }
-    axios({
+
+async function verifyCook(token) {
+  let verified = false;
+  // verify the token is a valid token
+  if (token !== undefined) {
+    let response = await axios({
       method: 'POST',
-      url:  process.env.REACT_APP_DB +'/verify',
+      url: process.env.REACT_APP_DB + '/verify',
       //+'&logo='+this.state.file
-      data: 'token='+token,
+      data: 'token=' + token,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer ' + token
       },
-      httpsAgent: new https.Agent({  
+      httpsAgent: new https.Agent({
         rejectUnauthorized: false,
       }),
-    })
-    .then(async response => {
-      await response;
-      //if not a manager
-      if (response.status !== 200) { 
-         
-         if(response.data == "Must be authorized!")
-         {
-          //make sure valid token
-          return false
-         }
-         else if(response.data = "Not a manager")
-         {
-          //not a manager but valid token is okay
-          return true
-         }
-         else{return false} //anything else just return false
-      }
-      else {return true}  //if valid manager
-    }) 
-    .catch(error => {
-      //databse error
-      console.error("There was an error!", error);
-      return false;
     });
-
+    // once response has finished
+    if (response.status !== 200) {
+      if (response.data === "Not a manager") {
+        // not a manager but valid token is okay
+        verified = true;
+      }
+    } else {
+      // user is a manager
+      verified = true;
+    }
   }
+  return verified;
+}
 
 export default Cook;

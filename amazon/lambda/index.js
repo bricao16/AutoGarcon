@@ -7,13 +7,12 @@
 //
 const Alexa = require('ask-sdk-core');
 const http = require('http');
+const https = require('https');
 const api = 'http://50.19.176.137:8000';
 const apissl = 'https://50.19.176.137:8001';
-//Gets the AlexaID, restaurant ID, and table number automatically in the launch request
 var AlexaID = '';
 var restaurantID = null;
 var tableNum = null;
-
 
 // When skill is first invoked, need to find Alexa device ID here to determine which restaurant the Alexa device is currently at.
 const LaunchRequestHandler = {
@@ -44,9 +43,6 @@ const LaunchRequestHandler = {
       handlerInput.responseBuilder
         .speak(`This Alexa isn't registered. Please add it by saying "register this device".`);
     }
-    
-    // TODO: check if pending , either helper function or just here
-    
     return handlerInput.responseBuilder
       .reprompt(`speakOutput`)
       .getResponse();
@@ -77,7 +73,7 @@ const putHttp = function(path, data){
   });
   req.write(data);
   req.end();
-};
+};//putHttp
 
 // helper function for put http calls
 // this was created to eventually replace the other putHttp, it better handles request responses
@@ -116,7 +112,7 @@ const putHttp2 = function(path, data){
     req.write(data);
     req.end();
   });
-};
+};//putHttp2
 
 // helper function for post http calls
 const postHttp = function(path, data){
@@ -135,7 +131,8 @@ const postHttp = function(path, data){
     const req = http.request(options, (res)=>{
       res.setEncoding('utf8');
       if (res.statusCode < 200 || res.statusCode >= 300) {
-        return reject(new Error(`${res.statusCode}: ${res.req.getHeader('host')} ${res.req.path}`));
+        //return reject(new Error(`${res.statusCode}: ${res.req.getHeader('host')} ${res.req.path}`));
+        resolve(res.statusCode);
       }
       res.on('data', (d) => {
         response += d;
@@ -153,7 +150,7 @@ const postHttp = function(path, data){
     req.write(data);
     req.end();
   });
-};
+};//postHttp
 
 // helper function for get http calls
 const getHttp = function(url) {
@@ -181,6 +178,40 @@ const getHttp = function(url) {
     request.end();
   });//promise
 };//getHttp
+
+const getHttps = function(path) {
+    const options = {
+        hostname: '50.19.176.137',
+        port: 8001,
+        path: path,
+        method: 'GET',
+        rejectUnauthorized: false
+    };
+    
+    return new Promise((resolve, reject) => {
+        const request = https.request(options, response => {
+            response.setEncoding('utf8');
+               
+            let returnData = '';
+            if (response.statusCode < 200 || response.statusCode >= 300) {
+                return reject(new Error(`${response.statusCode}: ${response.req.getHeader('host')} ${response.req.path}`));
+            }
+              
+            response.on('data', chunk => {
+                returnData += chunk;
+            });
+               
+            response.on('end', () => {
+                resolve(returnData);
+            });
+               
+            response.on('error', error => {
+                reject(error);
+            });
+        });//request
+    request.end();
+  });//promise
+}
 
 //Intent that will allow the restaurant to add a new Alexa device to the database
 const addNewAlexaHandler = {
@@ -239,6 +270,50 @@ const addNewAlexaHandler = {
   }//handle
 }//addNewAlexaHandler
 
+//Intent that lists off the items that are in a table's pending order
+const GetPendingOrderHandler = {
+  canHandle(handlerInput){
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+      && Alexa.getIntentName(handlerInput.requestEnvelope) === 'GetPendingOrderIntent'
+  },
+  async handle(handlerInput) {
+    try{
+      //grabs message if there is a pending order
+      let pendingResponse = await getHttp(api+'/alexa/pending/'+AlexaID);
+      let pendingResponseJSON = JSON.parse(pendingResponse);
+      let messageResponse = pendingResponseJSON.message;
+            
+      //If there's a pending order
+      if(messageResponse === 'Pending order exists'){
+        let speakOutput = 'Your pending order: ';
+        const request = handlerInput.requestEnvelope.request;
+        const currentIntent = handlerInput.requestEnvelope.request.intent;
+                
+        const response = await getHttp(api + '/alexa/order/' + AlexaID);
+        const responseJSON = JSON.parse(response);
+                
+        //loops through each item in the order and grabs the quantity and name of the item
+        for(let key in responseJSON){
+          speakOutput += responseJSON[key].quantity + " " + responseJSON[key].item_name + ", ";
+        }
+                
+        speakOutput += "If you would like to add more items, please say 'add item'.";
+                
+        handlerInput.responseBuilder
+          .speak(speakOutput)
+      }else{//no pending order
+        handlerInput.responseBuilder
+          .speak("There are no items in your order.")
+      }
+    }catch(error){
+      handlerInput.responseBuilder
+        .speak("There was an error while getting your order. Please try again.")
+    }
+    return handlerInput.responseBuilder
+      .getResponse();
+  }//handle
+}//GetPendingOrderHandler
+
 //Intent that allows customers to add to a pending order
 const AddItemToOrderHandler = {
   canHandle(handlerInput){
@@ -250,7 +325,7 @@ const AddItemToOrderHandler = {
     try{
       const request = handlerInput.requestEnvelope.request;
       const currentIntent = handlerInput.requestEnvelope.request.intent;
-            
+
       //Delegates to Alexa until all the slots are grabbed
       if (handlerInput.requestEnvelope.request.dialogState && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED') {
         return handlerInput.responseBuilder
@@ -317,15 +392,12 @@ const AddItemToOrderHandler = {
         if(quantityNumValid === true && menuItemValid === true){
           const body = JSON.stringify({
             order_num: orderNum,
-            item: itemID,
+            item_id: itemID,
             quantity: quantityNum
-          });
+          });//body
 
-          await putHttp2('/alexa/order/update', body);
+          await putHttp('/alexa/order/update', body);
           speakOutput = quantityNum + " " + menuItem + " has been added to your order."
-          
-          
-          
         }//if valid
                 
         return handlerInput.responseBuilder
@@ -340,6 +412,83 @@ const AddItemToOrderHandler = {
   }//handle
 }//AddItemToOrderHandler
 
+//Intent that allows customers to remove from a pending order
+const RemoveItemFromOrderHandler = {
+  canHandle(handlerInput){
+    const request = handlerInput.requestEnvelope.request;
+    return request.type === 'IntentRequest'
+      && request.intent.name === 'RemoveItemFromOrder'
+  },
+  async handle(handlerInput){
+    try{
+      const request = handlerInput.requestEnvelope.request;
+      const currentIntent = handlerInput.requestEnvelope.request.intent;
+
+      //Delegates to Alexa until all the slots are grabbed
+      if (handlerInput.requestEnvelope.request.dialogState && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED') {
+        return handlerInput.responseBuilder
+          .addDelegateDirective(currentIntent)
+          .getResponse();
+      }else{
+          
+        let menuItem = handlerInput.requestEnvelope.request.intent.slots.menuItem.value.toLowerCase();
+        let itemID;
+
+        // sets the itemID 
+        const response = await getHttp(api+'/menu/'+restaurantID);
+        const responseJSON = JSON.parse(response);
+        for (var key in responseJSON) {
+            if(key.toLowerCase() === menuItem){
+              itemID = responseJSON[key].item_id;
+              menuItem = key;
+            }
+        }//for each key in the menu
+          
+        let speakOutput = '';
+      
+        // sets the orderiD for the current pending order set with this Alexa
+        let pendingResponse = await getHttp(api+'/alexa/pending/'+AlexaID);
+        let pendingResponseJSON = JSON.parse(pendingResponse);
+        let orderNum = pendingResponseJSON.order_num;
+        let quantityNum = 0;
+      
+        // creates body for post update http
+        const body = JSON.stringify({
+          order_num: orderNum,
+          item_id: itemID,
+          quantity: quantityNum
+        });
+      
+        let submittingResponse = '';
+        //speakOutput += orderNum +' '+itemID+' '+quantityNum;
+        speakOutput += body;
+        try{
+          submittingResponse = await postHttp('alexa/order/remove', body);
+        }catch(error){
+            submittingResponse = 'There was a problem connecting to the Database';
+          // submittingResponse will fail the success check 
+        }
+        speakOutput += submittingResponse;
+  
+        // could be revamped with the other status codes but this is the only one ive been able to receive. 
+        if (submittingResponse !== 'Successfully updated order!'){
+          speakOutput += 'There was a problem changing your order.'
+        }else{
+          speakOutput = 'Removed '+menuItem+' from your order.'
+        }
+      
+        return handlerInput.responseBuilder
+          .speak(speakOutput)
+          .reprompt(speakOutput)
+          .getResponse()
+      }//else
+    }catch(error){
+      handlerInput.responseBuilder
+        .speak(`There was an error while removing the item from the order. Please try again.`);
+    }
+  }//handle
+}//RemoveItemFromOrderHandler
+
 // Intent for changing the current pending order assoc with this Alexa ID to In Progress
 const SubmitOrderIntentHandler = {
   canHandle(handlerInput) {
@@ -349,6 +498,7 @@ const SubmitOrderIntentHandler = {
   async handle(handlerInput) {
     try{
       let speakOutput = '';
+      //AlexaID = '123456789';
       
       // gathers information required to update order status
       let status = 'In Progress';
@@ -384,6 +534,67 @@ const SubmitOrderIntentHandler = {
     }catch(error){
       handlerInput.responseBuilder
         .speak(`There was an error while submitting the order. Please try again.`); 
+    }
+  }
+};
+
+// Intent for changing the current pending order assoc with this Alexa ID to Cancelled
+const CancelOrderIntentHandler = {
+  canHandle(handlerInput) {
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+    && Alexa.getIntentName(handlerInput.requestEnvelope) === 'CancelOrderIntent';
+  },
+  async handle(handlerInput) {
+    if (handlerInput.requestEnvelope.request.intent.confirmationStatus === "DENIED") {
+      return handlerInput.responseBuilder
+        .speak('Okay. We did not cancel your order.')
+        .getResponse()  
+    }
+      
+    try{
+      let speakOutput = '';
+      //AlexaID = '123456789';
+      
+      // gathers information required to update order status
+      let status = 'Cancelled';
+      let pendingResponse = await getHttp(api+'/alexa/pending/'+AlexaID);
+      let pendingResponseJSON = JSON.parse(pendingResponse);
+      let orderNum = pendingResponseJSON.order_num;
+      
+      if(pendingResponseJSON.message === 'No pending order exists'){
+        speakOutput = 'There is no order to cancel.';
+      }else{
+
+        // creates body for post update http
+        let body = JSON.stringify({
+          order_num: orderNum,
+          order_status: status
+        });
+      
+        let submittingResponse = '';
+
+        try{
+          submittingResponse += await postHttp('/orders/update', body);
+        }catch(error){
+          // submittingResponse will fail the success check 
+        }
+
+        // could be revamped with the order order codes but this is the only one ive been able to receive. 
+        if (submittingResponse !== 'Successfully updated order!'){
+          speakOutput += 'There was a problem cancelling your order.'
+        }else{
+          speakOutput += 'Okay. We cancelled order number ' + orderNum;
+        }
+      }
+      
+      return handlerInput.responseBuilder
+        .speak(speakOutput)
+        .getResponse()  
+      
+        
+    }catch(error){
+      handlerInput.responseBuilder
+        .speak(`There was an error while cancelling the order. Please try again.`); 
     }
   }
 };
@@ -426,6 +637,57 @@ const ClosingTimeIntentHandler = {
   }//handle
 };//ClosingTimeIntentHandler
 
+//Intent that, when the customer asks to hear the menu, will ask them which category of menu they would like to hear, or will recite the entire menu
+const MenuDialogHandler = {
+  canHandle(handlerInput){
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+      && Alexa.getIntentName(handlerInput.requestEnvelope) === 'MenuDialogIntent'
+  }, 
+  async handle(handlerInput) {
+    try{
+      let speakOutput = '';
+      const request = handlerInput.requestEnvelope.request;
+      const currentIntent = handlerInput.requestEnvelope.request.intent;
+            
+      if (handlerInput.requestEnvelope.request.dialogState && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED') {
+        return handlerInput.responseBuilder
+          .addDelegateDirective(currentIntent)
+          .getResponse();
+      }else{
+        var repromptOutput = "What would you like?";
+        let categorySlot = handlerInput.requestEnvelope.request.intent.slots.category.resolutions.resolutionsPerAuthority[0].values[0].value.name.toString().toLowerCase();
+        const response = await getHttp(api+'/menu/'+restaurantID);
+        const responseJSON = JSON.parse(response);
+        if(categorySlot === 'full menu'){
+          for(let key in responseJSON){
+            if(responseJSON[key].in_stock > 0){
+              speakOutput += key + ", ";
+            }
+          }//for
+        }else{
+          for (let key in responseJSON) {
+            if(responseJSON[key].in_stock > 0){
+              if(responseJSON[key].category.toLowerCase() === categorySlot){
+                speakOutput += key +", ";
+              }
+            }
+          }//for   
+        }//else
+                
+        handlerInput.responseBuilder
+          .speak(speakOutput + repromptOutput)
+          .reprompt(repromptOutput)
+      }//else
+    }catch(error){
+      handlerInput.responseBuilder
+        .speak("There was an error while getting the menu. Please try again.")
+    }//catch
+        
+    return handlerInput.responseBuilder
+      .getResponse();
+  }//handle
+}//MenuDialogHandler
+
 //Intent that recites only requested category of the menu (ie. appetizer, entree, refillible drink, alcohol)
 const MenuCategoryIntentHandler = {
   canHandle(handlerInput){
@@ -466,41 +728,6 @@ const MenuCategoryIntentHandler = {
       
     }//handle
 };//MenuCategoryIntentHandler
-
-// intent that gets the menu using an http get request, checks it's in stock, then converts it to string for recitation
-const MenuIntentHandler = {
-  canHandle(handlerInput){
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-      && Alexa.getIntentName(handlerInput.requestEnvelope) === 'MenuIntent';
-  },
-  async handle(handlerInput) {
-    var speakOutput = "";
-    var repromptOutput = "What would you like?";
-    try {
-      const response = await getHttp(api+'/menu/'+restaurantID);
-      const responseJSON = JSON.parse(response);
-                
-      for (var key in responseJSON) {
-        if(responseJSON[key].in_stock > 0){
-          speakOutput += key + ", ";
-        }//if menu item is in stock
-      }//for each menu item in database
-                
-      handlerInput.responseBuilder
-        .speak(speakOutput)
-        .reprompt(repromptOutput)
-                    
-    } catch(error) {
-      handlerInput.responseBuilder
-        .speak(`I wasn't able to get the data`)
-        .reprompt(repromptOutput)
-    }
-      
-    return handlerInput.responseBuilder
-      .getResponse();
-      
-  }//handle
-};//MenuIntentHandler
 
 //Intent that gets the price of the requested menu item
 const GetPriceIntentHandler = {
@@ -544,54 +771,52 @@ const GetPriceIntentHandler = {
   }//handle
 };//GetPriceIntentHandler
 
+//Intent that, when given a valid menu item, will return the number of calories in it
 const GetCaloriesIntentHandler = {
-    canHandle(handlerInput){
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'GetCaloriesIntent';
-    },
-    async handle(handlerInput) {
-        
-        var speakOutput = "";
-        var repromptOutput = "Which item do you want to know the calories of?";
-        //let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.resolutions.resolutionsPerAuthority[0].values[0].value.name.toString();
-        let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.value.toString().toLowerCase();
-            try {
-                const response = await getHttp(api+'/menu/'+restaurantID);
+  canHandle(handlerInput){
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+      && Alexa.getIntentName(handlerInput.requestEnvelope) === 'GetCaloriesIntent';
+  },
+  async handle(handlerInput) {
+    var speakOutput = "";
+    var repromptOutput = "Which item do you want to know the calories of?";
+    let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.value.toString().toLowerCase();
+    try {
+      const response = await getHttp(api+'/menu/'+restaurantID);
+      const responseJSON = JSON.parse(response);
                 
-                const responseJSON = JSON.parse(response);
+      for(var key in responseJSON){
+        if(key.toLowerCase() === menuItemSlot){
+          if(responseJSON[key].in_stock > 0){
+            speakOutput = menuItemSlot + " has " + responseJSON[key].calories + " calories";
+          }else if(responseJSON[key].in_stock <= 0){
+            speakOutput = "Sorry, we are out of " + menuItemSlot;
+          }
+        }//if equal to selected menu item
+      }//for each menu item
                 
-                for(var key in responseJSON){
-                  if(key.toLowerCase() === menuItemSlot){
-                    if(responseJSON[key].in_stock > 0){
-                      speakOutput = menuItemSlot + " has " + responseJSON[key].calories + " calories";
-                    }else if(responseJSON[key].in_stock <= 0){
-                      speakOutput = "Sorry, we are out of " + menuItemSlot;
-                    }
-                  }//if equal to selected menu item
-                }//for each menu item
-                
-                handlerInput.responseBuilder
-                    .speak(speakOutput)
-                    .reprompt(repromptOutput)
+      handlerInput.responseBuilder
+        .speak(speakOutput)
+        .reprompt(repromptOutput)
                     
-            } catch(error) {
-                handlerInput.responseBuilder
-                .speak(`Sorry, I couldn't find ` + menuItemSlot + ` on the menu`)
-                .reprompt(repromptOutput)
-            }
-      return handlerInput.responseBuilder
-        .getResponse();
-    }//handle
+    } catch(error) {
+      handlerInput.responseBuilder
+        .speak(`Sorry, I couldn't find ` + menuItemSlot + ` on the menu`)
+        .reprompt(repromptOutput)
+    }
+    return handlerInput.responseBuilder
+      .getResponse();
+  }//handle
 };//GetCaloriesIntentHandler
 
-// A basic intent to get help, it currently says a waiter will be by shortly and does nothing else
+// An intent that lists off all the commands a customer can ask Alexa
 const HelpIntentHandler = {
   canHandle(handlerInput) {
     return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
     && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
-    const speakOutput = 'A waiter will be by shortly to help you (doesnt actually do anything yet).';
+    const speakOutput = "Some commands you can ask me are: read menu, order, remove item from order, add item to order, start the order over, what's in my order, how many calories are in an item, what's the price of an item, and when is closing time";
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -669,15 +894,17 @@ const ErrorHandler = {
 exports.handler = Alexa.SkillBuilders.custom()
   .addRequestHandlers(
     LaunchRequestHandler,
+    MenuDialogHandler,
     MenuCategoryIntentHandler,
-    MenuIntentHandler,
     GetPriceIntentHandler,
     GetCaloriesIntentHandler,
     addNewAlexaHandler,
     AddItemToOrderHandler,
+    CancelOrderIntentHandler,
     ClosingTimeIntentHandler,
     SubmitOrderIntentHandler,
-    
+    RemoveItemFromOrderHandler,
+
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler,
