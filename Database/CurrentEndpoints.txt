@@ -399,8 +399,8 @@ PUT /staff/register
 			(500) Error creating new staff member
 
 POST /staff/update
-	Updates staff info including staff_id, first_name, last_name, contact_num, email, password
-	Inputs (in body of request): staff_id, first_name, last_name, contact_num, email, password (optional) 
+	Updates staff info including staff_id, first_name, last_name, contact_num, email
+	Inputs (in body of request): staff_id, first_name, last_name, contact_num, email
 	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
@@ -433,7 +433,7 @@ POST /staff/update
 		On error:
 			(500) Error updating staff info
 
-POST /staff/forgot
+POST /staff/password/forgot
 	Resets a forgotten password for a staff member
 	Inputs (in body of request) : staff_id
 	Outputs:
@@ -499,8 +499,8 @@ PUT /customer/register
 			(500) Error creating new customer
 
 POST /customer/update
-	Updates customer info including customer_id, first_name, last_name, email, password
-	Inputs (in body of request): customer_id, first_name, last_name, email, password (optional)
+	Updates customer info including customer_id, first_name, last_name, email
+	Inputs (in body of request): customer_id, first_name, last_name, email
 	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
@@ -585,7 +585,7 @@ GET /customer/inprogress/:id
 		On error:
 			(500) Error retrieving in progress orders
 
-POST /customer/forgot
+POST /customer/password/forgot
 	Resets a forgotten password for a customer
 	Inputs (in body of request): customer_id
 	Outputs:

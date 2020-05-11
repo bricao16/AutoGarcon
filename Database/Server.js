@@ -1266,8 +1266,8 @@ app.put('/staff/register', (req, res) => {
 });	//app.put
 
 /*
-	Updates staff info including staff_id, first_name, last_name, contact_num, email, password
-	Inputs: staff_id, first_name, last_name, contact_num, email, password (optional), JWT
+	Updates staff info including staff_id, first_name, last_name, contact_num, email
+	Inputs: staff_id, first_name, last_name, contact_num, email, JWT
 	Outputs:
 		On success:
 			{
@@ -1289,7 +1289,7 @@ app.put('/staff/register', (req, res) => {
 		If JWT is not a staff token:
 			Must be signed in as a staff member!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: staff_id, first_name, last_name, contact_num, email, password (optional)
+			Error: Missing parameter. Required parameters: staff_id, first_name, last_name, contact_num, email
 		If staff_id and email already exist:
 			Error: staff_id and email already exist
 		If staff_id already exists:
@@ -1310,7 +1310,7 @@ app.post('/staff/update', verifyToken, (req, res) => {
 			if (auth.staff) {
 				//Make sure right number of parameters are entered:
 				if(!(req.body.staff_id !== undefined && req.body.restaurant_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.contact_num !== undefined && req.body.email !== undefined)) {
-					res.status(400).send('Error: Missing parameter. Required parameters: staff_id, restaurant_id, first_name, last_name, contact_num, email, password (optional))');
+					res.status(400).send('Error: Missing parameter. Required parameters: staff_id, restaurant_id, first_name, last_name, contact_num, email)');
 					return;
 				}   //if
 
@@ -1330,92 +1330,38 @@ app.post('/staff/update', verifyToken, (req, res) => {
 						//Build query and store staff_id:
 						let staff_id = auth.staff.staff_id;
 						let query = 'UPDATE sample.staff SET staff_id = ?, first_name = ?, last_name = ?, contact_num = ?, email = ?';
+						query = query + ' WHERE staff_id = ?';
+						let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, staff_id];
 
-						//Check if the staff member wants to change their password:
-						if (req.body.password) {
-							//Create a new salt
-							let salt = genSalt();
-							//Hash supplied password with salt
-							let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
-								if (err) {
-									res.status(500).send('Error updating staff info');
-								}	//if
-								else {
-									//Build query and parameters:
-									query = query + ', salt = ?, password = ?, temp_password = ?';
-									query = query + ' WHERE staff_id = ?';
-									let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, salt, derivedKey.toString('hex'), '0'
-									, staff_id];
+						//Update staff info in db:
+						db.query(query, parameters, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error updating staff info');
+							}   //if
+							else {
+								//Build user object:
+								let staff = {
+									'staff_id': req.body.staff_id,
+									'first_name': req.body.first_name,
+									'last_name': req.body.last_name,
+									'contact_num': req.body.contact_num,
+									'email': req.body.email
+								};  //staff
 
-									//Add new staff information to db:
-									db.query(query, parameters, (err, rows) => {
-										if (err) {
-											res.status(500).send('Error updating staff info');
-										}   //if
-										else {
-											//Build staff object:
-											let staff = {
-												'staff_id': req.body.staff_id,
-												'first_name': req.body.first_name,
-												'last_name': req.body.last_name,
-												'contact_num': req.body.contact_num,
-												'email': req.body.email
-											};  //staff
+								//Sign JWT and send token
+								//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+								jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
+									//Build response
+									let response = {
+										'token': token,
+										staff
+									};  //response
 
-											//Sign JWT and send token
-											//To add expiration date: jwt.sign({staff}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-											jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
-												//Build response
-												let response = {
-													'token': token,
-													staff
-												};  //response
-
-												//Send Response:
-												res.type('json').send(response);
-											});	//sign
-										}   //else
-									}); //db.query
-								}   //else
-							}); //hashed
-						}	//if
-
-						//If staff doesn't want to change password:
-						else {
-							//Build query and parameters:
-							query = query + ' WHERE staff_id = ?';
-							let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, staff_id];
-
-							//Update staff info in db:
-							db.query(query, parameters, (err, rows) => {
-								if (err) {
-									res.status(500).send('Error updating staff info');
-								}   //if
-								else {
-									//Build user object:
-									let staff = {
-										'staff_id': req.body.staff_id,
-										'first_name': req.body.first_name,
-										'last_name': req.body.last_name,
-										'contact_num': req.body.contact_num,
-										'email': req.body.email
-									};  //staff
-
-									//Sign JWT and send token
-									//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-									jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
-										//Build response
-										let response = {
-											'token': token,
-											staff
-										};  //response
-
-										//Send Response:
-										res.type('json').send(response);
-									});	//sign
-								}   //else
-							}); //db.query
-						}	//else
+									//Send Response:
+									res.type('json').send(response);
+								});	//sign
+							}   //else
+						}); //db.query
 					}	//else
 				});	//db.query
 			}	//if
@@ -1438,7 +1384,7 @@ app.post('/staff/update', verifyToken, (req, res) => {
 		On error:
 			Error recovering password
 */
-app.post('/staff/forgot', (req, res) => {
+app.post('/staff/password/forgot', (req, res) => {
 	//Make sure right number of parameters are entered:
 	if(!(req.body.staff_id !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: staff_id');
@@ -1505,6 +1451,101 @@ app.post('/staff/forgot', (req, res) => {
 			}); //hashed
 		}   //else
 	}); //db.query
+});	//app.post
+
+/*
+	Updates a staff member's password
+	Inputs: staff_id, current_password, new_password, JWT
+	Outputs:
+		On success:
+			Successfully updated password!
+		If JWT is not valid or not supplied:
+			Must be authorized!
+		If JWT is not for staff member trying to change password:
+			Can't change other people's passwords!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: staff_id, current_password, new_password
+		If customer_id/password is wrong:
+			No staff member with that username/password
+		On error:
+			Error updating password
+*/
+app.post('/staff/password/update', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.staff_id !== undefined && req.body.current_password !== undefined && req.body.new_password !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: staff_id, current_password, new_password');
+		return;
+	}   //if
+
+	//Verify the JWT
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Make sure the JWT is for the staff member trying to change password:
+			if (auth.staff && auth.staff.staff_id === req.body.staff_id) {
+				//Make sure current_password is correct:
+				let query = 'SELECT * FROM sample.staff WHERE staff_id = ?';
+
+				db.query(query, req.body.staff_id, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error updating password');
+					}   //if
+					else if (rows.length < 1) {
+						res.status(401).send('No staff member with that username/password');
+					}   //else if
+					else {
+						//Store user's salt
+						let salt = rows[0].salt;
+						//Hash supplied password
+						let hashed = crypto.pbkdf2(req.body.current_password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+							if (err) {
+								res.status(500).send('Error updating password');
+							}	//if
+							else {
+								if (derivedKey.toString('hex') === rows[0].password) {
+									//Change password to new_password and set temp_password to false:
+									//Create a new salt
+									let newSalt = genSalt();
+									//Hash supplied password with salt
+									let hashed = crypto.pbkdf2(req.body.new_password, newSalt, 50000, 64, 'sha512', (err, derivedKey) => {
+										if (err) {
+											res.status(500).send('Error updating password');
+										}	//if
+										else {
+											//Build query and parameters:
+											query = 'UPDATE sample.staff SET salt = ?, password = ?, temp_password = ?';
+											query = query + ' WHERE staff_id = ?';
+											let parameters = [newSalt, derivedKey.toString('hex'), '0', req.body.staff_id];
+
+											//Update password in db:
+											db.query(query, parameters, (err, rows) => {
+												if (err) {
+													res.status(500).send('Error updating password');
+												}   //if
+												else {
+													//Send Response:
+													res.status(200).send('Successfully updated password!');
+												}   //else
+											}); //db.query
+										}   //else
+									}); //hashed
+								}   //if
+								else {
+									res.status(401).send('No staff member with that username/password');
+								}   //else
+							}   //else
+						}); //hashed
+					}   //else
+				}); //db.query
+			}	//if
+			//If JWT is not for staff member trying to change password:
+			else {
+				res.status(401).send('Can\'t change other people\'s passwords!');
+			}	//else
+		}   //else
+	});	//verify
 });	//app.post
 
 
@@ -1681,8 +1722,8 @@ app.put('/customer/register', (req, res) => {
 });	//app.put
 
 /*
-	Updates customer info including customer_id, first_name, last_name, email, password
-	Inputs: customer_id, first_name, last_name, email, password (optional), JWT
+	Updates customer info including customer_id, first_name, last_name, email
+	Inputs: customer_id, first_name, last_name, email, JWT
 	Outputs:
 		On success:
 			{
@@ -1703,7 +1744,7 @@ app.put('/customer/register', (req, res) => {
 		If JWT is not a customer token:
 			Must be signed in as a customer!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)
+			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email
 		If customer_id and email already exist:
 			Error: customer_id and email already exist
 		If customer_id already exists:
@@ -1724,7 +1765,7 @@ app.post('/customer/update', verifyToken, (req, res) => {
 			if (auth.customer) {
 				//Make sure right number of parameters are entered:
 				if(!(req.body.customer_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.email !== undefined)) {
-					res.status(400).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password (optional)');
+					res.status(400).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email');
 					return;
 				}   //if
 
@@ -1744,89 +1785,37 @@ app.post('/customer/update', verifyToken, (req, res) => {
 						//Build query and store customer_id:
 						let customer_id = auth.customer.customer_id;
 						let query = 'UPDATE sample.customers SET customer_id = ?, first_name = ?, last_name = ?, email = ?';
+						query = query + ' WHERE customer_id = ?';
+						let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, customer_id];
 
-						//Check if the user wants to change their password:
-						if (req.body.password) {
-							//Create a new salt
-							let salt = genSalt();
-							//Hash supplied password with salt
-							let hashed = crypto.pbkdf2(req.body.password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
-								if (err) {
-									res.status(500).send('Error updating customer info');
-								}	//if
-								else {
-									//Build query and parameters:
-									query = query + ', salt = ?, password = ?, temp_password = ?';
-									query = query + ' WHERE customer_id = ?';
-									let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex'), '0', customer_id];
+						//Update customer info in db:
+						db.query(query, parameters, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error updating customer info');
+							}   //if
+							else {
+								//Build user object:
+								let customer = {
+									'customer_id': req.body.customer_id,
+									'first_name': req.body.first_name,
+									'last_name': req.body.last_name,
+									'email': req.body.email
+								};  //customer
 
-									//Add new customer to db:
-									db.query(query, parameters, (err, rows) => {
-										if (err) {
-											res.status(500).send('Error updating customer info');
-										}   //if
-										else {
-											//Build user object:
-											let customer = {
-												'customer_id': req.body.customer_id,
-												'first_name': req.body.first_name,
-												'last_name': req.body.last_name,
-												'email': req.body.email
-											};  //customer
+								//Sign JWT and send token
+								//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+								jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
+									//Build response
+									let response = {
+										'token': token,
+										customer
+									};  //response
 
-											//Sign JWT and send token
-											//To add expiration date: jwt.sign({customer}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-											jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
-												//Build response
-												let response = {
-													'token': token,
-													customer
-												};  //response
-
-												//Send Response:
-												res.type('json').send(response);
-											});	//sign
-										}   //else
-									}); //db.query
-								}   //else
-							}); //hashed
-						}	//if
-
-						//If customer doesn't want to change password:
-						else {
-							//Build query and parameters:
-							query = query + ' WHERE customer_id = ?';
-							let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, customer_id];
-
-							//Update customer info in db:
-							db.query(query, parameters, (err, rows) => {
-								if (err) {
-									res.status(500).send('Error updating customer info');
-								}   //if
-								else {
-									//Build user object:
-									let customer = {
-										'customer_id': req.body.customer_id,
-										'first_name': req.body.first_name,
-										'last_name': req.body.last_name,
-										'email': req.body.email
-									};  //customer
-
-									//Sign JWT and send token
-									//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-									jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
-										//Build response
-										let response = {
-											'token': token,
-											customer
-										};  //response
-
-										//Send Response:
-										res.type('json').send(response);
-									});	//sign
-								}   //else
-							}); //db.query
-						}	//else
+									//Send Response:
+									res.type('json').send(response);
+								});	//sign
+							}   //else
+						}); //db.query
 					}	//else
 				});	//db.query
 			}	//if
@@ -1990,7 +1979,7 @@ app.get('/customer/inprogress/:id', verifyToken, (req, res) => {
 		On error:
 			Error recovering password
 */
-app.post('/customer/forgot', (req, res) => {
+app.post('/customer/password/forgot', (req, res) => {
 	//Make sure right number of parameters are entered:
 	if(!(req.body.customer_id !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: customer_id');
@@ -2057,6 +2046,101 @@ app.post('/customer/forgot', (req, res) => {
 			}); //hashed
 		}   //else
 	}); //db.query
+});	//app.post
+
+/*
+	Updates a customers password
+	Inputs: customer_id, current_password, new_password, JWT
+	Outputs:
+		On success:
+			Successfully updated password!
+		If JWT is not valid or not supplied:
+			Must be authorized!
+		If JWT is not for customer trying to change password:
+			Can't change other people's passwords!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: customer_id, current_password, new_password
+		If customer_id/password is wrong:
+			No customer with that username/password
+		On error:
+			Error updating password
+*/
+app.post('/customer/password/update', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.customer_id !== undefined && req.body.current_password !== undefined && req.body.new_password !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, current_password, new_password');
+		return;
+	}   //if
+
+	//Verify the JWT
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Make sure the JWT is for the customer trying to change password:
+			if (auth.customer && auth.customer.customer_id === req.body.customer_id) {
+				//Make sure current_password is correct:
+				let query = 'SELECT * FROM sample.customers WHERE customer_id = ?';
+
+				db.query(query, req.body.customer_id, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error updating password');
+					}   //if
+					else if (rows.length < 1) {
+						res.status(401).send('No customer with that username/password');
+					}   //else if
+					else {
+						//Store user's salt
+						let salt = rows[0].salt;
+						//Hash supplied password
+						let hashed = crypto.pbkdf2(req.body.current_password, salt, 50000, 64, 'sha512', (err, derivedKey) => {
+							if (err) {
+								res.status(500).send('Error updating password');
+							}	//if
+							else {
+								if (derivedKey.toString('hex') === rows[0].password) {
+									//Change password to new_password and set temp_password to false:
+									//Create a new salt
+									let newSalt = genSalt();
+									//Hash supplied password with salt
+									let hashed = crypto.pbkdf2(req.body.new_password, newSalt, 50000, 64, 'sha512', (err, derivedKey) => {
+										if (err) {
+											res.status(500).send('Error updating password');
+										}	//if
+										else {
+											//Build query and parameters:
+											query = 'UPDATE sample.customers SET salt = ?, password = ?, temp_password = ?';
+											query = query + ' WHERE customer_id = ?';
+											let parameters = [newSalt, derivedKey.toString('hex'), '0', req.body.customer_id];
+
+											//Update password in db:
+											db.query(query, parameters, (err, rows) => {
+												if (err) {
+													res.status(500).send('Error updating password');
+												}   //if
+												else {
+													//Send Response:
+													res.status(200).send('Successfully updated password!');
+												}   //else
+											}); //db.query
+										}   //else
+									}); //hashed
+								}   //if
+								else {
+									res.status(401).send('No customer with that username/password');
+								}   //else
+							}   //else
+						}); //hashed
+					}   //else
+				}); //db.query
+			}	//if
+			//If JWT is not for customer trying to change password:
+			else {
+				res.status(401).send('Can\'t change other people\'s passwords!');
+			}	//else
+		}   //else
+	});	//verify
 });	//app.post
 
 
