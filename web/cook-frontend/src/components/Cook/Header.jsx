@@ -6,7 +6,9 @@ import AccountDropdown from "../AccountDropdown";
 
 const StyledTabs = withStyles({
   indicator: {
-    height: '5px'
+    height: '100%',
+    backgroundColor: '#0b658a33',
+    pointerEvents: 'none'
   },
 })(props => <Tabs {...props} />);
 
@@ -30,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 'auto'
   },
   logo: {
-    color: 'black'
+    color: 'black',
+    marginLeft: theme.spacing(2)
   }
 }));
 

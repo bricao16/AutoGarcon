@@ -53,7 +53,7 @@ function Body(props){
   // Switch between HTTP and HTTPS
   const serverUrl = process.env.REACT_APP_DB;
   // either /orders/ or /orders/complete/
-  const [ordersEndpoint, setOrdersEndpoint] = useState(serverUrl + props.ordersEndpoint + restaurant_id);
+  const [ordersEndpoint, setOrdersEndpoint] = useState('');
   const markCompletedEndpoint = serverUrl + '/orders/update';
   // if on completed tab
   // const [completed, setCompleted] = useState(false);
@@ -64,11 +64,16 @@ function Body(props){
 
   const getOrdersInterval = useRef();
 
+  // When ordersEndpoint prop changes, update ordersEndpoint state variable
   useEffect(() => {
     setOrdersEndpoint(serverUrl + props.ordersEndpoint + restaurant_id);
-    console.log(props.ordersEndpoint);
-    getDatabaseOrders();
   }, [props.ordersEndpoint]);
+
+  // When ordersEndpoint state changes, get orders from database using changed endpoint
+  useEffect(() => {
+    getDatabaseOrders();
+  }, [ordersEndpoint]);
+
 
   // If path changes (because of switching tabs: active or complete)
   // or restaurant_id updates for some reason, the correct orders will be pulled from database
@@ -84,16 +89,16 @@ function Body(props){
 
   // When orders database url changes, pull orders
   // Will happen when switching tabs
-  useEffect(() => {
-    getDatabaseOrders();
-  }, []);
+  // useEffect(() => {
+  //   getDatabaseOrders();
+  // }, []);
 
   // Set up things for componentDidMount() componentWillUnmount()
   // Creates method to re-pull orders from database every 10 seconds
   useEffect(() => {
     // setupKeyPresses(); <- This will be added in the future
     // updates orders every 10 seconds
-    getOrdersInterval.current = setInterval(getDatabaseOrders, 10000); // start interval after mounting
+    // getOrdersInterval.current = setInterval(getDatabaseOrders, 10000); // start interval after mounting
     // While unmounting do this
     return () => {
       clearInterval(getOrdersInterval.current); // clear interval after unmounting
@@ -105,19 +110,21 @@ function Body(props){
   // Get 'in progress' orders from db
   function getDatabaseOrders(){
     // Null until calculated by effect hook
-    axios.get(ordersEndpoint, {
-      httpsAgent: new https.Agent({
-        rejectUnauthorized: false,
+    if(ordersEndpoint !== ''){
+      axios.get(ordersEndpoint, {
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false,
+        })
       })
-    })
-      .then(res => res.data)
-      .then(orders => {
-        configureOrders(orders);
-      })
-      .catch(error =>{
-        console.log('server request error');
-        console.error(error);
-      });
+        .then(res => res.data)
+        .then(orders => {
+          configureOrders(orders);
+        })
+        .catch(error =>{
+          console.log('server request error');
+          console.error(error);
+        });
+    }
   }
 
   // Converts orders returned from database into object that can easily be turned into Order components
@@ -154,18 +161,20 @@ function Body(props){
     // Check if cardId exists, 0 cards will result in cardId of null
     if(0 <= cardId && cardId < Object.keys(orders).length){
       setSelectedCard(cardId);
+    } else {
+      setSelectedCard(null);
     }
   }
 
- function changeOrderStatus(status){
-   if(selectedCard !== null){
-     const orderNum = Object.keys(orders)[selectedCard];
-     const data = 'order_num=' + orderNum + '&order_status=' + status;
-     console.log(data);
-     console.log(markCompletedEndpoint);
-     axios.post(markCompletedEndpoint,
-     data,
-{
+  function changeOrderStatus(status){
+    if(selectedCard !== null){
+      const orderNum = Object.keys(orders)[selectedCard];
+      const data = 'order_num=' + orderNum + '&order_status=' + status;
+      console.log(data);
+      console.log(markCompletedEndpoint);
+      axios.post(markCompletedEndpoint,
+      data,
+        {
           httpsAgent: new https.Agent({
             rejectUnauthorized: false
           }),
@@ -181,8 +190,8 @@ function Body(props){
          console.log('post request error');
          console.error(error);
        });
-   }
- }
+    }
+  }
   // The following features will be added in the future
   /*
   function setupKeyPresses(){

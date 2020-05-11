@@ -14,17 +14,18 @@ function Orders(){
 
   return(
     <div>
-      <Header/>
       <Switch>
         <Route exact path="/cook/orders">
           <Redirect to="/cook/orders/active" />
         </Route>
         <Route exact path="/cook/orders/active">
           {/*<ActiveOrders />*/}
+          <Header tab={0}/>
           <Body ordersEndpoint={activeOrdersEndpoint}/>
         </Route>
         <Route exact path="/cook/orders/completed">
           {/*<CompletedOrders />*/}
+          <Header tab={1}/>
           <Body ordersEndpoint={completedOrdersEndpoint}/>
         </Route>
       </Switch>
