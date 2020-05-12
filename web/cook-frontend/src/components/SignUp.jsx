@@ -51,16 +51,13 @@ class SignUp extends React.Component {
     super(props);
 
     this.state = {
-      staff_id: '',
-      first_name: '',
-      last_name: '',
-      contact_num: '',
+      restaurant_name: '',
+      restaurant_address: '',
       email: '',
-      password: '',
-      confirm_password: '',
+      contact_num: '',
       redirect: false,
       show: false,
-      restaurant_id: cookies.get('mystaff').restaurant_id,
+      //restaurant_id: cookies.get('mystaff').restaurant_id,
       position: "manager",
       token: null
     };
@@ -98,41 +95,31 @@ class SignUp extends React.Component {
     event.preventDefault();
 
     //if any of the values necessary are not filled out
-    if (this.state.staff_id === '' || this.state.restaurant_id === '' ||
-      this.state.first_name === '' || this.state.last_name === '' ||
-      this.state.contact_num === '' || this.state.email === '' ||
-      this.state.password === '' || this.state.confirm_password === '') {
+    if (this.state.restaurant_name === '' || this.state.restaurant_address === '' ||
+      this.state.contact_num === '' || this.state.email === '' ) {
       this.setState({ alertVariant: 'danger' });
       this.setState({ response: "All fields are required" });
       this.setState({ redirect: false });
       this.setState({ show: true });
       return null;
     }
-    //verify staff ID
-    if (this.state.staff_id.length < 6 || this.state.staff_id.length > 50) {
+    //verify restaurant name
+    if (this.state.restaurant_name.length > 50) {
       this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Staff ID must be between 6 and 50 characters" });
+      this.setState({ response: "Restaurant name cannot be greater than 50 characters" });
       this.setState({ redirect: false });
       this.setState({ show: true });
       return;
     }
-    //verify first name length / no non-letters
-    if (this.state.first_name.length > 50 || !/[a-z]/.test(this.state.first_name.toLowerCase())) {
+     //verify restaurant address
+     if (this.state.restaurant_address.length > 50) {
       this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Invalid first name" });
+      this.setState({ response: "Restaurant address cannot be greater than 50 characters" });
       this.setState({ redirect: false });
       this.setState({ show: true });
       return;
     }
-    //verify last name length / no non-letters
-    if (this.state.last_name.length > 50 || !/[a-z]/.test(this.state.last_name.toLowerCase())) {
-      this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Invalid last name" });
-      this.setState({ redirect: false });
-      this.setState({ show: true });
-      return;
-    }
-
+  
     //verify email formatting
     if (!(/\S+@\S+\.\S+/.test(this.state.email))) {
       this.setState({ alertVariant: 'danger' });
@@ -145,23 +132,6 @@ class SignUp extends React.Component {
     if (!(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.state.contact_num))) {
       this.setState({ alertVariant: 'danger' });
       this.setState({ response: "Invalid phone number" });
-      this.setState({ redirect: false });
-      this.setState({ show: true });
-      return;
-    }
-    //verify password
-    if (this.state.password.length < 6 || !/[A-Z]/.test(this.state.password) || !/[0-9]/.test(this.state.password) || this.state.password.length > 50) {
-      this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Password must contain an uppercase letter, a digit and be between 6 and 50 characters" });
-      this.setState({ redirect: false });
-      this.setState({ show: true });
-      return;
-    }
-
-    //verify confirm password
-    if (!(this.state.password == this.state.confirm_password)) {
-      this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Passwords must match" });
       this.setState({ redirect: false });
       this.setState({ show: true });
       return;
@@ -232,7 +202,6 @@ class SignUp extends React.Component {
         </div>
       );
     }
-    if (cookies.get('mystaff').position === "manager") {
       return (
         <Container component="main" maxWidth="xs" className="p-3">
           {/*alert if successful or unsuccessful*/}
@@ -250,44 +219,45 @@ class SignUp extends React.Component {
                 </Avatar>
               </div>
               <Typography component="h1" variant="h5">
-                Sign up
+                Resstaurant Sign Up
 
               </Typography>
               <br />
             </div>
             <form className={useStyles.form} onSubmit={this.handleSubmit}>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField onChange={this.onChange}
-                    autoComplete="fname"
-                    name="first_name"
-                    variant="outlined"
-                    fullWidth
-                    id="firstName"
-                    label="First Name"
-                    value={this.state.first_name}
-                    onChange={this.handleChange}
-                    autoFocus
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.firstNameError}
-                  </div>
-                </Grid>
-                <Grid item xs={12} sm={6}>
+
+                 <Grid item xs={12}>
                   <TextField onChange={this.onChange}
                     variant="outlined"
                     fullWidth
-                    id="lastName"
-                    label="Last Name"
-                    name="last_name"
-                    autoComplete="lname"
-                    value={this.state.last_name}
+                    id="restaurant_name"
+                    label="Restaurant Name"
+                    name="restaurant_name"
+                    value={this.state.restaurant_name}
                     onChange={this.handleChange}
                   />
                   <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.lastNameError}
+                    {this.state.staffIDError}
                   </div>
                 </Grid>
+                <Grid item xs={12}>
+                  <TextField onChange={this.onChange}
+                    variant="outlined"
+                    fullWidth
+                    id="restaurant_address"
+                    label="Restaurant Address"
+                    name="restaurant_address"
+                    value={this.state.restaurant_address}
+                    onChange={this.handleChange}
+                  />
+                  <div style={{ fontSize: 12, color: "red" }}>
+                    {this.state.staffIDError}
+                  </div>
+                </Grid>
+
+                
+                
                 <Grid item xs={12}>
                   <TextField onChange={this.onChange}
                     variant="outlined"
@@ -316,51 +286,6 @@ class SignUp extends React.Component {
                     {this.state.contactError}
                   </div>
                 </Grid>
-                <Grid item xs={12}>
-                  <TextField onChange={this.onChange}
-                    variant="outlined"
-                    fullWidth
-                    id="staffid"
-                    label="Staff ID"
-                    name="staff_id"
-                    value={this.state.staff_id}
-                    onChange={this.handleChange}
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.staffIDError}
-                  </div>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField onChange={this.onChange}
-                    variant="outlined"
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    value={this.state.password}
-                    onChange={this.handleChange}
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.passwordError}
-                  </div>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField onChange={this.onChange}
-                    variant="outlined"
-                    fullWidth
-                    name="confirm_password"
-                    label="Confirm Password"
-                    type="password"
-                    id="confirm_password"
-                    value={this.state.confirm_password}
-                    onChange={this.handleChange}
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.confirmPasswordError}
-                  </div>
-                </Grid>
-
               </Grid>
               <br />
 
@@ -380,19 +305,13 @@ class SignUp extends React.Component {
                     {"Already have an account? Sign In"}
                   </Link>
                 </Grid>
-                <Grid item >
-                  {/* Forgot password link*/}
-                  <Link href="/forgot_password" variant="body2" style={{ color: '#0B658A' }}>
-                    {"Forgot password?"}
-                  </Link>
-                </Grid>
               </Grid>
             </form>
 
           </div>
         </Container>
       );
-    }
+    
   }
 }
 export default SignUp;
