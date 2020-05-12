@@ -23,6 +23,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -221,6 +223,18 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                         cart.addToCart(itemToBeAdded);
                         pref.setShoppingCart(cart);
+                        /**
+                         * It ties the bottom navigation bar xml element to a Java object and provides it with its
+                         * onClick functionality to other activities and sets the listener.
+                         */
+                      //  BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+                      //  BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+                    //    badge.setVisible(true);
+                     //   if(pref.getShoppingCart()!=null) {
+                      //     if(pref.getShoppingCart().getCart().size()!=0){
+                      //          badge.setNumber(pref.getShoppingCart().getCart().size());
+                      //      }
+                    //    }
                         addToCartPopup.dismiss();
                     }
                     else if(pref.getShoppingCart().getRestaurantID() == restaurantID) {

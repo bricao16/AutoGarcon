@@ -24,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -111,6 +112,20 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+
+
+        /**
+         * It ties the bottom navigation bar xml element to a Java object and provides it with its
+         * onClick functionality to other activities and sets the listener.
+         */
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+        badge.setVisible(true);
+        if(pref.getShoppingCart()!=null) {
+            if(pref.getShoppingCart().getCart().size()!=0){
+                badge.setNumber(pref.getShoppingCart().getCart().size());
+            }
+        }
 
         /**
          * Ties the cart xml to a Java object and sets the adapter, which will manage each
@@ -292,11 +307,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          */
 
 
-        /**
-         * It ties the bottom navigation bar xml element to a Java object and provides it with its
-         * onClick functionality to other activities and sets the listener.
-         */
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {

@@ -28,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -78,7 +79,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+       // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
         setContentView(R.layout.activity_menu);
         pref = new SharedPreference(this);
 
@@ -89,7 +90,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         final DrawerLayout drawerLayout = findViewById(R.id.restaurant_main);// associating xml objects with the java Object equivalent
         Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+       // getSupportActionBar().setDisplayShowTitleEnabled(false);
         NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
@@ -99,6 +100,19 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        /**
+         * It ties the bottom navigation bar xml element to a Java object and provides it with its
+         * onClick functionality to other activities and sets the listener.
+         */
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+        badge.setVisible(true);
+        if(pref.getShoppingCart()!=null) {
+            if(pref.getShoppingCart().getCart().size()!=0){
+                badge.setNumber(pref.getShoppingCart().getCart().size());
+            }
+        }
 
         restaurantLogo = findViewById(R.id.restaurant_logo);
         restaurantName = findViewById(R.id.restaurant_name);
@@ -346,11 +360,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         VolleySingleton.getInstance(Menu.this).addToRequestQueue(getRequest);
 
 
-        /**
-         * It ties the bottom navigation bar xml element to a Java object and provides it with its
-         * onClick functionality to other activities and sets the listener.
-         */
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -372,6 +382,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
     }
+    /*
     /**
      * Initialize the contents of the Activity's standard options menu.  You
      * should place your menu items in to <var>menu</var>.
@@ -399,7 +410,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      *
      * @see #onPrepareOptionsMenu
      * @see #onOptionsItemSelected
-     */
+
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
 
@@ -408,12 +419,12 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         MenuItem item = menu.findItem(R.id.action_cart);
         Log.d("hello","testing "+item);
 
-        cartCounter =  item.getActionView().findViewById(R.id.cart_badge);
-        setUpBadge();
+      //  cartCounter =  item.getActionView().findViewById(R.id.action_cart);
+        //setUpBadge();
         return super.onCreateOptionsMenu(menu);
     }
 
-
+     */
 
     private void setUpBadge(){
 
