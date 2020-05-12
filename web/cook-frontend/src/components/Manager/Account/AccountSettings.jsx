@@ -2,10 +2,12 @@ import React from "react";
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-import Form from 'react-bootstrap/Form';
+import Alert from 'react-bootstrap/Alert';
 import EditFieldRightIcon from '@material-ui/icons/ChevronRight';
 import EditFieldDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import snakeCase from "lodash.snakecase";
+import validator from 'validator';
+import {Redirect} from "react-router-dom";
 
 /*this is the customize component for the currently logged in
 account. The info is prefilled from the cookies stored
@@ -17,35 +19,82 @@ class AccountSettings extends React.Component{
     super(props);
     
     this.cookies = new Cookies();
-    this.state = {
-      showEmail: false,
-      showFirstName: false,
-      showLastName: false,
-      showPhoneNumber: false,
-      token: this.cookies.get('mytoken'),
-      email: this.cookies.get('mytoken').email,
-      first_name: this.cookies.get('mytoken').first_name,
-      last_name: this.cookies.get('mytoken').last_name,
-      contact_num: this.cookies.get('mytoken').contact_num,
-      edited: false
-    };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleShow = this.handleShow.bind(this);
+    if (this.cookies.get('mystaff') !== undefined) {
+      this.state = {
+        showEmail: false,
+        showFirstName: false,
+        showLastName: false,
+        showPhoneNumber: false,
+        token: this.cookies.get('mytoken'),
+        staff_id: this.cookies.get('mystaff').staff_id,
+        email: this.cookies.get('mystaff').email,
+        first_name: this.cookies.get('mystaff').first_name,
+        last_name: this.cookies.get('mystaff').last_name,
+        contact_num: this.cookies.get('mystaff').contact_num,
+        edited: false,
+        response: "No existing error",
+        showAlert: false
+      };
+    }
+
+    this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleAlertShow = this.handleAlertShow.bind(this);
+  }
+
+  sanitize() {
+    let result = true
+
+    // Check each field exists
+    if (this.state.contact_num.length < 1) return "Phone number is required"
+    if (this.state.first_name.length < 1) return "First name is required"
+    if (this.state.last_name.length < 1) return "Last name is required"
+    if (this.state.email.length < 1) return "Email is required"
+
+    // Each field is correct format
+    let numberToString = (this.state.contact_num + '').length
+    if (numberToString !== 10) return "Phone number must be 10 digits (ex. 1234567890)"
+    if (isNaN(this.state.contact_num)) return "Phone number must be a number"
+
+    if (this.state.last_name.length > 30) return "Last name is too long.  Must be under 30 characters"
+    if (isNaN(this.state.last_name) !== true) return "Last name must be a string"
+
+    if (this.state.first_name.length > 30) return "First name is too long.  Must be under 30 characters"
+    if (isNaN(this.state.first_name) !== true) return "First name must be a string"
+
+    if (this.state.email.length > 50) return "Email is too long.  Must be under 50 characters"
+    if (validator.isEmail(this.state.email + "") !== true) return "Email must be in the format of an email address (ex. test@gmail.com)"
+
+    return true
   }
 
   /* Used for connecting to Customization in database */
-  handleSubmit(event) {
-    //event.preventDefault();
-    
-    /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
+  handleUpdate(event) {
+    event.preventDefault();
+
+    // Hide alert if showing
+    this.setState({
+      showAlert: false
+    });
+
+    console.log(this.state)
+
+    let sanitizationResult = this.sanitize();
+    if (sanitizationResult !== true) {
+      this.handleAlertShow(false, sanitizationResult)
+      return
+    }
 
     axios({
       method: 'POST',
-      url:  process.env.REACT_APP_DB +'/restaurant/update/',
-      data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
-      '&address='+this.state.address+'&phone='+this.state.phone+
-      '&opening='+this.state.open+'&closing='+this.state.close,
+      url:  process.env.REACT_APP_DB +'/staff/update',
+      data:
+        'staff_id='+this.state.staff_id +
+        '&first_name='+this.state.first_name +
+        '&last_name='+this.state.last_name +
+        '&contact_num='+this.state.contact_num +
+        '&email='+this.state.email,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer ' + this.state.token
@@ -57,27 +106,56 @@ class AccountSettings extends React.Component{
     .then(async response => {
       await response;
 
-      if (response.status !== 200) {this.handleShow(false);}
-      else {this.handleShow(true, "changed");}
+      if (response.status !== 200) {this.handleAlertShow(false);}
+      else {
+        this.handleAlertShow(true, "updated");
+        this.setState({
+          showEmail: false,
+          showFirstName: false,
+          showLastName: false,
+          showPhoneNumber: false,
+        })
+
+        let reconfigureCookie = this.cookies.get('mystaff')
+        reconfigureCookie.email = this.state.email
+        reconfigureCookie.first_name = this.state.first_name
+        reconfigureCookie.last_name = this.state.last_name
+        reconfigureCookie.contact_num = this.state.contact_num
+        this.cookies.set('mystaff', reconfigureCookie, { path: '/' });
+      }
     })
     .catch(error => {
-      this.handleShow(false);
-      console.error("There was an error!", error);
-    });
+      this.handleShow(false, error.response.data);
+			console.error("There was an error!", error);
+		});
   }
 
   /* Used to show the correct alert after hitting save item */
-  handleShow(success, message) {
+  handleAlertShow(success, message) {
     if (success) {
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
     }
     else {
-      this.setState({response: 'Failed to update'})
+      this.setState({response: message})
       this.setState({alertVariant: 'danger'});
     }
 
-    this.setState({show: true});
+    this.setState({showAlert: true});
+  }
+
+  /* Used for handling changes to the input field */
+  handleInputChange(event) {
+    const tarset = event.tarset;
+    console.log(tarset)
+    const value = tarset.value;
+    const name = snakeCase(tarset.name);
+
+    if (this.state.edited == false) this.setState({edited: true})
+
+    this.setState({
+      [name]: value
+    });
   }
 
   // Capitilize certain fields first letter from https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
@@ -85,29 +163,11 @@ class AccountSettings extends React.Component{
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  //convert image to blob from https://stackoverflow.com/questions/42471755/convert-image-into-blob-using-javascript
-  loadXHR(url) {
-    return new Promise(function(resolve, reject) {
-        try {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url);
-            xhr.responseType = "blob";
-            xhr.onerror = function() {reject("Network error.")};
-            xhr.onload = function() {
-                if (xhr.status === 200) {resolve(xhr.response)}
-                else {reject("Loading error:" + xhr.statusText)}
-            };
-            xhr.send();
-        }
-        catch(err) {reject(err.message)}
-    });
-  }
-
   fieldStatus(field) {
     if (this.state['show'+field]) {
       return (
         <div className="py-2 pr-2">
-          <Form.Control onChange={() => {if (this.state.edited == false) this.setState({edited: true})}} defaultValue={this.cookies.get("mystaff")[snakeCase(field)]} />
+          <input className="form-control" onChange={this.handleInputChange} name={snakeCase(field)} defaultValue={this.cookies.set("mystaff")[snakeCase(field)]}></input>
         </div>
       )
     }
@@ -119,7 +179,7 @@ class AccountSettings extends React.Component{
 
     if (!this.state['show'+field]) {
       return (
-        <small className="text-secondary">{this.cookies.get("mystaff")[snakeCaseField]}</small>
+        <small className="text-secondary">{this.cookies.set("mystaff")[snakeCaseField]}</small>
       )
     }
     else return (<></>)
@@ -127,9 +187,8 @@ class AccountSettings extends React.Component{
 
   showField(event) {
     event.preventDefault();
-    const target = event.target;
-    //const value = target.value;
-    const name = target.name;
+    const tarset = event.tarset;
+    const name = tarset.name;
 
     let stateField = "show" + name;
 
@@ -154,13 +213,14 @@ class AccountSettings extends React.Component{
   updateButton() {
     if (this.state.edited) {
       return (
-        <button type="button" className="btn btn-primary" style={{"width":"33%"}}>Update</button>
+        <button onClick={this.handleUpdate} type="button" className="btn btn-primary" style={{"width":"33%"}}>Update</button>
       )
     }
     else return (<></>)
   }
 
   render() {
+    //if (this.cookies.get('mystaff') === undefined) return <Redirect to={'/login_manager'}/>
     return(
       <div style={{"width": "70vw"}}>
         <div className="p-3 text-center">
@@ -168,9 +228,14 @@ class AccountSettings extends React.Component{
         </div>
 
         <div>
+
+          <Alert style={{"width": "70vw"}} show={this.state.showAlert} variant={this.state.alertVariant}>
+            {this.state.response}
+          </Alert>
+
           <ul className="list-group-flush" style={{"fontSize": "1.25rem"}}>
             <li className="list-group-item">
-              <div>{this.capitalizeFirstLetter(this.cookies.get("mystaff").position)}</div>
+              <div>{this.capitalizeFirstLetter(this.cookies.set("mystaff").position)}</div>
             </li>
 
             <li className="list-group-item">
