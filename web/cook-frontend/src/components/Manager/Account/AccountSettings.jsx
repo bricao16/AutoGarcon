@@ -9,7 +9,8 @@ import snakeCase from "lodash.snakecase";
 import validator from 'validator';
 import {Redirect} from "react-router-dom";
 
-/*this is the customize component for the currently logged in
+/*
+This is the customize component for the currently logged in
 account. The info is prefilled from the cookies stored
 during log in. 
 */
@@ -19,30 +20,29 @@ class AccountSettings extends React.Component{
     super(props);
     
     this.cookies = new Cookies();
-
-    if (this.cookies.get('mystaff') !== undefined) {
-      this.state = {
-        showEmail: false,
-        showFirstName: false,
-        showLastName: false,
-        showPhoneNumber: false,
-        token: this.cookies.get('mytoken'),
-        staff_id: this.cookies.get('mystaff').staff_id,
-        email: this.cookies.get('mystaff').email,
-        first_name: this.cookies.get('mystaff').first_name,
-        last_name: this.cookies.get('mystaff').last_name,
-        contact_num: this.cookies.get('mystaff').contact_num,
-        edited: false,
-        response: "No existing error",
-        showAlert: false
-      };
-    }
+    this.state = {
+      showEmail: false,
+      showFirstName: false,
+      showLastName: false,
+      showPhoneNumber: false,
+      token: this.cookies.get('mytoken'),
+      staff_id: this.cookies.get('mystaff').staff_id,
+      email: this.cookies.get('mystaff').email,
+      first_name: this.cookies.get('mystaff').first_name,
+      last_name: this.cookies.get('mystaff').last_name,
+      contact_num: this.cookies.get('mystaff').contact_num,
+      position: this.cookies.get("mystaff").position,
+      edited: false,
+      response: "No existing error",
+      showAlert: false
+    };
 
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleAlertShow = this.handleAlertShow.bind(this);
   }
 
+  /* Used to make sure the current field values are valid and "sanitized" */
   sanitize() {
     let result = true
 
@@ -73,13 +73,12 @@ class AccountSettings extends React.Component{
   handleUpdate(event) {
     event.preventDefault();
 
-    // Hide alert if showing
+    /* Hide alert if showing */
     this.setState({
       showAlert: false
     });
 
-    console.log(this.state)
-
+    /* Sanitize before sending request */
     let sanitizationResult = this.sanitize();
     if (sanitizationResult !== true) {
       this.handleAlertShow(false, sanitizationResult)
@@ -107,6 +106,8 @@ class AccountSettings extends React.Component{
       await response;
 
       if (response.status !== 200) {this.handleAlertShow(false);}
+      /* The account was successfully updated so the cookies and internal state need to be updated
+       and the edit buttons need to be hidden */
       else {
         this.handleAlertShow(true, "updated");
         this.setState({
@@ -116,12 +117,19 @@ class AccountSettings extends React.Component{
           showPhoneNumber: false,
         })
 
-        let reconfigureCookie = this.cookies.get('mystaff')
-        reconfigureCookie.email = this.state.email
-        reconfigureCookie.first_name = this.state.first_name
-        reconfigureCookie.last_name = this.state.last_name
-        reconfigureCookie.contact_num = this.state.contact_num
+        let reconfigureCookie = this.cookies.get('mystaff');
+        reconfigureCookie.email = this.state.email;
+        reconfigureCookie.first_name = this.state.first_name;
+        reconfigureCookie.last_name = this.state.last_name;
+        reconfigureCookie.contact_num = this.state.contact_num;
         this.cookies.set('mystaff', reconfigureCookie, { path: '/' });
+        
+        this.setState({
+          email: this.cookies.get('mystaff').email,
+          first_name: this.cookies.get('mystaff').first_name,
+          last_name: this.cookies.get('mystaff').last_name,
+          contact_num: this.cookies.get('mystaff').contact_num,
+        })
       }
     })
     .catch(error => {
@@ -146,10 +154,9 @@ class AccountSettings extends React.Component{
 
   /* Used for handling changes to the input field */
   handleInputChange(event) {
-    const tarset = event.tarset;
-    console.log(tarset)
-    const value = tarset.value;
-    const name = snakeCase(tarset.name);
+    const target = event.target;
+    const value = target.value;
+    const name = snakeCase(target.name);
 
     if (this.state.edited == false) this.setState({edited: true})
 
@@ -158,37 +165,40 @@ class AccountSettings extends React.Component{
     });
   }
 
-  // Capitilize certain fields first letter from https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
+  /* Capitilize certain fields first letter from https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript */
   capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
+  /* Dynamic fields that are shown if the internal state is stored as showing */
   fieldStatus(field) {
     if (this.state['show'+field]) {
       return (
         <div className="py-2 pr-2">
-          <input className="form-control" onChange={this.handleInputChange} name={snakeCase(field)} defaultValue={this.cookies.set("mystaff")[snakeCase(field)]}></input>
+          <input className="form-control" onChange={this.handleInputChange} name={snakeCase(field)} defaultValue={this.cookies.get("mystaff")[snakeCase(field)]}></input>
         </div>
       )
     }
     else return (<></>)
   }
 
+  /* Dynamic labels for each corresponding field */
   labelStatus(field) {
     let snakeCaseField = snakeCase(field)
 
     if (!this.state['show'+field]) {
       return (
-        <small className="text-secondary">{this.cookies.set("mystaff")[snakeCaseField]}</small>
+        <small className="text-secondary">{this.cookies.get("mystaff")[snakeCaseField]}</small>
       )
     }
     else return (<></>)
   }
 
+  /* When the toggle icon is toggled the internal show state for the corresponding field is toggled */
   showField(event) {
     event.preventDefault();
-    const tarset = event.tarset;
-    const name = tarset.name;
+    const target = event.target;
+    const name = target.name;
 
     let stateField = "show" + name;
 
@@ -197,19 +207,21 @@ class AccountSettings extends React.Component{
     });
   }
 
+  /* Edit icon is turned on its side when clicked to show the user is now editing */
   toggleEditIcon(field) {
     if (this.state["show"+field]) {
       return (
-        <EditFieldDownIcon style={{"pointer-events": "none"}} fontSize="large"></EditFieldDownIcon>
+        <EditFieldDownIcon style={{"pointerEvents": "none"}} fontSize="large"></EditFieldDownIcon>
       )
     }
     else {
       return (
-        <EditFieldRightIcon style={{"pointer-events": "none"}} fontSize="large"></EditFieldRightIcon>
+        <EditFieldRightIcon style={{"pointerEvents": "none"}} fontSize="large"></EditFieldRightIcon>
       )
     }
   }
 
+  /* Dynamic update button that is shown when a field is edited */
   updateButton() {
     if (this.state.edited) {
       return (
@@ -235,7 +247,7 @@ class AccountSettings extends React.Component{
 
           <ul className="list-group-flush" style={{"fontSize": "1.25rem"}}>
             <li className="list-group-item">
-              <div>{this.capitalizeFirstLetter(this.cookies.set("mystaff").position)}</div>
+              <div>{this.capitalizeFirstLetter(this.state.position)}</div>
             </li>
 
             <li className="list-group-item">
