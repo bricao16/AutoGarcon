@@ -8,8 +8,8 @@ import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import QrCode from 'react.qrcode.generator';
 import {render} from 'react-dom';
+var QRCode = require('qrcode.react');
 
 /* This component is used create the QR Codes a manager will want to print and
 place at each table.  The manager enters in the desired table number and presses 
@@ -86,8 +86,13 @@ class StoreInfo extends React.Component{
             </input>
 						<button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Generate Code</button>
 					  <div style={QRCodeStyle} size="300">
-						  <QrCode value={this.state.QRValue} size='300'/>
-							{this.state.QRValue}
+							<QRCode
+								id="123456"
+								value={this.state.QRValue}
+								size={400}
+								level={"H"}
+								includeMargin={true}
+							/>
 					  </div>
             <Container fluid style={{'minWidth': '70vh'}}/>
           </div>
@@ -97,7 +102,7 @@ class StoreInfo extends React.Component{
 }
 
 const QRCodeStyle = {
-	'paddingLeft': '200px',
+	'paddingLeft': '460px',
 	'height': '300px',
 	'width': '300px',
 }
