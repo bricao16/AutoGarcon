@@ -111,7 +111,12 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+        try {
+            drawerLayout.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getTertiaryColor()));
+        }catch(NullPointerException e)
+        {
+            System.out.print("NullPointerException Caught");
+        }
 
 
         /**
@@ -297,10 +302,13 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
             }
         });
 
-
+        try{
         PlaceOrderButton.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
         ClearCartPopup.setBackgroundColor(Color.parseColor(pref.getShoppingCart().getSecondaryColor()));
-
+        }catch(NullPointerException e)
+        {
+            System.out.print("NullPointerException Caught");
+        }
         /**
          * Ties xml element to a Java object and where to onClick functionality is provided,
          * which allows the order to be placed through a put request
