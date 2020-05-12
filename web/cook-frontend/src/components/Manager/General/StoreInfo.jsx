@@ -21,6 +21,7 @@ class StoreInfo extends React.Component{
     super(props);
     
     const cookies = new Cookies();
+		
     this.state = {
       restaurantInfo: [],
       sectionEdit: "",
@@ -28,8 +29,10 @@ class StoreInfo extends React.Component{
       name:this.props.info.name,
       address: this.props.info.address,
       phone: this.props.info.phone,
-      open: this.props.info.opening,
-      close:this.props.info.closing,
+			description: this.props.info.description,
+			cuisine: this.props.menu,
+      opening: this.props.info.opening,
+      closing:this.props.info.closing,
       restaurant_id :cookies.get("mystaff").restaurant_id,
       token:cookies.get('mytoken')
     };
@@ -51,25 +54,26 @@ class StoreInfo extends React.Component{
       }
   /* Used for connecting to restaurantInfo in database */
   handleSubmit(event) {
-		
+		/*Validation for restaurant name.*/
 		if(this.state.name.length > 40){
 			this.handleValidation("Restaurant name is too long.  Please reduce to 40 characters or less.");
 		} else if (this.state.address.length > 40){
 			this.handleValidation("Restaurant address is too long.  Please reduce to 40 characters or less.");
 			
-		} else if (Number(this.state.open) < 0 || Number(this.state.open) > 2400){
+		/*Validation for opening field.*/	
+		} else if (Number(this.state.opening) < 0 || Number(this.state.opening) > 2400){
 			this.handleValidation("Valid opening time not entered.  Please enter a time between 0 and 2400.");
-		} else if (isNaN(this.state.open)){
+		} else if (isNaN((this.state.opening))){
 			this.handleValidation("No number entered for opening time.  Please enter a time between 0 and 2400.");		
-		} else if (!Number(this.state.open).isInteger){
+		} else if (!Number.isInteger(parseFloat(this.state.opening))){
 			this.handleValidation("No integer entered for opening time.  Please enter a time between 0 and 2400.");
 			
-			
-		} else if (this.state.close < 0 || this.state.close > 2400){
+		/*Validation for closing field.*/	
+		} else if (Number(this.state.closing) < 0 || Number(this.state.closing) > 2400){
 			this.handleValidation("Valid closing time not entered.  Please enter a time between 0 and 2400.");
-		} else if (isNaN(this.state.close)){
-			this.handleValidation("No number entered for closing time.  Please enter a time between 0 and 2400.");
-			} else if (!this.state.close.isInteger){
+		} else if (isNaN((this.state.closing))){
+			this.handleValidation("No number entered for closing time.  Please enter a time between 0 and 2400.");		
+		} else if (!Number.isInteger(parseFloat(this.state.closing))){
 			this.handleValidation("No integer entered for closing time.  Please enter a time between 0 and 2400.");
 		} else {
 			
@@ -81,7 +85,7 @@ class StoreInfo extends React.Component{
 				url:  process.env.REACT_APP_DB +'/restaurant/update/',
 				data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
 				'&address='+this.state.address+'&phone='+this.state.phone+
-				'&opening='+this.state.open+'&closing='+this.state.close,
+				'&opening='+this.state.opening+'&closing='+this.state.closing+'&cuisine='+this.state.cuisine,
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'Authorization': 'Bearer ' + this.state.token
@@ -140,10 +144,23 @@ class StoreInfo extends React.Component{
         sectionEdit: category
     })
   }
+	
+	time_convert(num) { 
+		const hours = Math.floor(num / 60);  
+		const minutes = num % 60;
+		if(num < 1200){
+			return '${hours}:${minutes} AM';  
+		}	else {
+			return '${hours}:${minutes} PM';
+		}
+		console.log("Reaching into here.\n");
+  }
+	
+
 		
   renderInfo(){
     return (
-    <Card className="text-center m-2 w-100" style={itemStyle}>
+    <Card className="text-center m-2 w-100" style={itemStyle} >
          
           <Card.Body >
               <div className = "border-bottom m-3">
@@ -200,14 +217,14 @@ class StoreInfo extends React.Component{
               </div>
               <div className = "border-bottom m-3">
               <h5 className="card-subtitle mb-2 text-muted float-left">Opening</h5>
-                  {this.state.sectionEdit !== "Open" ? 
+                  {this.state.sectionEdit !== "Opening" ? 
                       <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[3][1]}
-                          <button onClick={() => this.editForm("Open") }className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
+                          <button onClick={() => this.editForm("Opening") }className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
                       </p>
                       : 
 
                           <form onSubmit = {this.handleSubmit}>
-                              <input  className="form-control" type="text" name = "close" defaultValue={this.state.restaurantInfo[3][1]} onChange={this.onChange}></input>
+                              <input  className="form-control" type="text" name = "opening" defaultValue={this.state.restaurantInfo[3][1]} onChange={this.onChange}></input>
                               <div className="row m-2">
                                   <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
 																	<p style={{margin: "0", padding: "0.25em", fontSize: ".75em"}}>
@@ -226,7 +243,7 @@ class StoreInfo extends React.Component{
                       </p>
                       : 
                           <form onSubmit = {this.handleSubmit}>
-                              <input  className="form-control" type="text" name = "close" defaultValue={this.state.restaurantInfo[4][1]} onChange={this.onChange}></input>
+                              <input  className="form-control" type="text" name = "closing" defaultValue={this.state.restaurantInfo[4][1]} onChange={this.onChange}></input>
                               <div className="row m-2">
                                   <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
 																	<p style={{margin: "0", padding: "0.25em", fontSize: ".75em"}}>
@@ -241,8 +258,6 @@ class StoreInfo extends React.Component{
  
           </Card.Body>
       </Card>
-        
-
       )
     }
     render() {
@@ -258,9 +273,10 @@ class StoreInfo extends React.Component{
         Object.keys(fullResturantInfo.info).forEach(function(key) {
             restaurantInfo.push([key ,fullResturantInfo.info[key]]);
         });
+				
 
         return (
-            <Container style = {backgroundStyle}>
+            <Container onLoad= {()=>this.time_convert(this.state.restaurantInfo[3][1])} style = {backgroundStyle}>
                 <div style ={{'fontFamily' :font, 'backgroundColor': primary, 'paddingTop':'8px','height':'54px'}}>
                 <Alert show={this.state.show} variant={this.state.alertVariant}>
                   {this.state.response}
