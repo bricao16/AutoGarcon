@@ -19,15 +19,15 @@ public class ShoppingCartSingleton {
 
     public ShoppingCartSingleton(){
         this.items = new ArrayList<MenuItem>();
-        this.startingHour=0;
-        this.endingHour=0;
+        this.startingHour = 0;
+        this.endingHour = 0;
     }
 
     public ShoppingCartSingleton(int restaurantID){
         this.items = new ArrayList<MenuItem>();
         this.restaurantID = restaurantID;
-        this.startingHour=0;
-        this.endingHour=0;
+        this.startingHour = 0;
+        this.endingHour = 0;
     }
 
     public ArrayList<MenuItem> getCart(){

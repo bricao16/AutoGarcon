@@ -1,11 +1,5 @@
 package auto_garcon.menustuff;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -22,13 +16,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -36,23 +36,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
-import auto_garcon.accountstuff.*;
+import auto_garcon.ExceptionHandler;
+import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
-import auto_garcon.homestuff.*;
-import auto_garcon.initialpages.Login;
 import auto_garcon.cartorderhistory.ShoppingCart;
+import auto_garcon.homestuff.Home;
+import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
-import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
 /**
  * Class setting up the menu
@@ -71,15 +69,36 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private List<auto_garcon.menustuff.MenuItem> alcohol_list;
     private HashMap<String, List<auto_garcon.menustuff.MenuItem>> listHash;
     private JSONObject obj;
+    private String addOrRemoveFavoritesURL;
+    private Button addOrRemoveFavorite;
     private TextView restaurantName;
     private ImageView restaurantLogo;
     Dialog removeFromFavoritesPopup;
+    private TextView cartCounter;
 
+
+    /**
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+       // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
         setContentView(R.layout.activity_menu);
-
         pref = new SharedPreference(this);
 
         /**
@@ -88,58 +107,79 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
          */
         final DrawerLayout drawerLayout = findViewById(R.id.restaurant_main);// associating xml objects with the java Object equivalent
         Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
+        setSupportActionBar(toolbar);
+       // getSupportActionBar().setDisplayShowTitleEnabled(false);
         NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+
+        TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+        usernameSideNavBar.setText(pref.getUser().getUsername());
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        /**
+         * It ties the bottom navigation bar xml element to a Java object and provides it with its
+         * onClick functionality to other activities and sets the listener.
+         */
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+       final BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+        badge.setVisible(true);
+        if(pref.getShoppingCart()!=null) {
+            if(pref.getShoppingCart().getCart().size()!=0){
+                badge.setNumber(pref.getShoppingCart().getCart().size());
+            }
+        }
 
         restaurantLogo = findViewById(R.id.restaurant_logo);
         restaurantName = findViewById(R.id.restaurant_name);
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
-
-        Button addOrRemoveFavorite = findViewById(R.id.add_restaurant);
+        appetizer_list = new ArrayList<>();
+        entree_list = new ArrayList<>();
+        dessert_list = new ArrayList<>();
+        drink_list = new ArrayList<>();
+        alcohol_list = new ArrayList<>();
+        addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
         if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
             addOrRemoveFavorite.setText("Remove from favorites");
-            pref.removeFromFavorites(getIntent().getIntExtra("restaurant id", 0));
+        }
+        else {
+            addOrRemoveFavorite.setText("Add to favorites");
+        }
 
-            addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
+                    pref.removeFromFavorites(getIntent().getIntExtra("restaurant id", 0));
+
                     removeFromFavoritesPopup = new Dialog(Menu.this);
 
-                    removeFromFavoritesPopup.setContentView(R.layout.remove_from_favorites_popup);
+                    removeFromFavoritesPopup.setContentView(R.layout.confirm_popup);
                     removeFromFavoritesPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     removeFromFavoritesPopup.show();
 
-                    Button removeFromFavorites = removeFromFavoritesPopup.findViewById(R.id.remove_yes);
+                    TextView dynamicPopupText = removeFromFavoritesPopup.findViewById(R.id.text_confirm_popup);
+
+                    dynamicPopupText.setText("Are you sure you want to remove from favorites?");
+
+                    Button removeFromFavorites = removeFromFavoritesPopup.findViewById(R.id.popup_yes);
+                    Button confirmClose = removeFromFavoritesPopup.findViewById(R.id.confirm_close);
 
                     removeFromFavorites.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            String removeFavoriteURL = "http://50.19.176.137:8000/favorites/delete";
+                            addOrRemoveFavorite.setText("Add to favorites");
 
-                            obj = new JSONObject();//json object that will be sent as the request parameter
-
-                            try {
-                                obj.put("customer_id", pref.getUser().getUsername());
-                                obj.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0));
-                            }
-                            catch (JSONException e) {
-                                //TODO figure out how to handle this other than stack trace
-                                e.printStackTrace();
-                            }
-
-                            StringRequest deleteRequest = new StringRequest(Request.Method.POST, removeFavoriteURL,
+                            StringRequest deleteRequest = new StringRequest(Request.Method.POST, "http://50.19.176.137:8000/favorites/delete",
                                     new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String response) {
                                             Toast.makeText(Menu.this, response, Toast.LENGTH_LONG).show();
                                             removeFromFavoritesPopup.dismiss();
-                                            finish();
-                                            startActivity(getIntent());
                                         }
                                     },
                                     new Response.ErrorListener() {
@@ -151,13 +191,11 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                     }
                             ) {
                                 @Override
-                                public byte[] getBody() throws AuthFailureError {
-                                    return obj.toString().getBytes();
-                                }
-
-                                @Override
-                                public String getBodyContentType() {
-                                    return "application/json";
+                                protected Map<String, String> getParams() {// inserting parameters for the put request
+                                    Map<String, String> params = new HashMap<String, String>();
+                                    params.put("customer_id", pref.getUser().getUsername());
+                                    params.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0)+"");
+                                    return params;
                                 }
 
                                 @Override
@@ -171,37 +209,24 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             VolleySingleton.getInstance(Menu.this).addToRequestQueue(deleteRequest);// making the actual request
                         }
                     });
+                    confirmClose.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            removeFromFavoritesPopup.dismiss();
+                        }
+                    });
                 }
-            });
-        }
-        else {
-            addOrRemoveFavorite.setText("Add to favorites");
-            pref.addToFavorites(getIntent().getIntExtra("restaurant id", 0));
+                else {
+                    addOrRemoveFavorite.setText("Remove from favorites");
+                    pref.addToFavorites(getIntent().getIntExtra("restaurant id", 0));
 
-            addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String addFavoriteURL = "http://50.19.176.137:8000/favorites/add";
 
-                    obj = new JSONObject();//json object that will be sent as the request parameter
-
-                    try {
-                        obj.put("customer_id", pref.getUser().getUsername());
-                        obj.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0));
-                    }catch (JSONException e){
-                        //TODO figure out how to handle this other than stack trace
-                        e.printStackTrace();
-                    }
-
-                    StringRequest putRequest = new StringRequest(Request.Method.PUT, addFavoriteURL,
+                    StringRequest putRequest = new StringRequest(Request.Method.PUT, "http://50.19.176.137:8000/favorites/add",
                             new Response.Listener<String>()
                             {
                                 @Override
                                 public void onResponse(String response) {
                                     // response
                                     Toast.makeText(Menu.this,response,Toast.LENGTH_LONG).show();
-                                    finish();
-                                    startActivity(getIntent());
                                 }
                             },
                             new Response.ErrorListener() {
@@ -214,22 +239,27 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             }
                     ) {
                         @Override
-                        public byte[] getBody() throws AuthFailureError {
-                            return obj.toString().getBytes();
+                        protected Map<String, String> getParams() {// inserting parameters for the put request
+                            Map<String, String> params = new HashMap<String, String>();
+                            params.put("customer_id", pref.getUser().getUsername());
+                            params.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0)+"");
+                            return params;
                         }
 
                         @Override
-                        public String getBodyContentType() {
-                            return "application/json";
+                        public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                            HashMap<String,String> headers = new HashMap<String,String>();
+                            headers.put("Authorization","Bearer " + pref.getAuth());
+                            return headers;
                         }
                     };
 
                     VolleySingleton.getInstance(Menu.this).addToRequestQueue(putRequest);// making the actual request
                 }
-            });
-        }
+            }
+        });
 
-        StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/test/restaurant/" + getIntent().getIntExtra("restaurant id", 0),
+        StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/restaurant/" + getIntent().getIntExtra("restaurant id", 0),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -248,13 +278,12 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             restaurant.getInt("closing");
 
                             font = restaurant.getString("font");
-                            restaurant.getString("font_color");
                             primaryColor = restaurant.getString("primary_color");
 
                             restaurant.getString("cuisine");
 
-                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash, getIntent().getIntExtra("restaurant id", 0),
-                                    primaryColor, restaurant.getString("secondary_color"), restaurant.getString("tertiary_color"));
+                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash,getIntent().getIntExtra("restaurant id", 0),
+                                    primaryColor, restaurant.getString("secondary_color"), restaurant.getString("tertiary_color"),restaurant.getInt("opening"),restaurant.getInt("closing"),badge);
                             listView = findViewById(R.id.menu_list);
                             listView.setAdapter(listAdapter);
 
@@ -274,66 +303,35 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             while(keys.hasNext()) {
                                 String key = keys.next();
                                 if (menuItem.get(key) instanceof JSONObject) {
-
-                                    auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
                                     JSONObject menuItemCategories = menuItem.getJSONObject(key);
-                                    String whereToSendItem = "";
 
-                                    if(menuItemCategories.getInt("start_time") == 0 && menuItemCategories.getInt("end_time") == 0) {
-                                        whereToSendItem = menuItemCategories.getString("category");
-                                        itemToBeAdded = creatingToBeAddedItem(menuItemCategories);
-                                    }
-                                    else if(menuItemCategories.getInt("start_time") < Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR)
-                                            && Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) < menuItemCategories.getInt("end_time")) {
-                                        whereToSendItem = menuItemCategories.getString("category");
-                                        itemToBeAdded = creatingToBeAddedItem(menuItemCategories);
-                                    }
+                                    auto_garcon.menustuff.MenuItem itemToBeAdded = creatingToBeAddedItem(menuItemCategories);
+                                    itemToBeAdded.setNameOfItem(key);
+                                    String whereToSendItem = menuItemCategories.getString("category");
 
-                                    if(itemToBeAdded.getCategory() != null) {
-                                        if(itemToBeAdded.getCategory().equals("Alcohol") && alcohol_list != null) {
-                                            for(int i = 0; i < alcohol_list.size(); i++) {
-                                                if(itemToBeAdded.getItemID() == alcohol_list.get(i).getItemID()){
-                                                    if(itemToBeAdded.getPrice() < alcohol_list.get(i).getPrice()) {
-                                                        alcohol_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                                    }
-                                                }
-                                            }
+                                    if(itemToBeAdded.getCategory().equals("Alcohol") && alcohol_list != null) {
+                                        for(int i = 0; i < alcohol_list.size(); i++) {
+                                                alcohol_list.get(i).setPrice(itemToBeAdded.getPrice());
                                         }
-                                        else if(itemToBeAdded.getCategory().equals("Refillable Drink") && drink_list != null) {
-                                            for(int i = 0; i < drink_list.size(); i++) {
-                                                if(itemToBeAdded.getItemID() == drink_list.get(i).getItemID()){
-                                                    if(itemToBeAdded.getPrice() < drink_list.get(i).getPrice()) {
-                                                        drink_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                                    }
-                                                }
-                                            }
+                                    }
+                                    else if(itemToBeAdded.getCategory().equals("Refillable Drink") && drink_list != null) {
+                                        for(int i = 0; i < drink_list.size(); i++) {
+                                                drink_list.get(i).setPrice(itemToBeAdded.getPrice());
                                         }
-                                        else if(itemToBeAdded.getCategory().equals("Dessert") && dessert_list != null) {
-                                            for(int i = 0; i < dessert_list.size(); i++) {
-                                                if(itemToBeAdded.getItemID() == dessert_list.get(i).getItemID()){
-                                                    if(itemToBeAdded.getPrice() < drink_list.get(i).getPrice()) {
-                                                        dessert_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                                    }
-                                                }
-                                            }
+                                    }
+                                    else if(itemToBeAdded.getCategory().equals("Dessert") && dessert_list != null) {
+                                        for(int i = 0; i < dessert_list.size(); i++) {
+                                                dessert_list.get(i).setPrice(itemToBeAdded.getPrice());
                                         }
-                                        else if(itemToBeAdded.getCategory().equals("Entree") && entree_list != null) {
-                                            for(int i = 0; i < entree_list.size(); i++) {
-                                                if(itemToBeAdded.getItemID() == entree_list.get(i).getItemID()){
-                                                    if(itemToBeAdded.getPrice() < entree_list.get(i).getPrice()) {
-                                                        entree_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                                    }
-                                                }
-                                            }
+                                    }
+                                    else if(itemToBeAdded.getCategory().equals("Entree") && entree_list != null) {
+                                        for(int i = 0; i < entree_list.size(); i++) {
+                                            entree_list.get(i).setPrice(itemToBeAdded.getPrice());
                                         }
-                                        else if(itemToBeAdded.getCategory().equals("Appetizer") && appetizer_list != null){
-                                            for(int i = 0; i < appetizer_list.size(); i++) {
-                                                if(itemToBeAdded.getItemID() == appetizer_list.get(i).getItemID()){
-                                                    if(itemToBeAdded.getPrice() < appetizer_list.get(i).getPrice()) {
-                                                        appetizer_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                                    }
-                                                }
-                                            }
+                                    }
+                                    else if(itemToBeAdded.getCategory().equals("Appetizer") && appetizer_list != null){
+                                        for(int i = 0; i < appetizer_list.size(); i++) {
+                                            appetizer_list.get(i).setPrice(itemToBeAdded.getPrice());
                                         }
                                     }
 
@@ -342,6 +340,27 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                         && whereToSendItem.length() != 0) {
                                         addToList(itemToBeAdded, whereToSendItem);}
                                 }
+                            }
+
+                            if(appetizer_list != null && appetizer_list.size() > 0) {
+                                listDataHeader.add("Appetizer");
+                                listHash.put(listDataHeader.get(listDataHeader.size() - 1), appetizer_list);
+                            }
+                            if(entree_list != null && entree_list.size()  > 0) {
+                                listDataHeader.add("Entree");
+                                listHash.put(listDataHeader.get(listDataHeader.size() - 1), entree_list);
+                            }
+                            if(dessert_list != null && dessert_list.size() > 0) {
+                                listDataHeader.add("Dessert");
+                                listHash.put(listDataHeader.get(listDataHeader.size() - 1), dessert_list);
+                            }
+                            if(drink_list != null && drink_list.size() > 0) {
+                                listDataHeader.add("Refillable Drinks");
+                                listHash.put(listDataHeader.get(listDataHeader.size() - 1), drink_list);
+                            }
+                            if(alcohol_list != null && alcohol_list.size() > 0) {
+                                listDataHeader.add("Alcohol");
+                                listHash.put(listDataHeader.get(listDataHeader.size() - 1), alcohol_list);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -358,11 +377,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
         VolleySingleton.getInstance(Menu.this).addToRequestQueue(getRequest);
 
-        /**
-         * It ties the bottom navigation bar xml element to a Java object and provides it with its
-         * onClick functionality to other activities and sets the listener.
-         */
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+
+
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -382,12 +398,17 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 };
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+
     }
 
+
     /**
-     * This method is what provides the side navigation bar with its onClick functionality to
-     * other activities.
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param nav_item The selected item
+     * @return true to display the item as the selected item
      */
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
@@ -412,40 +433,15 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         return false;
     }
 
+
+
     /**
      * The method is what filters the restaurant items that are displayed on the menu. If the
      * current menu does not have a category for the item being added it will add that category.
      * It then adds the actual item to the category it belongs in.
      * */
-    private void addToList(auto_garcon.menustuff.MenuItem key, String category) {
-        if(!listDataHeader.contains(category)) {
-            listDataHeader.add(category);
-            switch(category){
-                case "Appetizer":
-                    appetizer_list = new ArrayList<>();
-                    listHash.put(listDataHeader.get(listDataHeader.size() - 1), appetizer_list);
-                    break;
-                case "Entree":
-                    entree_list = new ArrayList<>();
-                    listHash.put(listDataHeader.get(listDataHeader.size() - 1), entree_list);
-                    break;
-                case "Dessert":
-                    dessert_list = new ArrayList<>();
-                    listHash.put(listDataHeader.get(listDataHeader.size() - 1), dessert_list);
-                    break;
-                case "Refillable Drink":
-                    drink_list = new ArrayList<>();
-                    listHash.put(listDataHeader.get(listDataHeader.size() - 1), drink_list);
-                    break;
-                case "Alcohol":
-                    alcohol_list = new ArrayList<>();
-                    listHash.put(listDataHeader.get(listDataHeader.size() - 1), alcohol_list);
-                    break;
-                default:
-                    break;
-            }
-        }
 
+    private void addToList(auto_garcon.menustuff.MenuItem key, String category) {
         switch(category){
             case "Appetizer":
                 appetizer_list.add(key);
@@ -470,21 +466,14 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private auto_garcon.menustuff.MenuItem creatingToBeAddedItem(JSONObject menuItemCategories) {
         auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
 
-        try{
+        try {
             itemToBeAdded.setItemID(menuItemCategories.getInt("item_id"));
-            itemToBeAdded.setNameOfItem(menuItemCategories.getString("item_name"));
             itemToBeAdded.setCalories(menuItemCategories.getInt("calories"));
             itemToBeAdded.setPrice(menuItemCategories.getDouble("price"));
             itemToBeAdded.setCategory(menuItemCategories.getString("category"));
 
             itemToBeAdded.setAmountInStock(menuItemCategories.getInt("in_stock"));
             itemToBeAdded.setDescription(menuItemCategories.getString("description"));
-
-            byte[] menuItemImageByteArray = new byte[menuItemCategories.getJSONObject("image").getJSONArray("data").length()];
-
-            for(int i = 0; i < menuItemImageByteArray.length; i++) {
-                menuItemImageByteArray[i] = (byte) (((int) menuItemCategories.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
-            }
         }
         catch (JSONException e) {
             e.printStackTrace();

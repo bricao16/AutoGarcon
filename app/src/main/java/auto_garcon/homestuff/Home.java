@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.seismic.ShakeDetector;
@@ -71,6 +73,23 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     AutoCompleteTextView searchBar;
     Random randomGenerator;
 
+    /**
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         pref = new SharedPreference(Home.this);
@@ -81,14 +100,30 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
         NavigationView navigationView = findViewById(R.id.navigationView);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(Home.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         searchBar = findViewById(R.id.search_bar);
+
+        TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+        usernameSideNavBar.setText(pref.getUser().getUsername());
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(Home.this);
 
+        /**
+         * It ties the bottom navigation bar xml element to a Java object and provides it with its
+         * onClick functionality to other activities and sets the listener.
+         */
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+        badge.setVisible(true);
+        if(pref.getShoppingCart()!=null) {
+            if(pref.getShoppingCart().getCart().size()!=0){
+                badge.setNumber(pref.getShoppingCart().getCart().size());
+            }
+        }
+
 
         //shake feature
         randomGenerator = new Random();
@@ -161,7 +196,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                         else {
                             ConstraintLayout constraintLayout = findViewById(R.id.no_favorites);
                             constraintLayout.setVisibility(View.GONE);
-                            Toast.makeText(Home.this, items.toString(),Toast.LENGTH_LONG).show();
+
                             favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
                             homeAdapter = new HomeAdapter(Home.this, items);
                             favoritesRecyclerView.setAdapter(homeAdapter);
@@ -234,12 +269,18 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForSearch);
     }
 
+    /** Called on the main thread when the device is shaken. */
     @Override
     public void hearShake(){
         allRestaurantIDs.get(randomGenerator.nextInt(allRestaurantNames.size()));
     }
 
-    //onClick for side nav bar
+    /**
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param nav_item The selected item
+     * @return true to display the item as the selected item
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){

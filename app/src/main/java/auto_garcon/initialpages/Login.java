@@ -44,9 +44,21 @@ public class Login extends AppCompatActivity {
 
 
     /**
-     * This method instantiates and constraints the xml object assoiciated to the login java class.
+     * Called when the activity is starting.  This is where most initialization
+     * should go
      *
-     * @param savedInstanceState  contains the data that has been most recently supplied on the register xml after the creation of the app
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +95,6 @@ public class Login extends AppCompatActivity {
                     password.setError("Please enter your password");
                     password.requestFocus();
                 }
-                else if(username.length()>50){
-                    usernameId.setError("Please enter a username with less than 50 characters");
-                    usernameId.requestFocus();
-                }
-
                 else if (!(username.isEmpty() && passwd.isEmpty())) {//if everything is good we proceed with the get request
 
                     //post request for logging in

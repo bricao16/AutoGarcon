@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -18,10 +19,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import auto_garcon.accountstuff.Account;
@@ -37,6 +43,25 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
 
     private SharedPreference pref;
 
+
+
+    /**
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +73,21 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
         Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
         NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(CurrentOrders.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+        /**
+         * It ties the bottom navigation bar xml element to a Java object and provides it with its
+         * onClick functionality to other activities and sets the listener.
+         */
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+        badge.setVisible(true);
+        if(pref.getShoppingCart()!=null) {
+            if(pref.getShoppingCart().getCart().size()!=0){
+                badge.setNumber(pref.getShoppingCart().getCart().size());
+            }
+        }
 
-
+        TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+        usernameSideNavBar.setText(pref.getUser().getUsername());
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(CurrentOrders.this);
@@ -81,7 +118,31 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                     @Override
                     public void onResponse(String response) {
                         // response
-                        Log.d("SFSasdfasdfDF", response);
+                        try {
+                            JSONObject orderJSONObject = new JSONObject(response);
+
+                            Iterator<String> keys = orderJSONObject.keys();
+                            while(keys.hasNext()) {
+                                String key = keys.next();
+
+                                if (orderJSONObject.get(key) instanceof JSONObject) {
+                                    auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
+                                    JSONObject menuItemCategories = orderJSONObject.getJSONObject(key);
+
+                                    menuItemCategories.getInt("order_num");
+                                    menuItemCategories.getInt("restaurant_id");
+                                    menuItemCategories.getInt("item_id");
+                                    menuItemCategories.getString("item_name");
+                                    menuItemCategories.getDouble("price");
+                                    menuItemCategories.getInt("quantity");
+                                    menuItemCategories.getString("order_date");
+                                    //menuItemCategories.getString("table_num");
+                                }
+                            }
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -94,7 +155,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
-                HashMap<String,String> headers = new HashMap<String,String>();
+                HashMap<String,String> headers = new HashMap<String, String>();
                 headers.put("Authorization","Bearer " + pref.getAuth());
                 return headers;
             }
@@ -102,8 +163,13 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
         VolleySingleton.getInstance(CurrentOrders.this).addToRequestQueue(getRequest);// sending the request to the database
     }
 
-    //onClick for side nav bar
-    @Override
+
+    /**
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param nav_item The selected item
+     * @return true to display the item as the selected item
+     */    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
