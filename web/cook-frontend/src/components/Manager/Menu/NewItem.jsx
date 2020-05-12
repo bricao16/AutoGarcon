@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form'
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
@@ -139,7 +140,7 @@ class NewItem extends React.Component {
   getCategories() {
     return (
       this.state.cookies.get('categories').map(category => 
-        <option value={category}>{category}</option>
+        <option key={category} value={category}>{category}</option>
       )
     )
   }
@@ -305,11 +306,22 @@ class NewItem extends React.Component {
                   <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} placeholder="300 Character limit"></textarea>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="exampleFormControlFile1">Picture</label>
-                  <input type="file" className="form-control-file" id="exampleFormControlFile1">
-                  </input>
-                </div>
+                {/* <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="customFile"></input>
+                  <label class="custom-file-label" for="customFile">Choose file</label>
+                </div> */}
+
+                <Form>
+                  <label htmlFor="custom-file">Picture</label>
+                  <Form.File 
+                    id="custom-file"
+                    label="Choose file"
+                    custom
+                    isValid={this.state.show} // needs to be representative of internal state
+                    onChange  // needs to update internal state
+                    //onClick={(t) => {console.log(this)}}
+                  />
+                </Form>
 
                 <div className="d-flex justify-content-center row p-2">
                   <button onClick={this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>

@@ -81,8 +81,9 @@ class Menu extends React.Component {
     const secondary = this.props.secondary;
     const font = this.props.font;
     const font_color = this.props.font_color
+
     return this.state.categories.map((item) =>
-      <Col sm={6} className="p-3" style={{'minWidth':'225px'}}>
+      <Col key={item} sm={6} className="p-3" style={{'minWidth':'225px'}}>
         <Card className="text-center" >
           <div onClick={() => this.changeCategory(item) }>                     
             <Card.Header style ={{'fontFamily' :font, 'backgroundColor': secondary, 'textAlign' : 'center','display': 'flex'}}>{item}</Card.Header>
