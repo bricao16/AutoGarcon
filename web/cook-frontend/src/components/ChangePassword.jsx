@@ -8,22 +8,14 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { Redirect } from "react-router-dom";
 import https from 'https';
 import axios from 'axios';
-import Link from '@material-ui/core/Link';
+import Cookies from 'universal-cookie';
 import Alert from 'react-bootstrap/Alert';
+import Link from '@material-ui/core/Link';
+
 import Home from './Home';
 
-
-import Cookies from 'universal-cookie';
-
-/*this sign up will be used to create a 
-restuarant. 
-It currently has no functionality other
-than a outline of a form to be submitted*/
-
-const cookies = new Cookies();
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -37,49 +29,39 @@ const useStyles = makeStyles(theme => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(3),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
 }));
+/*
+  This change password page is used for managers and cooks who have forgotten their password and
+  had an email sent to them with a temporary password after entering their StaffID when clicking Forgot Password.
+  After entering their Staff ID, old password(temporary password), and new password, it will change their
+  password to their new password
+  */
 
-
-class SignUp extends React.Component {
+class ChangePassword extends React.Component {
 
   constructor(props) {
     super(props);
+    this.cookies = new Cookies();
 
     this.state = {
       staff_id: '',
-      first_name: '',
-      last_name: '',
-      contact_num: '',
-      email: '',
-      password: '',
-      confirm_password: '',
+      current_password: '',
+      new_password:'',
+      confirm_new_password: '',
       redirect: false,
       show: false,
-      // restaurant_id: cookies.get('mystaff').restaurant_id,
-      position: "manager",
-      token: null
+      token: this.cookies.get('mytoken'),
     };
 
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
-
   }
-
-
-  handleChange = event => {
-    const isCheckbox = event.target.type === "checkbox";
-    this.setState({
-      [event.target.name]: isCheckbox
-        ? event.target.checked
-        : event.target.value
-    });
-  };
 
   onChange = (e) => {
     /*
@@ -87,43 +69,28 @@ class SignUp extends React.Component {
       state so we can send it to the database.
     */
     this.setState({ [e.target.name]: e.target.value });
-
   }
-
-
-
   handleSubmit(event) {
     console.log(this.state);
-
     event.preventDefault();
 
     //verify password
-    if (this.state.password.length < 6 || !/[A-Z]/.test(this.state.password) || !/[0-9]/.test(this.state.password) || this.state.password.length > 50) {
-      this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Password must contain an uppercase letter, a digit and be between 6 and 50 characters" });
-      this.setState({ redirect: false });
-      this.setState({ show: true });
-      return;
-    }
-
-    //verify confirm password
-    if (!(this.state.password == this.state.confirm_password)) {
-      this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Passwords must match" });
-      this.setState({ redirect: false });
-      this.setState({ show: true });
-      return;
-    }
-
+    // if (this.state.password.length<6 || !/[A-Z]/.test(this.state.password) || !/[0-9]/.test(this.state.password) ||  this.state.password.length>50 )
+    // {  
+    //   this.setState({alertVariant: 'danger'});
+    //   this.setState({response: "Password must contain an uppercase letter, a digit and be between 6 and 50 characters"});
+    //   this.setState({redirect: false});
+    //   this.setState({show: true});
+    //   return ;
+    // } 
     axios({
-      method: 'put',
-      url: process.env.REACT_APP_DB + '/staff/register',
-      data: 'staff_id=' + this.state.staff_id + '&restaurant_id=' + this.state.restaurant_id
-        + '&first_name=' + this.state.first_name + '&last_name=' + this.state.last_name
-        + '&contact_num=' + this.state.contact_num + '&email=' + this.state.email
-        + '&position=' + this.state.position + '&password=' + this.state.password,
+      method: 'post',
+      url: process.env.REACT_APP_DB + '/staff/password/update',
+      data: 'staff_id=' + this.state.staff_id +'&current_password='+this.state.current_password
+      +'&new_password='+this.state.new_password,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.state.token
       },
       httpsAgent: new https.Agent({
         rejectUnauthorized: false,
@@ -153,7 +120,7 @@ class SignUp extends React.Component {
   /* Used to show the correct alert after hitting save item */
   handleShow(success, message) {
     if (success) {
-      this.setState({ response: "Successfully created staff member: " + this.state.first_name });
+      this.setState({ response: "Successfully changed password for user: " + this.state.staff_id });
       this.setState({ alertVariant: 'success' });
     }
     else {
@@ -163,15 +130,12 @@ class SignUp extends React.Component {
 
     this.setState({ show: true });
   }
-
-
-
   render() {
-    //if successful submit redirect to Home page
+    //if sucessful submit redirect to Home
     if (this.state.redirect === true) {
       return (
         <div>
-
+          
           <Alert show={this.state.show} variant={this.state.alertVariant}>
             {this.state.response}
           </Alert>
@@ -180,90 +144,115 @@ class SignUp extends React.Component {
         </div>
       );
     }
-      return (
-        <Container component="main" maxWidth="xs" className="p-3">
-          {/*alert if successful or unsuccessful*/}
 
-          <Alert show={this.state.show} variant={this.state.alertVariant}>
-            {this.state.response}
-          </Alert>
-          <CssBaseline />
-          <div className={useStyles.paper}>
-            <div style={{ 'textAlign': 'center' }}>
-              {/* Lock icon on top */}
-              <div style={{ 'display': 'inline-block' }}>
-                <Avatar className={useStyles.avatar}>
-                  <LockOutlinedIcon />
-                </Avatar>
-              </div>
-              <Typography component="h1" variant="h5">
-                Sign up
+    //Registering cook account
+    /*staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password */
+    return (
+      <Container component="main" maxWidth="xs" className="p-3">
+      {/*alert if successful or unsuccessful*/}
 
-              </Typography>
-              <br />
-            </div>
-            <form className={useStyles.form} onSubmit={this.handleSubmit}>
-              <Grid container spacing={2}>
-
-                <Grid item xs={12}>
-                  <TextField onChange={this.onChange}
-                    variant="outlined"
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    value={this.state.password}
-                    onChange={this.handleChange}
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.passwordError}
-                  </div>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField onChange={this.onChange}
-                    variant="outlined"
-                    fullWidth
-                    name="confirm_password"
-                    label="Confirm Password"
-                    type="password"
-                    id="confirm_password"
-                    value={this.state.confirm_password}
-                    onChange={this.handleChange}
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.confirmPasswordError}
-                  </div>
-                </Grid>
-
-              </Grid>
-              <br />
-
-              <Button onClick={this.handleSubmit}
-                type="submit"
-                fullWidth
-                variant="contained"
-                style={{ backgroundColor: '#0B658A', color: "#FFFFFF" }}
-                className={useStyles.submit}
-              >
-                Change Password
-              </Button>
-              <br></br>
-              <br></br>
-              <Grid container direction="row" justify="center" alignItems="center">
-                <Grid item>
-                  {/* Link Back Home*/}
-
-                  <Link href="/" variant="body2" style={{ color: '#0B658A' }}>
-                    {"Return to Home"}
-                  </Link>
-                </Grid>
-              </Grid>
-            </form>
-
+      <Alert show={this.state.show} variant={this.state.alertVariant}>
+        {this.state.response}
+      </Alert>
+      <CssBaseline />
+      <div className={useStyles.paper}>
+        <div style={{ 'textAlign': 'center' }}>
+          {/* Lock icon on top */}
+          <div style={{ 'display': 'inline-block' }}>
+            <Avatar className={useStyles.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
           </div>
-        </Container>
-      );
-    }
+          <Typography component="h1" variant="h5">
+            Change Password
+
+          </Typography>
+          <br />
+        </div>
+        <form className={useStyles.form} onSubmit={this.handleSubmit}>
+          <Grid container spacing={2}>
+
+          <Grid item xs={12}>
+                <TextField onChange = {this.onChange}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="staffid"
+                  label="Staff ID"
+                  name="staff_id"
+                  autoComplete="staffid"
+                />
+              </Grid>
+              
+              <Grid item xs={12}>
+                <TextField onChange = {this.onChange}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="current_password"
+                  label="Current Password"
+                  type="password"
+                  id="current_password"
+                  autoComplete="current_password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField onChange = {this.onChange}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="new_password"
+                  label="New Password"
+                  type="password"
+                  id="new_password"
+                  autoComplete="new_password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField onChange = {this.onChange}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="confirm_new_password"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirm_new_password"
+                  autoComplete="confirm_new_password"
+                />
+              </Grid>
+
+          </Grid>
+          
+          <br />
+
+          <Button onClick={this.handleSubmit}
+            type="submit"
+            fullWidth
+            variant="contained"
+            style={{ backgroundColor: '#0B658A', color: "#FFFFFF" }}
+            className={useStyles.submit}
+          >
+            Change Password
+          </Button>
+          <br></br>
+          <br></br>
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid item>
+              {/* Link Back Home*/}
+
+              <Link href="/" variant="body2" style={{ color: '#0B658A' }}>
+                {"Return to Home"}
+              </Link>
+            </Grid>
+          </Grid>
+        </form>
+
+      </div>
+    </Container>
+    );
+
+
+
+  }
 }
-export default SignUp;
+export default ChangePassword;
