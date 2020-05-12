@@ -54,6 +54,9 @@ const useStyles = makeStyles(theme => ({
   },
   expanded: {
     fontSize: '1.5em'
+  },
+  completed: {
+    background: '#17af29!important'
   }
 }));
 
@@ -69,7 +72,7 @@ function OrderCard(props) {
   const [timeSinceOrder, setTimeSinceOrder] = useState(null);
   const timeInterval = useRef(null);
 
-  function renderItems(){
+  function renderItems() {
     let allItems = [];
     let categoryKey = 0;
     for(let category in order.items){
@@ -82,7 +85,7 @@ function OrderCard(props) {
               <span className="pr-3">{item.quantity}</span>
               <span>{item.title}</span>
             </div>
-            <div className={"pl-4 " + classes.itemCustomization}>No tomatoes</div>
+            <div className={"pl-4 " + classes.itemCustomization}>{item.customization}</div>
           </div>
         );
       });
@@ -146,18 +149,11 @@ function OrderCard(props) {
   function renderCompletedFooter(){
     if(isCompleted) {
       return (
-        <Card.Footer className={"py-1 px-2 d-flex" + statusStyle()}>
+        <Card.Footer className={"py-1 px-2 d-flex " + classes.completed + " " + classes.cardFooter}>
           Completed
         </Card.Footer>
       )
     }
-  }
-
-  function statusStyle(){
-    let style = {color: '#fff'};
-    style.backgroundColor = '#17af29';
-    // style.backgroundColor = '#e2dd26';
-    return style;
   }
 
   useEffect(() => {

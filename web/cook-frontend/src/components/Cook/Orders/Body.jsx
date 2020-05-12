@@ -118,6 +118,7 @@ function Body(props){
       })
         .then(res => res.data)
         .then(orders => {
+          console.log(orders);
           configureOrders(orders);
         })
         .catch(error =>{
@@ -139,14 +140,19 @@ function Body(props){
           orders[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
         }
         // If no category provided
-        if(!order.category){
+        if(!order.category) {
           order.category = 'Category';
         }
+        // if(order.customization) {
+        //   order.customization = order.customization.split(";").filter(string => {
+        //     return string.trim() !== '';
+        //   });
+        // }
         if(!(order.category in orders[order.order_num].items)){
           orders[order.order_num].items[order.category] = [];
         }
         // Add item to order
-        orders[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name});
+        orders[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name, customization: order.customization});
       });
     }
     setOrders(orders);
@@ -272,7 +278,7 @@ function Body(props){
         </div>
         <div className={classes.separator}/>
         <div className={classes.cardsContainer} >
-          <OrderCards orders={orders} handleOrderClick={orderClicked} selectedCard={selectedCard}/>
+          <OrderCards orders={orders} handleOrderClick={orderClicked} selectedCard={selectedCard} isCompleted={props.tab === "completed"}/>
         </div>
       </div>
     </ThemeProvider>

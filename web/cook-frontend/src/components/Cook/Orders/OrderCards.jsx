@@ -35,7 +35,7 @@ function OrderCards(props){
         isSelected = true;
       }
       orderCards.push(
-        <OrderCard key={index} cardId={index} order={order} handleOrderClick={props.handleOrderClick} isSelected={isSelected} isExpanded={isExpanded}/>
+        <OrderCard key={index} cardId={index} order={order} handleOrderClick={props.handleOrderClick} isSelected={isSelected} isExpanded={isExpanded} isCompleted={props.isCompleted}/>
       );
       index++;
     });
