@@ -38,20 +38,24 @@ function Cook() {
   };
 
   const verified = useRef(false);
-  // const tokenVerified = useRef(false);
+  const [verificationComplete, setVerificationComplete] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [restaurantData, setRestaurantData] = useState({});
 
   // Verify user is a manager or cook
-  verifyCook(cookies.token).then(res => {
-    verified.current = res;
-  });
+  useEffect(() => {
+    verifyCook(cookies.token).then(res => {
+      verified.current = res;
+      setVerificationComplete(true);
+    });
+  }, []);
 
   useEffect(() => {
-    if(verified){
+    if(verified.current){
       getRestaurantData();
     }
-  }, [verified]);
+  }, [verificationComplete]);
 
   function getRestaurantData(){
     const url = process.env.REACT_APP_DB + '/restaurant/' + cookies.staff.restaurant_id;
@@ -72,7 +76,7 @@ function Cook() {
 
   // Check if user is logged in
   // If they aren't then send them to log in page
-  if (!verified) {
+  if (verificationComplete && !verified.current) {
     return (
       <Redirect to="/login_cook"/>
     );
@@ -121,7 +125,7 @@ async function verifyCook(token) {
   let verified = false;
   // verify the token is a valid token
   if (token !== undefined) {
-    let response = await axios({
+    await axios({
       method: 'POST',
       url: process.env.REACT_APP_DB + '/verify',
       //+'&logo='+this.state.file
@@ -133,17 +137,18 @@ async function verifyCook(token) {
       httpsAgent: new https.Agent({
         rejectUnauthorized: false,
       }),
-    });
-    // once response has finished
-    if (response.status !== 200) {
-      if (response.data === "Not a manager") {
-        // not a manager but valid token is okay
+    })
+    .then(async response => {
+      await response;
+      verified = true;
+    })
+    .catch(error => {
+      // Database has manager spelled wrong
+      // Cooks don't need to be managers
+      if (error.response.data === "Not a manger" || error.response.data === "Not a manager") {
         verified = true;
       }
-    } else {
-      // user is a manager
-      verified = true;
-    }
+    });
   }
   return verified;
 }

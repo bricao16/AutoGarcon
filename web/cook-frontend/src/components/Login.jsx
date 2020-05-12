@@ -125,13 +125,13 @@ export default function Login(props) {
     return <Redirect to={props.redirect}/>
   }
   // Check if user is already logged in. If logged in then redirect them to cook or manager view.
-  if (cookies.get('mystaff') !== undefined && cookies.get('mytoken') !== undefined) {
-    // Ensures cook can't access manager view but manager can access cook view.
-    // TODO: do cook verify and manager verify else could end up in infinite loop
-    if (props.staffType.includes(cookies.get('mystaff').position)) {
-      return <Redirect to={props.redirect}/>
-    }
-  }
+  // if (cookies.get('mystaff') !== undefined && cookies.get('mytoken') !== undefined) {
+  //   // Ensures cook can't access manager view but manager can access cook view.
+  //   // TODO: do cook verify and manager verify else could end up in infinite loop
+  //   if (props.staffType.includes(cookies.get('mystaff').position)) {
+  //     return <Redirect to={props.redirect}/>
+  //   }
+  // }
   return (
     <Container maxWidth="xs" className="p-3">
       <CssBaseline/>
