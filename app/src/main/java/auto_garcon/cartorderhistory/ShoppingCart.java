@@ -67,9 +67,21 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
     /**
-     * This method ties the xml elements to Java objects and sets onClick listeners for side
-     * side navigation bar elements and the place order button which will send the put request
-     * to the database.
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -331,9 +343,12 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
 
+
     /**
-     * This method is what provides the side navigation bar with its onClick functionality to
-     * other activities.
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param nav_item The selected item
+     * @return true to display the item as the selected item
      */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){

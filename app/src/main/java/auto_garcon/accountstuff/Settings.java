@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.auto_garcon.R;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -33,8 +34,21 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
     private SharedPreference pref;// allows the app to reference the user information that has been stored
 
     /**
-     * This methods defines the functionality of xml objects when the xml is loaded
-     * @param savedInstanceState This allows the xml data fields to retain data from an early instance as long the app was not destroyed
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +67,19 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 
         pref = new SharedPreference(this);
 
+        /**
+         * It ties the bottom navigation bar xml element to a Java object and provides it with its
+         * onClick functionality to other activities and sets the listener.
+         */
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+        badge.setVisible(true);
+        if(pref.getShoppingCart()!=null) {
+            if(pref.getShoppingCart().getCart().size()!=0){
+                badge.setNumber(pref.getShoppingCart().getCart().size());
+            }
+        }
+
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -107,7 +133,12 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 
     }
 
-    //onClick for side nav bar
+    /**
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param nav_item The selected item
+     * @return true to display the item as the selected item
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){

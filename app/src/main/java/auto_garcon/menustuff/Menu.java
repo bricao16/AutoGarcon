@@ -76,6 +76,24 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     Dialog removeFromFavoritesPopup;
     private TextView cartCounter;
 
+
+    /**
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +124,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
          * onClick functionality to other activities and sets the listener.
          */
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-        BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+       final BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
         if(pref.getShoppingCart()!=null) {
             if(pref.getShoppingCart().getCart().size()!=0){
@@ -264,8 +282,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
                             restaurant.getString("cuisine");
 
-                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash, getIntent().getIntExtra("restaurant id", 0),
-                                    primaryColor, restaurant.getString("secondary_color"), restaurant.getString("tertiary_color"),restaurant.getInt("opening"),restaurant.getInt("closing"));
+                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash,getIntent().getIntExtra("restaurant id", 0),
+                                    primaryColor, restaurant.getString("secondary_color"), restaurant.getString("tertiary_color"),restaurant.getInt("opening"),restaurant.getInt("closing"),badge);
                             listView = findViewById(R.id.menu_list);
                             listView.setAdapter(listAdapter);
 
@@ -382,77 +400,15 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
     }
-    /*
-    /**
-     * Initialize the contents of the Activity's standard options menu.  You
-     * should place your menu items in to <var>menu</var>.
-     *
-     * <p>This is only called once, the first time the options menu is
-     * displayed.  To update the menu every time it is displayed, see
-     * {@link #onPrepareOptionsMenu}.
-     *
-     * <p>The default implementation populates the menu with standard system
-     * menu items.  These are placed in the {@link android.view.Menu#CATEGORY_SYSTEM} group so that
-     * they will be correctly ordered with application-defined menu items.
-     * Deriving classes should always call through to the base implementation.
-     *
-     * <p>You can safely hold on to <var>menu</var> (and any items created
-     * from it), making modifications to it as desired, until the next
-     * time onCreateOptionsMenu() is called.
-     *
-     * <p>When you add items to the menu, you can implement the Activity's
-     * {@link #onOptionsItemSelected} method to handle them there.
-     *
-     * @param menu The options menu in which you place your items.
-     *
-     * @return You must return true for the menu to be displayed;
-     *         if you return false it will not be shown.
-     *
-     * @see #onPrepareOptionsMenu
-     * @see #onOptionsItemSelected
 
+
+    /**
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param nav_item The selected item
+     * @return true to display the item as the selected item
+     */
     @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-
-        getMenuInflater().inflate(R.menu.bottom_nav_menu,menu);
-
-        MenuItem item = menu.findItem(R.id.action_cart);
-        Log.d("hello","testing "+item);
-
-      //  cartCounter =  item.getActionView().findViewById(R.id.action_cart);
-        //setUpBadge();
-        return super.onCreateOptionsMenu(menu);
-    }
-
-     */
-
-    private void setUpBadge(){
-
-        if(cartCounter!= null){
-
-            if(pref.getShoppingCart().getCart().size()==0){
-                Log.d("hell1o","HELLLL");
-
-                if(cartCounter.getVisibility()!=View.GONE){
-                    Log.d("hell2o","HELLLL");
-
-                    cartCounter.setVisibility((View.GONE));
-                }
-
-            }
-            else {
-                cartCounter.setText(String.valueOf(Math.min(pref.getShoppingCart().getCart().size(),99)));// setting max to 99
-                if(cartCounter.getVisibility()!=View.VISIBLE){
-                    cartCounter.setVisibility((View.VISIBLE));
-                }
-            }
-        }
-    }
-
-    /**
-     * This method is what provides the side navigation bar with its onClick functionality to
-     * other activities.
-     */
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:

@@ -50,6 +50,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private int restaurantID;
     private String primaryColor;
     private String secondaryColor;
+    private BadgeDrawable badge;
     private String tertiaryColor;
     private int opening;
     private int closing;
@@ -58,7 +59,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     Dialog addToCartPopup;
     Dialog confirmPopup;
 
-    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor,int opening,int closing) {
+    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor,int opening,int closing,BadgeDrawable drawable) {
 
         this.context = context;
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
@@ -72,6 +73,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         this.tertiaryColor = tertiaryColor;
         this.opening=opening;
         this.closing=closing;
+        this.badge = drawable;
     }
 
     @Override
@@ -223,18 +225,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                         cart.addToCart(itemToBeAdded);
                         pref.setShoppingCart(cart);
-                        /**
-                         * It ties the bottom navigation bar xml element to a Java object and provides it with its
-                         * onClick functionality to other activities and sets the listener.
-                         */
-                      //  BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-                      //  BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
-                    //    badge.setVisible(true);
-                     //   if(pref.getShoppingCart()!=null) {
-                      //     if(pref.getShoppingCart().getCart().size()!=0){
-                      //          badge.setNumber(pref.getShoppingCart().getCart().size());
-                      //      }
-                    //    }
+                        badge.setNumber(pref.getShoppingCart().getCart().size());
+                        badge.setVisible(false);
+                        badge.setVisible(true);
                         addToCartPopup.dismiss();
                     }
                     else if(pref.getShoppingCart().getRestaurantID() == restaurantID) {
@@ -253,6 +246,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                         pref.setShoppingCart(cart);
                         pref.getShoppingCart().setEndingHour(closing);
                         pref.getShoppingCart().setStartingHour(closing);
+                        badge.setNumber(pref.getShoppingCart().getCart().size());
+                        badge.setVisible(false);
+                        badge.setVisible(true);
                         addToCartPopup.dismiss();
                     }
                     else if(pref.getShoppingCart().getRestaurantID() != restaurantID) {
@@ -284,6 +280,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 pref.setShoppingCart(cart);
                                 pref.getShoppingCart().setEndingHour(closing);
                                 pref.getShoppingCart().setStartingHour(opening);
+                                badge.setNumber(pref.getShoppingCart().getCart().size());
+                                badge.setVisible(false);
+                                badge.setVisible(true);
                                 confirmPopup.dismiss();
                                 addToCartPopup.dismiss();
                                 Toast.makeText(context, "Successfully added to cart.",Toast.LENGTH_LONG).show();
@@ -310,6 +309,10 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 });
             }
         });
+
+
+
+        Log.d("testing",""+badge.getNumber());
 
         return view;
     }
