@@ -108,7 +108,8 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
             @Override
             public void onClick(View v) {//when the faq button is clicked this will send the user to the faq page page
 
-               // startActivity(new Intent(Settings.this, Privacy.class));
+                Intent privacy = new Intent(getBaseContext(),   Faq.class);
+                startActivity(privacy);
             }
         });
 
