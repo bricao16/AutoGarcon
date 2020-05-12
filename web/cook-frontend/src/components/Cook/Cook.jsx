@@ -10,6 +10,7 @@ import https from "https";
 import Header from "./Header";
 import Footer from "./Footer";
 import Orders from "./Orders/Orders";
+import Menu1 from "./Menu/Menu1";
 import Menu from "./Menu/Menu";
 
 const useStyles = makeStyles({
@@ -66,6 +67,7 @@ function Cook() {
     })
       .then(res => res.data)
       .then(data => {
+        console.log(data);
         setRestaurantData(data);
         setLoading(false);
       })
@@ -97,7 +99,6 @@ function Cook() {
     <ThemeProvider theme={theme}>
       <div className={classes.main}>
         {/* Header with navigation and account drop down*/}
-        <Header cookies={cookies} restaurantData={restaurantData}/>
         <div className={classes.content}>
           <Switch>
             {/* If navigate to /cook redirect to /cook/orders */}
@@ -106,11 +107,14 @@ function Cook() {
             </Route>
             {/* Render cook order page when on /cook/orders */}
             <Route path="/cook/orders">
+              <Header cookies={cookies} restaurantData={restaurantData} tab={0}/>
               <Orders/>
             </Route>
             {/* Render cook menu page when on /cook/menu */}
             <Route exact path="/cook/menu">
-              <Menu/>
+              <Header cookies={cookies} restaurantData={restaurantData} tab={1}/>
+              <p>Editing stock of menu items (work in progress)</p>
+              <Menu menu={restaurantData.menu}/>
             </Route>
           </Switch>
         </div>
