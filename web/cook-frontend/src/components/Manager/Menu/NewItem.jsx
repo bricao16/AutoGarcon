@@ -22,8 +22,8 @@ class NewItem extends React.Component {
     this.state.item_id = props.prefill.item_id
     this.state.show = false
     this.state.cookies = new Cookies();
-    this.state.user = this.state.cookies.get("mystaff")
-    this.parseStock(props.prefill.in_stock)
+    this.state.user = this.state.cookies.get("mystaff");
+    this.parseStock(props.prefill.in_stock);
     this.handleShow = this.handleShow.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
