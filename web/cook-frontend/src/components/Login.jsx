@@ -57,7 +57,6 @@ export default function Login(props) {
   function handleSubmit(event) {
     event.preventDefault();
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
-
     axios({
       method: 'post',
       url: process.env.REACT_APP_DB + '/staff/login',
@@ -75,8 +74,8 @@ export default function Login(props) {
         if (response.status !== 200) {
           handleShow(response);
         } else {
-          //if good response set the state to returned info
-          if (props.staffType.includes(response.data.staff.position)) {
+          // if good response set the state to returned info
+          if (props.staffType.includes(response.data.staff.position.toLowerCase())) {
             setStaff(response.data.staff);
             setToken(response.data.token);
             setShow(false);
@@ -128,6 +127,7 @@ export default function Login(props) {
   // Check if user is already logged in. If logged in then redirect them to cook or manager view.
   if (cookies.get('mystaff') !== undefined && cookies.get('mytoken') !== undefined) {
     // Ensures cook can't access manager view but manager can access cook view.
+    // TODO: do cook verify and manager verify else could end up in infinite loop
     if (props.staffType.includes(cookies.get('mystaff').position)) {
       return <Redirect to={props.redirect}/>
     }
