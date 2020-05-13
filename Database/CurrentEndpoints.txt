@@ -114,7 +114,6 @@ POST /restaurant/customization
 PUT /restaurant/new
 	Creates a new restaurant
 	Inputs (in body of request) : restaurant_name, restaurant_addr, phone_number, email, opening_time, closing_time, cuisine
-	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			(200) Successfully added new resaturant! restaurant_id = <restaurant_id>
@@ -122,10 +121,6 @@ PUT /restaurant/new
 			(400) Error: Missing parameter. Required parameters: restaurant_name, restaurant_addr, phone_number, email, opening_time, closing_time, cuisine
 		If restaurant already exists:
 			(409) Error: resatuarnt_name already exists
-		If JWT is not valid:
-			(401) Must be authorized!
-		If JWT is not a manager token for the restaurant of the menu:
-			(401) Must be a restaurant manager to create a new restaurant!
 		On error:
 			(500) Error adding new restaurant
 
@@ -147,7 +142,8 @@ GET /orders/:id
 					quantity,
 					order_date,
 					table_num,
-					customization
+					customization,
+					category
 				}	
 			}
 		If no in progress orders exist:
@@ -167,7 +163,8 @@ GET /orders/complete/:id
 					quantity,
 					order_date,
 					table_num,
-					customization
+					customization,
+					category
 				}	
 			}
 		If no complete orders exist:
@@ -498,7 +495,8 @@ POST /customer/login
 					first_name,
 					last_name,
 					email,
-					temp_password
+					temp_password,
+					image
 				}
 			}
 		On error:
@@ -508,7 +506,7 @@ POST /customer/login
 
 PUT /customer/register
 	Creates a new customer
-	Inputs (in body of request): customer_id, first_name, last_name, email, password
+	Inputs (in body of request): customer_id, first_name, last_name, email, password, image (optional)
 	Outputs: 
 		On success:
 			{
@@ -519,23 +517,26 @@ PUT /customer/register
 					customer_id,
 					first_name,
 					last_name,
-					email
+					email,
+					image
 				}
 			}
 		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password
+			(400) Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password, image (optional)
 		If customer_id and email already exist:
 			(409) Error: customer_id and email already exist
 		If customer_id already exists:
 			(409) Error: customer_id already exists
 		If email already exists:
 			(409) Error: email already exists
+		If image is not an image file:
+			(409) Error: invalid image format. Accepted formats: png, jpg, jpeg
 		On error:
 			(500) Error creating new customer
 
 POST /customer/update
-	Updates customer info including customer_id, first_name, last_name, email
-	Inputs (in body of request): customer_id, first_name, last_name, email
+	Updates customer info including customer_id, first_name, last_name, email, image (optional)
+	Inputs (in body of request): customer_id, first_name, last_name, email, image (optional)
 	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
@@ -549,7 +550,8 @@ POST /customer/update
 					customer_id,
 					first_name,
 					last_name,
-					email
+					email,
+					image
 				}
 			}
 		If JWT is not valid or not supplied: 
@@ -564,6 +566,8 @@ POST /customer/update
 			(409) Error: customer_id already exists
 		If email already exists:
 			(409) Error: email already exists
+		If image is not an image file:
+			(409) Error: invalid image format. Accepted formats: png, jpg, jpeg
 		On error:
 			(500) Error updating customer info
 
@@ -679,27 +683,40 @@ GET /menu/:id
 
 PUT /menu/add
 	Adds a new item to the menu
-	Inputs (in body of request): restaurant_id, item_name, calorie_num, category, price, description
+	Inputs (in body of request): restaurant_id, item_name, calorie_num, category, price, description, image (optional)
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			(200) Successfully added new menu item!
 		If item_name and restaurant_id exists already:
 			(409) Error: item already exists
 		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description
+			(400) Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description, image (optional)
+		If image is not an image file:
+			(409) Error: invalid image format. Accepted formats: png, jpg, jpeg
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant of the new item:
+			(401) Must be the restaurant manager to add menu items!
 		On error:
 			(500) Error adding new menu item
 
 POST /menu/update
 	Updates an existing menu item
-	Inputs (in body of request): item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description
+	Inputs: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description, image (optional), JWT
 	Outputs:
 		On success:
 			(200) Successfully updated menu item!
-		If the item does not exist at the restaurant:
+		If item does not exist at the restaurant:
 			(409) Error: item does not exist
 		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description
+			(400) Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description, image (optional)
+		If image is not an image file:
+			(409) Error: invalid image format. Accepted formats: png, jpg, jpeg
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant of the item:
+			(401) Must be the restaurant manager to update menu items!
 		On error:
 			(500) Error updating menu item
 
@@ -906,147 +923,6 @@ POST /verify
 //==========================================================================//
 //								TEST ENDPOINTS 								//
 //==========================================================================//
-
-GET /test/restaurant/:id
-	Returns restaurant information and menu items for restaurant with restaurant_id = id
-	Inputs: restaurant_id
-	Outputs:
-		On success:
-			{
-				restaurant: {
-					name,
-					address,
-					phone_number,
-					opening,
-					closing,
-					font,
-					font_color,
-					primary_color,
-					secondary_color,
-					tertiary_color,
-					logo,
-					cuisine,
-					greeting
-				}
-				menu: {
-					i: {
-						menu_id,
-						menu_name,
-						start_time,
-						end_time,
-						item_id,
-						item_name,
-						calories,
-						price,
-						category,
-						image,
-						in_stock,
-						description
-					}
-				}
-			}
-		If restaurant does not exist:
-			(409) Error: restaurant does not exist
-		If the restaurant does not have any menus:
-			{
-				restaurant: {
-					name,
-					address,
-					phone_number,
-					opening,
-					closing,
-					font,
-					font_color,
-					primary_color,
-					secondary_color,
-					tertiary_color,
-					logo,
-					cuisine,
-					greeting
-				}
-			}
-		On error:
-			(500) Error retrieving restaurant information
-
-GET /test/menu/:id
-	Returns menu information for menu_id = id
-	Inputs: menu_id
-	Outputs:
-		On success:
-			{
-				i:
-				{
-					item_id,
-					item_name,
-					restaurant_id,
-					calories,
-					price,
-					category,
-					in_stock,
-					description,
-					allergens (array)
-				}
-			}
-		If menu has no items:
-			(200) This menu has no items
-		If menu does not exist:
-			(409) Error: menu does not exist
-		On error:
-			(500) Error retrieving menu
-
-POST /test/menu/update
-	Updates menu information
-	Inputs (in body of request): menu_id, menu_name, restaurant_id, start_time, end_time
-	Inputs (in headers of request): Authorization: Bearer <token>
-	Outputs:
-		On success:
-			(200) Successfully updated menu information!
-		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: menu_id, menu_name, start_time, end_time
-		If menu does not exist:
-			(409) Error: menu does not exist
-		If JWT is not valid:
-			(401) Must be authorized!
-		If JWT is not a manager token for the restaurant of the menu:
-			(401) Must be the restaurant manager to update menu information!
-		On error: 
-			(500) Error updating menu information
-
-PUT /test/menu/add
-	Adds a new menu
-	Inputs (in body of request): menu_name, restaurant_id, start_time, end_time
-	Inputs (in headers of request): Authorization: Bearer <token>
-	Outputs:
-		On success:
-			(200) Successfully added new menu! menu_id: <menu_id>
-		If item_name and restaurant_id exists already:
-			(409) Error: menu already exists
-		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: restaurant_id, menu_name, start_time, end_time
-		If JWT is not valid:
-			(401) Must be authorized!
-		If JWT is not a manager token for the restaurant of the menu:
-			(401) Must be the restaurant manager to add a new menu!
-		On error:
-			(500) Error adding new menu
-
-PUT /test/menu/item/add
-	Adds a new menu item
-	Inputs (in body of request): restaurant_id, item_name, calorie_num, category, price, description, menu_id
-	Inputs (in headers of request): Authorization: Bearer <token>
-	Outputs:
-		On success:
-			(200) Successfully added new item!
-		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description, menu_id
-		If item already exists:
-			(409) Error: item already exists
-		If JWT is not valid:
-			(401) Must be authorized!
-		If JWT is not a manager token for the restaurant of the menu:
-			(401) Must be the restaurant manager to add a new item!
-		On error:
-			(500) Error adding new item
 
 GET /orderstats/:id
 	Returns stats on which things were ordered the most per category at each restaurant
