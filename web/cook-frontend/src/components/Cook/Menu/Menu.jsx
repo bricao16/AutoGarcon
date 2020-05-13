@@ -3,7 +3,8 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import MenuItem from './MenuItem';
-
+import NewItem from "./NewItem";
+import {Link, Redirect} from "react-router-dom";
 /*
   This component is used to render menu information which
   is pulled from the database in Manager. 
@@ -34,47 +35,47 @@ class Menu extends React.Component {
       menu:[],
       categories: [],
       renderCategory: "main",
-      // newItem: false,
-      // newItemPrefill: {
-      //   type: "default",
-      //   item_id: null,
-      //   menu: {
-      //     "name": "Name",
-      //     "category":"Category",
-      //     "price" : "Price",
-      //     "calories": "Calories",
-      //     "in_stock": 0
-      //   }
-      // }
-                      
+      newItem: false,
+      newItemPrefill: {
+        type: "default",
+        item_id: null,
+        menu: {
+          "name": "Name",
+          "category":"Category",
+          "price" : "Price",
+          "calories": "Calories",
+          "in_stock": 0
+        }
+      }
     };
   }
 
   //change the category of menu to render
   changeCategory = (category) => {
-      this.setState({
-        renderCategory: category
-    })
-  }
+    this.setState({
+      renderCategory: category
+    });
+  };
+
   //change the newItem state.  Mainly for going back to the main menu page
-  // setNewItem = (state) => {
-  //     this.setState({
-  //       newItem: state
-  //   })
-  // }
-  //  //toggle between creating a new menu item and not
-  // toggleNewItem = (itemProperties) => {
-  //
-  //     this.setState({
-  //       newItem: !this.state.newItem,
-  //       newItemPrefill: itemProperties
-  //   })
-  //   //if the new item prefill is default set to default prefill
-  //   if(itemProperties === "default")
-  //   {
-  //     this.resetNewItem();
-  //   }
-  // }
+  setNewItem = (state) => {
+    this.setState({
+      newItem: state
+    })
+  };
+
+   //toggle between creating a new menu item and not
+  toggleNewItem = (itemProperties) => {
+    this.setState({
+      newItem: !this.state.newItem,
+      newItemPrefill: itemProperties
+    });
+
+    //if the new item prefill is default set to default prefill
+    if(itemProperties === "default") {
+      this.resetNewItem();
+    }
+  };
   /* Aggregate all the menu categories onto cards and call the change which menu to display is clicked */
   renderMenuCategories(){
     const secondary = this.props.secondary;
@@ -91,22 +92,22 @@ class Menu extends React.Component {
     );
   }
   //creates default placeholders for the new item
-  // resetNewItem(){
-  //   this.setState({
-  //     newItemPrefill: {
-  //       type: "default",
-  //       item_id: null,
-  //       menu: {
-  //         "name": "Name",
-  //         "category":"Category",
-  //         "price" : "Price",
-  //         "calories": "Calories",
-  //         "in_stock": 0,
-  //         "description": ""
-  //       }
-  //     }
-  //   })
-  // }
+  resetNewItem(){
+    this.setState({
+      newItemPrefill: {
+        type: "default",
+        item_id: null,
+        menu: {
+          "name": "Name",
+          "category":"Category",
+          "price" : "Price",
+          "calories": "Calories",
+          "in_stock": 0,
+          "description": ""
+        }
+      }
+    })
+  }
   //render the menu prop of the current category 
   renderMenu(){
     //onNew is a callback passed to call the new item form if it is edit is clicked
@@ -115,9 +116,9 @@ class Menu extends React.Component {
     );
   }
   //generate form for new item with prefilled of whats already on the menu for this item
-  // newItemForm(){
-  //   return <NewItem prefill = {this.state.newItemPrefill}/>
-  // }
+  newItemForm(){
+    return <NewItem prefill = {this.state.newItemPrefill}/>
+  }
 
   // Default render method
   render() {
@@ -178,7 +179,7 @@ class Menu extends React.Component {
         <Container>
           <div style={backgroundStyle}>
             <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','display': 'flex'}}>
-              <button type="button" onClick={() => window.location.href="/menu" } className="btn btn-outline-light m-2">Back</button>
+              <button onClick={() => {this.changeCategory('main')}} type="button" className="btn btn-outline-light m-2">Back</button>
               <div style={menuTextStyle}>{renderCategory}</div>
             </h2>
             <Container fluid style={{'minHeight': '70vh'}}>
@@ -202,7 +203,7 @@ class Menu extends React.Component {
       return (
         <div style={backgroundStyle}>
           <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','display': 'flex'}}>
-            <button type="button" onClick={() => window.location.href="/menu"} className="btn btn-outline-light m-2">Back</button>
+            <button onClick={() => {this.changeCategory('main')}} type="button" className="btn btn-outline-light m-2">Back</button>
             <div style={menuTextStyle}>Menu Item</div>
           </h2>
           {/*{this.newItemForm()}*/}

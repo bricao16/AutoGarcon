@@ -188,8 +188,12 @@ class Manager extends React.Component{
       //spinner while loading
       else if (!isLoaded) {
         return (
-          <div className="spinner-border" role="status">
-            <span className="sr-only">Loading...</span>
+          <div className="d-flex flex-column justify-content-center" style={{"height": "100vh", "width": "100vw"}}>
+            <div className="d-flex justify-content-center" style={{"width": "100vw"}}>
+              <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
           </div>
         )
       }

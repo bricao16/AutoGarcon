@@ -77,9 +77,12 @@ function Body(props){
 
   const [selectedCard, setSelectedCard] = useState(0);
 
-  const [open, setOpen] = useState(false);
-  const [alertText, setAlertText] = useState("");
-  const [severity, setSeverity] = useState("");
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationText, setNotificationText] = useState("");
+  const [notificationSeverity, setNotificationSeverity] = useState("");
+
+  const [showDialog, setShowDialog] = useState(false);
+  const dialogCallback = useRef(()=>{});
 
   // Holds time interval for updating orders from database
   const getOrdersInterval = useRef();
@@ -93,7 +96,7 @@ function Body(props){
   useEffect(() => {
     const ordersEndpoint = serverUrl + props.ordersEndpoint + restaurant_id;
     ordersEndpointRef.current = ordersEndpoint;
-    getDatabaseOrders(ordersEndpoint);
+    getDatabaseOrders();
   }, [props.ordersEndpoint]);
 
 
@@ -121,7 +124,7 @@ function Body(props){
     // setupKeyPresses(); <- This will be added in the future
     // updates orders every 10 seconds
     // start interval after mounting
-    getOrdersInterval.current = setInterval(() => getDatabaseOrders(ordersEndpointRef.current), 1000);
+    getOrdersInterval.current = setInterval(() => getDatabaseOrders(), 10000);
 
     // While unmounting do this
     return () => {
@@ -132,10 +135,10 @@ function Body(props){
 
 
   // Get 'in progress' orders from db
-  function getDatabaseOrders(ordersEndpoint){
+  function getDatabaseOrders(){
     // Null until calculated by effect hook
-    if(ordersEndpoint !== ''){
-      axios.get(ordersEndpoint, {
+    if(ordersEndpointRef.current !== ''){
+      axios.get(ordersEndpointRef.current, {
         httpsAgent: new https.Agent({
           rejectUnauthorized: false,
         })
@@ -202,6 +205,13 @@ function Body(props){
     }
   }
 
+  function orderNum(){
+    if(selectedCard !== null) {
+      return Object.keys(orders)[selectedCard];
+    }
+    return null;
+  }
+
   function changeOrderStatus(status){
     if(selectedCard !== null){
       const orderNum = Object.keys(orders)[selectedCard];
@@ -216,9 +226,11 @@ function Body(props){
             'Content-Type': 'application/x-www-form-urlencoded'
           },
         })
-       .then(() => {
-         getDatabaseOrders(); // grab updated orders from database
-         showNotification(orderNum, status);
+       .then((r) => {
+         if(r.status === 200){
+           getDatabaseOrders(); // grab updated orders from database
+           showNotificationNow(orderNum, status);
+         }
        })
        .catch(error =>{
          console.log('post request error');
@@ -227,15 +239,25 @@ function Body(props){
     }
   }
 
-  function showNotification(orderNum, status){
-    const severity = {"Completed": "success", "In Progress": "info"};
+  function restoreOrder(){
+    setShowDialog(true);
+    dialogCallback.current = (confirm) => {
+      setShowDialog(false);
+      if(confirm) {
+        changeOrderStatus('In Progress')
+      }
+    };
+  }
+
+  function showNotificationNow(orderNum, status){
+    const severity = {"Complete": "success", "In Progress": "info"};
+    setNotificationSeverity(severity[status]);
     const text = "Order #" + orderNum + " marked " + status.toLowerCase();
-    setOpen(true);
-    setAlertText(text);
-    setSeverity(severity[status]);
+    setNotificationText(text);
+    setShowNotification(true);
   }
   function handlePopupClose(){
-    setOpen(false);
+    setShowNotification(false);
   }
   // The following features will be added in the future
   /*
@@ -304,7 +326,7 @@ function Body(props){
     if(props.tab === "completed"){
       buttons.push(
         <Button key={2} variant="contained" color="primary" className={classes.button}
-                onClick={()=>changeOrderStatus('In Progress')} startIcon={<RestoreIcon/>}>Restore</Button>
+                onClick={restoreOrder} startIcon={<RestoreIcon/>}>Restore</Button>
       );
     } else {
       buttons.push(
@@ -322,13 +344,13 @@ function Body(props){
   return (
     <ThemeProvider theme={theme}>
 
-      <Snackbar open={open} autoHideDuration={3000} onClose={handlePopupClose}>
-        <Alert severity={severity}>
-          {alertText}
+      <Snackbar open={showNotification} autoHideDuration={3000} onClose={handlePopupClose}>
+        <Alert severity={notificationSeverity}>
+          {notificationText}
         </Alert>
       </Snackbar>
 
-      <CustomDialog orderNum={123}/>
+      <CustomDialog orderNum={orderNum()} openDialog={showDialog} callback={dialogCallback.current}/>
 
 
       <div className={classes.main}>
