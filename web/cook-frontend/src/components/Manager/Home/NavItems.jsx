@@ -159,8 +159,9 @@ export default function NavItems(props) {
             <MenuIcon />
           </IconButton>
           </div>
-          <div className="col text-right" style={{'fontFamily' : font}}>
-          {/* this.props.loggedIn */ true && <AccountDropdown firstName={props.firstName} lastName={props.lastName} className="pl-5 align-right"></AccountDropdown>}
+
+          <div className="col text-right" style={{'fontFamily' :font}}>
+            <AccountDropdown firstName={props.firstName} lastName={props.lastName} className="pl-5 align-right"></AccountDropdown>
           </div>
         </Toolbar>
         
@@ -250,7 +251,7 @@ export default function NavItems(props) {
 					  <QRCode info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
 				  </Route>
           <Route path="/account">
-            <AccountSettings primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
+            <AccountSettings primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font}/>
           </Route>
         </Switch>
         <footer className={classes.footerStyle}>

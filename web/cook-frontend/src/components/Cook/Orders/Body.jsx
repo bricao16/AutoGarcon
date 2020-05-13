@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect'
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
@@ -72,6 +73,7 @@ function Body(props){
   // const [completed, setCompleted] = useState(false);
   // Holds orders from database in object
   const [orders, setOrders] = useState({});
+  const [updatedOrders, setUpdatedOrders] = useState({});
 
   const [selectedCard, setSelectedCard] = useState(0);
 
@@ -151,14 +153,14 @@ function Body(props){
 
   // Converts orders returned from database into object that can easily be turned into Order components
   function configureOrders(databaseOrders){
-    let orders = {};
+    let newOrders = {};
     if(typeof databaseOrders === 'object'){
       // Iterate over each order
       Object.values(databaseOrders).forEach(order => {
         // Check if that order_num exists
-        if(!(order.order_num in orders)){
+        if(!(order.order_num in newOrders)){
           // Create new order with empty items
-          orders[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
+          newOrders[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
         }
         // If no category provided
         if(!order.category) {
@@ -169,15 +171,22 @@ function Body(props){
         //     return string.trim() !== '';
         //   });
         // }
-        if(!(order.category in orders[order.order_num].items)){
-          orders[order.order_num].items[order.category] = [];
+        if(!(order.category in newOrders[order.order_num].items)){
+          newOrders[order.order_num].items[order.category] = [];
         }
         // Add item to order
-        orders[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name, customization: order.customization});
+        newOrders[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name, customization: order.customization});
       });
     }
-    setOrders(orders);
+    setUpdatedOrders(newOrders);
   }
+
+  useDeepCompareEffect(() => {
+    if(updatedOrders !== orders){
+      setOrders(updatedOrders);
+      changeSelectedOrder(0);
+    }
+  }, [updatedOrders]);
 
   function orderClicked(cardId){
     changeSelectedOrder(cardId);
@@ -189,7 +198,7 @@ function Body(props){
     if(0 <= cardId && cardId < Object.keys(orders).length){
       setSelectedCard(cardId);
     } else {
-      setSelectedCard(null);
+      setSelectedCard(0);
     }
   }
 
@@ -209,8 +218,7 @@ function Body(props){
         })
        .then(() => {
          getDatabaseOrders(); // grab updated orders from database
-         showPopup(orderNum, status);
-         changeSelectedOrder(0);
+         showNotification(orderNum, status);
        })
        .catch(error =>{
          console.log('post request error');
@@ -219,7 +227,7 @@ function Body(props){
     }
   }
 
-  function showPopup(orderNum, status){
+  function showNotification(orderNum, status){
     const severity = {"Completed": "success", "In Progress": "info"};
     const text = "Order #" + orderNum + " marked " + status.toLowerCase();
     setOpen(true);

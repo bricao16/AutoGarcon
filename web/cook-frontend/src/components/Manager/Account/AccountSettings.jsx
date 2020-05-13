@@ -130,6 +130,10 @@ class AccountSettings extends React.Component{
           last_name: this.cookies.get('mystaff').last_name,
           contact_num: this.cookies.get('mystaff').contact_num,
         })
+
+        setTimeout(function(){
+          window.location.reload();
+        }, 3000);
       }
     })
     .catch(error => {
@@ -141,7 +145,7 @@ class AccountSettings extends React.Component{
   /* Used to show the correct alert after hitting save item */
   handleAlertShow(success, message) {
     if (success) {
-      this.setState({response: "Successfully "+message+"!"});
+      this.setState({response: "Successfully "+message+"... refreshing"});
       this.setState({alertVariant: 'success'});
     }
     else {
@@ -242,7 +246,12 @@ class AccountSettings extends React.Component{
         <div>
 
           <Alert style={{"width": "70vw"}} show={this.state.showAlert} variant={this.state.alertVariant}>
-            {this.state.response}
+            <div className="d-flex">
+              <div className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></div>
+              <div className="pl-3">
+                {this.state.response}
+              </div>
+            </div>
           </Alert>
 
           <ul className="list-group-flush" style={{"fontSize": "1.25rem"}}>

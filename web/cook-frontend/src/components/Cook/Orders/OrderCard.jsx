@@ -45,9 +45,9 @@ const useStyles = makeStyles(theme => ({
     color: 'grey'
   },
   cardFooter: {
-    backgroundColor: '#0b658a',
     color: '#ffffff',
     justifyContent: 'space-between',
+    backgroundColor: '#0b658a',
   },
   selected: {
     background: '#00000070'
@@ -128,32 +128,31 @@ function OrderCard(props) {
     setTimeSinceOrder(momentTimeSinceOrder);
   }
 
-  function renderTime(){
-    let timeSince = <></>;
-    if(!isCompleted) {
-      timeSince = (
-        <div className="d-flex" style={{alignItems: 'center'}}>
-          <FontAwesomeIcon icon={faClock}/>
-          <span className="pl-1">{timeSinceOrder}</span>
-        </div>
-      );
+  function renderFooter(){
+    let footer = [];
+    let footerClasses = " ";
+    if(isCompleted) {
+      footerClasses += classes.completed;
+      footer.push(<span key={0} className="pr-3">Completed</span>);
+    }
+    footer.push(<span key={1}>{orderTimeString}</span>);
+    if(!isCompleted){
+      footer.push(renderTime());
     }
     return (
-      <>
-        <span className="pr-3">{orderTimeString}</span>
-        {timeSince}
-      </>
+      <Card.Footer className={"py-1 px-2 d-flex space-between " + classes.cardFooter + footerClasses}>
+        {footer}
+      </Card.Footer>
     );
   }
 
-  function renderCompletedFooter(){
-    if(isCompleted) {
-      return (
-        <Card.Footer className={"py-1 px-2 d-flex " + classes.completed + " " + classes.cardFooter}>
-          Completed
-        </Card.Footer>
-      )
-    }
+  function renderTime(){
+    return(
+      <div key={2} className="d-flex pl-3" style={{alignItems: 'center'}}>
+        <FontAwesomeIcon icon={faClock}/>
+        <span className="pl-1">{timeSinceOrder}</span>
+      </div>
+    );
   }
 
   useEffect(() => {
@@ -176,10 +175,7 @@ function OrderCard(props) {
         <Card.Body className="p-0">
           {renderItems()}
         </Card.Body>
-        <Card.Footer className={"py-1 px-2 d-flex " + classes.cardFooter}>
-          {renderTime()}
-        </Card.Footer>
-        {renderCompletedFooter()}
+        {renderFooter()}
       </Card>
     </div>
   )
