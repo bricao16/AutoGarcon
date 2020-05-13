@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -19,7 +20,9 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
+import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.homestuff.Home;
+import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
@@ -110,5 +113,33 @@ public class TwoButtonPage extends AppCompatActivity {
             }
         });
 
+    }
+    /**
+     * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
+     * the activity had been stopped, but is now again being displayed to the
+     * user. It will usually be followed by {@link #onResume}. This is a good place to begin
+     * drawing visual elements, running animations, etc.
+     *
+     * <p>You can call {@link #finish} from within this function, in
+     * which case {@link #onStop} will be immediately called after {@link #onStart} without the
+     * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @see #onCreate
+     * @see #onStop
+     * @see #onResume
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+            //if not send them back to PasswordChange page and force them to update their password
+            Intent intent = new Intent(TwoButtonPage.this, PasswordChange.class);
+            startActivity(intent);
+            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+        }
     }
 }
