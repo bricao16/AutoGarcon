@@ -113,7 +113,7 @@ class Menu extends React.Component {
   renderMenu(){
     //onNew is a callback passed to call the new item form if it is edit is clicked
     return this.state.menu.map((item, key) =>
-        <MenuItem menu={item} category={this.state.renderCategory} onNew={this.toggleNewItem.bind(this)} primary ={this.props.primary}  secondary ={this.props.secondary}  teritary ={this.props.teritary}  font_color = {this.props.font_color} font ={this.props.font}/>
+        <MenuItem key={item} menu={item} category={this.state.renderCategory} onNew={this.toggleNewItem.bind(this)} primary ={this.props.primary}  secondary ={this.props.secondary}  teritary ={this.props.teritary}  font_color = {this.props.font_color} font ={this.props.font}/>
     );
   }
   //generate form for new item with prefilled of whats already on the menu for this item
@@ -223,7 +223,7 @@ const createNewStyle = {
 };
 const menuTextStyle = {
   'flex': '1',
-  'font-weight': 'bold',
+  'fontWeight': 'bold',
   'paddingRight': '69px',
   'paddingTop': '8px'
 };
