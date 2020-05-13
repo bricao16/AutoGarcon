@@ -135,7 +135,7 @@ export default function NavItems(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+    console.log(font);
   return (
 
     <div className={classes.root} style={{'fontFamily' :font}}>
@@ -159,7 +159,7 @@ export default function NavItems(props) {
             <MenuIcon />
           </IconButton>
           </div>
-          <div className="col text-right" style={{'fontFamily' :font}}>
+          <div className="col text-right" style={{'fontFamily' : font}}>
           {/* this.props.loggedIn */ true && <AccountDropdown firstName={props.firstName} lastName={props.lastName} className="pl-5 align-right"></AccountDropdown>}
           </div>
         </Toolbar>
