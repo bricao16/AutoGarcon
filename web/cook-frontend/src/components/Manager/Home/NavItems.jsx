@@ -182,7 +182,7 @@ export default function NavItems(props) {
       >
         <div className={classes.toolbar} style={{'backgroundColor' :'#f1f1f1' }}>
         <Typography variant="h6" className ='pr-4' noWrap >
-        <img src={props.imageBlob}  width="auto" height="45px" alt="waiter" /> 
+        <img src={props.imageBlob}  width="auto" height="45px" style={{"borderRadius": "5px"}} alt="waiter" /> 
            {/*<i>{props.restName}</i>*/}
           </Typography>
           <IconButton onClick={handleDrawerClose}>
@@ -209,17 +209,20 @@ export default function NavItems(props) {
             <ListItemIcon><GeneralIcon/></ListItemIcon>
             <ListItemText disableTypography primary="General"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
+        </List>
 				<Divider />
         <List>
           <ListItem button component="a" href ='/customize'>
             <ListItemIcon><CustomIcon/></ListItemIcon>
             <ListItemText disableTypography primary="Customize"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
+        </List>
+        <Divider />
+        <List>
           <ListItem button component="a" href ='/QRCode'>
             <ListItemIcon><CropFreeIcon/></ListItemIcon>
             <ListItemText disableTypography primary="QR Code Generator"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
-        </List>
         </List>
         <Divider />
         <List>
