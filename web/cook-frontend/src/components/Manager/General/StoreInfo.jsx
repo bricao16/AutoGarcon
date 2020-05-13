@@ -5,6 +5,9 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Alert from 'react-bootstrap/Alert';
+import EditFieldRightIcon from '@material-ui/icons/ChevronRight';
+import EditFieldDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import snakeCase from "lodash.snakecase";
 /* This component is used to render the 
 resturant information for the manager view.
 The resturant information is being called from the database in the
@@ -20,27 +23,35 @@ class StoreInfo extends React.Component{
   constructor(props) {     
     super(props);
     
-    const cookies = new Cookies();
+    this.cookies = new Cookies();
 		
     this.state = {
+      showName: false,
+      showAddress: false,
+      showPhone: false,
+      showDescription: false,
+      showCuisine:false,
       restaurantInfo: [],
       sectionEdit: "",
       show:false,
       name:this.props.info.name,
       address: this.props.info.address,
-      phone: this.props.info.phone,
+      phone: this.props.info.phone_number,
 			description: this.props.info.description,
-			cuisine: this.props.menu,
+			cuisine: "American",
       opening: this.props.info.opening,
       closing:this.props.info.closing,
-      restaurant_id :cookies.get("mystaff").restaurant_id,
-      token:cookies.get('mytoken')
+      edited: false,
+      restaurant_id :this.cookies.get("mystaff").restaurant_id,
+      token:this.cookies.get('mytoken')
     };
 
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
 		this.handleValidation = this.handleValidation.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+
   }
 
   onChange = (e) => {
@@ -50,10 +61,10 @@ class StoreInfo extends React.Component{
           super easy to update the state
         */
         this.setState({ [e.target.name]: e.target.value });
-        console.log(this.state);
       }
   /* Used for connecting to restaurantInfo in database */
   handleSubmit(event) {
+    console.log(this.state);
 		/*Validation for restaurant name.*/
 		if(this.state.name.length > 40){
 			this.handleValidation("Restaurant name is too long.  Please reduce to 40 characters or less.");
@@ -85,7 +96,7 @@ class StoreInfo extends React.Component{
 				url:  process.env.REACT_APP_DB +'/restaurant/update/',
 				data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
 				'&address='+this.state.address+'&phone='+this.state.phone+
-				'&opening='+this.state.opening+'&closing='+this.state.closing+'&cuisine='+this.state.cuisine,
+				'&opening='+this.state.opening+'&closing='+this.state.closing+'&cuisine='+this.state.cuisine+'&email='+"whatever",
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'Authorization': 'Bearer ' + this.state.token
@@ -106,6 +117,18 @@ class StoreInfo extends React.Component{
 			});
 		}
 	}
+    /* Used for handling changes to the input field */
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.value;
+    const name = snakeCase(target.name);
+
+    if (this.state.edited == false) this.setState({edited: true})
+
+    this.setState({
+      [name]: value
+    });
+  }
 	
   /* Used to show the correct alert after hitting save item */
   handleShow(success, message) {
@@ -155,110 +178,176 @@ class StoreInfo extends React.Component{
 		}
 		console.log("Reaching into here.\n");
   }
-	
-
-		
-  renderInfo(){
-    return (
-    <Card className="text-center m-2 w-100" style={itemStyle} >
-         
-          <Card.Body >
-              <div className = "border-bottom m-3">
-                  {/*If edit was clicked on this part open form otherwise render just the name */}
-                  <h5 className="card-subtitle mb-2 text-muted float-left">Name</h5>
-                   {this.state.sectionEdit !== "Name" ? 
-                          <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[0][1]}
-                              <button  onClick={() => this.editForm("Name") } className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
-                          </p>
-                          : 
-                            <form onSubmit = {this.handleSubmit}>
-                                  <input  className="form-control" type="text" name = "name" defaultValue={this.state.restaurantInfo[0][1]} onChange={this.onChange}></input>
-                                  <div className="row m-2">
-                                      <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                      <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
-                                  </div>
-                              </form>
-                       
-                      }
-                  
-              </div>
-              <div className = "border-bottom m-3">
-                  <h5 className="card-subtitle mb-2 text-muted float-left">Address</h5>
-                      {this.state.sectionEdit !== "Address" ? 
-                          <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[1][1]}
-                              <button  onClick={() => this.editForm("Address") } className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
-                          </p>
-                          : 
-                               <form onSubmit = {this.handleSubmit}>
-                                  <input  className="form-control" type="text" name = "address" defaultValue={this.state.restaurantInfo[1][1]} onChange={this.onChange}></input>
-                                  <div className="row m-2">
-                                      <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                      <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
-                                  </div>
-                              </form>
-
-                      }
-              </div>
-              <div className = "border-bottom m-3">
-              <h5 className="card-subtitle mb-2 text-muted float-left">Phone </h5>
-                  {this.state.sectionEdit !== "Phone" ? 
-                      <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[2][1]}
-                          <button onClick={() => this.editForm("Phone") } className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
-                      </p>
-                      : 
-                          <form onSubmit = {this.handleSubmit}>
-                              <input  className="form-control" type="text" name = "phone" defaultValue={this.state.restaurantInfo[2][1]} onChange={this.onChange}></input>
-                              <div className="row m-2">
-                                  <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                                  <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
-                              </div>
-                          </form>
-                  }
-              </div>
-              <div className = "border-bottom m-3">
-              <h5 className="card-subtitle mb-2 text-muted float-left">Opening</h5>
-                  {this.state.sectionEdit !== "Opening" ? 
-                      <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[3][1]}
-                          <button onClick={() => this.editForm("Opening") }className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
-                      </p>
-                      : 
-
-                          <form onSubmit = {this.handleSubmit}>
-                              <input  className="form-control" type="text" name = "opening" defaultValue={this.state.restaurantInfo[3][1]} onChange={this.onChange}></input>
-                              <div className="row m-2">
-                                  <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-																	<p style={{margin: "0", padding: "0.25em", fontSize: ".75em"}}>
-																			&#160;(Note: Please enter in military time.)
-																	</p>
-                                  <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
-                              </div>
-                          </form>           
-                  }
-              </div>
-              <div className = "border-bottom m-3">
-              <h5 className="card-subtitle mb-2 text-muted float-left">Closing </h5>
-                  {this.state.sectionEdit !== "Close" ? 
-                      <p style={{margin: "0", padding: "0.8em"}}>{this.state.restaurantInfo[4][1]}
-                          <button onClick={() => this.editForm("Close") } className="btn btn-outline-dark btn-sm float-right mb-2"> <i className='fas fa-edit'></i> </button>
-                      </p>
-                      : 
-                          <form onSubmit = {this.handleSubmit}>
-                              <input  className="form-control" type="text" name = "closing" defaultValue={this.state.restaurantInfo[4][1]} onChange={this.onChange}></input>
-                              <div className="row m-2">
-                                  <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-																	<p style={{margin: "0", padding: "0.25em", fontSize: ".75em"}}>
-																			&#160;(Note: Please enter in military time.)
-																	</p>
-                                  <button onClick={() => this.editForm("")} type="button" class="btn btn-outline-danger ml-4" >Cancel</button>
-                              </div>
-                          </form>
-                       
-                  }
-              </div>
- 
-          </Card.Body>
-      </Card>
+/* Dynamic fields that are shown if the internal state is stored as showing */
+  fieldStatus(field) {
+    if (this.state['show'+field]) {
+      return (
+        <div className="py-2 pr-2">
+          <input className="form-control" onChange={this.handleInputChange} name={snakeCase(field)} defaultValue={this.state[snakeCase(field)]}></input>
+        </div>
       )
+    }
+    else return (<></>)
+  }
+
+  /* Dynamic labels for each corresponding field */
+  labelStatus(field) {
+    let snakeCaseField = snakeCase(field)
+    if (!this.state['show'+field]) {
+      return (
+        <small className="text-secondary">{this.state[snakeCaseField]}</small>
+      )
+    }
+    else return (<></>)
+  }
+
+  /* When the toggle icon is toggled the internal show state for the corresponding field is toggled */
+  showField(event) {
+    event.preventDefault();
+    const target = event.target;
+    const name = target.name;
+
+    let stateField = "show" + name;
+
+    this.setState({
+      [stateField]: !this.state[stateField]
+    });
+  }
+
+  /* Edit icon is turned on its side when clicked to show the user is now editing */
+  toggleEditIcon(field) {
+    if (this.state["show"+field]) {
+      return (
+        <EditFieldDownIcon style={{"pointerEvents": "none", color: this.state.secondary}} fontSize="large"></EditFieldDownIcon>
+      )
+    }
+    else {
+      return (
+        <EditFieldRightIcon style={{"pointerEvents": "none"}} fontSize="large"></EditFieldRightIcon>
+      )
+    }
+  }
+
+  /* Dynamic update button that is shown when a field is edited */
+  updateButton() {
+    if (this.state.edited) {
+      return (
+        <button onClick={this.handleSubmit} type="button" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', "width":"33%"}}>Update</button>
+      )
+    }
+    else return (<></>)
+  }
+	
+  renderInfo(){
+            const primary = this.props.primary;
+        const secondary = this.props.secondary;
+        const teritary = this.props.teritary;
+        const font = this.props.font;
+        const font_color = this.props.font_color
+     return(
+      <div style={{"width": "70vw"}}>
+
+        <div>
+
+          
+
+          <ul className="list-group-flush " style={{"fontSize": "1.25rem"}}>
+
+            <li className="list-group-item" style ={{'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center'}}>
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <h2 className="text-center" >Restaurant Information</h2>
+
+                </div>
+
+              </div>
+            </li>
+
+            <li className="list-group-item">
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <div>Name</div>
+                  {this.labelStatus("Name")}
+                  {this.fieldStatus("Name")}
+                </div>
+                <button onClick={(event) => this.showField(event)} className="btn btn-link" name="Name" style={{"cursor": "pointer"}}>
+                  {this.toggleEditIcon("Name")}
+                </button>
+              </div>
+            </li>
+
+            <li className="list-group-item">
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <div>Address</div>
+                  {this.labelStatus("Address")}
+                  {this.fieldStatus("Address")}
+                </div>
+                <button onClick={(event) => this.showField(event)} className="btn btn-link" name="Address" style={{"cursor": "pointer"}}>
+                  {this.toggleEditIcon("Address")}
+                </button>
+              </div>
+            </li>
+
+            <li className="list-group-item">
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <div>Phone</div>
+                  {this.labelStatus("Phone")}
+                  {this.fieldStatus("Phone")}
+                </div>
+                <button onClick={(event) => this.showField(event)} className="btn btn-link" name="Phone" style={{"cursor": "pointer"}}>
+                  {this.toggleEditIcon("Phone")}
+                </button>
+              </div>
+            </li>
+
+            <li className="list-group-item">
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <div>Cuisine Type</div>
+                  {this.labelStatus("Cuisine")}
+                  {this.fieldStatus("Cuisine")}
+                </div>
+                <button onClick={(event) => this.showField(event)} className="btn btn-link" name="Cuisine" style={{"cursor": "pointer"}}>
+                  {this.toggleEditIcon("Cuisine")}
+                </button>
+              </div>
+            </li>
+            <li className="list-group-item">
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <div>Opening Time</div>
+                  {this.labelStatus("Opening")}
+                  {this.fieldStatus("Opening")}
+                </div>
+                <button onClick={(event) => this.showField(event)} className="btn btn-link" name="Opening" style={{"cursor": "pointer"}}>
+                  {this.toggleEditIcon("Opening")}
+                </button>
+              </div>
+            </li>
+            <li className="list-group-item">
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <div>Closing Time</div>
+                  {this.labelStatus("Closing")}
+                  {this.fieldStatus("Closing")}
+                </div>
+                <button onClick={(event) => this.showField(event)} className="btn btn-link" name="Closing" style={{"cursor": "pointer"}}>
+                  {this.toggleEditIcon("Closing")}
+                </button>
+              </div>
+            </li>
+          </ul>
+
+          <div className="d-flex justify-content-center">
+            {this.updateButton()}
+          </div>
+        </div>
+      </div>
+    )
+
+
     }
     render() {
         const {restaurantInfo } = this.state;
@@ -277,29 +366,27 @@ class StoreInfo extends React.Component{
 
         return (
             <Container onLoad= {()=>this.time_convert(this.state.restaurantInfo[3][1])} style = {backgroundStyle}>
-                <div style ={{'fontFamily' :font, 'backgroundColor': primary, 'paddingTop':'8px','height':'54px'}}>
+
                 <Alert show={this.state.show} variant={this.state.alertVariant}>
                   {this.state.response}
                 </Alert>
-                <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center'}}>
-                  Restaurant Information
-                </h2>
-                    <Container fluid style={{'minWidth': '70vh'}}>
+
+                    <Container >
                         <div className="d-flex flex-wrap">
                             {this.renderInfo()}
                         </div>
                     </Container>
 
-                </div>
+
             </Container>
         );
     }
 }
 
 const backgroundStyle = {
-  'backgroundColor': '#f1f1f1',
+
   'minWidth': '70vw',
-  'minHeight':'70vh'
+  'minHeight':'90vh'
 };
 const itemStyle = {
     'borderBottom': 'grey solid 1px',
