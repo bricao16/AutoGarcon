@@ -236,7 +236,7 @@ loadXHR(url) {
   handleModalShow = () => this.setState({ModalShow: true});
 
 renderInfo(){
-  console.log(this.state.sectionEdit)
+  console.log(this.state.font)
     return (
           <>
             <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
@@ -387,16 +387,16 @@ renderInfo(){
                                       {/* <option value="Selected">{this.state.customizeInfo[5][1]}</option> */}
                                       
                                       {/* dropdown menu options */}
-                                      <option value="Oswald">{this.state.fonts[0]}</option>
-                                      <option value="Raleway">{this.state.fonts[1]}</option>
-                                      <option value="Open Sans">{this.state.fonts[2]}</option>
-                                      <option value="Lato">{this.state.fonts[3]}</option>
-                                      <option value="Pt Sans">{this.state.fonts[4]}</option>
-                                      <option value="Lora">{this.state.fonts[5]}</option>
-                                      <option value="Montserrat">{this.state.fonts[6]}</option>
-                                      <option value="Playfair Display">{this.state.fonts[7]}</option>
-                                      <option value="Benchnine">{this.state.fonts[8]}</option>
-                                      <option value="Merriweather">{this.state.fonts[9]}</option>
+                                      <option value="Oswald" style ={{'fontFamily' :'Oswald'}}>{this.state.fonts[0]}</option>
+                                      <option value="Raleway" style ={{'fontFamily' :'Raleway'}}>{this.state.fonts[1]}</option>
+                                      <option value="Open Sans" style ={{'fontFamily' :'Open Sans'}}>{this.state.fonts[2]}</option>
+                                      <option value="Lato" style ={{'fontFamily' :'Lato'}}>{this.state.fonts[3]}</option>
+                                      <option value="Pt Sans" style ={{'fontFamily' :'Pt Sans'}}>{this.state.fonts[4]}</option>
+                                      <option value="Lora" style ={{'fontFamily' :'Lora'}}>{this.state.fonts[5]}</option>
+                                      <option value="Montserrat" style ={{'fontFamily' :'Montserrat'}}>{this.state.fonts[6]}</option>
+                                      <option value="Playfair Display" style ={{'fontFamily' :'Playfair Display'}}>{this.state.fonts[7]}</option>
+                                      <option value="Benchnine" style ={{'fontFamily' :'Benchnine'}}>{this.state.fonts[8]}</option>
+                                      <option value="Merriweather" style ={{'fontFamily' :'Merriweather'}}>{this.state.fonts[9]}</option>
 
 
                                   </select>     
@@ -489,7 +489,7 @@ renderInfo(){
         const primary = this.props.primary;
         const secondary = this.props.secondary;
         const teritary = this.props.teritary;
-        const font = this.props.font;
+        const font = this.state.font;
         const font_color = this.props.font_color
         //put resturant info into an array
         Object.keys(resturantInfo).forEach(function(key) {

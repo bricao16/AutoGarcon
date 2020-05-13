@@ -81,7 +81,7 @@ class HighestSelling extends React.Component {
           var dataFormat = [];
           var maxHeight = 0;
           var i;
-          for (i = 0; i < Object.keys(res.data).length-1; i++) {
+          for (i = 0; i < Object.keys(res.data).length; i++) {
                 dataFormat.push({"y":res.data[i].total_ordered, "x":res.data[i].category, "label":res.data[i].item_name});
                 //find the max count to set the height of graph
                 if(res.data[i].total_ordered> maxHeight)
