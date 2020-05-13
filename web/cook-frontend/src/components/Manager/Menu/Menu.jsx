@@ -86,7 +86,7 @@ class Menu extends React.Component {
       <Col key={item} sm={6} className="p-3" style={{'minWidth':'225px'}}>
         <Card className="text-center" >
           <div onClick={() => this.changeCategory(item) }>                     
-            <Card.Header style ={{'fontFamily' :font, 'backgroundColor': secondary, 'textAlign' : 'center','display': 'flex'}}>{item}</Card.Header>
+            <Card.Header style ={{'fontFamily' :font, 'backgroundColor': secondary, 'textAlign' : 'center', 'fontWeight': 'bold'}}>{item}</Card.Header>
           </div>
         </Card>
       </Col>  
@@ -223,6 +223,7 @@ const createNewStyle = {
 };
 const menuTextStyle = {
   'flex': '1',
+  'font-weight': 'bold',
   'paddingRight': '69px',
   'paddingTop': '8px'
 };

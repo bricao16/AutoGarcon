@@ -22,6 +22,7 @@ class NewItem extends React.Component {
     this.state.type = props.prefill.type
     this.state.item_id = props.prefill.item_id
     this.state.show = false
+    this.state.imageName = "Choose file"
     this.state.cookies = new Cookies();
     this.state.user = this.state.cookies.get("mystaff");
     this.parseStock(props.prefill.in_stock);
@@ -43,8 +44,25 @@ class NewItem extends React.Component {
       this.setState({
         [name]: val
       });
-    }
-    else {
+    } else if (name === "image") {
+      //https://riptutorial.com/javascript/example/14207/getting-binary-representation-of-an-image-file
+      // preliminary code to handle getting local file and finally printing to console
+      // the results of our function ArrayBufferToBinary().
+      //change the file name
+      this.setState({ imageName: target.files[0].name });
+
+      var file = target.files[0]; // get handle to local file.
+      var reader = new FileReader();
+      reader.onload = function(event) {
+        var data = event.target.result;
+        var finaldata = new Uint8Array(data);
+
+        //set our file to the correct data
+        this.setState({ image:  {'type': 'Bufferz', 'data': finaldata} });
+      }.bind(this);
+
+      reader.readAsArrayBuffer(file); //gets an ArrayBuffer of the file
+    } else {
       this.setState({
         [name]: value
       });
@@ -95,6 +113,7 @@ class NewItem extends React.Component {
 					+'&price='+this.state.price
           +'&in_stock='+this.state.in_stock
           +'&description='+this.state.description
+          +'&image='+this.state.image
 			}
 			// Item needs to be edited
 			else {
@@ -109,6 +128,7 @@ class NewItem extends React.Component {
 					+'&price='+this.state.price
           +'&in_stock='+this.state.in_stock
           +'&description='+this.state.description
+          +'&image='+this.state.image
 			}
 			
 			axios({
@@ -198,7 +218,6 @@ class NewItem extends React.Component {
     }
 
     this.setState({show: true});
-		console.log("here")
 		setTimeout(() => {
 			if (this.state.show) this.setState({show:false});
 		}, 5000)
@@ -306,26 +325,16 @@ class NewItem extends React.Component {
                   <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} placeholder="300 Character limit"></textarea>
                 </div>
 
-                {/* <div class="custom-file">
-                  <input type="file" class="custom-file-input" id="customFile"></input>
-                  <label class="custom-file-label" for="customFile">Choose file</label>
-                </div> */}
-
-                <Form>
-                  <label htmlFor="custom-file">Picture</label>
-                  <Form.File 
-                    id="custom-file"
-                    label="Choose file"
-                    custom
-                    isValid={this.state.show} // needs to be representative of internal state
-                    onChange  // needs to update internal state
-                    //onClick={(t) => {console.log(this)}}
-                  />
-                </Form>
+                <label htmlFor="customFile">Picture (Optional)</label>
+                <div className="custom-file">
+                  <input type="file" className="custom-file-input" id="customFile" name="image" accept="image/png, image/jpg, image/jpeg" onChange={this.handleInputChange}></input>
+                  <label className="custom-file-label" htmlFor="customFile">{this.state.imageName}</label>
+                </div>
 
                 <div className="d-flex justify-content-center row p-2">
                   <button onClick={this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
                 </div>
+
               </form>
             </div>
           </Container>
@@ -407,10 +416,10 @@ class NewItem extends React.Component {
                   <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} defaultValue={this.state.description} placeholder="300 Character limit"></textarea>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="exampleFormControlFile1">Picture</label>
-                  <input type="file" className="form-control-file" id="exampleFormControlFile1">
-                  </input>
+                <label htmlFor="customFile">Picture (Optional)</label>
+                <div className="custom-file">
+                  <input type="file" className="custom-file-input" id="customFile" name="image" accept="image/png, image/jpg, image/jpeg" onChange={this.handleInputChange}></input>
+                  <label className="custom-file-label" htmlFor="customFile">{this.state.imageName}</label>
                 </div>
 
                 <div className="d-flex justify-content-center row p-2">
