@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {makeStyles, AppBar, Tab, Tabs, Toolbar} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import {useTheme, ThemeProvider, createMuiTheme, withStyles} from "@material-ui/core/styles";
@@ -60,7 +60,7 @@ function Header(props){
   // const theme = useTheme();
   const classes = useStyles(theme);
 
-  const [tab, setTab] = React.useState(props.tab);
+  const [tab, setTab] = useState(props.tab);
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
   };

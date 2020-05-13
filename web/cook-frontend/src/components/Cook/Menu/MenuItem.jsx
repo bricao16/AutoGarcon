@@ -31,9 +31,6 @@ class MenuItem extends React.Component {
     }
   }
 
-  handleModalClose = () => this.setState({ModalShow: false});
-  handleModalShow = () => this.setState({ModalShow: true});
-
   //callback to newitemform when clicked edit button
   NewItemForm(e) {
     if (typeof this.props.onNew === 'function') {
@@ -60,45 +57,21 @@ class MenuItem extends React.Component {
       const secondary = this.props.secondary;
       const teritary = this.props.teritary;
       const font = this.props.font;
-      const font_color = this.props.font_color
+      const font_color = this.props.font_color;
       if(this.props.menu[1].category === this.props.category)
       {
           return(
           <>
-            <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
-              <Modal.Header closeButton>
-                <Modal.Title>{this.props.menu[0]}</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <div class="container">
-                  <div class="row">
-                    <div class="col">
-                      <div style={modalImageStyle}>
-                        <img src="https://restaurantden.com/wp-content/uploads/2017/09/free-stock-food-photography-websites.jpg" alt="Test stock image" class="img-fluid rounded float-left"></img>
-                      </div>
-                    </div>
-                    <div class="col">
-                      <ul class="list-group list-group-flush">
-                        <li class="list-group-item">{this.getStockState(this.props.menu[1].in_stock)}</li>
-                        <li class="list-group-item">${this.props.menu[1].price}</li>
-                        <li class="list-group-item">Calories: {this.props.menu[1].calories}</li>
-                        <li class="list-group-item">{this.props.menu[1].description}</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </Modal.Body>
-            </Modal>
             
             <Card className="text-center m-2" style={itemStyle}>
 
-                <Card.Header onClick={this.handleModalShow} style ={{'fontFamily' :font, 'backgroundColor': secondary,  'textAlign' : 'center','display': 'flex'}}>
+                <Card.Header style ={{'fontFamily' :font, 'backgroundColor': secondary,  'textAlign' : 'center','display': 'flex'}}>
                   {this.props.menu[0]}
                 </Card.Header>
                 <div onClick={() => this.NewItemForm()} style={editButtonStyle} className='p-1'>
-                  <a> <i className='fas fa-edit'></i> </a>
+                  <a> <i className='fas fa-edit'/> </a>
                 </div>
-                <Card.Body onClick={this.handleModalShow} style={{'cursor':'pointer'}}>
+                <Card.Body style={{'cursor':'pointer'}}>
                   <p style={{margin: "0", padding: "0.3em"}}>${this.props.menu[1].price} </p>
                   <p style={{margin: "0", padding: "0.3em"}}>Calories: {this.props.menu[1].calories} </p>
                   <i> <p style={{margin: "0", padding: "0.3em"}}>{this.getStockState(this.props.menu[1].in_stock)} </p></i>
@@ -107,7 +80,7 @@ class MenuItem extends React.Component {
           </>
         ) 
       }
-      else{
+      else {
         return (
           <p></p>
         )
@@ -124,10 +97,6 @@ const cardHeaderStyle = {
 const itemStyle = {
   'width':'200px'
 };
-const modalImageStyle = {
-  'max-width': '200px',
-  'max-height': '200px'
-}
 const editButtonStyle = {
   'cursor':'pointer',
   'color': 'white',

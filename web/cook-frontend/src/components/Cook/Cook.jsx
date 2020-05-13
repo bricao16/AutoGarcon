@@ -67,7 +67,6 @@ function Cook() {
     })
       .then(res => res.data)
       .then(data => {
-        console.log(data);
         setRestaurantData(data);
         setLoading(false);
       })

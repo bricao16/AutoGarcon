@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -51,36 +51,28 @@ const DialogActions = withStyles((theme) => ({
 
 export default function CustomDialog(props) {
 
-  // const [orderNum] = props;
+  const {orderNum, openDialog, callback} = props;
 
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
+  const handleClose = (click, confirm) => {
+    callback(confirm);
   };
 
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Open dialog
-      </Button>
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
-        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={openDialog}>
+        <DialogTitle id="customized-dialog-title" onClose={() => handleClose(this, false)}>
           Restore Order?
         </DialogTitle>
         <DialogContent dividers>
           <Typography gutterBottom>
-            Are you sure you want to restore order #117?
+            Are you sure you want to restore order #{orderNum}?
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose} color="primary">
+          <Button variant="outlined" onClick={() => handleClose(this, true)} color="primary">
             Yes
           </Button>
-          <Button autoFocus onClick={handleClose} color="primary">
+          <Button variant="outlined" onClick={() => handleClose(this, false)} color="primary">
             No
           </Button>
         </DialogActions>
