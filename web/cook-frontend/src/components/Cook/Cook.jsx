@@ -114,7 +114,11 @@ function Cook() {
             <Route exact path="/cook/menu">
               <Header cookies={cookies} restaurantData={restaurantData} tab={1}/>
               <p>Editing stock of menu items (work in progress)</p>
-              <Menu menu={restaurantData.menu}/>
+              <Menu menu={restaurantData.menu} primary={restaurantData.restaurant.primary_color}
+                    secondary={restaurantData.restaurant.secondary_color}
+                    tertiary={restaurantData.restaurant.tertiary_color}
+                    font={restaurantData.restaurant.font}
+                    font_color={restaurantData.restaurant.font_color} />
             </Route>
           </Switch>
         </div>

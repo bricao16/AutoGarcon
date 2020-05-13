@@ -71,8 +71,14 @@ function Header(props){
         <Toolbar className={classes.toolbar}>
           <h3 className={classes.title}>Orders</h3>
           <StyledTabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" className={classes.tabs}>
-            <Tab label="Active" color="primary" className={classes.tab} classes={{selected: classes.selected}} component={Link} to={'/cook/orders/active'} />
-            <Tab label="Completed" color="primary" className={classes.tab} classes={{selected: classes.selected}} component={Link} to={'/cook/orders/completed'} />
+            <Tab label="Active" color="primary" className={classes.tab} classes={{selected: classes.selected}}
+                 component={Link}
+                 to={'/cook/orders/active'}
+            />
+            <Tab label="Completed" color="primary" className={classes.tab} classes={{selected: classes.selected}}
+                 component={Link}
+                 to={'/cook/orders/completed'}
+            />
           </StyledTabs>
         </Toolbar>
       </AppBar>

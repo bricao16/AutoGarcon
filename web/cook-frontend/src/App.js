@@ -37,7 +37,7 @@ class App extends React.Component{
               <Route path="/manager"
                   render={() => (<Manager />)}
                 >
-                </Route>
+              </Route>
               <Route path="/sign_up">
                 <SignUp />
               </Route>

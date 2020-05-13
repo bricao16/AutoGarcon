@@ -2,11 +2,24 @@ import React, { useState, useEffect, useRef } from 'react';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+// Material UI
 import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
+import {makeStyles, Button, Snackbar} from "@material-ui/core";
+import MuiAlert from '@material-ui/lab/Alert';
+
 import Toolbar from "./Toolbar";
 import OrderCards from "./OrderCards";
-import {makeStyles, Button} from "@material-ui/core";
+import CustomDialog from "./CustomDialog";
+// Icons
+import DoneIcon from '@material-ui/icons/Done';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import AspectRatioIcon from '@material-ui/icons/AspectRatio';
+import RestoreIcon from '@material-ui/icons/Restore';
 // import $ from "jquery"; will be used in future
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -53,7 +66,7 @@ function Body(props){
   // Switch between HTTP and HTTPS
   const serverUrl = process.env.REACT_APP_DB;
   // either /orders/ or /orders/complete/
-  const [ordersEndpoint, setOrdersEndpoint] = useState('');
+  const ordersEndpointRef = useRef('');
   const markCompletedEndpoint = serverUrl + '/orders/update';
   // if on completed tab
   // const [completed, setCompleted] = useState(false);
@@ -62,17 +75,24 @@ function Body(props){
 
   const [selectedCard, setSelectedCard] = useState(0);
 
+  const [open, setOpen] = useState(false);
+  const [alertText, setAlertText] = useState("");
+  const [severity, setSeverity] = useState("");
+
+  // Holds time interval for updating orders from database
   const getOrdersInterval = useRef();
 
   // When ordersEndpoint prop changes, update ordersEndpoint state variable
-  useEffect(() => {
-    setOrdersEndpoint(serverUrl + props.ordersEndpoint + restaurant_id);
-  }, [props.ordersEndpoint]);
+  // useEffect(() => {
+  //   setOrdersEndpoint(serverUrl + props.ordersEndpoint + restaurant_id);
+  // }, [props.ordersEndpoint]);
 
   // When ordersEndpoint state changes, get orders from database using changed endpoint
   useEffect(() => {
-    getDatabaseOrders();
-  }, [ordersEndpoint]);
+    const ordersEndpoint = serverUrl + props.ordersEndpoint + restaurant_id;
+    ordersEndpointRef.current = ordersEndpoint;
+    getDatabaseOrders(ordersEndpoint);
+  }, [props.ordersEndpoint]);
 
 
   // If path changes (because of switching tabs: active or complete)
@@ -98,7 +118,9 @@ function Body(props){
   useEffect(() => {
     // setupKeyPresses(); <- This will be added in the future
     // updates orders every 10 seconds
-    // getOrdersInterval.current = setInterval(getDatabaseOrders, 10000); // start interval after mounting
+    // start interval after mounting
+    getOrdersInterval.current = setInterval(() => getDatabaseOrders(ordersEndpointRef.current), 1000);
+
     // While unmounting do this
     return () => {
       clearInterval(getOrdersInterval.current); // clear interval after unmounting
@@ -108,7 +130,7 @@ function Body(props){
 
 
   // Get 'in progress' orders from db
-  function getDatabaseOrders(){
+  function getDatabaseOrders(ordersEndpoint){
     // Null until calculated by effect hook
     if(ordersEndpoint !== ''){
       axios.get(ordersEndpoint, {
@@ -118,7 +140,6 @@ function Body(props){
       })
         .then(res => res.data)
         .then(orders => {
-          console.log(orders);
           configureOrders(orders);
         })
         .catch(error =>{
@@ -176,8 +197,6 @@ function Body(props){
     if(selectedCard !== null){
       const orderNum = Object.keys(orders)[selectedCard];
       const data = 'order_num=' + orderNum + '&order_status=' + status;
-      console.log(data);
-      console.log(markCompletedEndpoint);
       axios.post(markCompletedEndpoint,
       data,
         {
@@ -189,7 +208,8 @@ function Body(props){
           },
         })
        .then(() => {
-         getDatabaseOrders();// grab updated orders from database
+         getDatabaseOrders(); // grab updated orders from database
+         showPopup(orderNum, status);
          changeSelectedOrder(0);
        })
        .catch(error =>{
@@ -197,6 +217,17 @@ function Body(props){
          console.error(error);
        });
     }
+  }
+
+  function showPopup(orderNum, status){
+    const severity = {"Completed": "success", "In Progress": "info"};
+    const text = "Order #" + orderNum + " marked " + status.toLowerCase();
+    setOpen(true);
+    setAlertText(text);
+    setSeverity(severity[status]);
+  }
+  function handlePopupClose(){
+    setOpen(false);
   }
   // The following features will be added in the future
   /*
@@ -261,18 +292,38 @@ function Body(props){
 
 
   function toolbarButtons(){
-    return [
-      <Button key={0} variant="contained" color="primary" className={classes.button} onClick={()=>changeOrderStatus('Complete')}>Completed</Button>,
-      <Button key={1} variant="contained" color="primary" className={classes.button} onClick={toggleExpandOrder}>Expand</Button>,
-      <Button key={2} variant="contained" color="primary" className={classes.button} onClick={()=>changeOrderStatus('In Progress')}>Restore</Button>,
-    ];
+    let buttons = [];
+    if(props.tab === "completed"){
+      buttons.push(
+        <Button key={2} variant="contained" color="primary" className={classes.button}
+                onClick={()=>changeOrderStatus('In Progress')} startIcon={<RestoreIcon/>}>Restore</Button>
+      );
+    } else {
+      buttons.push(
+        <Button key={0} variant="contained" color="primary" className={classes.button}
+                onClick={()=>changeOrderStatus('Complete')} startIcon={<CheckCircleOutlineIcon/>}>Completed</Button>
+      );
+    }
+    buttons.push(
+      <Button key={1} variant="contained" color="primary" className={classes.button}
+              onClick={toggleExpandOrder} startIcon={<AspectRatioIcon/>}>Expand</Button>
+    );
+    return buttons;
   }
 
   return (
     <ThemeProvider theme={theme}>
+
+      <Snackbar open={open} autoHideDuration={3000} onClose={handlePopupClose}>
+        <Alert severity={severity}>
+          {alertText}
+        </Alert>
+      </Snackbar>
+
+      <CustomDialog orderNum={123}/>
+
+
       <div className={classes.main}>
-        {/*<OrdersHeader handleStatusChangeClick={changeOrderStatus} path={props.path} />*/}
-        {/*<Header handleExpandClick={this.toggleExpandOrder.bind(this)} handleCompleteClick={markOrderComplete} />*/}
         <div className={classes.toolbarContainer} >
           <Toolbar buttons={toolbarButtons()}/>
         </div>
