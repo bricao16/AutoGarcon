@@ -124,7 +124,7 @@ export default function NavItems(props) {
   //get the styles for the current restuarant
   const primary = props.restaurantInfo[1][1].primary_color;
   const secondary = props.restaurantInfo[1][1].secondary_color;
-  const teritary = props.restaurantInfo[1][1].teritary_color;
+  const tertiary = props.restaurantInfo[1][1].tertiary_color;
   const font = props.restaurantInfo[1][1].font;
   const font_color = props.restaurantInfo[1][1].font_color
 
@@ -236,22 +236,22 @@ export default function NavItems(props) {
             <Stats primary ={primary} font_color = {font_color} font ={font} />
           </Route>
           <Route path="/menu">
-            <Menu menu = {props.restaurantInfo[0][1]} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
+            <Menu menu = {props.restaurantInfo[0][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
           </Route>
           <Route path="/general">
-            <StoreInfo info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font}  />
+            <StoreInfo info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font}  />
           </Route>
           <Route path="/customize">
-            <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
+            <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
           </Route>
           <Route path="/cookview">
-            <CookView primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
+            <CookView primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
           </Route>
 				  <Route path="/QRCode">
-					  <QRCode info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
+					  <QRCode info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
 				  </Route>
           <Route path="/account">
-            <AccountSettings primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font}/>
+            <AccountSettings primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font}/>
           </Route>
         </Switch>
         <footer className={classes.footerStyle}>
