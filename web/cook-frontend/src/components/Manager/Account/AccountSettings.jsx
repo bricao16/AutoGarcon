@@ -98,6 +98,7 @@ class AccountSettings extends React.Component{
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer ' + this.state.token
       },
+      timeout: 8000,
       httpsAgent: new https.Agent({  
         rejectUnauthorized: false,
       }),
@@ -137,7 +138,8 @@ class AccountSettings extends React.Component{
       }
     })
     .catch(error => {
-      this.handleShow(false, error.response.data);
+      if (error.response) {this.handleAlertShow(false, error.response.data);}
+      else {this.handleAlertShow(false, "Unknown error!");}
 			console.error("There was an error!", error);
 		});
   }
