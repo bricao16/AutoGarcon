@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.homestuff.Home;
@@ -58,6 +59,8 @@ public class TwoButtonPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NukeSSLCerts.nuke();
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
 
         setContentView(R.layout.activity_two_button_page);
         pref = new SharedPreference(this);//file for keeping track of cart
@@ -87,7 +90,7 @@ public class TwoButtonPage extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if(error.networkResponse.statusCode == 500) {
+                        if(error.networkResponse!= null && error.networkResponse.statusCode == 500) {
                             Log.d("Error in loading screen", "Error retrieving favorites");
                         }
                     }

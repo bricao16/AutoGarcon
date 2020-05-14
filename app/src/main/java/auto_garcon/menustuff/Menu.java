@@ -103,6 +103,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         setContentView(R.layout.activity_menu);
         NukeSSLCerts.nuke();
 
+
         pref = new SharedPreference(this);
 
         /**

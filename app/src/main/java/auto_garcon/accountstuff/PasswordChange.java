@@ -20,6 +20,7 @@ import com.example.auto_garcon.R;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
@@ -55,6 +56,7 @@ public class PasswordChange extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         NukeSSLCerts.nuke();
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         setContentView(R.layout.activity_password_change);
 
