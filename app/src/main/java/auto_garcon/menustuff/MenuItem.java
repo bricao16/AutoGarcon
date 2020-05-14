@@ -11,6 +11,7 @@ public class MenuItem implements Serializable{
     private String category;
     private String nameOfItem;
     private String description;
+    private String[] allergens;
     private int amountInStock;
     private int calories;
     private double price;
@@ -105,6 +106,12 @@ public class MenuItem implements Serializable{
 
     public String getDescription() {
         return this.description;
+    }
+
+    public void setAllergens(String[] allergens) { this.allergens = allergens;}
+
+    public String[] getAllergens() {
+        return this.allergens;
     }
 
     public void setItemImage(byte[] itemImage){

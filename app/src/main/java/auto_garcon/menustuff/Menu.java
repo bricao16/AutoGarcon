@@ -32,6 +32,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -450,6 +451,12 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             itemToBeAdded.setPrice(menuItemCategories.getDouble("price"));
             itemToBeAdded.setCategory(menuItemCategories.getString("category"));
 
+            JSONArray arrJson = menuItemCategories.getJSONArray("allergens");
+            String[] arr = new String[arrJson.length()];
+            for(int i = 0; i < arrJson.length(); i++) {
+                arr[i] = arrJson.getString(i);
+            }
+            itemToBeAdded.setAllergens(arr);
 
 
             itemToBeAdded.setAmountInStock(menuItemCategories.getInt("in_stock"));
