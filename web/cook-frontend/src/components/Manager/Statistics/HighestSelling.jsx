@@ -22,7 +22,6 @@ class HighestSelling extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-              selectedTime: "Week",
               unselectedCategories: [],
               full_data: null,
               data:null,
@@ -38,9 +37,6 @@ class HighestSelling extends React.Component {
         this.renderCheckBoxes = this.renderCheckBoxes.bind(this);
     }
 
-    changeSelection(category){
-      this.setState({'selectedTime':category})
-    }
     //handle when a checkbox is changed
     checkboxHandler(event){
         var categories = this.state.unselectedCategories;
@@ -186,17 +182,12 @@ class HighestSelling extends React.Component {
         {
             return (
                 <Container>
-                    {/*Dropdown of week and month*/}
-                    <div className="form-group p-3" style={{'width':'10vw', 'float':'right'}}>
-                      <select className="form-control">
-                        <option onClick={()=>this.changeSelection("Week")}>Week</option>
-                        <option onClick={()=>this.changeSelection("Month")}>Month</option>
-                      </select>
-                    </div>
-
                      <div className="d-flex flex-wrap pt-3">
                         {this.renderCheckBoxes()}                
                     </div>
+                    <br/>
+                    <br/>
+                    <br/>
                     <div style = {{'height':'100%'}}>
                         {this.renderPlot()}
                     </div>
