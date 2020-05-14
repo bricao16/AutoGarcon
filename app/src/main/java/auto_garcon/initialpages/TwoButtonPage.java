@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.homestuff.Home;
 import auto_garcon.menustuff.Menu;
@@ -56,10 +57,12 @@ public class TwoButtonPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NukeSSLCerts.nuke();
+
         setContentView(R.layout.activity_two_button_page);
         pref = new SharedPreference(this);//file for keeping track of cart
         Log.d("testing"," "+getIntent().getStringExtra("error"));
-        StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername(),
+        StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/favorites/" + pref.getUser().getUsername(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

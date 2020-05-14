@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 
 import auto_garcon.accountstuff.PasswordChange;
@@ -88,6 +89,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NukeSSLCerts.nuke();
 
         /**
          *  Get the current shopping cart from what is currently being stored in shared
@@ -237,7 +239,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                              * Builds the StringRequest that will be sent to the database. As well as
                              * overriding the onResponse and onErrorResponse for our own use.
                              */
-                            putRequest = new StringRequest(Request.Method.PUT, "http://50.19.176.137:8000/orders/place",
+                            putRequest = new StringRequest(Request.Method.PUT, "https://50.19.176.137:8001/orders/place",
                                     new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String response) {

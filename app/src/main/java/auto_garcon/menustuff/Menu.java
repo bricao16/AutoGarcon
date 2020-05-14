@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import auto_garcon.ExceptionHandler;
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Settings;
@@ -100,6 +101,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         super.onCreate(savedInstanceState);
        // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
         setContentView(R.layout.activity_menu);
+        NukeSSLCerts.nuke();
+
         pref = new SharedPreference(this);
 
         /**

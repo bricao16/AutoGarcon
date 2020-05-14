@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.*;
 import auto_garcon.homestuff.*;
 import auto_garcon.accountstuff.Settings;
@@ -86,11 +87,12 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         logos = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
+        NukeSSLCerts.nuke();
 
         pref = new SharedPreference(this);
         recyclerView = findViewById(R.id.order_list);
 
-        final StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/customer/history/" + pref.getUser().getUsername(), new Response.Listener<String>() {
+        final StringRequest getRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/customer/history/" + pref.getUser().getUsername(), new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {

@@ -22,6 +22,7 @@ import com.example.auto_garcon.R;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.initialpages.Login;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
@@ -62,6 +63,7 @@ public class Account extends AppCompatActivity {
 
         //initializing new preference variable
         pref = new SharedPreference(this);
+        NukeSSLCerts.nuke();
 
         //setting input container fields to variables
         changeFirstName = findViewById(R.id.first_name_change);
@@ -127,7 +129,7 @@ public class Account extends AppCompatActivity {
                 else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email) && TextUtils.isEmpty(username))) {// if all the requirements are met than we can send our put request to the database
 
                     //put request for updating Account Information
-                    StringRequest putRequest = new StringRequest(Request.Method.POST, "http://50.19.176.137:8000/customer/update",
+                    StringRequest putRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/update",
                             new Response.Listener<String>()
                             {
                                 @Override

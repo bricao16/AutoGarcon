@@ -20,6 +20,7 @@ import com.example.auto_garcon.R;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
@@ -52,6 +53,9 @@ public class PasswordChange extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        NukeSSLCerts.nuke();
+
         setContentView(R.layout.activity_password_change);
 
         pref = new SharedPreference(this);
@@ -87,7 +91,7 @@ public class PasswordChange extends AppCompatActivity {
                     newPassword.setError("Password Must be Greater than 6 Characters");
                 }
                 else {
-                    StringRequest postRequestForPasswordUpdate = new StringRequest(Request.Method.POST, "http://50.19.176.137:8000/customer/password/update",
+                    StringRequest postRequestForPasswordUpdate = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/password/update",
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {

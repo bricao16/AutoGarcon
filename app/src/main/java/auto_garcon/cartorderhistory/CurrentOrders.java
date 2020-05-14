@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Settings;
@@ -68,6 +69,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_orders);
+        NukeSSLCerts.nuke();
 
         pref = new SharedPreference(CurrentOrders.this);
         //creating side nav drawer
@@ -114,7 +116,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-        StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/customer/inprogress/" + pref.getUser().getUsername(),
+        StringRequest getRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/customer/inprogress/" + pref.getUser().getUsername(),
                 new Response.Listener<String>()
                 {
                     @Override
