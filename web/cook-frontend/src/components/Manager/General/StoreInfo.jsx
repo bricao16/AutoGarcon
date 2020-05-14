@@ -1,6 +1,6 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
-import Card from 'react-bootstrap/Card';
+
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
@@ -123,7 +123,7 @@ class StoreInfo extends React.Component{
     const value = target.value;
     const name = snakeCase(target.name);
 
-    if (this.state.edited == false) this.setState({edited: true})
+    if (this.state.edited === false) this.setState({edited: true})
 
     this.setState({
       [name]: value
@@ -240,8 +240,7 @@ class StoreInfo extends React.Component{
 	
   renderInfo(){
             const primary = this.props.primary;
-        const secondary = this.props.secondary;
-        const teritary = this.props.teritary;
+
         const font = this.props.font;
         const font_color = this.props.font_color
      return(
@@ -253,7 +252,7 @@ class StoreInfo extends React.Component{
 
           <ul className="list-group-flush " style={{"fontSize": "1.25rem"}}>
 
-            <li className="list-group-item" style ={{'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center'}}>
+            <li className="list-group-item" style ={{'backgroundColor': primary, 'fontFamily': font, 'color': font_color, 'textAlign' : 'center'}}>
               <div className="d-flex align-items-start">
                 <div className="flex-grow-1">
                   <h2 className="text-center" >Restaurant Information</h2>
@@ -352,12 +351,7 @@ class StoreInfo extends React.Component{
     render() {
         const {restaurantInfo } = this.state;
         const fullResturantInfo = this.props;
-        //get the styles
-        const primary = this.props.primary;
-        const secondary = this.props.secondary;
-        const teritary = this.props.teritary;
-        const font = this.props.font;
-        const font_color = this.props.font_color
+
         //put resturant info into an array
         Object.keys(fullResturantInfo.info).forEach(function(key) {
             restaurantInfo.push([key ,fullResturantInfo.info[key]]);
@@ -387,10 +381,6 @@ const backgroundStyle = {
 
   'minWidth': '70vw',
   'minHeight':'90vh'
-};
-const itemStyle = {
-    'borderBottom': 'grey solid 1px',
-    'width':'200px'
 };
 
 export default StoreInfo;

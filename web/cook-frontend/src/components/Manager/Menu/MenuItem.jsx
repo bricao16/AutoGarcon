@@ -66,7 +66,7 @@ class MenuItem extends React.Component {
           "description": this.props.menu[1].description
         }
       }
-        
+      
       this.props.onNew(props);
     }
   }
@@ -123,6 +123,7 @@ class MenuItem extends React.Component {
   }
 
   async getImageBuf(id) {
+    console.log("id:" + id);
     var res = await axios({
       method: 'get',
       url: process.env.REACT_APP_DB + '/menu/image/' + id,
@@ -165,11 +166,10 @@ class MenuItem extends React.Component {
 
   render(){
     //get the styles
-    const primary = this.props.primary;
+
     const secondary = this.props.secondary;
-    const teritary = this.props.teritary;
+
     const font = this.props.font;
-    const font_color = this.props.font_color
 
     if(this.props.menu[1].category === this.props.category)
     {

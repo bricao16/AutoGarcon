@@ -236,7 +236,7 @@ export default function NavItems(props) {
             <Stats primary ={primary} font_color = {font_color} font ={font} />
           </Route>
           <Route path="/menu">
-            <Menu menu = {props.restaurantInfo[0][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
+            <Menu name = {props.restaurantInfo[1][1]} menu = {props.restaurantInfo[0][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
           </Route>
           <Route path="/general">
             <StoreInfo info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font}  />

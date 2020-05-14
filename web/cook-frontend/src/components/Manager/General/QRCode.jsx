@@ -1,19 +1,13 @@
-import React, {Component} from "react";
-import Container from 'react-bootstrap/Container';
+import React from "react";
+
 import Card from 'react-bootstrap/Card';
-import https from 'https';
-import axios from 'axios';
+
+
 import Cookies from 'universal-cookie';
 import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import {render} from 'react-dom';
-import Button from 'react-bootstrap/Button';
-import ReactToPrint from 'react-to-print';
 
-
-import ListGroup from 'react-bootstrap/ListGroup';
 var QRCode = require('qrcode.react');
 
 /* This component is used create the QR Codes a manager will want to print and
@@ -67,7 +61,6 @@ class StoreInfo extends React.Component{
   render() {
       const {restaurantInfo } = this.state;
       const fullResturantInfo = this.props;
-      console.log(this.props);
       //put resturant info into an array
       Object.keys(fullResturantInfo.info).forEach(function(key) {
           restaurantInfo.push([key ,fullResturantInfo.info[key]]);
@@ -78,7 +71,7 @@ class StoreInfo extends React.Component{
       const tertiary = this.props.tertiary;
       const font = this.props.font;
       const font_color = this.props.font_color;
-      console.log(tertiary);
+
 
       return (
         <React.Fragment>
@@ -132,70 +125,9 @@ class StoreInfo extends React.Component{
                 
               </Card>
             </React.Fragment>
-            /*
-        <Container>
-          <div style={backgroundStyle}>
-            <Alert show={this.state.show} variant={this.state.alertVariant}>
-              {this.state.response}
-            </Alert>
-            <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','height':'54px', 'paddingTop':'8px'}}>
-              QR Code Generator
-            </h2>
-						<input className="form-control col" type="text" name="myValue" placeholder={this.state.myValue} onChange={this.onChange}>
-            </input>
-						<button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Generate Code</button>
-					  <div style={QRCodeStyle} size="300">
-							<QRCode
-								id="123456"
-								value={this.state.QRValue}
-								size={400}
-								level={"H"}
-								includeMargin={true}
-							/>
-					  </div>
-            <Container fluid style={{'minWidth': '70vh'}}/>
-          </div>
-        </Container>*/
       );
    }
 }
-class QRToPrint extends React.Component {
-    constructor(props) {     
-    super(props);
-  }
-  render() {
-    return (
-      <QRCode
-        id="123456"
-        value={2}
-        size={300}
-        level={"H"}
-        includeMargin={true}
-      />
-    );
-  }
-}
-const QRCodeStyle = {
-	'height': '15vw',
-	'width': '15vw',
-}
-
-const backgroundStyle = {
-  'backgroundColor': '#f1f1f1',
-  'minWidth': '70vw',
-  'minHeight':'70vh'
-}
-
-const cardHeaderStyle = {
-    'backgroundColor': '#0b658a',
-    'color': '#ffffff',
-    'fontFamily': 'Kefa'
-};
-const itemStyle = {
-    'borderBottom': 'grey solid 1px',
-    'width':'200px'
-};
 
 export default StoreInfo;
- {/*
-        */}
+

@@ -4,6 +4,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import MenuItem from './MenuItem';
 import NewItem from './NewItem';
+import https from 'https';
+import axios from 'axios';
 
 /*
   This component is used to render menu information which
@@ -36,6 +38,7 @@ class Menu extends React.Component {
       categories: [],
       renderCategory: "main",
       newItem: false,
+      imageUrls :[],
       newItemPrefill: {
         type: "default",
         item_id: null,
@@ -45,10 +48,110 @@ class Menu extends React.Component {
           "price" : "Price",
           "calories": "Calories",
           "in_stock": 0
-        }
+        },
       }
+
                       
     };
+ this.updateImageUrl = this.updateImageUrl.bind(this);
+ this.getImageBuf = this.getImageBuf.bind(this);
+
+  }
+
+   //convert blob to base 64
+  arrayBufferToBase64( buffer ) {
+    var binary = '';
+    var bytes = new Uint8Array( buffer );
+    var len = bytes.byteLength;
+
+    for (var i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+
+    return window.btoa( binary );
+  }
+
+  // From http://stackoverflow.com/questions/14967647/ (continues on next line)
+  // encode-decode-image-with-base64-breaks-image (2013-04-21)
+  fixBinary (bin) {
+    var length = bin.length;
+    var buf = new ArrayBuffer(length);
+    var arr = new Uint8Array(buf);
+
+    for (var i = 0; i < length; i++) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return buf;
+  }
+
+  updateImageUrl(item_id, category) {
+    //pull down image if it hasnt been already
+    var images = this.state.imageUrls;
+
+    if(images.hasOwnProperty(category))
+    {
+      return;
+    }
+    return this.getImageBuf(item_id)
+      .then((res) => {
+        if (res == null) 
+          {
+            throw new Error('404')
+          }
+        //get logo image data from binary
+        const imageData = this.arrayBufferToBase64(res);
+        var binary = this.fixBinary(atob(imageData));
+        const blob = new Blob([binary], {type : 'image/png'});
+        const blobUrl = URL.createObjectURL(blob);
+        
+        var joined = this.state.imageUrls;
+        if(!this.state.imageUrls.hasOwnProperty(category))
+        {
+            joined[category] = blobUrl;
+           this.setState({ imageUrls: joined });
+         }
+
+
+        this.setState({
+          ModalLoading: false,
+          blobUrl : blobUrl
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          imageLoadFailed: true
+        })
+      });
+  }
+
+  async getImageBuf(id) {
+    var res = await axios({
+      method: 'get',
+      url: process.env.REACT_APP_DB + '/menu/image/' + id,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false,
+      }),
+    })
+      .then(async response => {
+        await response;
+
+        if (response.status !== 200) { this.handleShow(false, ""); }
+        else if (response.data.image == null) throw new Error('404');
+        else {
+          return response.data.image.data
+        }
+      })
+      .catch(error => {
+        this.setState({     
+          blobUrl: "https://image.shutterstock.com/z/stock-vector-page-not-found-error-a-hand-drawn-vector-layout-template-of-a-broken-robot-for-your-website-479042983.jpg"
+        });
+        //console.error("There was an error!", error);
+      });
+
+    return res
   }
 
   //change the category of menu to render
@@ -78,15 +181,19 @@ class Menu extends React.Component {
   }
   /* Aggregate all the menu categories onto cards and call the change which menu to display is clicked */
   renderMenuCategories(){
+
     const secondary = this.props.secondary;
     const font = this.props.font;
-    const font_color = this.props.font_color
+
 
     return this.state.categories.map((item) =>
       <Col key={item} sm={6} className="p-3" style={{'minWidth':'225px'}}>
         <Card className="text-center" >
           <div onClick={() => this.changeCategory(item) }>                     
             <Card.Header style ={{'fontFamily' :font, 'backgroundColor': secondary, 'textAlign' : 'center', 'fontWeight': 'bold'}}>{item}</Card.Header>
+             <Card.Body>
+                <img src={this.state.imageUrls[item]} alt = "category"  style = {{  'maxHeight': '250px'}} className="img-fluid rounded "></img>
+              </Card.Body>          
           </div>
         </Card>
       </Col>  
@@ -131,16 +238,18 @@ class Menu extends React.Component {
     const menuJSON = this.props.menu;
     //get the styles
     const primary = this.props.primary;
-    const secondary = this.props.secondary;
-    const teritary = this.props.teritary;
     const font = this.props.font;
-    const font_color = this.props.font_color
-
+    const font_color = this.props.font_color;
+    const name = this.props.name.name;
     //map the menu json from Mtasks to an array
     Object.keys(menuJSON).forEach(function(key) {
       menu.push([key ,menuJSON[key]]);
     });
+    //this.updateImageUrl(10);
 
+    this.state.menu.map((item) =>
+      this.updateImageUrl(item[1].item_id, item[1].category)
+    );
     //create a list of all unique categories of food/drink
     const values = menu.values();
     for (const value of values) {
@@ -152,10 +261,11 @@ class Menu extends React.Component {
     if(renderCategory === "main" && newItem === false)
     {
       return (
+
           <Container>
             <div style={backgroundStyle}>
             <h2  style={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','height':'54px', 'paddingTop':'8px'}}>
-              Menu
+              {name } Menu
             </h2>
               <Container fluid style={{'minHeight': '70vh'}}>
                 <div className="d-flex flex-wrap">
@@ -182,6 +292,7 @@ class Menu extends React.Component {
               <button type="button" onClick={() => window.location.href="/menu" } className="btn btn-outline-light m-2">Back</button>
               <div style={menuTextStyle}>{renderCategory}</div>
             </h2>
+
             <Container fluid style={{'minHeight': '70vh'}}>
               <div className="d-flex flex-wrap">
                 {this.renderMenu()}                
@@ -213,6 +324,8 @@ class Menu extends React.Component {
   
   }
 }
+
+
 
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1',

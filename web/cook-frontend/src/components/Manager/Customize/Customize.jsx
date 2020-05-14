@@ -487,8 +487,7 @@ renderInfo(){
         const resturantInfo = this.props.info;
         //get the styles
         const primary = this.props.primary;
-        const secondary = this.props.secondary;
-        const teritary = this.props.teritary;
+
         const font = this.state.font;
         const font_color = this.props.font_color
         //put resturant info into an array
@@ -518,19 +517,14 @@ renderInfo(){
 
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1',
-  'minWidth': '75vw'
+  'minWidth': '75vw',
+  'fontFamily' :'Open Sans'
 }
 
 const itemStyle = {
     'borderBottom': 'grey solid 1px',
 
 };
-const menuHeaderStyle = {
-  'backgroundColor': '#102644',
-  'color': '#ffffff',
-  'fontFamily': 'Kefa',
-  'textAlign' : 'center',
-  'height':'54px'
-};
+
 
 export default Customize;
