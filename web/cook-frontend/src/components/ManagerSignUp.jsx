@@ -170,7 +170,15 @@ class ManagerSignUp extends React.Component{
       await response;
       console.log(response);
       if (response.status !== 200) {this.handleShow(false);}
-      else {console.log("Success");}
+      else {         
+            console.log(response);
+            this.handleShow(true,"");
+              this.setState({
+                redirect: true,
+                show: true,
+                staff: response.data.staff,
+                token: response.data.token,
+              });}
     })
     .catch(error => {
       this.handleShow(false);
