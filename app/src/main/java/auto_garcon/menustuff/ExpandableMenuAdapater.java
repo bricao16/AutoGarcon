@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.badge.BadgeDrawable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,15 +53,17 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private int opening;
     private int closing;
     private byte[] itemImageByteArray;
+    private BadgeDrawable badge;
+
 
     Dialog addToCartPopup;
     Dialog confirmPopup;
 
-    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor,int opening,int closing) {
+    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor,int opening,int closing,BadgeDrawable drawable) {
 
         this.context = context;
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
-
+        this.badge =drawable;
         this.listDataHeader = listDataHeader;
         this.listHashMap = listHashMap;
         this.pref = new SharedPreference(context);
@@ -224,6 +227,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                         cart.addToCart(itemToBeAdded);
                         pref.setShoppingCart(cart);
+                        badge.setNumber(pref.getShoppingCart().getCart().size());
+                        badge.setVisible(false);
+                        badge.setVisible(true);
                         addToCartPopup.dismiss();
                     }
                     else if(pref.getShoppingCart().getRestaurantID() == restaurantID) {
@@ -242,6 +248,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                         pref.setShoppingCart(cart);
                         pref.getShoppingCart().setEndingHour(closing);
                         pref.getShoppingCart().setStartingHour(closing);
+                        badge.setNumber(pref.getShoppingCart().getCart().size());
+                        badge.setVisible(false);
+                        badge.setVisible(true);
                         addToCartPopup.dismiss();
                     }
                     else if(pref.getShoppingCart().getRestaurantID() != restaurantID) {
@@ -271,6 +280,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 cart.addToCart(itemToBeAdded);
 
                                 pref.setShoppingCart(cart);
+                                badge.setNumber(pref.getShoppingCart().getCart().size());
+                                badge.setVisible(false);
+                                badge.setVisible(true);
                                 pref.getShoppingCart().setEndingHour(closing);
                                 pref.getShoppingCart().setStartingHour(opening);
                                 confirmPopup.dismiss();
