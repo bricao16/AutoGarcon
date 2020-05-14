@@ -376,7 +376,17 @@ class SignUp extends React.Component {
               </Grid>
             </Grid>
           </form>
+          <br></br>
+          <br></br>
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid item>
+              {/* Link Back Home*/}
 
+              <Link href="/" variant="body2" style={{ color: '#0B658A' }}>
+                {"Return to Home"}
+              </Link>
+            </Grid>
+          </Grid>
         </div>
       </Container>
     );

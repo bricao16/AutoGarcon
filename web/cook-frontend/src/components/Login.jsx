@@ -75,6 +75,7 @@ export default function Login(props) {
           handleShow(response);
         } else {
           // if good response set the state to returned info
+          console.log(response);
           if (props.staffType.includes(response.data.staff.position.toLowerCase())) {
             setStaff(response.data.staff);
             setToken(response.data.token);
@@ -208,6 +209,17 @@ export default function Login(props) {
             </Grid>
           </Grid>
         </form>
+          <br></br>
+          <br></br>
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid item>
+              {/* Link Back Home*/}
+
+              <Link href="/" variant="body2" style={{ color: '#0B658A' }}>
+                {"Return to Home"}
+              </Link>
+            </Grid>
+          </Grid>
       </div>
     </Container>
   );
