@@ -47,6 +47,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     }
 
 
+
     public static boolean hasInternetConnection(final Context context) {
         final ConnectivityManager connectivityManager = (ConnectivityManager)context.
                 getSystemService(Context.CONNECTIVITY_SERVICE);

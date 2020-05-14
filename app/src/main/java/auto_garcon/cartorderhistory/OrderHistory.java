@@ -157,19 +157,26 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();// get the item for that order
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
+                                item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
                                 item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
-
+                                item.setImage(OrderHistory.this);
                                 carts.get(tracker-1).addToCart(item);
                             }
                             else{
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();//create the new item
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
+                                item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
+                                item.setImage(OrderHistory.this);//get image ready
                                 item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
                                 order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());//get the new order number and add it to the item arraylsit
                                 carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));//get the new restaurant id and create a new shopping cart
                                 carts.get(tracker).addToCart(item);//ad the new item to the cart
+                                carts.get(tracker).setFont(json.getAsJsonObject(""+i).get("font").getAsString());
+                                carts.get(tracker).setPrimaryColor(json.getAsJsonObject(""+i).get("primary_color").getAsString());
+                                carts.get(tracker).setSecondaryColor(json.getAsJsonObject(""+i).get("secondary_color").getAsString());
+                                carts.get(tracker).setTertiaryColor(json.getAsJsonObject(""+i).get("tertiary_color").getAsString());
                                 date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());//add the date
                                 restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
                                 byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
@@ -184,11 +191,17 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                         else {
                             auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
                             item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());
+                            item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
+                            item.setImage(OrderHistory.this);
                             item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());
                             item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
                             order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());
                             carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));
                             carts.get(i).addToCart(item);
+                            carts.get(i).setFont(json.getAsJsonObject(""+i).get("font").getAsString());
+                            carts.get(i).setPrimaryColor(json.getAsJsonObject(""+i).get("primary_color").getAsString());
+                            carts.get(i).setSecondaryColor(json.getAsJsonObject(""+i).get("secondary_color").getAsString());
+                            carts.get(i).setTertiaryColor(json.getAsJsonObject(""+i).get("tertiary_color").getAsString());
                             date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());
                             restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
                             byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
@@ -196,7 +209,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             for(int j = 0; j < temp.length; j++) {
                                 temp[j] = (byte) (((int) json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
                             }
-                            Log.d("123", String.valueOf(json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(61).getAsInt()));
 
                             logos.add(temp);
 
