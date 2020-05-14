@@ -36,7 +36,7 @@ class StoreInfo extends React.Component{
       show:false,
       name:this.props.info.name,
       address: this.props.info.address,
-      phone: this.props.info.phone_number,
+      phone: this.phoneFormat(this.props.info.phone_number),
 			description: this.props.info.description,
 			cuisine: "American",
       opening: this.props.info.opening,
@@ -68,34 +68,50 @@ class StoreInfo extends React.Component{
 		/*Validation for restaurant name.*/
 		if(this.state.name.length > 40){
 			this.handleValidation("Restaurant name is too long.  Please reduce to 40 characters or less.");
-		} else if (this.state.address.length > 40){
+      return;
+		} 
+    else if (this.state.address.length > 40){
+
 			this.handleValidation("Restaurant address is too long.  Please reduce to 40 characters or less.");
-			
+    }
+		/*Phone number */
+
+    else if (!(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.state.phone)))
+    {
+      this.handleValidation("Invalid phone number");
+      return ;
+    }
 		/*Validation for opening field.*/	
-		} else if (Number(this.state.opening) < 0 || Number(this.state.opening) > 2400){
+		else if (Number(this.state.opening) < 0 || Number(this.state.opening) > 2400){
 			this.handleValidation("Valid opening time not entered.  Please enter a time between 0 and 2400.");
+      return;
 		} else if (isNaN((this.state.opening))){
-			this.handleValidation("No number entered for opening time.  Please enter a time between 0 and 2400.");		
+			this.handleValidation("No number entered for opening time.  Please enter a time between 0 and 2400.");	
+      return;	
 		} else if (!Number.isInteger(parseFloat(this.state.opening))){
 			this.handleValidation("No integer entered for opening time.  Please enter a time between 0 and 2400.");
+      return;
 			
 		/*Validation for closing field.*/	
 		} else if (Number(this.state.closing) < 0 || Number(this.state.closing) > 2400){
 			this.handleValidation("Valid closing time not entered.  Please enter a time between 0 and 2400.");
+      return;
 		} else if (isNaN((this.state.closing))){
-			this.handleValidation("No number entered for closing time.  Please enter a time between 0 and 2400.");		
+			this.handleValidation("No number entered for closing time.  Please enter a time between 0 and 2400.");
+      return;		
 		} else if (!Number.isInteger(parseFloat(this.state.closing))){
 			this.handleValidation("No integer entered for closing time.  Please enter a time between 0 and 2400.");
+      return;
 		} else {
 			
-			console.log(this.state + "Reaching in here.");
+			var phone_number = this.state.phone.replace(/\D/g,'');
 			this.editForm("");
 			event.preventDefault();
 			axios({
 				method: 'POST',
 				url:  process.env.REACT_APP_DB +'/restaurant/update/',
 				data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
-				'&address='+this.state.address+'&phone='+this.state.phone+
+				'&address='+this.state.address+'&phone='+phone_number+
 				'&opening='+this.state.opening+'&closing='+this.state.closing+'&cuisine='+this.state.cuisine+'&email='+"whatever",
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
@@ -117,6 +133,10 @@ class StoreInfo extends React.Component{
 			});
 		}
 	}
+    /* Inserts dashes to format the number correctly */
+  phoneFormat(number) {
+    return this.insert(this.insert(number + "", 3, "-"), 7, "-");
+  }
     /* Used for handling changes to the input field */
   handleInputChange(event) {
     const target = event.target;
@@ -135,6 +155,7 @@ class StoreInfo extends React.Component{
     if (success) {
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
+
     }
     else {
       this.setState({response: message})
@@ -143,10 +164,11 @@ class StoreInfo extends React.Component{
     this.setState({show: true});
 		
 		setTimeout(() => {
+      window.location.reload();
 			this.setState({
 			show:false
 			});
-		}, 2500)
+		}, 1000)
   }
 	
 	handleValidation(message){
@@ -189,10 +211,17 @@ class StoreInfo extends React.Component{
     }
     else return (<></>)
   }
+  /* For inserting substrings.  This is necessary for field formats */
+  insert(str, index, value) {
+    return str.substr(0, index) + value + str.substr(index);
+  }
 
   /* Dynamic labels for each corresponding field */
   labelStatus(field) {
     let snakeCaseField = snakeCase(field)
+     // Format for phone number
+    //if (field == "Phone") text = this.phoneFormat(text);
+
     if (!this.state['show'+field]) {
       return (
         <small className="text-secondary">{this.state[snakeCaseField]}</small>
