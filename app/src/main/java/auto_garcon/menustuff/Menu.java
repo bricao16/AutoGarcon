@@ -74,10 +74,10 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private JSONObject obj;
     private String addOrRemoveFavoritesURL;
     private Button addOrRemoveFavorite;
-    private TextView restaurantName;
     private ImageView restaurantLogo;
     Dialog removeFromFavoritesPopup;
     private TextView cartCounter;
+    private TextView restaurantName;
 
 
     /**
@@ -138,8 +138,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             }
         }
 
-        restaurantLogo = findViewById(R.id.restaurant_logo);
         restaurantName = findViewById(R.id.restaurant_name);
+        restaurantLogo = findViewById(R.id.restaurant_logo);
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
         appetizer_list = new ArrayList<>();
@@ -150,10 +150,10 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
         if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
-            addOrRemoveFavorite.setText("Remove from favorites");
+            addOrRemoveFavorite.setText("Remove from Favorites");
         }
         else {
-            addOrRemoveFavorite.setText("Add to favorites");
+            addOrRemoveFavorite.setText("Add to Favorites");
         }
 
         addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
@@ -276,7 +276,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
                             //parsing through json from get request to add them to menu
                             JSONObject restaurant = restaurantJSONObject.getJSONObject("restaurant");
-
                             restaurantName.setText(restaurant.getString("name"));
                             restaurant.getString("address");
                             restaurant.getInt("phone_number");
