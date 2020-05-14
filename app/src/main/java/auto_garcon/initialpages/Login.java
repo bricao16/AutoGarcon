@@ -24,6 +24,7 @@ import com.example.auto_garcon.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
@@ -65,6 +66,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         NukeSSLCerts.nuke();
         setContentView(R.layout.activity_login);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
 
         pref = new SharedPreference(this);// creating a sharedPrefrence object that access the same file of all other shared prefrences on the app
 

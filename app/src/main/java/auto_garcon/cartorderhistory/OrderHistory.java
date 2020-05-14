@@ -91,6 +91,50 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
         pref = new SharedPreference(this);
         recyclerView = findViewById(R.id.order_list);
+        //creating side nav drawer
+        DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
+        Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
+        NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(OrderHistory.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
+
+        TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+        usernameSideNavBar.setText(pref.getUser().getUsername());
+
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(OrderHistory.this);
+        /**
+         * It ties the bottom navigation bar xml element to a Java object and provides it with its
+         * onClick functionality to other activities and sets the listener.
+         */
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+        badge.setVisible(true);
+        if(pref.getShoppingCart()!=null) {
+            if(pref.getShoppingCart().getCart().size()!=0){
+                badge.setNumber(pref.getShoppingCart().getCart().size());
+            }
+        }
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_scan:
+                                startActivity(new Intent(OrderHistory.this, QRcode.class));
+                                return true;
+                            case R.id.action_home:
+                                startActivity(new Intent(OrderHistory.this, Home.class));
+                                return true;
+                            case R.id.action_cart:
+                                startActivity(new Intent(OrderHistory.this, ShoppingCart.class));
+                                return true;
+                        }
+                        return false;
+                    }
+                };
+
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+
 
         final StringRequest getRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/customer/history/" + pref.getUser().getUsername(), new Response.Listener<String>() {
 
@@ -165,51 +209,9 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
 
-                    //creating side nav drawer
-                    DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
-                    Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
-                    NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
-                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(OrderHistory.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-
-                    TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
-                    usernameSideNavBar.setText(pref.getUser().getUsername());
-
-                    drawerLayout.addDrawerListener(toggle);
-                    toggle.syncState();
-                    navigationView.setNavigationItemSelectedListener(OrderHistory.this);
-                    /**
-                     * It ties the bottom navigation bar xml element to a Java object and provides it with its
-                     * onClick functionality to other activities and sets the listener.
-                     */
-                    BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-                    BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
-                    badge.setVisible(true);
-                    if(pref.getShoppingCart()!=null) {
-                        if(pref.getShoppingCart().getCart().size()!=0){
-                            badge.setNumber(pref.getShoppingCart().getCart().size());
-                        }
-                    }
 
 
-                    BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-                            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                                    switch (item.getItemId()) {
-                                        case R.id.action_scan:
-                                            startActivity(new Intent(OrderHistory.this, QRcode.class));
-                                            return true;
-                                        case R.id.action_home:
-                                            startActivity(new Intent(OrderHistory.this, Home.class));
-                                            return true;
-                                        case R.id.action_cart:
-                                            startActivity(new Intent(OrderHistory.this, ShoppingCart.class));
-                                            return true;
-                                    }
-                                    return false;
-                                }
-                            };
 
-                    bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
                 }
             }
         },

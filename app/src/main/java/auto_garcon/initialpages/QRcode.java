@@ -29,6 +29,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.homestuff.Home;
@@ -73,6 +74,8 @@ public class QRcode extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qr_code_page);
         pref = new SharedPreference(this);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
 
         //request permission
     Dexter.withActivity(this)
