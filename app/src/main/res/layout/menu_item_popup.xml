@@ -9,71 +9,80 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/menu_popup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="363dp">
 
         <TextView
             android:id="@+id/item_name_menu_popup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/item_image_menu_popup"
+            app:layout_constraintBottom_toTopOf="@+id/item_image_menu_popup"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/item_image_menu_popup"
-            android:layout_width="255dp"
-            android:layout_height="255dp"
-            android:layout_marginTop="55dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="207dp"
+            android:layout_height="182dp"
+            android:layout_marginTop="56dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/order_items" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/order_items"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/design_default_color_background"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_calories_menu_popup"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/item_image_menu_popup" />
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
             android:id="@+id/item_price_menu_popup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="196dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="8dp"
             android:text="price"
-            android:textSize="8sp"
+            android:textAlignment="center"
+
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/item_calories_menu_popup"
-            app:layout_constraintTop_toBottomOf="@id/item_image_menu_popup" />
+            app:layout_constraintTop_toBottomOf="@+id/item_image_menu_popup" />
 
         <TextView
             android:id="@+id/item_calories_menu_popup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="195dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="4dp"
             android:text="calories"
-            android:textSize="8sp"
-            app:layout_constraintStart_toEndOf="@+id/item_price_menu_popup"
+            android:textSize="14sp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/add_to_cart_menu_popup"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_image_menu_popup"
-            app:layout_constraintBottom_toTopOf="@+id/item_description_menu_popup"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_price_menu_popup"
+            app:layout_constraintVertical_bias="0.437" />
 
         <TextView
             android:id="@+id/item_description_menu_popup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="description"
-            android:textSize="8dp"
+            android:layout_marginTop="32dp"
             android:gravity="left"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="description"
+
+            android:textSize="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/item_image_menu_popup"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_price_menu_popup"
-            app:layout_constraintBottom_toTopOf="@+id/add_to_cart_menu_popup"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/add_to_cart_menu_popup"
@@ -81,16 +90,19 @@
             android:layout_width="145dp"
             android:layout_height="39dp"
             android:text="@string/add_to_cart"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_description_menu_popup"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/order_items"
+            app:layout_constraintVertical_bias="1.0" />
 
         <Button
             android:id="@+id/add_to_cart_popup_close"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_margin="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/ic_close_black_24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
