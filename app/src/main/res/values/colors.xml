@@ -10,6 +10,8 @@
     <color name="colorAccent">#318381</color>
     <color name="white">#FFFFFF</color>
     <color name="gray">#A8A7A4</color>
+    <color name="light_gray">#D3D3D3</color>
+
     <color name="transparent_gray">#66A8A7A4</color>
     <color name="red">#ed2828</color>
 

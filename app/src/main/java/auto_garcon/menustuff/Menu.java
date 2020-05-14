@@ -277,32 +277,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                     itemToBeAdded.setNameOfItem(key);
                                     String whereToSendItem = menuItemCategories.getString("category");
 
-                                    if(itemToBeAdded.getCategory().equals("Alcohol") && alcohol_list != null) {
-                                        for(int i = 0; i < alcohol_list.size(); i++) {
-                                                alcohol_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                        }
-                                    }
-                                    else if(itemToBeAdded.getCategory().equals("Refillable Drink") && drink_list != null) {
-                                        for(int i = 0; i < drink_list.size(); i++) {
-                                                drink_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                        }
-                                    }
-                                    else if(itemToBeAdded.getCategory().equals("Dessert") && dessert_list != null) {
-                                        for(int i = 0; i < dessert_list.size(); i++) {
-                                                dessert_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                        }
-                                    }
-                                    else if(itemToBeAdded.getCategory().equals("Entree") && entree_list != null) {
-                                        for(int i = 0; i < entree_list.size(); i++) {
-                                            entree_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                        }
-                                    }
-                                    else if(itemToBeAdded.getCategory().equals("Appetizer") && appetizer_list != null){
-                                        for(int i = 0; i < appetizer_list.size(); i++) {
-                                            appetizer_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                        }
-                                    }
-
                                     //if conditional filters out erroneous categories
                                     if((whereToSendItem.equals("Alcohol") || whereToSendItem.equals("Refillable Drink") || whereToSendItem.equals("Dessert") || whereToSendItem.equals("Entree") || whereToSendItem.equals("Appetizer"))
                                         && whereToSendItem.length() != 0) {
@@ -504,6 +478,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             itemToBeAdded.setCalories(menuItemCategories.getInt("calories"));
             itemToBeAdded.setPrice(menuItemCategories.getDouble("price"));
             itemToBeAdded.setCategory(menuItemCategories.getString("category"));
+
+
 
             itemToBeAdded.setAmountInStock(menuItemCategories.getInt("in_stock"));
             itemToBeAdded.setDescription(menuItemCategories.getString("description"));

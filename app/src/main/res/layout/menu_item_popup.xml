@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="30dp">
+    app:cardCornerRadius="15dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/menu_popup"
@@ -27,10 +27,11 @@
             android:id="@+id/item_image_menu_popup"
             android:layout_width="255dp"
             android:layout_height="255dp"
+            android:layout_marginTop="55dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_name_menu_popup"
-            app:layout_constraintBottom_toTopOf="@+id/order_items"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/order_items" />
 
         <TextView
             android:id="@+id/order_items"

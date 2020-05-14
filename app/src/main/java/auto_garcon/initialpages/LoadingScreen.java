@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -41,7 +42,9 @@ public class LoadingScreen extends AppCompatActivity {
 
         pref = new SharedPreference(LoadingScreen.this);
 
-        pref.setShoppingCart(new ShoppingCartSingleton());
+        ShoppingCartSingleton cart = new ShoppingCartSingleton();
+
+        pref.setShoppingCart(cart);
 
         /** Waits for 3000 milliseconds then goes to login activity*/
         new Handler().postDelayed(new Runnable() {

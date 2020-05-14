@@ -68,8 +68,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
         this.tertiaryColor = tertiaryColor;
-        this.opening=opening;
-        this.closing=closing;
+        this.opening = opening;
+        this.closing = closing;
     }
 
     @Override
@@ -126,15 +126,13 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     public View getChildView(final int i, final int j, boolean b, View view, ViewGroup viewGroup) {
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
 
-        final String childText = getChild(i, j).getNameOfItem();
-
         if(view == null) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.expandable_menu_item, viewGroup, false);
             view.setBackgroundColor(Color.parseColor(tertiaryColor));
         }
 
         TextView txtListChild = view.findViewById(R.id.list_item);
-        txtListChild.setText(childText);
+        txtListChild.setText(getChild(i, j).getNameOfItem());
 
         TextView txtListChildPrice = view.findViewById(R.id.list_item_price);
         txtListChildPrice.setText(String.format("$%.02f", getChild(i, j).getPrice()));
@@ -143,12 +141,18 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 addToCartPopup = new Dialog(context);
-
                 addToCartPopup.setContentView(R.layout.menu_item_popup);
 
-                ConstraintLayout background = addToCartPopup.findViewById(R.id.menu_popup);
+                addToCartPopup.findViewById(R.id.menu_popup).setBackgroundColor(Color.parseColor(secondaryColor));
+
+                addToCartPopup.findViewById(R.id.add_to_cart_popup_close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addToCartPopup.dismiss();
+                    }
+                });
+
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart_menu_popup);
-                Button closeMenuItemPopup = addToCartPopup.findViewById(R.id.add_to_cart_popup_close);
                 TextView outOfStock = addToCartPopup.findViewById(R.id.order_items);
                 TextView calorieCount = addToCartPopup.findViewById(R.id.item_calories_menu_popup);
                 TextView itemName = addToCartPopup.findViewById(R.id.item_name_menu_popup);
@@ -187,7 +191,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 VolleySingleton.getInstance(context).addToRequestQueue(getItemImageRequest);
 
-                background.setBackgroundColor(Color.parseColor(secondaryColor));
 
                 calorieCount.setText("Calories: " + getChild(i, j).getCalories());
                 calorieCount.setTextColor(Color.WHITE);
@@ -285,13 +288,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                             }
                         });
                     }
-                    }
-                });
-
-                closeMenuItemPopup.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        addToCartPopup.dismiss();
                     }
                 });
             }

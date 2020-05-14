@@ -1,5 +1,6 @@
 package auto_garcon.cartorderhistory;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -27,27 +28,28 @@ import auto_garcon.singleton.ShoppingCartSingleton;
 public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapter.ShoppingCartViewHolder>{
     //data fields
     private ArrayList<MenuItem> menuItemArrayList;
-    private Context ct;
+    private Context context;
     private SharedPreference preference;
     private ShoppingCartSingleton cart;
     //A constructor to listen the user actions (add, decrement, and remove)
     public boolean isPlaced;
     private boolean isChanged;
+    private Dialog menuItemEditPopup;
     /**
      * This constructor initializes our variables passed in from the shopping cart page
      * @param context
      * @param items
      */
     public ShoppingCartAdapter(Context context, ArrayList<MenuItem> items) {
-        ct= context;
-        menuItemArrayList = items;
-        preference = new SharedPreference(ct);
-        isPlaced = false;
+        this.context = context;
+        this.menuItemArrayList = items;
+        this.preference = new SharedPreference(context);
+        this.isPlaced = false;
     }
     @NonNull
     @Override
     public ShoppingCartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(ct);//this allows the list expand dynamically
+        LayoutInflater inflater = LayoutInflater.from(context);//this allows the list expand dynamically
         View view = inflater.inflate(R.layout.shopping_cart_tile,parent,false);//make the list visible
 
         return new ShoppingCartViewHolder(view);//set visibility on the ShoppingCart
@@ -55,7 +57,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ShoppingCartAdapter.ShoppingCartViewHolder holder, final int position) {
-        String quantity = "Qty(" + menuItemArrayList.get(position).getQuantity() + ")";
         cart = preference.getShoppingCart();
         //Creating a view of a menu item specified by each position.
         //Set the cost and the quantity to the view.
@@ -64,14 +65,14 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.name.setText(menuItemArrayList.get(position).getNameOfItem());
         menuItemArrayList.get(position).setCost();
         holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
-        holder.quantity.setText(quantity);
+        holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
         //If the user pushes the add button on the item view, then the action is taken.
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if( isPlaced ){
                     setIsChanged(true);
-                    Toast.makeText(ct, "Changed menu",Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Changed menu",Toast.LENGTH_LONG).show();
                 }
                 //Getting a item that the user pushed the add button
                 //Incrementing the quantity and recalculating the total cost of the item.
@@ -91,7 +92,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                     public void onClick(View v) {
                         if( isPlaced ){
                             setIsChanged(true);
-                            Toast.makeText(ct, "Changed menu",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Changed menu",Toast.LENGTH_LONG).show();
                         }
                         //Getting a item that the user pushed the add button
                         //Decrementing the quantity and recalculating the total cost of the item.
@@ -119,7 +120,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 //Deleting the item from a list
                 if( isPlaced ){
                     setIsChanged(true);
-                    Toast.makeText(ct, "Changed menu",Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Changed menu",Toast.LENGTH_LONG).show();
                 }
 
                 menuItemArrayList.remove(position);
@@ -132,6 +133,16 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.editItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                menuItemEditPopup = new Dialog(context);
+                menuItemEditPopup.setContentView(R.layout.menu_item_edit_popup);
+                menuItemEditPopup.show();
+
+                menuItemEditPopup.findViewById(R.id.menu_item_edit_close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        menuItemEditPopup.dismiss();
+                    }
+                });
             }
         });
     }
