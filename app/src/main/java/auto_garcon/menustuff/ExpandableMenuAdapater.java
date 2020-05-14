@@ -161,6 +161,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 TextView itemName = addToCartPopup.findViewById(R.id.item_name_menu_popup);
                 TextView itemPrice = addToCartPopup.findViewById(R.id.item_price_menu_popup);
                 TextView itemDescription = addToCartPopup.findViewById(R.id.item_description_menu_popup);
+                TextView itemAllergens  = addToCartPopup.findViewById(R.id.item_allergens_menu_popup);
 
                 final ImageView imageOfItem = addToCartPopup.findViewById(R.id.item_image_menu_popup);
                 StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/menu/image/" + getChild(i, j).getItemID(),
@@ -201,7 +202,18 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 itemName.setTextColor(Color.WHITE);
                 itemPrice.setText("Price: " + String.format("$%.02f", getChild(i, j).getPrice()));
                 itemPrice.setTextColor(Color.WHITE);
-                itemDescription.setText(getChild(i, j).getDescription());
+                if(getChild(i, j).getDescription()!="null") {
+                    itemDescription.setText(getChild(i, j).getDescription());
+                }
+                if(getChild(i, j).getAllergens().length!=0) {
+                    String allergenMessage = "Allergens: ";
+                    String[] allergensArray = getChild(i, j).getAllergens();
+                    for(int i = 0; i < allergensArray.length; i++) {
+                        allergenMessage = allergenMessage+ allergensArray[i]+" ";
+                    }
+                    itemAllergens.setText(allergenMessage);
+                    itemPrice.setTextColor(Color.WHITE);
+                }
 
                 //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
                 if(getChild(i, j).getAmountInStock() == 0) {
