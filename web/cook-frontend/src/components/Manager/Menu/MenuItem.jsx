@@ -108,7 +108,6 @@ class MenuItem extends React.Component {
         var binary = this.fixBinary(atob(imageData));
         const blob = new Blob([binary], {type : 'image/png'});
         const blobUrl = URL.createObjectURL(blob);
-        console.log(blobUrl);
     
         this.setState({
           ModalLoading: false,
@@ -123,7 +122,6 @@ class MenuItem extends React.Component {
   }
 
   async getImageBuf(id) {
-    console.log("id:" + id);
     var res = await axios({
       method: 'get',
       url: process.env.REACT_APP_DB + '/menu/image/' + id,
