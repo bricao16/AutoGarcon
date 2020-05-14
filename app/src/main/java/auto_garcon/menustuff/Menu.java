@@ -77,6 +77,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private ImageView restaurantLogo;
     Dialog removeFromFavoritesPopup;
     private TextView cartCounter;
+    private TextView restaurantName;
 
 
     /**
@@ -137,6 +138,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             }
         }
 
+        restaurantName = findViewById(R.id.restaurant_name);
         restaurantLogo = findViewById(R.id.restaurant_logo);
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
@@ -274,7 +276,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
                             //parsing through json from get request to add them to menu
                             JSONObject restaurant = restaurantJSONObject.getJSONObject("restaurant");
-
+                            restaurantName.setText(restaurant.getString("name"));
                             restaurant.getString("address");
                             restaurant.getInt("phone_number");
                             restaurant.getInt("opening");

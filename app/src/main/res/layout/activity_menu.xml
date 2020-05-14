@@ -34,15 +34,26 @@
 
         <ImageView
             android:id="@+id/restaurant_logo"
-            android:layout_width="261dp"
-            android:layout_height="61dp"
+            android:layout_width="119dp"
+            android:layout_height="64dp"
             android:layout_below="@+id/xml_toolbar"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="44dp"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="106dp"
+            android:layout_marginEnd="286dp"
             android:gravity="center" />
+
+        <TextView
+            android:id="@+id/restaurant_name"
+            android:layout_width="197dp"
+            android:layout_height="61dp"
+            android:layout_alignTop="@+id/restaurant_logo"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="86dp"
+            android:gravity="center"
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/add_restaurant"
