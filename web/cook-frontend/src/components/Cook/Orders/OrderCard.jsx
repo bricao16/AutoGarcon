@@ -45,15 +45,18 @@ const useStyles = makeStyles(theme => ({
     color: 'grey'
   },
   cardFooter: {
-    backgroundColor: '#0b658a',
     color: '#ffffff',
     justifyContent: 'space-between',
+    backgroundColor: '#0b658a',
   },
   selected: {
     background: '#00000070'
   },
   expanded: {
     fontSize: '1.5em'
+  },
+  completed: {
+    background: '#17af29!important'
   }
 }));
 
@@ -69,7 +72,7 @@ function OrderCard(props) {
   const [timeSinceOrder, setTimeSinceOrder] = useState(null);
   const timeInterval = useRef(null);
 
-  function renderItems(){
+  function renderItems() {
     let allItems = [];
     let categoryKey = 0;
     for(let category in order.items){
@@ -82,7 +85,7 @@ function OrderCard(props) {
               <span className="pr-3">{item.quantity}</span>
               <span>{item.title}</span>
             </div>
-            <div className={"pl-4 " + classes.itemCustomization}>No tomatoes</div>
+            <div className={"pl-4 " + classes.itemCustomization}>{item.customization}</div>
           </div>
         );
       });
@@ -125,39 +128,31 @@ function OrderCard(props) {
     setTimeSinceOrder(momentTimeSinceOrder);
   }
 
-  function renderTime(){
-    let timeSince = <></>;
-    if(!isCompleted) {
-      timeSince = (
-        <div className="d-flex" style={{alignItems: 'center'}}>
-          <FontAwesomeIcon icon={faClock}/>
-          <span className="pl-1">{timeSinceOrder}</span>
-        </div>
-      );
+  function renderFooter(){
+    let footer = [];
+    let footerClasses = " ";
+    if(isCompleted) {
+      footerClasses += classes.completed;
+      footer.push(<span key={0} className="pr-3">Completed</span>);
+    }
+    footer.push(<span key={1}>{orderTimeString}</span>);
+    if(!isCompleted){
+      footer.push(renderTime());
     }
     return (
-      <>
-        <span className="pr-3">{orderTimeString}</span>
-        {timeSince}
-      </>
+      <Card.Footer className={"py-1 px-2 d-flex space-between " + classes.cardFooter + footerClasses}>
+        {footer}
+      </Card.Footer>
     );
   }
 
-  function renderCompletedFooter(){
-    if(isCompleted) {
-      return (
-        <Card.Footer className={"py-1 px-2 d-flex" + statusStyle()}>
-          Completed
-        </Card.Footer>
-      )
-    }
-  }
-
-  function statusStyle(){
-    let style = {color: '#fff'};
-    style.backgroundColor = '#17af29';
-    // style.backgroundColor = '#e2dd26';
-    return style;
+  function renderTime(){
+    return(
+      <div key={2} className="d-flex pl-3" style={{alignItems: 'center'}}>
+        <FontAwesomeIcon icon={faClock}/>
+        <span className="pl-1">{timeSinceOrder}</span>
+      </div>
+    );
   }
 
   useEffect(() => {
@@ -180,10 +175,7 @@ function OrderCard(props) {
         <Card.Body className="p-0">
           {renderItems()}
         </Card.Body>
-        <Card.Footer className={"py-1 px-2 d-flex " + classes.cardFooter}>
-          {renderTime()}
-        </Card.Footer>
-        {renderCompletedFooter()}
+        {renderFooter()}
       </Card>
     </div>
   )

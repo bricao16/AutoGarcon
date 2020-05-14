@@ -1,11 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
-import Cookies from 'universal-cookie';
+import React from "react";
 import {makeStyles, Container} from '@material-ui/core'
 import {useTheme} from "@material-ui/core/styles";
 
 // import Orders from "./Orders";
-import axios from "axios";
-import https from "https";
+
 import OrderCard from "./OrderCard";
 
 
@@ -35,7 +33,7 @@ function OrderCards(props){
         isSelected = true;
       }
       orderCards.push(
-        <OrderCard key={index} cardId={index} order={order} handleOrderClick={props.handleOrderClick} isSelected={isSelected} isExpanded={isExpanded}/>
+        <OrderCard key={index} cardId={index} order={order} handleOrderClick={props.handleOrderClick} isSelected={isSelected} isExpanded={isExpanded} isCompleted={props.isCompleted}/>
       );
       index++;
     });

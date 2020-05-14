@@ -19,7 +19,7 @@ import AccountDropdown from "../../AccountDropdown";
 import StaffIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import CustomIcon from '@material-ui/icons/ColorLensOutlined';
 import GeneralIcon from '@material-ui/icons/ListAltOutlined';
-import SettingsVoiceIcon from '@material-ui/icons/SettingsVoice';
+
 import Stats from '../Statistics/Stats';
 import Menu from '../Menu/Menu';
 import StoreInfo from '../General/StoreInfo';
@@ -124,7 +124,7 @@ export default function NavItems(props) {
   //get the styles for the current restuarant
   const primary = props.restaurantInfo[1][1].primary_color;
   const secondary = props.restaurantInfo[1][1].secondary_color;
-  const teritary = props.restaurantInfo[1][1].teritary_color;
+  const tertiary = props.restaurantInfo[1][1].tertiary_color;
   const font = props.restaurantInfo[1][1].font;
   const font_color = props.restaurantInfo[1][1].font_color
 
@@ -135,7 +135,7 @@ export default function NavItems(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+    console.log(font);
   return (
 
     <div className={classes.root} style={{'fontFamily' :font}}>
@@ -159,8 +159,9 @@ export default function NavItems(props) {
             <MenuIcon />
           </IconButton>
           </div>
+
           <div className="col text-right" style={{'fontFamily' :font}}>
-          {/* this.props.loggedIn */ true && <AccountDropdown firstName={props.firstName} lastName={props.lastName} className="pl-5 align-right"></AccountDropdown>}
+            <AccountDropdown firstName={props.firstName} lastName={props.lastName} className="pl-5 align-right"></AccountDropdown>
           </div>
         </Toolbar>
         
@@ -181,7 +182,7 @@ export default function NavItems(props) {
       >
         <div className={classes.toolbar} style={{'backgroundColor' :'#f1f1f1' }}>
         <Typography variant="h6" className ='pr-4' noWrap >
-        <img src={props.imageBlob}  width="auto" height="45px" alt="waiter" /> 
+        <img src={props.imageBlob}  width="auto" height="45px" style={{"borderRadius": "5px"}} alt="waiter" /> 
            {/*<i>{props.restName}</i>*/}
           </Typography>
           <IconButton onClick={handleDrawerClose}>
@@ -208,17 +209,20 @@ export default function NavItems(props) {
             <ListItemIcon><GeneralIcon/></ListItemIcon>
             <ListItemText disableTypography primary="General"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
+        </List>
 				<Divider />
         <List>
           <ListItem button component="a" href ='/customize'>
             <ListItemIcon><CustomIcon/></ListItemIcon>
             <ListItemText disableTypography primary="Customize"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
+        </List>
+        <Divider />
+        <List>
           <ListItem button component="a" href ='/QRCode'>
             <ListItemIcon><CropFreeIcon/></ListItemIcon>
             <ListItemText disableTypography primary="QR Code Generator"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
-        </List>
         </List>
         <Divider />
         <List>
@@ -235,22 +239,22 @@ export default function NavItems(props) {
             <Stats primary ={primary} font_color = {font_color} font ={font} />
           </Route>
           <Route path="/menu">
-            <Menu menu = {props.restaurantInfo[0][1]} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
+            <Menu name = {props.restaurantInfo[1][1]} menu = {props.restaurantInfo[0][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
           </Route>
           <Route path="/general">
-            <StoreInfo info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font}  />
+            <StoreInfo info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font}  />
           </Route>
           <Route path="/customize">
-            <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
+            <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
           </Route>
           <Route path="/cookview">
-            <CookView primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
+            <CookView primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
           </Route>
 				  <Route path="/QRCode">
-					  <QRCode info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
+					  <QRCode info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
 				  </Route>
           <Route path="/account">
-            <AccountSettings primary ={primary}  secondary ={secondary}  teritary ={teritary}  font_color = {font_color} font ={font} />
+            <AccountSettings primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font}/>
           </Route>
         </Switch>
         <footer className={classes.footerStyle}>

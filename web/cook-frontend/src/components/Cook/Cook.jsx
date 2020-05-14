@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {Switch, Route, Redirect} from "react-router-dom";
 import {makeStyles, ThemeProvider, useTheme} from '@material-ui/core/styles';
 import Cookies from 'universal-cookie';
-import clsx from 'clsx';
+//import clsx from 'clsx';
 import axios from "axios";
 import https from "https";
 
@@ -10,6 +10,7 @@ import https from "https";
 import Header from "./Header";
 import Footer from "./Footer";
 import Orders from "./Orders/Orders";
+//import Menu1 from "./Menu/Menu1";
 import Menu from "./Menu/Menu";
 
 const useStyles = makeStyles({
@@ -38,20 +39,24 @@ function Cook() {
   };
 
   const verified = useRef(false);
-  // const tokenVerified = useRef(false);
+  const [verificationComplete, setVerificationComplete] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [restaurantData, setRestaurantData] = useState({});
 
   // Verify user is a manager or cook
-  verifyCook(cookies.token).then(res => {
-    verified.current = res;
-  });
+  useEffect(() => {
+    verifyCook(cookies.token).then(res => {
+      verified.current = res;
+      setVerificationComplete(true);
+    });
+  }, []);
 
   useEffect(() => {
-    if(verified){
+    if(verified.current){
       getRestaurantData();
     }
-  }, [verified]);
+  }, [verificationComplete]);
 
   function getRestaurantData(){
     const url = process.env.REACT_APP_DB + '/restaurant/' + cookies.staff.restaurant_id;
@@ -72,7 +77,7 @@ function Cook() {
 
   // Check if user is logged in
   // If they aren't then send them to log in page
-  if (!verified) {
+  if (verificationComplete && !verified.current) {
     return (
       <Redirect to="/login_cook"/>
     );
@@ -93,7 +98,6 @@ function Cook() {
     <ThemeProvider theme={theme}>
       <div className={classes.main}>
         {/* Header with navigation and account drop down*/}
-        <Header cookies={cookies} restaurantData={restaurantData}/>
         <div className={classes.content}>
           <Switch>
             {/* If navigate to /cook redirect to /cook/orders */}
@@ -102,11 +106,18 @@ function Cook() {
             </Route>
             {/* Render cook order page when on /cook/orders */}
             <Route path="/cook/orders">
+              <Header cookies={cookies} restaurantData={restaurantData} tab={0}/>
               <Orders/>
             </Route>
             {/* Render cook menu page when on /cook/menu */}
             <Route exact path="/cook/menu">
-              <Menu/>
+              <Header cookies={cookies} restaurantData={restaurantData} tab={1}/>
+              <p>Editing stock of menu items (work in progress)</p>
+              <Menu menu={restaurantData.menu} primary={restaurantData.restaurant.primary_color}
+                    secondary={restaurantData.restaurant.secondary_color}
+                    tertiary={restaurantData.restaurant.tertiary_color}
+                    font={restaurantData.restaurant.font}
+                    font_color={restaurantData.restaurant.font_color} />
             </Route>
           </Switch>
         </div>
@@ -121,7 +132,7 @@ async function verifyCook(token) {
   let verified = false;
   // verify the token is a valid token
   if (token !== undefined) {
-    let response = await axios({
+    await axios({
       method: 'POST',
       url: process.env.REACT_APP_DB + '/verify',
       //+'&logo='+this.state.file
@@ -133,17 +144,18 @@ async function verifyCook(token) {
       httpsAgent: new https.Agent({
         rejectUnauthorized: false,
       }),
-    });
-    // once response has finished
-    if (response.status !== 200) {
-      if (response.data === "Not a manager") {
-        // not a manager but valid token is okay
+    })
+    .then(async response => {
+      await response;
+      verified = true;
+    })
+    .catch(error => {
+      // Database has manager spelled wrong
+      // Cooks don't need to be managers
+      if (error.response.data === "Not a manger" || error.response.data === "Not a manager") {
         verified = true;
       }
-    } else {
-      // user is a manager
-      verified = true;
-    }
+    });
   }
   return verified;
 }

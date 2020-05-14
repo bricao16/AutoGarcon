@@ -236,7 +236,8 @@ loadXHR(url) {
   handleModalShow = () => this.setState({ModalShow: true});
 
 renderInfo(){
-  console.log(this.state.sectionEdit)
+  const font = this.state.font;
+  console.log(this.state.font)
     return (
           <>
             <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
@@ -370,8 +371,8 @@ renderInfo(){
            <Container >
             <Row className = "align-items-start">
             <Col>
-              <Card className="text-center m-2" style={itemStyle}>
-                  <Card.Header >Font 
+              <Card className="text-center m-2" style ={{'fontFamily' :font}}>
+                  <Card.Header  >Font 
                   <button onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
                   </Card.Header>
                       <Card.Body style = {{minHeight:'20vh'}}>
@@ -387,23 +388,24 @@ renderInfo(){
                                       {/* <option value="Selected">{this.state.customizeInfo[5][1]}</option> */}
                                       
                                       {/* dropdown menu options */}
-                                      <option value="Oswald">{this.state.fonts[0]}</option>
-                                      <option value="Raleway">{this.state.fonts[1]}</option>
-                                      <option value="Open Sans">{this.state.fonts[2]}</option>
-                                      <option value="Lato">{this.state.fonts[3]}</option>
-                                      <option value="Pt Sans">{this.state.fonts[4]}</option>
-                                      <option value="Lora">{this.state.fonts[5]}</option>
-                                      <option value="Montserrat">{this.state.fonts[6]}</option>
-                                      <option value="Playfair Display">{this.state.fonts[7]}</option>
-                                      <option value="Benchnine">{this.state.fonts[8]}</option>
-                                      <option value="Merriweather">{this.state.fonts[9]}</option>
+                                      <option value="Oswald" style ={{'fontFamily' :'Oswald'}}>{this.state.fonts[0]}</option>
+                                      <option value="Raleway" style ={{'fontFamily' :'Raleway'}}>{this.state.fonts[1]}</option>
+                                      <option value="Open Sans" style ={{'fontFamily' :'Open Sans'}}>{this.state.fonts[2]}</option>
+                                      <option value="Lato" style ={{'fontFamily' :'Lato'}}>{this.state.fonts[3]}</option>
+                                      <option value="Pt Sans" style ={{'fontFamily' :'Pt Sans'}}>{this.state.fonts[4]}</option>
+                                      <option value="Lora" style ={{'fontFamily' :'Lora'}}>{this.state.fonts[5]}</option>
+                                      <option value="Montserrat" style ={{'fontFamily' :'Montserrat'}}>{this.state.fonts[6]}</option>
+                                      <option value="Playfair Display" style ={{'fontFamily' :'Playfair Display'}}>{this.state.fonts[7]}</option>
+                                      <option value="Benchnine" style ={{'fontFamily' :'Benchnine'}}>{this.state.fonts[8]}</option>
+                                      <option value="Merriweather" style ={{'fontFamily' :'Merriweather'}}>{this.state.fonts[9]}</option>
 
 
                                   </select>     
                               </div>
                               <br></br>
                               <div className="row m-2">
-                                  <button onClick = {this.handleSubmit} type="button" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                  <button onClick = {this.handleSubmit} type="button" className="btn btn-primary m-1" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                  <button onClick={() => this.editForm("") }  type="button" className="btn btn-outline-danger m-1" >Cancel</button>
                               </div>
                               
                            </form>
@@ -412,7 +414,7 @@ renderInfo(){
                   </Card>
                   </Col>
                   <Col>
-                  <Card className="text-center  m-2" style={itemStyle}>
+                  <Card className="text-center  m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow} >Logo
                       <button  onClick={() => this.editForm("Logo") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -424,7 +426,7 @@ renderInfo(){
                    </Card>
                   </Col>
                    <Col>
-                   <Card className="text-center m-2" style={itemStyle}>
+                   <Card className="text-center m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow}>Alexa Greeting
                       <button  onClick={() => this.editForm("Alexa Greeting") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -438,7 +440,7 @@ renderInfo(){
                  <Row className = "align-items-start">
 
                   <Col>
-                  <Card className="text-center m-2" style={itemStyle} >
+                  <Card className="text-center m-2" style ={{'fontFamily' :font}} >
                     <Card.Header onClick={this.handleModalShow}>Primary
                       <button onClick={() => this.editForm("Primary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -448,7 +450,7 @@ renderInfo(){
                    </Card>
                   </Col>
                   <Col>
-                  <Card className="text-center m-2" style={itemStyle}>
+                  <Card className="text-center m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow}>Secondary
                       <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -458,7 +460,7 @@ renderInfo(){
                    </Card>
                   </Col>
                    <Col>
-                   <Card className="text-center m-2" style={itemStyle}>
+                   <Card className="text-center m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow}>Tertiary
                       <button  onClick={() => this.editForm("Tertiary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -468,7 +470,7 @@ renderInfo(){
                    </Card>
                    </Col>
                   <Col>
-                   <Card className="text-center m-2" style={itemStyle}>
+                   <Card className="text-center m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow}>Font Color
                       <button  onClick={() => this.editForm("Font Color") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -487,9 +489,8 @@ renderInfo(){
         const resturantInfo = this.props.info;
         //get the styles
         const primary = this.props.primary;
-        const secondary = this.props.secondary;
-        const teritary = this.props.teritary;
-        const font = this.props.font;
+
+        const font = this.state.font;
         const font_color = this.props.font_color
         //put resturant info into an array
         Object.keys(resturantInfo).forEach(function(key) {
@@ -518,19 +519,14 @@ renderInfo(){
 
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1',
-  'minWidth': '75vw'
+  'minWidth': '75vw',
+  'fontFamily' :'Open Sans'
 }
 
 const itemStyle = {
     'borderBottom': 'grey solid 1px',
 
 };
-const menuHeaderStyle = {
-  'backgroundColor': '#102644',
-  'color': '#ffffff',
-  'fontFamily': 'Kefa',
-  'textAlign' : 'center',
-  'height':'54px'
-};
+
 
 export default Customize;

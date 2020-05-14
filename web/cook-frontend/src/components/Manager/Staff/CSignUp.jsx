@@ -13,7 +13,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import CookView from './CSignUp';
 import Alert from 'react-bootstrap/Alert';
-
+import Form from 'react-bootstrap/Form';
 const cookies = new Cookies();
 
 const useStyles = makeStyles(theme => ({
@@ -284,12 +284,12 @@ render() {
                 />
               </Grid>
                <Grid item xs={12}>
-                <select id="lang" onChange={this.onChange} value={this.state.value} name="position">
-                    
-                    {/* dropdown menu options */}
-                    <option value="Cook">{this.state.positions[0]}</option>
-                    <option value="Manager">{this.state.positions[1]}</option>
-                </select>                   
+                 <Form.Group id="lang" onChange={this.onChange} value={this.state.value} name="position">
+                    <Form.Control as="select">
+                        <option value="Cook">{this.state.positions[0]}</option>
+                        <option value="Manager">{this.state.positions[1]}</option>
+                    </Form.Control>
+                </Form.Group>                  
               </Grid>
               <Grid item xs={12}>
                 <TextField onChange = {this.onChange}

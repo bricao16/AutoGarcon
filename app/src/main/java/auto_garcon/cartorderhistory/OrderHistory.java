@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -21,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.JsonObject;
@@ -35,6 +37,7 @@ import auto_garcon.homestuff.*;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
+import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
@@ -55,6 +58,24 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
     private ArrayList<String> restaurantName;
     private ArrayList<byte[]> logos;
 
+
+    /**
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         order = new ArrayList<>();
@@ -92,7 +113,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
                                 item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
-                                // Log.d("asdff", "" + item.getCost());
 
                                 carts.get(tracker-1).addToCart(item);
                             }
@@ -149,11 +169,25 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
                     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(OrderHistory.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
+                    TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+                    usernameSideNavBar.setText(pref.getUser().getUsername());
+
                     drawerLayout.addDrawerListener(toggle);
                     toggle.syncState();
                     navigationView.setNavigationItemSelectedListener(OrderHistory.this);
+                    /**
+                     * It ties the bottom navigation bar xml element to a Java object and provides it with its
+                     * onClick functionality to other activities and sets the listener.
+                     */
+                    BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+                    BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+                    badge.setVisible(true);
+                    if(pref.getShoppingCart()!=null) {
+                        if(pref.getShoppingCart().getCart().size()!=0){
+                            badge.setNumber(pref.getShoppingCart().getCart().size());
+                        }
+                    }
 
-                    BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);// associating xml objects with the java Object equivalent
 
                     BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                             new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -182,14 +216,19 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                 {
                     @Override
                     public void onErrorResponse (VolleyError error){
-                        Toast.makeText(OrderHistory.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(OrderHistory.this, "An Error has Occured", Toast.LENGTH_LONG).show();
                     }
                 });
 
         VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
     }
 
-    //onClick for side nav bar
+    /**
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param nav_item The selected item
+     * @return true to display the item as the selected item
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
@@ -213,5 +252,33 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                 break;
         }
         return false;
+    }
+    /**
+     * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
+     * the activity had been stopped, but is now again being displayed to the
+     * user. It will usually be followed by {@link #onResume}. This is a good place to begin
+     * drawing visual elements, running animations, etc.
+     *
+     * <p>You can call {@link #finish} from within this function, in
+     * which case {@link #onStop} will be immediately called after {@link #onStart} without the
+     * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @see #onCreate
+     * @see #onStop
+     * @see #onResume
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+            //if not send them back to PasswordChange page and force them to update their password
+            Intent intent = new Intent(OrderHistory.this, PasswordChange.class);
+            startActivity(intent);
+            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+        }
     }
 }

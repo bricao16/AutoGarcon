@@ -1,7 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import {makeStyles, AppBar, Tab, Tabs, Toolbar} from "@material-ui/core";
 import {Link} from "react-router-dom";
-import {useTheme, ThemeProvider, createMuiTheme, withStyles} from "@material-ui/core/styles";
+import { ThemeProvider, createMuiTheme, withStyles} from "@material-ui/core/styles";
 
 const StyledTabs = withStyles({
   indicator: {
@@ -60,7 +60,7 @@ function Header(props){
   // const theme = useTheme();
   const classes = useStyles(theme);
 
-  const [tab, setTab] = React.useState(props.tab);
+  const [tab, setTab] = useState(props.tab);
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
   };
@@ -71,8 +71,14 @@ function Header(props){
         <Toolbar className={classes.toolbar}>
           <h3 className={classes.title}>Orders</h3>
           <StyledTabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" className={classes.tabs}>
-            <Tab label="Active" color="primary" className={classes.tab} classes={{selected: classes.selected}} component={Link} to={'/cook/orders/active'} />
-            <Tab label="Completed" color="primary" className={classes.tab} classes={{selected: classes.selected}} component={Link} to={'/cook/orders/completed'} />
+            <Tab label="Active" color="primary" className={classes.tab} classes={{selected: classes.selected}}
+                 component={Link}
+                 to={'/cook/orders/active'}
+            />
+            <Tab label="Completed" color="primary" className={classes.tab} classes={{selected: classes.selected}}
+                 component={Link}
+                 to={'/cook/orders/completed'}
+            />
           </StyledTabs>
         </Toolbar>
       </AppBar>

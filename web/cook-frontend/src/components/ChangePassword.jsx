@@ -139,7 +139,7 @@ class ChangePassword extends React.Component {
           <Alert show={this.state.show} variant={this.state.alertVariant}>
             {this.state.response}
           </Alert>
-          <Home section="" />
+          
 
         </div>
       );

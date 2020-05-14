@@ -57,7 +57,6 @@ export default function Login(props) {
   function handleSubmit(event) {
     event.preventDefault();
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
-
     axios({
       method: 'post',
       url: process.env.REACT_APP_DB + '/staff/login',
@@ -75,8 +74,9 @@ export default function Login(props) {
         if (response.status !== 200) {
           handleShow(response);
         } else {
-          //if good response set the state to returned info
-          if (props.staffType.includes(response.data.staff.position)) {
+          // if good response set the state to returned info
+          console.log(response);
+          if (props.staffType.includes(response.data.staff.position.toLowerCase())) {
             setStaff(response.data.staff);
             setToken(response.data.token);
             setShow(false);
@@ -126,12 +126,13 @@ export default function Login(props) {
     return <Redirect to={props.redirect}/>
   }
   // Check if user is already logged in. If logged in then redirect them to cook or manager view.
-  if (cookies.get('mystaff') !== undefined && cookies.get('mytoken') !== undefined) {
-    // Ensures cook can't access manager view but manager can access cook view.
-    if (props.staffType.includes(cookies.get('mystaff').position)) {
-      return <Redirect to={props.redirect}/>
-    }
-  }
+  // if (cookies.get('mystaff') !== undefined && cookies.get('mytoken') !== undefined) {
+  //   // Ensures cook can't access manager view but manager can access cook view.
+  //   // TODO: do cook verify and manager verify else could end up in infinite loop
+  //   if (props.staffType.includes(cookies.get('mystaff').position)) {
+  //     return <Redirect to={props.redirect}/>
+  //   }
+  // }
   return (
     <Container maxWidth="xs" className="p-3">
       <CssBaseline/>
@@ -208,6 +209,17 @@ export default function Login(props) {
             </Grid>
           </Grid>
         </form>
+          <br></br>
+          <br></br>
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid item>
+              {/* Link Back Home*/}
+
+              <Link href="/" variant="body2" style={{ color: '#0B658A' }}>
+                {"Return to Home"}
+              </Link>
+            </Grid>
+          </Grid>
       </div>
     </Container>
   );

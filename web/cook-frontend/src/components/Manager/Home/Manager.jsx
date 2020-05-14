@@ -47,7 +47,7 @@ class Manager extends React.Component{
         return(
             <Container>
                 <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
-                      <Nav.Link href="/login_manager"> Session expired please log back in </Nav.Link>
+                  <Nav.Link className="btn btn-secondary" href="/login_manager"> Session expired please log back in </Nav.Link>
                 </Nav>
                 <Switch>
                   <Route exact path="/login_manager">
@@ -59,8 +59,6 @@ class Manager extends React.Component{
       }
 
       const https = require('https');
-
-      console.log(https.Agent)
       
       //instance.get("https://50.19.176.137:8001/restaurant/124");
     axios({
@@ -169,9 +167,9 @@ class Manager extends React.Component{
       if(this.state.staff === undefined || manager === false ||  this.state.staff.position !== "manager")
       {
         return(
-            <Container>
+            <Container className="d-flex flex-column justify-content-center">
                 <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
-                      <Nav.Link href="/login_manager"> Session expired please log back in </Nav.Link>
+                  <Nav.Link className="btn btn-secondary" href="/login_manager"> Session expired please log back in </Nav.Link>
                 </Nav>
                 <Switch>
                   <Route exact path="/login_manager">
@@ -190,8 +188,12 @@ class Manager extends React.Component{
       //spinner while loading
       else if (!isLoaded) {
         return (
-          <div className="spinner-border" role="status">
-            <span className="sr-only">Loading...</span>
+          <div className="d-flex flex-column justify-content-center" style={{"height": "100vh", "width": "100vw"}}>
+            <div className="d-flex justify-content-center" style={{"width": "100vw"}}>
+              <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
           </div>
         )
       }
@@ -200,13 +202,14 @@ class Manager extends React.Component{
         //map the menu json to an array
         Object.keys(this.state.restaurantJSON).forEach(function(key) {
           restaurantInfo.push([key ,restaurantJSON[key]]);
-        });} 
-        //get logo image data from binary
-        const imageData = this.arrayBufferToBase64(this.state.restaurantJSON.restaurant.logo.data);
-        var binary = this.fixBinary(atob(imageData));
-        const blob = new Blob([binary], {type : 'image/png'});
-        const blobUrl =URL.createObjectURL(blob);
-        console.log(this.state);
+      });} 
+
+      //get logo image data from binary
+      const imageData = this.arrayBufferToBase64(this.state.restaurantJSON.restaurant.logo.data);
+      var binary = this.fixBinary(atob(imageData));
+      const blob = new Blob([binary], {type : 'image/png'});
+      const blobUrl =URL.createObjectURL(blob);
+      console.log(this.state);
 
 
       return (

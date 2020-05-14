@@ -21,12 +21,12 @@ function Orders(){
         <Route exact path="/cook/orders/active">
           {/*<ActiveOrders />*/}
           <Header tab={0}/>
-          <Body ordersEndpoint={activeOrdersEndpoint}/>
+          <Body ordersEndpoint={activeOrdersEndpoint} tab={'active'}/>
         </Route>
         <Route exact path="/cook/orders/completed">
           {/*<CompletedOrders />*/}
           <Header tab={1}/>
-          <Body ordersEndpoint={completedOrdersEndpoint}/>
+          <Body ordersEndpoint={completedOrdersEndpoint} tab={'completed'}/>
         </Route>
       </Switch>
     </div>

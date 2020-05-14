@@ -4,12 +4,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import auto_garcon.menustuff.Menu;
+import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.VolleySingleton;
 
 /**
  * This class will change the password for the user
@@ -18,15 +31,30 @@ import com.example.auto_garcon.R;
 public class PasswordChange extends AppCompatActivity {
 
 
+    private SharedPreference pref;
     /**
-     * This method will lay the constraints for the xml objects for this page
-     * @param savedInstanceState contains the data that has been most recently supplied on the register xml after the creation of the app
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_change);
 
+        pref = new SharedPreference(this);
         final EditText oldPassword = findViewById(R.id.old_password);
         final EditText confirmPassword = findViewById(R.id.confirm_password);
         final EditText newPassword = findViewById(R.id.new_password);
@@ -35,9 +63,9 @@ public class PasswordChange extends AppCompatActivity {
         savePasswordChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String oldPasswordString = oldPassword.getText().toString().trim();
+                final String oldPasswordString = oldPassword.getText().toString().trim();
                 String confirmPasswordString = confirmPassword.getText().toString().trim();
-                String newPasswordString = newPassword.getText().toString().trim();
+                final String newPasswordString = newPassword.getText().toString().trim();
 
                 if(TextUtils.isEmpty(oldPasswordString)){
                     oldPassword.setError("Please enter your old password");
@@ -59,8 +87,39 @@ public class PasswordChange extends AppCompatActivity {
                     newPassword.setError("Password Must be Greater than 6 Characters");
                 }
                 else {
-                    //post request will go here
+                    StringRequest postRequestForPasswordUpdate = new StringRequest(Request.Method.POST, "http://50.19.176.137:8000/customer/password/update",
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    pref.getUser().setChangePassword(0);
+                                    Toast.makeText(PasswordChange.this, response, Toast.LENGTH_LONG).show();
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
 
+                                }
+                            }) {
+
+                            @Override
+                            protected Map<String, String> getParams() {// inserting parameters for the put request
+                                Map<String, String> params = new HashMap<String, String>();
+                                params.put("customer_id", pref.getUser().getUsername());
+                                params.put("current_password", oldPasswordString);
+                                params.put("new_password", newPasswordString);
+                                return params;
+                            }
+
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                                HashMap<String,String> headers = new HashMap<String,String>();
+                                headers.put("Authorization","Bearer " + pref.getAuth());
+                                return headers;
+                            }
+                    };
+
+                    VolleySingleton.getInstance(PasswordChange.this).addToRequestQueue(postRequestForPasswordUpdate);
                 }
             }
         });

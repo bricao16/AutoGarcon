@@ -4,7 +4,12 @@ import Container from 'react-bootstrap/Container';
 import {Redirect} from "react-router-dom";
 import CSignUp from './CSignUp';
 import CookViewImg from '../../../assets/cookview.png';
-import Cook from '../../Cook/Cook'
+import Nav from 'react-bootstrap/Nav';
+import Button from 'react-bootstrap/Button';
+import Image from 'react-bootstrap/Image';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import ListGroup from 'react-bootstrap/ListGroup';
 /*
 this view in the manager page allows a manager
 to either
@@ -16,7 +21,7 @@ class CookView extends React.Component{
 	constructor(props) {
       super(props);
       this.state = {
-      	section:""
+      	section:"cook"
       };
 
       this.viewCategory = this.viewCategory.bind(this);
@@ -28,45 +33,90 @@ class CookView extends React.Component{
         section: category
     })
 	}
+  viewCook()
+  {
+    console.log("here");
+    return <Redirect to='/cook'/>
+  }
+  handleModalClose = () => this.setState({ModalShow: false});
+  handleModalShow = () => this.setState({ModalShow: true});
   renderInfo(){
+    console.log(this.state.section);
     //get the styles
     const primary = this.props.primary;
     const secondary = this.props.secondary;
-    const teritary = this.props.teritary;
     const font = this.props.font;
-    const font_color = this.props.font_color
+    const font_color = this.props.font_color;
+     const section = this.state.section
     return(
-      //render the two buttons to either go to cook view or sign up
-      <React.Fragment>
-          <Card className="text-center w-50" style={itemStyle}>
-            {this.state.section !== "cook" ? 
-                <button  onClick={() => this.viewCategory("cook") } className="btn btn-dark btn-lg "> 
-                  <Card.Header style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color,'paddingTop':'8px','height':'54px'}}>
-                    Go to cook view
-                  </Card.Header>
-                  <Card.Body >
-                    <img src = {CookViewImg} width = {'100%'}/>
-                  </Card.Body>
-                </button> 
-                :   
-                <Redirect to='/cook'/>
-            }     
-          </Card>
-          <Card className="text-center m-2 w-50" style={itemStyle}>
-            {this.state.section !== "acct" ? 
-                <button  onClick={() => this.viewCategory("acct") } className="btn-dark  btn-lg"> 
-                  <Card.Header style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color,'paddingTop':'8px','height':'54px'}}>
-                    Create New Staff Account
-                  </Card.Header>
-                </button> 
+            <React.Fragment>
+            {section === "goCookView" ? 
+              <Redirect to='/cook'/>
+              :
 
-                :   
-                <div className= "m-3">
-                  <CSignUp/>
-                </div>
-            }     
-          </Card>
-      </React.Fragment>
+              <Card>
+                <Card.Header style = {{'backgroundColor': primary}}>
+                  <Nav variant="tabs" defaultActiveKey="cookview" >
+                    <Nav.Item>
+                      <Nav.Link href = "cookview" onClick={() => this.viewCategory("cook")} style = {{'color': font_color,fontSize: '1.5rem','fontFamily' :font, 'backgroundColor': primary}}>Cook View</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="link-1" onClick={() => this.viewCategory("acct") } style = {{'color': font_color,fontSize: '1.5rem','fontFamily' :font, 'backgroundColor': primary}} >Create New Staff Account</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                    </Nav.Item>
+                  </Nav>
+                </Card.Header>
+                {this.state.section === "cook" ? 
+                <Card.Body >
+                <Row>
+                  <Col>
+                  <Card.Text style = {{'fontFamily' :font,fontSize: '1.2rem'}}>
+                    Cook View shows the current orders coming in including the time ordered and time elapsed since order. 
+                  </Card.Text>
+                  <Card.Text style = {{'fontFamily' :font,fontSize: '1.2rem'}}>
+                    Staff
+                    can  mark the orders complete, look at order history, restore completed orders
+                    and message customer's regarding their order. 
+                  </Card.Text>
+                    <Card.Text style = {{'fontFamily' :font,fontSize: '1.2rem'}}>
+                     <i>It is the only page staff accounts have access to </i>
+                  </Card.Text>
+
+                  <div className = "text-center">
+                    <Button onClick={() =>  this.viewCategory("goCookView") } className="btn btn-light " style = {{'backgroundColor': secondary,'color': font_color,'fontFamily' :font}}> Go to Cook View</Button>
+                  </div>
+                  </Col>
+                  <Col>
+                  <Image  src = {CookViewImg} className = "m-3" width = {'100%'}/>
+                  </Col>
+                 </Row>
+                </Card.Body>
+                
+                :
+                <Card.Body  className="text-center">
+                  <Row>
+                  <Col>
+                  <ListGroup variant="flush" style = {{'fontFamily' :font,fontSize: '1.2rem', 'textAlign': 'left'}}>
+                    <ListGroup.Item disabled> Give Staff access by creating an account for them. </ListGroup.Item>
+                    <ListGroup.Item disabled><b>Cook</b> accounts have access to the Cook View only.</ListGroup.Item>
+                    <ListGroup.Item disabled><b>Manager</b>  accounts have access to the Cook View and Manager page. Managers
+                    are given ability to create new accounts and edit restaurant information.</ListGroup.Item>
+                   
+                  </ListGroup>
+                  
+                  </Col>
+                  <Col>
+                    <CSignUp/>
+                    </Col>
+                  </Row>
+                  </Card.Body>
+                }
+              </Card>
+            }
+            </React.Fragment>
+
+        
       );
   }
 	render(){
@@ -84,8 +134,6 @@ class CookView extends React.Component{
 
 	}
 }
-const itemStyle = {
-    'borderBottom': 'grey solid 1px',
-};
+
 
 export default CookView;

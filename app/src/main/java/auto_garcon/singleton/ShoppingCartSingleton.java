@@ -18,16 +18,24 @@ public class ShoppingCartSingleton {
     private String tertiaryColor;
 
     public ShoppingCartSingleton(){
+        this.primaryColor = "#0B658A";
+        this.secondaryColor = "#102644";
+        this.tertiaryColor = "#FFFFFF";
+
         this.items = new ArrayList<MenuItem>();
-        this.startingHour=0;
-        this.endingHour=0;
+        this.startingHour = 0;
+        this.endingHour = 0;
     }
 
     public ShoppingCartSingleton(int restaurantID){
+        this.primaryColor = "#0B658A";
+        this.secondaryColor = "#102644";
+        this.tertiaryColor = "#FFFFFF";
+
         this.items = new ArrayList<MenuItem>();
         this.restaurantID = restaurantID;
-        this.startingHour=0;
-        this.endingHour=0;
+        this.startingHour = 0;
+        this.endingHour = 0;
     }
 
     public ArrayList<MenuItem> getCart(){

@@ -8,7 +8,7 @@ import SignUp from "./components/SignUp";
 import ForgotPassword from "./components/ForgotPassword"
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import ChangePassword from "./components/ChangePassword"
-
+import ManagerSignUp from "./components/ManagerSignUp"
 import Home from "./components/Home";
 import PrivacyPolicy from './components/PrivacyPolicy';
 
@@ -20,9 +20,6 @@ which is a header that allows for logging into cook, manager or to sign up as
 well as a stock image with a circle containing a description of the product.*/
 
 class App extends React.Component{
-    constructor(props) {
-      super(props);
-    }
   render(){
     return (
         <Router>
@@ -37,7 +34,7 @@ class App extends React.Component{
               <Route path="/manager"
                   render={() => (<Manager />)}
                 >
-                </Route>
+              </Route>
               <Route path="/sign_up">
                 <SignUp />
               </Route>
@@ -60,6 +57,9 @@ class App extends React.Component{
               <Route path="/statistics">
                 <Manager/>
               </Route>
+	      <Route path="/manager_sign_up">
+                <ManagerSignUp/>
+              </Route>			       
               <Route path="/menu"
                 render={(props) => <Manager {...props} content={"menu"}/>} />
               <Route path="/general"

@@ -2,7 +2,7 @@
 	REST-API Server
 	Tucker Urbanski
 	Date Created: 3/2/2020
-	Last Modified: 5/10/2020
+	Last Modified: 5/12/2020
 */
 
 // Built-in Node.js modules
@@ -213,12 +213,12 @@ app.get('/restaurants', (req, res) => {
 
 /*
 	Updates restaurant information
-	Inputs: restaurant_id, name, address, phone, opening, closing, JWT
+	Inputs: restaurant_id, name, address, phone, email, opening, closing, JWT
 	Outputs:
 		On success:
 			Successfully updated restaurant information!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing, cuisine
+			Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, email, opening, closing, cuisine
 		If restaurant does not exist:
 			Error: restaurant does not exist
 		If JWT is not valid:
@@ -230,8 +230,8 @@ app.get('/restaurants', (req, res) => {
 */
 app.post('/restaurant/update', verifyToken, (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.restaurant_id !== undefined && req.body.name !== undefined && req.body.address !== undefined && req.body.phone !== undefined && req.body.opening !== undefined && req.body.closing !== undefined && req.body.cuisine !== undefined)) {
-		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, opening, closing, cuisine');
+	if(!(req.body.restaurant_id !== undefined && req.body.name !== undefined && req.body.address !== undefined && req.body.phone !== undefined && req.body.email !== undefined && req.body.opening !== undefined && req.body.closing !== undefined && req.body.cuisine !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, name, address, phone, email, opening, closing, cuisine');
 		return;
 	}   //if
 
@@ -251,9 +251,9 @@ app.post('/restaurant/update', verifyToken, (req, res) => {
 					//Check to make sure person is a manager at the restaurant:
 					if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === rows[0].restaurant_id) {
 						//Build query and parameters:
-						query = 'UPDATE sample.restaurants SET restaurant_name = ?, restaurant_addr = ?, phone_number = ?, opening_time = ?, closing_time = ?, cuisine = ?';
+						query = 'UPDATE sample.restaurants SET restaurant_name = ?, restaurant_addr = ?, phone_number = ?, email = ?, opening_time = ?, closing_time = ?, cuisine = ?';
 						query = query + ' WHERE restaurant_id = ?';
-						let parameters = [req.body.name, req.body.address, req.body.phone, req.body.opening, req.body.closing, req.body.cuisine, req.body.restaurant_id];
+						let parameters = [req.body.name, req.body.address, req.body.phone, req.body.email, req.body.opening, req.body.closing, req.body.cuisine, req.body.restaurant_id];
 
 						//Update restaurant information in db:
 						db.query(query, parameters, (err, rows) => {
@@ -355,7 +355,7 @@ app.post('/restaurant/customization', verifyToken, upload.single('logo'), (req, 
 				}   //if
 				else {
 					//Check to make sure person is a manager at the restaurant:
-					if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === rows[0].restaurant_id) {
+					if (auth.staff && auth.staff.position === 'manager' && parseInt(auth.staff.restaurant_id) === parseInt(req.body.restaurant_id)) {
 						//If a logo is supplied:
 						if (req.file !== undefined) {
 							//If not an image file:
@@ -407,75 +407,49 @@ app.post('/restaurant/customization', verifyToken, upload.single('logo'), (req, 
 
 /*
 	Creates a new restaurant
-	Inputs: restaurant_name, restaurant_addr, phone_number, opening_time, closing_time, font, font_color, logo, primary_color, secondary_color, tertiary_color, cuisine, JWT
+	Inputs: restaurant_name, restaurant_addr, phone_number, email, opening_time, closing_time, cuisine
 	Outputs:
 		On success:
 			Successfully added new resaturant! restaurant_id = <restaurant_id>
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_name, restaurant_addr, phone_number, opening_time, closing_time, font, font_color, logo, primary_color, secondary_color, tertiary_color, cuisine
+			Error: Missing parameter. Required parameters: restaurant_name, restaurant_addr, phone_number, email, opening_time, closing_time, cuisine
 		If restaurant already exists:
 			Error: resatuarnt_name already exists
-		If logo is not an image file:
-			Error: invalid image format. Accepted formats: png, jpg, jpeg
-		If JWT is not valid:
-			Must be authorized!
-		If JWT is not a manager token for the restaurant of the menu:
-			Must be a restaurant manager to create a new restaurant!
 		On error:
 			Error adding new restaurant
 */
-app.put('/restaurant/new', verifyToken, upload.single('logo'), (req, res) => {
+app.put('/restaurant/new', (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.restaurant_name !== undefined && req.body.restaurant_addr !== undefined && req.body.phone_number !== undefined && req.body.opening_time !== undefined && req.body.closing_time !== undefined && req.body.font !== undefined && req.body.font_color !== undefined && req.file !== undefined && req.body.primary_color !== undefined && req.body.secondary_color !== undefined && req.body.tertiary_color !== undefined && req.body.cuisine !== undefined)) {
-		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_name, restaurant_addr, phone_number, opening_time, closing_time, font, font_color, logo, primary_color, secondary_color, tertiary_color, cuisine');
+	if(!(req.body.restaurant_name !== undefined && req.body.restaurant_addr !== undefined && req.body.phone_number !== undefined && req.body.email !== undefined && req.body.opening_time !== undefined && req.body.closing_time !== undefined && req.body.cuisine !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_name, restaurant_addr, phone_number, email, opening_time, closing_time, cuisine');
 		return;
 	}   //if
 
-	//Verify that the JWT is valid:
-	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
-		if (err) {
-			res.status(401).send('Must be authorized!');
+	//Make sure the restaurant doesn't exist:
+	let query = 'Select * FROM sample.restaurants WHERE restaurant_name = ?';
+	db.query(query, req.body.restaurant_name, (err, rows) => {
+		if (rows.length > 0) {
+			res.status(409).send('Error: resatuarnt_name already exists');
 		}   //if
 		else {
-			//Check to make sure person is a manager:
-			if (auth.staff && auth.staff.position === 'manager') {
-				//Make sure the restaurant doesn't exist:
-				let query = 'Select * FROM sample.restaurants WHERE restaurant_name = ?';
-				db.query(query, req.body.restaurant_name, (err, rows) => {
-					if (rows.length > 0) {
-						res.status(409).send('Error: resatuarnt_name already exists');
-					}   //if
-					else {
-						//If logo is not an image file:
-						if (!(req.file.mimetype === 'image/png' || req.file.mimetype === 'image/jpg' || req.file.mimetype === 'image/jpeg')) {
-							res.status(409).send('Error: invalid image format. Accepted formats: png, jpg, jpeg');
-							return;
-						}	//if
+			//Build query and parameters:
+			query = 'INSERT INTO sample.restaurants(restaurant_name, restaurant_addr, phone_number, email, opening_time, closing_time, cuisine)';
+			query = query + ' VALUES (?, ?, ?, ?, ?, ?, ?)';
+			parameters = [req.body.restaurant_name, req.body.restaurant_addr, req.body.phone_number, req.body.email, req.body.opening_time, req.body.closing_time, req.body.cuisine];
 
-						//Build query and parameters:
-						query = 'INSERT INTO sample.restaurants(restaurant_name, restaurant_addr, phone_number, opening_time, closing_time, font, font_color, logo, primary_color, secondary_color, tertiary_color, cuisine)';
-						query = query + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-						parameters = [req.body.restaurant_name, req.body.restaurant_addr, req.body.phone_number, req.body.opening_time, req.body.closing_time, req.body.font, req.body.font_color, req.file.buffer, req.body.primary_color, req.body.secondary_color, req.body.tertiary_color, req.body.cuisine];
-
-						//Add restaurant in db and get restaurant_id:
-						db.query(query, parameters, (err, rows) => {
-							if (err) {
-								res.status(500).send('Error adding new restaurant');
-							}	//if
-							else {
-								//Get restaurant_id of new restaurant
-								let restaurant_id = rows.insertId;
-								res.status(200).send('Successfully added new resaturant! restaurant_id = ' + restaurant_id);
-							}   //else
-						});	//db.query
-					}	//else
-				});	//db.query
-			}	//if
-			else {
-				res.status(401).send('Must be a restaurant manager to create a new restaurant!');
-			}	//else
+			//Add restaurant in db and get restaurant_id:
+			db.query(query, parameters, (err, rows) => {
+				if (err) {
+					res.status(500).send('Error adding new restaurant');
+				}	//if
+				else {
+					//Get restaurant_id of new restaurant
+					let restaurant_id = rows.insertId;
+					res.status(200).send('Successfully added new resaturant! restaurant_id = ' + restaurant_id);
+				}   //else
+			});	//db.query
 		}	//else
-	});	//verify
+	});	//db.query
 });	//app.put
 
 
@@ -495,7 +469,8 @@ app.put('/restaurant/new', verifyToken, upload.single('logo'), (req, res) => {
 					quantity,
 					order_date,
 					table_num,
-					customization
+					customization,
+					category
 				}
 			}
 		If no in progress orders exist:
@@ -527,7 +502,8 @@ app.get('/orders/:id', (req, res) => {
 					'quantity': rows[i].quantity,
 					'order_date': rows[i].order_date,
 					'table': rows[i].table_num,
-					'customization': rows[i].customization
+					'customization': rows[i].customization,
+					'category': rows[i].category
 				};	//response
 			}   //for
 
@@ -549,7 +525,8 @@ app.get('/orders/:id', (req, res) => {
 					quantity,
 					order_date,
 					table_num,
-					customization
+					customization,
+					category
 				}
 			}
 		If no complete orders exist:
@@ -581,7 +558,8 @@ app.get('/orders/complete/:id', (req, res) => {
 					'quantity': rows[i].quantity,
 					'order_date': rows[i].order_date,
 					'table': rows[i].table_num,
-					'customization': rows[i].customization
+					'customization': rows[i].customization,
+					'category': rows[i].category
 				};	//response
 			}   //for
 
@@ -1143,18 +1121,36 @@ app.post('/staff/login', (req, res) => {
 
 						//Sign JWT and send token
 						//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-						jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
-							//Add temp password flag to staff
-							staff['temp_password'] = rows[0].temp_password;
-							//Build response
-							let response = {
-								'token': token,
-								staff
-							};  //response
+						//If a manager token:
+						if (staff.position === 'manager') {
+							jwt.sign({staff}, process.env.JWT_SECRET, {expiresIn: '1h'}, (err, token) => {
+								//Add temp password flag to staff
+								staff['temp_password'] = rows[0].temp_password;
+								//Build response
+								let response = {
+									'token': token,
+									staff
+								};  //response
 
-							//Send Response:
-							res.type('json').send(response);
-						});	//sign
+								//Send Response:
+								res.type('json').send(response);
+							});	//sign
+						}	//if
+						//If a cook token:
+						else {
+							jwt.sign({staff}, process.env.JWT_SECRET, {expiresIn: '12h'}, (err, token) => {
+								//Add temp password flag to staff
+								staff['temp_password'] = rows[0].temp_password;
+								//Build response
+								let response = {
+									'token': token,
+									staff
+								};  //response
+
+								//Send Response:
+								res.type('json').send(response);
+							});	//sign
+						}	//else
 					}   //if
 					else {
 						res.status(401).send('No user with that username/password');
@@ -1247,16 +1243,36 @@ app.put('/staff/register', (req, res) => {
 
 							//Sign JWT and send token
 							//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-							jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
-								//Build response
-								let response = {
-									'token': token,
-									staff
-								};  //response
+							//If a manager token:
+							if (staff.position === 'manager') {
+								jwt.sign({staff}, process.env.JWT_SECRET, {expiresIn: '1h'}, (err, token) => {
+									//Add temp password flag to staff
+									staff['temp_password'] = rows[0].temp_password;
+									//Build response
+									let response = {
+										'token': token,
+										staff
+									};  //response
 
-								//Send Response:
-								res.type('json').send(response);
-							});	//sign
+									//Send Response:
+									res.type('json').send(response);
+								});	//sign
+							}	//if
+							//If a cook token:
+							else {
+								jwt.sign({staff}, process.env.JWT_SECRET, {expiresIn: '12h'}, (err, token) => {
+									//Add temp password flag to staff
+									staff['temp_password'] = rows[0].temp_password;
+									//Build response
+									let response = {
+										'token': token,
+										staff
+									};  //response
+
+									//Send Response:
+									res.type('json').send(response);
+								});	//sign
+							}	//else
 						}   //else
 					}); //db.query
 				}   //else
@@ -1281,7 +1297,8 @@ app.put('/staff/register', (req, res) => {
 					first_name,
 					last_name,
 					contact_num,
-					email
+					email,
+					position
 				}
 			}
 		If JWT is not valid or not supplied:
@@ -1309,17 +1326,20 @@ app.post('/staff/update', verifyToken, (req, res) => {
 			//Make sure the JWT is for a staff member:
 			if (auth.staff) {
 				//Make sure right number of parameters are entered:
-				if(!(req.body.staff_id !== undefined && req.body.restaurant_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.contact_num !== undefined && req.body.email !== undefined)) {
-					res.status(400).send('Error: Missing parameter. Required parameters: staff_id, restaurant_id, first_name, last_name, contact_num, email)');
+				if(!(req.body.staff_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.contact_num !== undefined && req.body.email !== undefined)) {
+					res.status(400).send('Error: Missing parameter. Required parameters: staff_id, first_name, last_name, contact_num, email)');
 					return;
 				}   //if
 
 				//Make sure the supplied staff_id and email are unique:
 				let query = 'SELECT * FROM sample.staff WHERE staff_id = ?; SELECT * FROM sample.staff WHERE email = ?';
 				db.query(query, [req.body.staff_id, req.body.email], (err, rows) => {
-					if ((rows[0].length > 0 && (req.body.staff_id !== auth.staff.staff_id)) && (rows[1].length > 0 && (req.body.email !== auth.staff.email))) {
+					if (err) {
+						res.status(500).send('Error updating staff info');
+					}	//if
+					else if ((rows[0].length > 0 && (req.body.staff_id !== auth.staff.staff_id)) && (rows[1].length > 0 && (req.body.email !== auth.staff.email))) {
 						res.status(409).send('Error: staff_id and email already exist');
-					}   //if
+					}   //else if
 					else if (rows[0].length > 0 && (req.body.staff_id !== auth.staff.staff_id)) {
 						res.status(409).send('Error: staff_id already exists');
 					}	//else if
@@ -1345,21 +1365,42 @@ app.post('/staff/update', verifyToken, (req, res) => {
 									'first_name': req.body.first_name,
 									'last_name': req.body.last_name,
 									'contact_num': req.body.contact_num,
-									'email': req.body.email
+									'email': req.body.email,
+									'position': auth.staff.position
 								};  //staff
 
 								//Sign JWT and send token
 								//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-								jwt.sign({staff}, process.env.JWT_SECRET, (err, token) => {
-									//Build response
-									let response = {
-										'token': token,
-										staff
-									};  //response
+								//If a manager token:
+								if (staff.position === 'manager') {
+									jwt.sign({staff}, process.env.JWT_SECRET, {expiresIn: '1h'}, (err, token) => {
+										//Add temp password flag to staff
+										staff['temp_password'] = rows[0].temp_password;
+										//Build response
+										let response = {
+											'token': token,
+											staff
+										};  //response
 
-									//Send Response:
-									res.type('json').send(response);
-								});	//sign
+										//Send Response:
+										res.type('json').send(response);
+									});	//sign
+								}	//if
+								//If a cook token:
+								else {
+									jwt.sign({staff}, process.env.JWT_SECRET, {expiresIn: '12h'}, (err, token) => {
+										//Add temp password flag to staff
+										staff['temp_password'] = rows[0].temp_password;
+										//Build response
+										let response = {
+											'token': token,
+											staff
+										};  //response
+
+										//Send Response:
+										res.type('json').send(response);
+									});	//sign
+								}	//else
 							}   //else
 						}); //db.query
 					}	//else
@@ -1465,7 +1506,7 @@ app.post('/staff/password/forgot', (req, res) => {
 			Can't change other people's passwords!
 		If any inputs are missing:
 			Error: Missing parameter. Required parameters: staff_id, current_password, new_password
-		If customer_id/password is wrong:
+		If staff_id/password is wrong:
 			No staff member with that username/password
 		On error:
 			Error updating password
@@ -1548,6 +1589,73 @@ app.post('/staff/password/update', verifyToken, (req, res) => {
 	});	//verify
 });	//app.post
 
+/*
+	Updates a staff member's position
+	Inputs: staff_id, position, JWT
+	Outputs:
+		On success:
+			Successfully updated staff member's position!
+		If JWT is not valid or not supplied:
+			Must be authorized!
+		If JWT is not a manager token:
+			Must be signed in as a manager!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: staff_id, position
+		If staff_id is not at managers restaurant:
+			There is no staff member with that staff_id at your restaurant
+		On error:
+			Error updating staff member's position
+*/
+app.post('/staff/position/update', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.staff_id && req.body.position)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: staff_id, position)');
+		return;
+	}   //if
+
+	//Verify the JWT
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Make sure the JWT is for a manager:
+			if (auth.staff && auth.staff.position === 'manager') {
+				//Make sure the staff_id exists at the manager's restaurant:
+				let query = 'SELECT * FROM sample.staff WHERE staff_id = ? AND restaurant_id = ?';
+				let parameters = [req.body.staff_id, auth.staff.restaurant_id];
+				db.query(query, parameters, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error updating staff member\'s position');
+					}   //if
+					else if (rows.length < 1) {
+						res.status(409).send('There is no staff member with that staff_id at your restaurant');
+					}	//else if
+					else {
+						//Build query and parameters:
+						query = 'UPDATE sample.staff SET position = ? WHERE staff_id = ?';
+						parameters = [req.body.position, req.body.staff_id];
+
+						//Update staff position in db:
+						db.query(query, parameters, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error updating staff member\'s position');
+							}   //if
+							else {
+								res.status(200).send('Successfully updated staff member\'s position!');
+							}	//else
+						}); //db.query
+					}	//else
+				});	//db.query
+			}	//if
+			//If JWT is not for a staff member:
+			else {
+				res.status(401).send('Must be signed in as a manager!');
+			}	//else
+		}   //else
+	});	//verify
+});	//app.post
+
 
 //==================================================================================//
 //							ENDPOINTS RELATING TO CUSTOMERS 						//
@@ -1567,7 +1675,8 @@ app.post('/staff/password/update', verifyToken, (req, res) => {
 					first_name,
 					last_name,
 					email,
-					temp_password
+					temp_password,
+					image
 				}
 			}
 		On error:
@@ -1604,10 +1713,11 @@ app.post('/customer/login', (req, res) => {
 						};  //user
 
 						//Sign JWT and send token
-						//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-						jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
-							//Add temp password flag to customer
+						//To add expiration date: jwt.sign({customer}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
+						jwt.sign({customer}, process.env.JWT_SECRET, {expiresIn: '7d'}, (err, token) => {
+							//Add temp password flag and image to customer
 							customer['temp_password'] = rows[0].temp_password;
+							customer['image'] = rows[0].image;
 							//Build response
 							let response = {
 								'token': token,
@@ -1629,7 +1739,7 @@ app.post('/customer/login', (req, res) => {
 
 /*
 	Creates a new customer
-	Inputs (in body of request): customer_id, first_name, last_name, email, password
+	Inputs: customer_id, first_name, last_name, email, password, image (optional)
 	Outputs:
 		On success:
 			{
@@ -1640,7 +1750,8 @@ app.post('/customer/login', (req, res) => {
 					customer_id,
 					first_name,
 					last_name,
-					email
+					email,
+					image
 				}
 			}
 		If customer_id and email already exist:
@@ -1649,15 +1760,17 @@ app.post('/customer/login', (req, res) => {
 			Error: customer_id already exists
 		If email already exists:
 			Error: email already exists
+		If image is not an image file:
+			Error: invalid image format. Accepted formats: png, jpg, jpeg
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password
+			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password, image (optional)
 		On error:
 			Error creating new customer
 */
-app.put('/customer/register', (req, res) => {
+app.put('/customer/register', upload.single('image'), (req, res) => {
 	//Make sure right number of parameters are entered:
 	if(!(req.body.customer_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.email !== undefined && req.body.password !== undefined)) {
-		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password');
+		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, password, image (optional)');
 		return;
 	}   //if
 
@@ -1682,10 +1795,28 @@ app.put('/customer/register', (req, res) => {
 					res.status(500).send('Error creating new customer');
 				}	//if
 				else {
-					//Build query and parameters
-					let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex')];
-					let query = 'INSERT INTO sample.customers(customer_id, first_name, last_name, email, salt, password)';
-					query = query + " VALUES(?, ?, ?, ?, ?, ?)";
+					let image = null;
+					//If an image is supplied:
+					if (req.file !== undefined) {
+						//If not an image file:
+						if (!(req.file.mimetype === 'image/png' || req.file.mimetype === 'image/jpg' || req.file.mimetype === 'image/jpeg')) {
+							res.status(409).send('Error: invalid image format. Accepted formats: png, jpg, jpeg');
+							return;
+						}	//if
+						//Build query and parameters:
+						parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex'), req.file.buffer];
+						query = 'INSERT INTO sample.customers(customer_id, first_name, last_name, email, salt, password, image)';
+						query = query + " VALUES(?, ?, ?, ?, ?, ?, ?)";
+						image = req.file.buffer;
+					}	//if
+					//If no image is supplied:
+					else {
+						//Build query and parameters:
+						parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex')];
+						query = 'INSERT INTO sample.customers(customer_id, first_name, last_name, email, salt, password)';
+						query = query + " VALUES(?, ?, ?, ?, ?, ?)";
+
+					}	//else
 
 					//Add new customer to db:
 					db.query(query, parameters, (err, rows) => {
@@ -1703,7 +1834,9 @@ app.put('/customer/register', (req, res) => {
 
 							//Sign JWT and send token
 							//To add expiration date: jwt.sign({customer}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-							jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
+							jwt.sign({customer}, process.env.JWT_SECRET, {expiresIn: '7d'}, (err, token) => {
+								//Add image to customer:
+								customer['image'] = image;
 								//Build response
 								let response = {
 									'token': token,
@@ -1722,8 +1855,8 @@ app.put('/customer/register', (req, res) => {
 });	//app.put
 
 /*
-	Updates customer info including customer_id, first_name, last_name, email
-	Inputs: customer_id, first_name, last_name, email, JWT
+	Updates customer info including customer_id, first_name, last_name, email, image (optional)
+	Inputs: customer_id, first_name, last_name, email, image (optional), JWT
 	Outputs:
 		On success:
 			{
@@ -1736,7 +1869,8 @@ app.put('/customer/register', (req, res) => {
 					customer_id,
 					first_name,
 					last_name,
-					email
+					email,
+					image
 				}
 			}
 		If JWT is not valid or not supplied:
@@ -1744,17 +1878,25 @@ app.put('/customer/register', (req, res) => {
 		If JWT is not a customer token:
 			Must be signed in as a customer!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email
+			Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, image (optional)
 		If customer_id and email already exist:
 			Error: customer_id and email already exist
 		If customer_id already exists:
 			Error: customer_id already exists
 		If email already exists:
 			Error: email already exists
+		If image is not an image file:
+			Error: invalid image format. Accepted formats: png, jpg, jpeg
 		On error:
 			Error updating customer info
 */
-app.post('/customer/update', verifyToken, (req, res) => {
+app.post('/customer/update', verifyToken, upload.single('image'), (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.customer_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.email !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, logo (optional)');
+		return;
+	}   //if
+
 	//Verify the JWT
 	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
@@ -1763,18 +1905,15 @@ app.post('/customer/update', verifyToken, (req, res) => {
 		else {
 			//Make sure the JWT is for a customer:
 			if (auth.customer) {
-				//Make sure right number of parameters are entered:
-				if(!(req.body.customer_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.email !== undefined)) {
-					res.status(400).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email');
-					return;
-				}   //if
-
 				//Make sure the supplied customer_id and email are unique:
 				let query = 'SELECT * FROM sample.customers WHERE customer_id = ?; SELECT * FROM sample.customers WHERE email = ?';
 				db.query(query, [req.body.customer_id, req.body.email], (err, rows) => {
-					if ((rows[0].length > 0 && (req.body.customer_id !== auth.customer.customer_id)) && (rows[1].length > 0 && (req.body.email !== auth.customer.email))) {
+					if (err) {
+						res.status(500).send('Error updating customer info');
+					}	//if
+					else if ((rows[0].length > 0 && (req.body.customer_id !== auth.customer.customer_id)) && (rows[1].length > 0 && (req.body.email !== auth.customer.email))) {
 						res.status(409).send('Error: customer_id and email already exist');
-					}   //if
+					}   //else if
 					else if (rows[0].length > 0 && (req.body.customer_id !== auth.customer.customer_id)) {
 						res.status(409).send('Error: customer_id already exists');
 					}	//else if
@@ -1782,11 +1921,30 @@ app.post('/customer/update', verifyToken, (req, res) => {
 						res.status(409).send('Error: email already exists');
 					}	//else if
 					else {
-						//Build query and store customer_id:
-						let customer_id = auth.customer.customer_id;
-						let query = 'UPDATE sample.customers SET customer_id = ?, first_name = ?, last_name = ?, email = ?';
-						query = query + ' WHERE customer_id = ?';
-						let parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, customer_id];
+						let image = null;
+						let parameters = [];
+						//If an image is supplied:
+						if (req.file !== undefined) {
+							//If not an image file:
+							if (!(req.file.mimetype === 'image/png' || req.file.mimetype === 'image/jpg' || req.file.mimetype === 'image/jpeg')) {
+								res.status(409).send('Error: invalid image format. Accepted formats: png, jpg, jpeg');
+								return;
+							}	//if
+							//Build query and store customer_id:
+							let customer_id = auth.customer.customer_id;
+							query = 'UPDATE sample.customers SET customer_id = ?, first_name = ?, last_name = ?, email = ?, image = ?';
+							query = query + ' WHERE customer_id = ?';
+							parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, req.file.buffer, customer_id];
+							image = req.file.buffer;
+						}	//if
+						//If no image is supplied:
+						else {
+							//Build query and store customer_id:
+							let customer_id = auth.customer.customer_id;
+							query = 'UPDATE sample.customers SET customer_id = ?, first_name = ?, last_name = ?, email = ?';
+							query = query + ' WHERE customer_id = ?';
+							parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, customer_id];
+						}	//else
 
 						//Update customer info in db:
 						db.query(query, parameters, (err, rows) => {
@@ -1804,7 +1962,8 @@ app.post('/customer/update', verifyToken, (req, res) => {
 
 								//Sign JWT and send token
 								//To add expiration date: jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-								jwt.sign({customer}, process.env.JWT_SECRET, (err, token) => {
+								jwt.sign({customer}, process.env.JWT_SECRET, {expiresIn: '7d'}, (err, token) => {
+									customer['image'] = image;
 									//Build response
 									let response = {
 										'token': token,
@@ -2221,98 +2380,165 @@ app.get('/menu/:id', (req, res) => {
 
 /*
 	Adds a new item to the menu
-	Inputs: restaurant_id, item_name, calorie_num, category, price, description
+	Inputs: restaurant_id, item_name, calorie_num, category, price, description, image (optional), JWT
 	Outputs:
 		On success:
 			Successfully added new menu item!
 		If item_name and restaurant_id exists already:
 			Error: item already exists
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description
+			Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description, image (optional)
+		If image is not an image file:
+			Error: invalid image format. Accepted formats: png, jpg, jpeg
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant of the new item:
+			Must be the restaurant manager to add menu items!
 		On error:
 			Error adding new menu item
 */
-app.put('/menu/add', (req, res) => {
+app.put('/menu/add', verifyToken, upload.single('image'), (req, res) => {
 	//Make sure right number of parameters are entered:
 	if(!(req.body.restaurant_id !== undefined && req.body.item_name !== undefined && req.body.calorie_num !== undefined && req.body.category !== undefined && req.body.price !== undefined && req.body.description !== undefined)) {
-		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description');
+		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description, image (optional)');
 		return;
 	}   //if
 
-	//Make sure the menu item doesn't exist at the restaurant:
-	let parameters = [req.body.restaurant_id, req.body.item_name]
-	let query = 'Select * FROM sample.menu WHERE restaurant_id = ? AND item_name = ?';
-	db.query(query, parameters, (err, rows) => {
-		if (rows.length > 0) {
-			res.status(409).send('Error: item already exists');
+	//Verify that the person is a manager at the restaurant
+	jwt.verify(req.token, process.env.JWT_SECRET, upload.single('image'), (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
 		}   //if
 		else {
-			//Build query and parameters:
-			parameters = []
-			parameters = [req.body.restaurant_id, req.body.item_name, req.body.calorie_num, req.body.category, req.body.price, req.body.description];
-			query = '';
-			query = 'INSERT INTO sample.menu(restaurant_id, item_name, calorie_num, category, in_stock, price, description)';
-			query = query + " VALUES (?, ?, ?, ?, 1, ?, ?)";
+			//Check to make sure person is a manager at the restaurant:
+			if (auth.staff && auth.staff.position === 'manager' && parseInt(auth.staff.restaurant_id) === parseInt(req.body.restaurant_id)) {
+				//Make sure the menu item doesn't exist at the restaurant:
+				let parameters = [req.body.restaurant_id, req.body.item_name]
+				let query = 'Select * FROM sample.menu WHERE restaurant_id = ? AND item_name = ?';
+				db.query(query, parameters, (err, rows) => {
+					if (rows.length > 0) {
+						res.status(409).send('Error: item already exists');
+					}   //if
+					else {
+						//If an image is supplied:
+						if (req.file !== undefined) {
+							//If not an image file:
+							if (!(req.file.mimetype === 'image/png' || req.file.mimetype === 'image/jpg' || req.file.mimetype === 'image/jpeg')) {
+								res.status(409).send('Error: invalid image format. Accepted formats: png, jpg, jpeg');
+								return;
+							}	//if
+							//Build query and parameters:
+							parameters = [req.body.restaurant_id, req.body.item_name, req.body.calorie_num, req.body.category, req.body.price, req.body.description, req.file.buffer];
+							query = 'INSERT INTO sample.menu(restaurant_id, item_name, calorie_num, category, in_stock, price, description, image)';
+							query = query + ' VALUES (?, ?, ?, ?, 1, ?, ?, ?)';
+						}	//if
+						//If no image is supplied:
+						else {
+							//Build query and parameters:
+							parameters = [req.body.restaurant_id, req.body.item_name, req.body.calorie_num, req.body.category, req.body.price, req.body.description];
+							query = 'INSERT INTO sample.menu(restaurant_id, item_name, calorie_num, category, in_stock, price, description)';
+							query = query + ' VALUES (?, ?, ?, ?, 1, ?, ?)';
+						}	//else
 
-			//Add new menu item to db:
-			db.query(query, parameters, (err, rows) =>
-			{
-				if (err) {
-					res.status(500).send('Error adding new menu item');
-				}   //if
-				else {
-					res.status(200).send('Successfully added new menu item!');
-				}   //else
-			}); //db.query
+						//Add new menu item to db:
+						db.query(query, parameters, (err, rows) =>
+						{
+							if (err) {
+								res.status(500).send('Error adding new menu item');
+							}   //if
+							else {
+								res.status(200).send('Successfully added new menu item!');
+							}   //else
+						}); //db.query
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Must be the restaurant manager to add menu items!');
+			}	//else
 		}   //else
-	}); //db.query
+	});	//verify
 });	//app.put
 
 /*
 	Updates an existing menu item
-	Inputs: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description
+	Inputs: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description, image (optional), JWT
 	Outputs:
 		On success:
 			Successfully updated menu item!
 		If item does not exist at the restaurant:
 			Error: item does not exist
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description
+			Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description, image (optional)
+		If image is not an image file:
+			Error: invalid image format. Accepted formats: png, jpg, jpeg
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant of the item:
+			Must be the restaurant manager to update menu items!
 		On error:
 			Error updating menu item
 */
-app.post('/menu/update', (req, res) => {
+app.post('/menu/update', verifyToken, upload.single('image'), (req, res) => {
 	//Make sure right number of parameters are entered:
 	if(!(req.body.item_id !== undefined && req.body.restaurant_id !== undefined && req.body.item_name !== undefined && req.body.calorie_num !== undefined && req.body.category !== undefined && req.body.in_stock !== undefined && req.body.price !== undefined && req.body.description !== undefined)) {
-		res.status(400).send('Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description');
+		res.status(400).send('Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description, image (optional)');
 		return;
 	}   //if
 
-	//Make sure the menu item exists at the restaurant:
-	let parameters = [req.body.item_id, req.body.restaurant_id]
-	let query = 'Select * FROM sample.menu WHERE item_id = ? AND restaurant_id = ?';
-	db.query(query, parameters, (err, rows) => {
-		if (rows.length === 0) {
-			res.status(409).send('Error: item does not exist');
+	//Verify that the person is a manager at the restaurant
+	jwt.verify(req.token, process.env.JWT_SECRET, upload.single('image'), (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
 		}   //if
 		else {
-			//Build query and parameters:
-			parameters = [req.body.item_name, req.body.calorie_num, req.body.category, req.body.in_stock, req.body.price, req.body.description, req.body.item_id];
-			let query = '';
-			query = 'UPDATE sample.menu SET item_name = ?, calorie_num = ?, category = ?, in_stock = ?, price = ?, description = ?';
-			query = query + ' WHERE item_id = ?';
+			//Check to make sure person is a manager at the restaurant:
+			if (auth.staff && auth.staff.position === 'manager' && parseInt(auth.staff.restaurant_id) === parseInt(req.body.restaurant_id)) {
+				//Make sure the menu item exists at the restaurant:
+				let parameters = [req.body.item_id, req.body.restaurant_id]
+				let query = 'Select * FROM sample.menu WHERE item_id = ? AND restaurant_id = ?';
+				db.query(query, parameters, (err, rows) => {
+					if (rows.length === 0) {
+						res.status(409).send('Error: item does not exist');
+					}   //if
+					else {
+						//If an image is supplied:
+						if (req.file !== undefined) {
+							//If not an image file:
+							if (!(req.file.mimetype === 'image/png' || req.file.mimetype === 'image/jpg' || req.file.mimetype === 'image/jpeg')) {
+								res.status(409).send('Error: invalid image format. Accepted formats: png, jpg, jpeg');
+								return;
+							}	//if
+							//Build query and parameters:
+							parameters = [req.body.item_name, req.body.calorie_num, req.body.category, req.body.in_stock, req.body.price, req.body.description, req.file.buffer, req.body.item_id];
+							query = 'UPDATE sample.menu SET item_name = ?, calorie_num = ?, category = ?, in_stock = ?, price = ?, description = ?, image = ?';
+							query = query + ' WHERE item_id = ?';
+						}	//if
+						//If no image is supplied:
+						else {
+							//Build query and parameters:
+							parameters = [req.body.item_name, req.body.calorie_num, req.body.category, req.body.in_stock, req.body.price, req.body.description, req.body.item_id];
+							query = 'UPDATE sample.menu SET item_name = ?, calorie_num = ?, category = ?, in_stock = ?, price = ?, description = ?';
+							query = query + ' WHERE item_id = ?';
+						}	//else
 
-			//Edit menu item in db:
-			db.query(query, parameters, (err, rows) => {
-				if (err) {
-					res.status(500).send('Error updating menu item');
-				}   //if
-				else {
-					res.status(200).send('Successfully updated menu item!');
-				}   //else
-			}); //db.query
+						//Edit menu item in db:
+						db.query(query, parameters, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error updating menu item');
+							}   //if
+							else {
+								res.status(200).send('Successfully updated menu item!');
+							}   //else
+						}); //db.query
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Must be the restaurant manager to update menu items!');
+			}	//else
 		}   //else
-	}); //db.query
+	});	//verify
 });	//app.post
 
 /*
@@ -2898,7 +3124,8 @@ app.post('/alexa/order/remove', (req, res) => {
 					item_name,
 					quantity,
 					order_date,
-					table_num
+					table_num,
+					customization
 				}
 			}
 		If no in progress orders exist:
@@ -2930,7 +3157,8 @@ app.get('/alexa/order/:id', (req, res) => {
 					'item_name': rows[i].item_name,
 					'quantity': rows[i].quantity,
 					'order_date': rows[i].order_date,
-					'table': rows[i].table_num
+					'table': rows[i].table_num,
+					'customization': rows[i].customization
 				};	//response
 			}   //for
 
@@ -2975,451 +3203,6 @@ app.post('/verify', verifyToken, (req, res) => {
 //==========================================================================//
 //								TEST ENDPOINTS 								//
 //==========================================================================//
-
-/*
-	Returns restaurant information and menu items for restaurant with restaurant_id = id
-	Inputs: restaurant_id
-	Outputs:
-		On success:
-			{
-				restaurant: {
-					name,
-					address,
-					phone_number,
-					opening,
-					closing,
-					font,
-					font_color
-					primary_color,
-					secondary_color,
-					tertiary_color,
-					logo,
-					cuisine,
-					greeting
-				}
-				menu: {
-					i: {
-						menu_id,
-						menu_name,
-						start_time,
-						end_time,
-						item_id,
-						item_name,
-						calories,
-						price,
-						category,
-						image,
-						in_stock,
-						description
-					}
-				}
-			}
-		If restaurant does not exist:
-			Error: restaurant does not exist
-		If the restaurant does not have any menus:
-			{
-				restaurant: {
-					name,
-					address,
-					phone_number,
-					opening,
-					closing,
-					font,
-					font_color,
-					primary_color,
-					secondary_color,
-					tertiary_color,
-					logo,
-					cuisine,
-					greeting
-				}
-			}
-		On error:
-			Error retrieving restaurant information
-*/
-app.get('/test/restaurant/:id', (req, res) => {
-	//Make sure the restaurant exists:
-	let query = 'SELECT * FROM sample.restaurants WHERE restaurant_id = ?';
-
-	db.query(query, req.params.id, (err, rows) => {
-		if (err) {
-			res.status(500).send('Error retrieving restaurant information');
-		}	//if
-		else if (rows.length == 0) {
-			res.status(409).send('Error: restaurant does not exist');
-		}   //else if
-		else {
-			query = 'SELECT * FROM sample.restaurants natural join sample.menus natural join sample.items natural join sample.availabilities WHERE restaurant_id = ? ORDER BY menu_id';
-
-			//Query database:
-			db.query(query, req.params.id, (err, rows) => {
-				if (err) {
-					res.status(500).send('Error retrieving restaurant information');
-				}   //if
-				//If restaurant has no menus:
-				else if (rows.length < 1) {
-					query = 'SELECT * FROM sample.restaurants WHERE restaurant_id = ?';
-					db.query(query, req.params.id, (err, rows) => {
-						if (err) {
-
-						}	//if
-						else {
-							//Build JSON object:
-							let response = {};
-
-							//Add restaurant info to response:
-							response['restaurant'] = {
-								'name': rows[0].restaurant_name,
-								'address': rows[0].restaurant_addr,
-								'phone_number': rows[0].phone_number,
-								'opening': rows[0].opening_time,
-								'closing': rows[0].closing_time,
-								'font': rows[0].font,
-								'font_color': rows[0].font_color,
-								'primary_color': rows[0].primary_color,
-								'secondary_color': rows[0].secondary_color,
-								'tertiary_color': rows[0].tertiary_color,
-								'logo': rows[0].logo,
-								'cuisine': rows[0].cuisine,
-								'greeting': rows[0].alexa_greeting
-							};	//response
-
-							//Send Response:
-							res.type('json').send(response);
-						}	//else
-					});	//db.query
-				}	//else if
-				//If restaurant has menus:
-				else {
-					//Build JSON object:
-					let response = {};
-
-					//Add restaurant info to response:
-					response['restaurant'] = {
-						'name': rows[0].restaurant_name,
-						'address': rows[0].restaurant_addr,
-						'phone_number': rows[0].phone_number,
-						'opening': rows[0].opening_time,
-						'closing': rows[0].closing_time,
-						'font': rows[0].font,
-						'font_color': rows[0].font_color,
-						'primary_color': rows[0].primary_color,
-						'secondary_color': rows[0].secondary_color,
-						'tertiary_color': rows[0].tertiary_color,
-						'logo': rows[0].logo,
-						'cuisine': rows[0].cuisine,
-						'greeting': rows[0].alexa_greeting
-					};	//response
-
-					//Add menus to response:
-					response['menu'] = {};
-					for (let i=0; i<rows.length; i++) {
-						//Add each menu item to response:
-						response['menu'][i] =   {
-							'menu_id': rows[i].menu_id,
-							'menu_name': rows[i].menu_name,
-							'start_time': rows[i].start_time,
-							'end_time': rows[i].end_time,
-							'item_id': rows[i].item_id,
-							'item_name': rows[i].item_name,
-							'calories': rows[i].calorie_num,
-							'price': rows[i].price,
-							'category': rows[i].category,
-							'image': rows[i].image,
-							'in_stock': rows[i].in_stock,
-							'description': rows[i].description
-						};	//response
-					}   //for
-
-					//Send Response:
-					res.type('json').send(response);
-				}   //else
-			}); //db.query
-		}	//else
-	});	//db.query
-}); //app.get
-
-/*
-	Returns menu information for menu_id = id
-	Inputs: menu_id
-	Outputs:
-		On success:
-			{
-				i:
-				{
-					item_id,
-					item_name,
-					restaurant_id,
-					calories,
-					price,
-					category,
-					picture,
-					in_stock,
-					description
-				}
-			}
-		If menu has no items:
-			This menu has no items
-		If menu does not exist:
-			Error: menu does not exist
-		On error:
-			Error retrieving menu
-*/
-app.get('/test/menu/:id', (req, res) => {
-	//Make sure the menu exists:
-	let query = 'Select * FROM sample.menus WHERE menu_id = ?';
-
-	db.query(query, req.params.id, (err, rows) => {
-		if (err) {
-			res.status(500).send('Error retrieving menu');
-		}	//if
-		else if (rows.length == 0) {
-			res.status(409).send('Error: menu does not exist');
-		}   //else if
-		else {
-			let query = 'SELECT * FROM sample.items natural join sample.availabilities WHERE menu_id = ?';
-
-			//Query database:
-			db.query(query, req.params.id, (err, rows) => {
-				if (err) {
-					res.status(500).send('Error retrieving menu');
-				}   //if
-				else if (rows.length < 1) {
-					res.status(200).send('This menu has no items');
-				}   //else if
-				else {
-					//Build JSON object:
-					let response = {};
-
-					//Loop through each row returned from query:
-					for (let i=0; i<rows.length; i++) {
-						response[rows[i].item_name] = {
-							'item_id': rows[i].item_id,
-							'item_name': rows[i].item_name,
-							'restaurant_id': rows[i].restaurant_id,
-							'calories': rows[i].calorie_num,
-							'price': rows[i].price,
-							'category': rows[i].category,
-							'picture': rows[i].image,
-							'in_stock': rows[i].in_stock,
-							'description': rows[i].description
-						};	//response
-					}   //for
-
-					//Send Response:
-					res.type('json').send(response);
-				}   //else
-			}); //db.query
-		}	//else
-	});	//db.query
-}); //app.get
-
-/*
-	Updates menu information
-	Inputs: menu_id, menu_name, restaurant_id, start_time, end_time
-	Outputs:
-		On success:
-			Successfully updated menu information!
-		If any inputs are missing:
-			Error: Missing parameter. Required parameters: menu_id, menu_name, start_time, end_time
-		If menu does not exist:
-			Error: menu does not exist
-		If JWT is not valid:
-			Must be authorized!
-		If JWT is not a manager token for the restaurant of the menu:
-			Must be the restaurant manager to update menu information!
-		On error: 
-			Error updating menu information
-*/
-app.post('/test/menu/update', verifyToken, (req, res) => {
-	//Make sure right number of parameters are entered:
-	if(!(req.body.menu_id && req.body.menu_name && req.body.start_time && req.body.end_time)) {
-		res.status(400).send('Error: Missing parameter. Required parameters: menu_id, menu_name, start_time, end_time');
-		return;
-	}   //if
-
-	//Verify that the JWT is valid:
-	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
-		if (err) {
-			res.status(401).send('Must be authorized!');
-		}   //if
-		else {
-			//Make sure the restaurant exists:
-			let query = 'Select * FROM sample.menus WHERE menu_id = ?';
-			db.query(query, req.body.menu_id, (err, rows) => {
-				if (rows.length == 0) {
-					res.status(409).send('Error: menu does not exist');
-				}   //if
-				else {
-					//Check to make sure person is a manager at the restaurant:
-					if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === rows[0].restaurant_id) {
-						//Build query and parameters:
-						query = 'UPDATE sample.menus SET menu_name = ?, start_time = ?, end_time = ?';
-						query = query + ' WHERE menu_id = ?';
-						let parameters = [req.body.menu_name, req.body.start_time, req.body.end_time, req.body.menu_id];
-
-						//Update menu information in db:
-						db.query(query, parameters, (err, rows) => {
-							if (err) {
-								res.status(500).send('Error updating menu information');
-							}	//if
-							else {
-								res.status(200).send('Successfully updated menu information!');
-							}   //else
-						});	//db.query
-					}	//if
-					else {
-						res.status(401).send('Must be the restaurant manager to update menu information!');
-					}	//else
-				}	//else
-			}); //db.query
-		}	//else
-	});	//verify
-});	//app.post
-
-/*
-	Adds a new menu
-	Inputs: menu_name, restaurant_id, start_time, end_time
-	Outputs:
-		On success:
-			Successfully added new menu! menu_id: <menu_id>
-		If item_name and restaurant_id exists already:
-			Error: menu already exists
-		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, menu_name, start_time, end_time
-		If JWT is not valid:
-			Must be authorized!
-		If JWT is not a manager token for the restaurant of the menu:
-			Must be the restaurant manager to add a new menu!
-		On error:
-			Error adding new menu
-*/
-app.put('/test/menu/add', verifyToken, (req, res) => {
-	//Make sure right number of parameters are entered:
-	if(!(req.body.restaurant_id && req.body.menu_name && req.body.start_time && req.body.end_time)) {
-		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, menu_name, start_time, end_time');
-		return;
-	}   //if
-
-	//Verify that the JWT is valid:
-	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
-		if (err) {
-			res.status(401).send('Must be authorized!');
-		}   //if
-		else {
-			//Check to make sure person is a manager at the restaurant:
-			if (auth.staff && auth.staff.position === 'manager' && parseInt(auth.staff.restaurant_id) === parseInt(req.body.restaurant_id)) {
-				//Make sure the menu doesn't exist at the restaurant:
-				let parameters = [req.body.restaurant_id, req.body.menu_name]
-				let query = 'Select * FROM sample.menus WHERE restaurant_id = ? AND menu_name = ?';
-				db.query(query, parameters, (err, rows) => {
-					if (rows.length > 0) {
-						res.status(409).send('Error: menu already exists');
-					}   //if
-					else {
-						//Build query and parameters:
-						query = 'INSERT INTO sample.menus(menu_name, restaurant_id, start_time, end_time)';
-						query = query + " VALUES (?, ?, ?, ?)";
-						parameters = [req.body.menu_name, req.body.restaurant_id, req.body.start_time, req.body.end_time];
-
-						//Add menu in db:
-						db.query(query, parameters, (err, rows) => {
-							if (err) {
-								res.status(500).send('Error adding new menu');
-							}	//if
-							else {
-								res.status(200).send('Successfully added new menu! menu_id: ' + rows.insertId);
-							}   //else
-						});	//db.query
-					}	//else
-				});	//db.query
-			}	//if
-			else {
-				res.status(401).send('Must be the restaurant manager to add a new menu!');
-			}	//else
-		}	//else
-	});	//verify
-});	//app.put
-
-/*
-	Adds a new menu item
-	Inputs: restaurant_id, item_name, calorie_num, category, price, description, menu_id
-	Outputs:
-		On success:
-			Successfully added new item!
-		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description, menu_id
-		If item already exists:
-			Error: item already exists
-		If JWT is not valid:
-			Must be authorized!
-		If JWT is not a manager token for the restaurant of the menu:
-			Must be the restaurant manager to add a new item!
-		On error:
-			Error adding new item
-*/
-app.put('/test/menu/item/add', verifyToken, (req, res) => {
-	//Make sure right number of parameters are entered:
-	if(!(req.body.restaurant_id && req.body.item_name && req.body.calorie_num && req.body.category && req.body.price && req.body.description && req.body.menu_id)) {
-		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, item_name, calorie_num, category, price, description, menu_id');
-		return;
-	}   //if
-
-	//Verify that the JWT is valid:
-	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
-		if (err) {
-			res.status(401).send('Must be authorized!');
-		}   //if
-		else {
-			//Check to make sure person is a manager at the restaurant:
-			if (auth.staff && auth.staff.position === 'manager' && parseInt(auth.staff.restaurant_id) === parseInt(req.body.restaurant_id)) {
-				//Make sure the item doesn't exist at the restaurant:
-				let parameters = [req.body.restaurant_id, req.body.item_name]
-				let query = 'Select * FROM sample.items WHERE restaurant_id = ? AND item_name = ?';
-				db.query(query, parameters, (err, rows) => {
-					if (rows.length > 0) {
-						res.status(409).send('Error: item already exists');
-					}   //if
-					else {
-						//Build query and parameters:
-						query = 'INSERT INTO sample.items(restaurant_id, item_name, calorie_num, category, in_stock, description)';
-						query = query + " VALUES (?, ?, ?, ?, 1, ?)";
-						parameters = [req.body.restaurant_id, req.body.item_name, req.body.calorie_num, req.body.category, req.body.description];
-
-						//Add item in db and get item_id:
-						db.query(query, parameters, (err, rows) => {
-							if (err) {
-								res.status(500).send('Error adding new item');
-							}	//if
-							else {
-								//Get item_id of inserted item
-								let item_id = rows.insertId;
-
-								//Build query and parameters:
-								query = 'INSERT INTO sample.availabilities(menu_id, item_id, price)';
-								query = query + " VALUES (?, ?, ?)";
-								parameters = [req.body.menu_id, item_id, req.body.price];
-
-								//Add item to availabilities table:
-								db.query(query, parameters, (err, rows) => {
-									if (err) {
-										res.status(500).send('Error adding new item');
-									}	//if
-									else {
-										res.status(200).send('Successfully added new item!');
-									}	//else
-								})	//db.query
-							}   //else
-						});	//db.query
-					}	//else
-				});	//db.query
-			}	//if
-			else {
-				res.status(401).send('Must be the restaurant manager to add a new item!');
-			}	//else
-		}	//else
-	});	//verify
-});	//app.put
 
 /*
 	Returns stats on which things were ordered the most per category at each restaurant

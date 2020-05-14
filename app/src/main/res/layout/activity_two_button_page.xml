@@ -15,27 +15,33 @@
 
     <!-- scanner button -->
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="343dp"
-        android:layout_height="179dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="44dp"
-        android:src="@drawable/logo"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sanchez"
+        android:text="AutoGarçon"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="32sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.15" />
 
     <Button
         android:id="@+id/scanner_button"
-        android:layout_width="match_parent"
+        android:layout_width="255dp"
         android:layout_height="100dp"
         android:layout_marginBottom="28dp"
-        android:background="@color/colorPrimary"
-        android:elevation="5555dp"
-        android:text="QR Code Scanner \n (QR Code Provided by Restaurant)"
+        android:background="@drawable/oval_button"
+        android:text="QR Code Scanner"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/fav_button"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.55"/>
 
     <!-- home button -->
     <Button
@@ -46,7 +52,10 @@
         android:background="@color/colorPrimary"
         android:text="Favorites Page"
         android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintVertical_bias="0.85"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

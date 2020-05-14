@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {makeStyles, useTheme, createMuiTheme, ThemeProvider, withStyles} from '@material-ui/core/styles';
+import React from 'react';
+import {makeStyles, createMuiTheme, ThemeProvider, withStyles} from '@material-ui/core/styles';
 import {AppBar, Toolbar, Tabs, Tab} from '@material-ui/core'
 import {Link} from 'react-router-dom'
 import AccountDropdown from "../AccountDropdown";
@@ -58,9 +58,9 @@ function Header(props){
 
 
   // Changes which tab is highlighted
-  const [value, setValue] = useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const [tab, setTab] = React.useState(props.tab);
+  const handleTabChange = (event, newTab) => {
+    setTab(newTab);
   };
 
   return(
@@ -68,7 +68,7 @@ function Header(props){
       <AppBar className={classes.appBar} position="sticky">
         <Toolbar className={classes.toolbar}>
           <img src={companyLogo}  width="auto" height="45px" alt="company logo" className={classes.logo}/>
-          <StyledTabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
+          <StyledTabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
             <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
             <Tab label="Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />
             {/*<Tab label="Messages" color="primary" className={classes.tab} component={Link} to={'/cook/messages'} />*/}
