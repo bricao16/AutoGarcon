@@ -23,8 +23,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
-import com.google.android.material.badge.BadgeDrawable;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +48,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private int restaurantID;
     private String primaryColor;
     private String secondaryColor;
-    private BadgeDrawable badge;
     private String tertiaryColor;
     private int opening;
     private int closing;
@@ -59,7 +56,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     Dialog addToCartPopup;
     Dialog confirmPopup;
 
-    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor,int opening,int closing,BadgeDrawable drawable) {
+    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor,int opening,int closing) {
 
         this.context = context;
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
@@ -71,9 +68,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
         this.tertiaryColor = tertiaryColor;
-        this.opening=opening;
-        this.closing=closing;
-        this.badge = drawable;
+        this.opening = opening;
+        this.closing = closing;
     }
 
     @Override
@@ -130,15 +126,13 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     public View getChildView(final int i, final int j, boolean b, View view, ViewGroup viewGroup) {
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
 
-        final String childText = getChild(i, j).getNameOfItem();
-
         if(view == null) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.expandable_menu_item, viewGroup, false);
             view.setBackgroundColor(Color.parseColor(tertiaryColor));
         }
 
         TextView txtListChild = view.findViewById(R.id.list_item);
-        txtListChild.setText(childText);
+        txtListChild.setText(getChild(i, j).getNameOfItem());
 
         TextView txtListChildPrice = view.findViewById(R.id.list_item_price);
         txtListChildPrice.setText(String.format("$%.02f", getChild(i, j).getPrice()));
@@ -147,12 +141,18 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 addToCartPopup = new Dialog(context);
-
                 addToCartPopup.setContentView(R.layout.menu_item_popup);
 
-                ConstraintLayout background = addToCartPopup.findViewById(R.id.menu_popup);
+                addToCartPopup.findViewById(R.id.menu_popup).setBackgroundColor(Color.parseColor(secondaryColor));
+
+                addToCartPopup.findViewById(R.id.add_to_cart_popup_close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addToCartPopup.dismiss();
+                    }
+                });
+
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart_menu_popup);
-                Button closeMenuItemPopup = addToCartPopup.findViewById(R.id.add_to_cart_popup_close);
                 TextView outOfStock = addToCartPopup.findViewById(R.id.order_items);
                 TextView calorieCount = addToCartPopup.findViewById(R.id.item_calories_menu_popup);
                 TextView itemName = addToCartPopup.findViewById(R.id.item_name_menu_popup);
@@ -191,7 +191,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                 VolleySingleton.getInstance(context).addToRequestQueue(getItemImageRequest);
 
-                background.setBackgroundColor(Color.parseColor(secondaryColor));
 
                 calorieCount.setText("Calories: " + getChild(i, j).getCalories());
                 calorieCount.setTextColor(Color.WHITE);
@@ -225,9 +224,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                         cart.addToCart(itemToBeAdded);
                         pref.setShoppingCart(cart);
-                        badge.setNumber(pref.getShoppingCart().getCart().size());
-                        badge.setVisible(false);
-                        badge.setVisible(true);
                         addToCartPopup.dismiss();
                     }
                     else if(pref.getShoppingCart().getRestaurantID() == restaurantID) {
@@ -246,9 +242,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                         pref.setShoppingCart(cart);
                         pref.getShoppingCart().setEndingHour(closing);
                         pref.getShoppingCart().setStartingHour(closing);
-                        badge.setNumber(pref.getShoppingCart().getCart().size());
-                        badge.setVisible(false);
-                        badge.setVisible(true);
                         addToCartPopup.dismiss();
                     }
                     else if(pref.getShoppingCart().getRestaurantID() != restaurantID) {
@@ -280,9 +273,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 pref.setShoppingCart(cart);
                                 pref.getShoppingCart().setEndingHour(closing);
                                 pref.getShoppingCart().setStartingHour(opening);
-                                badge.setNumber(pref.getShoppingCart().getCart().size());
-                                badge.setVisible(false);
-                                badge.setVisible(true);
                                 confirmPopup.dismiss();
                                 addToCartPopup.dismiss();
                                 Toast.makeText(context, "Successfully added to cart.",Toast.LENGTH_LONG).show();
@@ -300,19 +290,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                     }
                     }
                 });
-
-                closeMenuItemPopup.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        addToCartPopup.dismiss();
-                    }
-                });
             }
         });
-
-
-
-        Log.d("testing",""+badge.getNumber());
 
         return view;
     }

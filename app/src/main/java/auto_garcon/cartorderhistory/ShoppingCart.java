@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import auto_garcon.NukeSSLCerts;
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.Account;
 
 import auto_garcon.accountstuff.PasswordChange;
@@ -89,6 +90,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
         NukeSSLCerts.nuke();
 
         /**

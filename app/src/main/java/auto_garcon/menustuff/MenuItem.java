@@ -1,5 +1,7 @@
 package auto_garcon.menustuff;
 
+import android.util.Log;
+
 import java.io.Serializable;
 /**
  * Sorts out information for menu items
@@ -40,6 +42,7 @@ public class MenuItem implements Serializable{
     }
 
     public void setPrice(double price) {
+
         this.price = price;
     }
     public void setQuantity(int quantity){

@@ -31,10 +31,10 @@
 
     <Button
         android:id="@+id/scanner_button"
-        android:layout_width="match_parent"
+        android:layout_width="255dp"
         android:layout_height="100dp"
         android:layout_marginBottom="28dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/oval_button"
         android:text="QR Code Scanner"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
