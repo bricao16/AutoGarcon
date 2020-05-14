@@ -11,10 +11,10 @@ import Container from '@material-ui/core/Container';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-import CookView from './CSignUp';
 import Alert from 'react-bootstrap/Alert';
+import Home from './Home';
+import Link from '@material-ui/core/Link';
 
-const cookies = new Cookies();
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -34,17 +34,17 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
-/*This Sign up page is used for the cook view,
-  a manager is able to register a cook account by inputing
+/*This Sign up page is used for the a customer after they created their restaurant. 
+  They are able to create a manager account by inputing
   staff_id, first_name, last_name, contact_num, 
-  email, password to the sign in page. The posision 
-  is attomatically set to cook and the resturant id is
+  email, password to the sign in page. It creates a manager account and the resturant id is
   taken from the cookies */
 class ManagerSignUp extends React.Component{
 
     constructor(props){
     super(props);
-    
+    this.cookies = new Cookies();
+
     this.state = {
         staff_id: '',
         first_name:'',
@@ -52,11 +52,10 @@ class ManagerSignUp extends React.Component{
         contact_num:'',
         email: '',
         password:'',
+        restaurant_id:this.cookies.get('mystaff').restaurant_id,
+        confirm_password: '',
         redirect: false,
         show: false,
-        restaurant_id:cookies.get('mystaff').restaurant_id,
-        position:"Cook",
-        positions:["Cook","Manager"],
         token:null
     };
     
@@ -145,6 +144,14 @@ class ManagerSignUp extends React.Component{
       this.setState({show: true});
       return ;
     } 
+    if (this.state.password != this.state.confirm_password )
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Passwords must match"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
 
     axios({
       method: 'put',
@@ -203,11 +210,10 @@ render() {
         <Alert show={this.state.show} variant={this.state.alertVariant}>
         {this.state.response}
         </Alert>
-        <CookView section=""/> 
+        <Home section="" />
       </React.Fragment>
       );
   }  
-  if(cookies.get('mystaff').position === "manager")
   {
     //Registering cook account
     /*staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password */
@@ -219,12 +225,19 @@ render() {
         </Alert>
         <CssBaseline />
         <div className={useStyles.paper}>
-          <Avatar className={useStyles.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
+        <div style={{ 'textAlign': 'center' }}>
+            {/* Lock icon on top */}
+            <div style={{ 'display': 'inline-block' }}>
+              <Avatar className={useStyles.avatar}>
+                <LockOutlinedIcon />
+              </Avatar>
+            </div>
+            <Typography component="h1" variant="h5">
+             Sign Up
+
+              </Typography>
+            <br />
+          </div>
           <form className={useStyles.form} noValidate>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -283,14 +296,6 @@ render() {
                   autoComplete="staffid"
                 />
               </Grid>
-               <Grid item xs={12}>
-                <select id="lang" onChange={this.onChange} value={this.state.value} name="position">
-                    
-                    {/* dropdown menu options */}
-                    <option value="Cook">{this.state.positions[0]}</option>
-                    <option value="Manager">{this.state.positions[1]}</option>
-                </select>                   
-              </Grid>
               <Grid item xs={12}>
                 <TextField onChange = {this.onChange}
                   variant="outlined"
@@ -303,8 +308,19 @@ render() {
                   autoComplete="current-password"
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField onChange = {this.onChange}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="confirm_password"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirm_password"
+                  autoComplete="confirmpassword"
+                />
+              </Grid>
             </Grid>
-            <i> Please make note of this information and give to your staff member </i>
             <Button onClick = {this.handleSubmit}
               type="submit"
               fullWidth
@@ -315,7 +331,17 @@ render() {
               Sign Up
             </Button>
           </form>
+          <br></br>
+          <br></br>
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid item>
+              {/* Link Back Home*/}
 
+              <Link href="/" variant="body2" style={{ color: '#0B658A' }}>
+                {"Return to Home"}
+              </Link>
+            </Grid>
+          </Grid>
         </div>
       </Container>
     );
