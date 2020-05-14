@@ -93,7 +93,6 @@ class SignUp extends React.Component {
 
 
   handleSubmit(event) {
-    console.log(this.state);
 
     event.preventDefault();
 
@@ -157,14 +156,14 @@ class SignUp extends React.Component {
     } else if (!Number.isInteger(parseFloat(this.state.closing))) {
       this.handleValidation("No integer entered for closing time.  Please enter a time between 0 and 2400.");
     }
-
+    var phone_number = this.state.contact_num.replace(/\D/g,'');
     axios({
       method: 'put',
       url: process.env.REACT_APP_DB + '/restaurant/new',
       data: 
         '&restaurant_name=' + this.state.restaurant_name +
         '&restaurant_addr=' + this.state.restaurant_address + 
-        '&phone_number=' + this.state.contact_num +
+        '&phone_number=' + phone_number +
         '&email=' + this.state.email +
         '&opening_time=' + this.state.opening + 
         '&closing_time=' + this.state.closing + 
@@ -220,7 +219,6 @@ class SignUp extends React.Component {
      /*set the cookies and redirect to the manager sign up page*/
      cookies.set('restaurant_id', this.state.staff, {path: '/'}, {maxAge: 3600});
 
-     console.log(cookies.get('restaurant_id'));
      return (
         <Container component="main" maxWidth="xs" className="p-3">
         {/*alert if successful or unsuccessful*/}

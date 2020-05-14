@@ -195,10 +195,11 @@ class Customize extends React.Component{
     this.setState({show: true});
     
     setTimeout(() => {
+      window.location.reload();
       this.setState({
       show:false
       });
-    }, 2500)
+    }, 1000)
   }
 
 //change the category of which is being edited
