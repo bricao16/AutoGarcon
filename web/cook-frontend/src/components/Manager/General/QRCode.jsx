@@ -31,7 +31,7 @@ class StoreInfo extends React.Component{
       restaurant_id :cookies.get("mystaff").restaurant_id,
       token:cookies.get('mytoken'),
 			myValue: "Please enter in the table number for your QR Code.",
-			QRValue: "default"
+			QRValue: ",default"
     };
 
     this.onChange = this.onChange.bind(this);
@@ -49,7 +49,10 @@ class StoreInfo extends React.Component{
       }
   /* Used for connecting to restaurantInfo in database */
   handleSubmit(event) {
-		this.setState({QRValue:this.state.myValue});
+		
+		var string = this.state.restaurant_id + "," + this.state.myValue;
+		
+		this.setState({QRValue:string});
 	  this.forceUpdate();
 	}
 
