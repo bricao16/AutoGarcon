@@ -367,14 +367,6 @@ class SignUp extends React.Component {
             >
               Sign Up
               </Button>
-            <Grid container>
-              <Grid item xs>
-                {/* Create an account link */}
-                <Link href="/" variant="body2" style={{ color: '#0B658A' }}>
-                  {"Already have an account? Sign In"}
-                </Link>
-              </Grid>
-            </Grid>
           </form>
           <br></br>
           <br></br>
