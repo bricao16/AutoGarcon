@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {makeStyles, AppBar, Tab, Tabs, Toolbar} from "@material-ui/core";
 import {Link} from "react-router-dom";
-import {useTheme, ThemeProvider, createMuiTheme, withStyles} from "@material-ui/core/styles";
+import { ThemeProvider, createMuiTheme, withStyles} from "@material-ui/core/styles";
 
 const StyledTabs = withStyles({
   indicator: {

@@ -184,7 +184,7 @@ class MenuItem extends React.Component {
                 <div className="row">
                   <div className="col">
                     <div style={modalImageStyle}>
-                      <img src={this.state.blobUrl} className="img-fluid rounded float-left"></img>
+                      <img src={this.state.blobUrl} alt = "food item" className="img-fluid rounded float-left"></img>
                       {this.loading()}
                     </div>
                   </div>
@@ -207,7 +207,7 @@ class MenuItem extends React.Component {
                 {this.props.menu[0]}
               </Card.Header>
               <div onClick={() => this.NewItemForm()} style={editButtonStyle} className='p-1'>
-                <a> <i className='fas fa-edit'></i> </a>
+                 <i className='fas fa-edit'></i> 
               </div>
               <Card.Body onClick={this.handleModalShow} style={{'cursor':'pointer'}}>
                 <p style={{margin: "0", padding: "0.3em"}}>${this.props.menu[1].price} </p>

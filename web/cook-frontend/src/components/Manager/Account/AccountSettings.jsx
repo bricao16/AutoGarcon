@@ -7,7 +7,7 @@ import EditFieldRightIcon from '@material-ui/icons/ChevronRight';
 import EditFieldDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import snakeCase from "lodash.snakecase";
 import validator from 'validator';
-import {Redirect} from "react-router-dom";
+
 
 /*
 This is the customize component for the currently logged in
@@ -44,7 +44,6 @@ class AccountSettings extends React.Component{
 
   /* Used to make sure the current field values are valid and "sanitized" */
   sanitize() {
-    let result = true
 
     // Check each field exists
     if (this.state.contact_num.length < 1) return "Phone number is required"
@@ -164,7 +163,7 @@ class AccountSettings extends React.Component{
     const value = target.value;
     const name = snakeCase(target.name);
 
-    if (this.state.edited == false) this.setState({edited: true})
+    if (this.state.edited === false) this.setState({edited: true})
 
     this.setState({
       [name]: value

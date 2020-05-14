@@ -1,6 +1,5 @@
 import React from "react";
 import Card from 'react-bootstrap/Card';
-import Modal from 'react-bootstrap/Modal';
 
 /*
     This Prop is used to render the cards of the Manager Menu page.
@@ -53,11 +52,9 @@ class MenuItem extends React.Component {
 
   render(){
       //get the styles
-      const primary = this.props.primary;
       const secondary = this.props.secondary;
-      const teritary = this.props.teritary;
       const font = this.props.font;
-      const font_color = this.props.font_color;
+
       if(this.props.menu[1].category === this.props.category)
       {
           return(
@@ -69,7 +66,7 @@ class MenuItem extends React.Component {
                   {this.props.menu[0]}
                 </Card.Header>
                 <div onClick={() => this.NewItemForm()} style={editButtonStyle} className='p-1'>
-                  <a> <i className='fas fa-edit'/> </a>
+                   <i className='fas fa-edit'/> 
                 </div>
                 <Card.Body style={{'cursor':'pointer'}}>
                   <p style={{margin: "0", padding: "0.3em"}}>${this.props.menu[1].price} </p>
@@ -88,12 +85,7 @@ class MenuItem extends React.Component {
   }
 }
 
-const cardHeaderStyle = {
-  'backgroundColor': '#0b658a',
-  'color': '#ffffff',
-  'fontFamily': 'Kefa',
-  'cursor':'pointer'
-};
+
 const itemStyle = {
   'width':'200px'
 };

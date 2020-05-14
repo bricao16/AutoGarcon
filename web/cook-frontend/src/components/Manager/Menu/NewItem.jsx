@@ -4,7 +4,6 @@ import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form'
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';

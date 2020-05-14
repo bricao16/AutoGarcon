@@ -20,9 +20,6 @@ which is a header that allows for logging into cook, manager or to sign up as
 well as a stock image with a circle containing a description of the product.*/
 
 class App extends React.Component{
-    constructor(props) {
-      super(props);
-    }
   render(){
     return (
         <Router>

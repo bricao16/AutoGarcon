@@ -4,8 +4,6 @@ import Container from 'react-bootstrap/Container';
 import {Redirect} from "react-router-dom";
 import CSignUp from './CSignUp';
 import CookViewImg from '../../../assets/cookview.png';
-import Cook from '../../Cook/Cook';
-import Modal from 'react-bootstrap/Modal';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
@@ -47,7 +45,6 @@ class CookView extends React.Component{
     //get the styles
     const primary = this.props.primary;
     const secondary = this.props.secondary;
-    const teritary = this.props.teritary;
     const font = this.props.font;
     const font_color = this.props.font_color;
      const section = this.state.section
@@ -137,8 +134,6 @@ class CookView extends React.Component{
 
 	}
 }
-const itemStyle = {
-    'borderBottom': 'grey solid 1px',
-};
+
 
 export default CookView;

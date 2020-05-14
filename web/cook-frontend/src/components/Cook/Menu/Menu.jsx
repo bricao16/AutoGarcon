@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import MenuItem from './MenuItem';
 import NewItem from "./NewItem";
-import {Link, Redirect} from "react-router-dom";
+
 /*
   This component is used to render menu information which
   is pulled from the database in Manager. 
@@ -80,7 +80,6 @@ class Menu extends React.Component {
   renderMenuCategories(){
     const secondary = this.props.secondary;
     const font = this.props.font;
-    const font_color = this.props.font_color;
     return this.state.categories.map((item) =>
       <Col sm={6} className="p-3" style={{'minWidth':'225px'}}>
         <Card className="text-center" >
@@ -131,8 +130,6 @@ class Menu extends React.Component {
     const menuJSON = this.props.menu;
     //get the styles
     const primary = this.props.primary;
-    const secondary = this.props.secondary;
-    const teritary = this.props.teritary;
     const font = this.props.font;
     const font_color = this.props.font_color;
 
@@ -218,9 +215,7 @@ const backgroundStyle = {
   'backgroundColor': '#f1f1f1',
   'minWidth': '70vw'
 };
-const createNewStyle = {
-  'opacity' : '.9'
-};
+
 const menuTextStyle = {
   'flex': '1',
   'paddingRight': '69px',

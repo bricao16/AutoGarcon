@@ -19,7 +19,7 @@ import AccountDropdown from "../../AccountDropdown";
 import StaffIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import CustomIcon from '@material-ui/icons/ColorLensOutlined';
 import GeneralIcon from '@material-ui/icons/ListAltOutlined';
-import SettingsVoiceIcon from '@material-ui/icons/SettingsVoice';
+
 import Stats from '../Statistics/Stats';
 import Menu from '../Menu/Menu';
 import StoreInfo from '../General/StoreInfo';

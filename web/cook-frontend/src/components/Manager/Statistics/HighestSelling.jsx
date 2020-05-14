@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    XYPlot,
     XAxis, // Shows the values on x axis
     YAxis, // Shows the values on y axis
     VerticalBarSeries,
@@ -10,7 +9,7 @@ import {
 } from 'react-vis';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
-import https from 'https';
+//import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 

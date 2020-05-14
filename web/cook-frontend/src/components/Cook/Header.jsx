@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {makeStyles, useTheme, createMuiTheme, ThemeProvider, withStyles} from '@material-ui/core/styles';
+import React from 'react';
+import {makeStyles, createMuiTheme, ThemeProvider, withStyles} from '@material-ui/core/styles';
 import {AppBar, Toolbar, Tabs, Tab} from '@material-ui/core'
 import {Link} from 'react-router-dom'
 import AccountDropdown from "../AccountDropdown";

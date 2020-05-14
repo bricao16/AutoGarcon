@@ -10,12 +10,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import https from 'https';
 import axios from 'axios';
-import Cookies from 'universal-cookie';
 import Alert from 'react-bootstrap/Alert';
 import Link from '@material-ui/core/Link';
 import ChangePassword from './ChangePassword';
 
-const cookies = new Cookies();
+
 
 const useStyles = makeStyles(theme => ({
   paper: {

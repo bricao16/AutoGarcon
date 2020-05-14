@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {Switch, Route, Redirect} from "react-router-dom";
 import {makeStyles, ThemeProvider, useTheme} from '@material-ui/core/styles';
 import Cookies from 'universal-cookie';
-import clsx from 'clsx';
+//import clsx from 'clsx';
 import axios from "axios";
 import https from "https";
 
@@ -10,7 +10,7 @@ import https from "https";
 import Header from "./Header";
 import Footer from "./Footer";
 import Orders from "./Orders/Orders";
-import Menu1 from "./Menu/Menu1";
+//import Menu1 from "./Menu/Menu1";
 import Menu from "./Menu/Menu";
 
 const useStyles = makeStyles({
