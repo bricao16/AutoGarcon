@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.*;
 import auto_garcon.homestuff.*;
 import auto_garcon.accountstuff.Settings;
@@ -86,11 +87,56 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         logos = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
+        NukeSSLCerts.nuke();
 
         pref = new SharedPreference(this);
         recyclerView = findViewById(R.id.order_list);
+        //creating side nav drawer
+        DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
+        Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
+        NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(OrderHistory.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
-        final StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/customer/history/" + pref.getUser().getUsername(), new Response.Listener<String>() {
+        TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+        usernameSideNavBar.setText(pref.getUser().getUsername());
+
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(OrderHistory.this);
+        /**
+         * It ties the bottom navigation bar xml element to a Java object and provides it with its
+         * onClick functionality to other activities and sets the listener.
+         */
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+        badge.setVisible(true);
+        if(pref.getShoppingCart()!=null) {
+            if(pref.getShoppingCart().getCart().size()!=0){
+                badge.setNumber(pref.getShoppingCart().getCart().size());
+            }
+        }
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_scan:
+                                startActivity(new Intent(OrderHistory.this, QRcode.class));
+                                return true;
+                            case R.id.action_home:
+                                startActivity(new Intent(OrderHistory.this, Home.class));
+                                return true;
+                            case R.id.action_cart:
+                                startActivity(new Intent(OrderHistory.this, ShoppingCart.class));
+                                return true;
+                        }
+                        return false;
+                    }
+                };
+
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+
+
+        final StringRequest getRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/customer/history/" + pref.getUser().getUsername(), new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -111,19 +157,26 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();// get the item for that order
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
+                                item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
                                 item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
-
+                                item.setImage(OrderHistory.this);
                                 carts.get(tracker-1).addToCart(item);
                             }
                             else{
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();//create the new item
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
+                                item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
+                                item.setImage(OrderHistory.this);//get image ready
                                 item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
                                 order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());//get the new order number and add it to the item arraylsit
                                 carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));//get the new restaurant id and create a new shopping cart
                                 carts.get(tracker).addToCart(item);//ad the new item to the cart
+                                carts.get(tracker).setFont(json.getAsJsonObject(""+i).get("font").getAsString());
+                                carts.get(tracker).setPrimaryColor(json.getAsJsonObject(""+i).get("primary_color").getAsString());
+                                carts.get(tracker).setSecondaryColor(json.getAsJsonObject(""+i).get("secondary_color").getAsString());
+                                carts.get(tracker).setTertiaryColor(json.getAsJsonObject(""+i).get("tertiary_color").getAsString());
                                 date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());//add the date
                                 restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
                                 byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
@@ -138,11 +191,17 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                         else {
                             auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
                             item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());
+                            item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
+                            item.setImage(OrderHistory.this);
                             item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());
                             item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
                             order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());
                             carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));
                             carts.get(i).addToCart(item);
+                            carts.get(i).setFont(json.getAsJsonObject(""+i).get("font").getAsString());
+                            carts.get(i).setPrimaryColor(json.getAsJsonObject(""+i).get("primary_color").getAsString());
+                            carts.get(i).setSecondaryColor(json.getAsJsonObject(""+i).get("secondary_color").getAsString());
+                            carts.get(i).setTertiaryColor(json.getAsJsonObject(""+i).get("tertiary_color").getAsString());
                             date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());
                             restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
                             byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
@@ -150,7 +209,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             for(int j = 0; j < temp.length; j++) {
                                 temp[j] = (byte) (((int) json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
                             }
-                            Log.d("123", String.valueOf(json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(61).getAsInt()));
 
                             logos.add(temp);
 
@@ -163,51 +221,9 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
 
-                    //creating side nav drawer
-                    DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
-                    Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
-                    NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
-                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(OrderHistory.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
-
-                    TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
-                    usernameSideNavBar.setText(pref.getUser().getUsername());
-
-                    drawerLayout.addDrawerListener(toggle);
-                    toggle.syncState();
-                    navigationView.setNavigationItemSelectedListener(OrderHistory.this);
-                    /**
-                     * It ties the bottom navigation bar xml element to a Java object and provides it with its
-                     * onClick functionality to other activities and sets the listener.
-                     */
-                    BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-                    BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
-                    badge.setVisible(true);
-                    if(pref.getShoppingCart()!=null) {
-                        if(pref.getShoppingCart().getCart().size()!=0){
-                            badge.setNumber(pref.getShoppingCart().getCart().size());
-                        }
-                    }
 
 
-                    BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-                            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                                    switch (item.getItemId()) {
-                                        case R.id.action_scan:
-                                            startActivity(new Intent(OrderHistory.this, QRcode.class));
-                                            return true;
-                                        case R.id.action_home:
-                                            startActivity(new Intent(OrderHistory.this, Home.class));
-                                            return true;
-                                        case R.id.action_cart:
-                                            startActivity(new Intent(OrderHistory.this, ShoppingCart.class));
-                                            return true;
-                                    }
-                                    return false;
-                                }
-                            };
 
-                    bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
                 }
             }
         },

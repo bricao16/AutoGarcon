@@ -40,25 +40,31 @@ public class SendErrorEmail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_error_email);// associating xml objects with the java Object equivalent
+
         edit_body= findViewById(R.id.et_message);// associating xml objects with the java Object equivalent
         edit_subject =findViewById(R.id.et_subject);// associating xml objects with the java Object equivalent
         button_send =findViewById(R.id.bt_send);// associating xml objects with the java Object equivalent
+        if(getIntent().getIntExtra("network",0)==1){
+            edit_body.setVisibility(View.GONE);
+            edit_subject.setVisibility(View.GONE);
+            button_send.setVisibility(View.GONE);
+            findViewById(R.id.wifi).setVisibility(View.VISIBLE);
+        }
+        else {
+            button_send.setOnClickListener(new View.OnClickListener() {//make the button actually have a purpose
+                @Override
+                public void onClick(View v) {
 
-        button_send.setOnClickListener(new View.OnClickListener() {//make the button actually have a purpose
-            @Override
-            public void onClick(View v) {
-
-                if(TextUtils.isEmpty(edit_body.getText().toString())){//check if they have inputted a body
-                    edit_body.setError("Please enter a description");
+                    if (TextUtils.isEmpty(edit_body.getText().toString())) {//check if they have inputted a body
+                        edit_body.setError("Please enter a description");
+                    } else if (TextUtils.isEmpty(edit_subject.getText().toString())) {//checki if they have inputted a subject
+                        edit_subject.setError("Please enter a body");
+                    } else {
+                        sendEmail();// this sendEmail function actually sends the email if the user actually has the body filled out
+                    }
                 }
-                else if(TextUtils.isEmpty(edit_subject.getText().toString())){//checki if they have inputted a subject
-                    edit_subject.setError("Please enter a body");
-                }
-                else {
-                    sendEmail();// this sendEmail function actually sends the email if the user actually has the body filled out
-                }
-            }
-        });
+            });
+        }
 
 
     }

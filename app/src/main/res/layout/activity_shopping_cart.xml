@@ -71,7 +71,7 @@
         <!-- bottom nav bar -->
         <Button
         android:id="@+id/btn_placeorder"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="40dp"
         android:layout_above="@+id/bottom_navigation"
         android:layout_marginBottom="43dp"
@@ -86,7 +86,7 @@
 
         <Button
             android:id="@+id/btn_cancel"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="40dp"
             android:layout_above="@+id/bottom_navigation"
             android:layout_marginBottom="2dp"

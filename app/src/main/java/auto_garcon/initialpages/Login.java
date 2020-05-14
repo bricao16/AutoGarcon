@@ -24,6 +24,7 @@ import com.example.auto_garcon.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
@@ -65,6 +66,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         NukeSSLCerts.nuke();
         setContentView(R.layout.activity_login);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
 
         pref = new SharedPreference(this);// creating a sharedPrefrence object that access the same file of all other shared prefrences on the app
 
@@ -107,7 +110,7 @@ public class Login extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, "http://50.19.176.137:8000/customer/login", obj,
+                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/login", obj,
                             new Response.Listener<JSONObject>()
                             {
                                 @Override
@@ -135,14 +138,17 @@ public class Login extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
-                                    Log.d("asdff", String.valueOf(error.networkResponse.statusCode));
                                     error.printStackTrace();
                                     if(error.networkResponse.statusCode == 401){
-                                        Toast.makeText(Login.this,"Could not Sign in",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(Login.this,"Invalid username or password",Toast.LENGTH_LONG).show();
+
                                     }
                                     else{
-                                        Toast.makeText(Login.this,"Invalid username or password",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(Login.this,"Could not Sign in",Toast.LENGTH_LONG).show();
+
                                     }
+
+
                                 }
                             }
                     );
