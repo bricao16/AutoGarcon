@@ -201,7 +201,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 itemName.setTextColor(Color.WHITE);
                 itemPrice.setText("Price: " + String.format("$%.02f", getChild(i, j).getPrice()));
                 itemPrice.setTextColor(Color.WHITE);
-                itemDescription.setText(getChild(i, j).getDescription());
+                if(getChild(i, j).getDescription()!="null") {
+                    itemDescription.setText(getChild(i, j).getDescription());
+                }
 
                 //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
                 if(getChild(i, j).getAmountInStock() == 0) {
