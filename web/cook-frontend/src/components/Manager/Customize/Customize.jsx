@@ -189,6 +189,7 @@ class Customize extends React.Component{
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
       this.handleModalClose();
+      this.forceUpdate();
     }
     else {
       this.setState({response: 'Failed to update'})
@@ -509,6 +510,7 @@ renderInfo(){
                         <div className="d-flex flex-wrap">
                             {this.renderInfo()}
                         </div>
+                      
                     </Container>
                 </div>
             </Container>
