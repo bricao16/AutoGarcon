@@ -15,6 +15,7 @@ GET /restaurant/:id
 					name,
 					address,
 					phone_number,
+					email,
 					opening,
 					closing,
 					font,
@@ -581,6 +582,11 @@ GET /customer/history/:id
 					order_num,
 					restaurant_id,
 					restaurant_name,
+					font,
+					font_color,
+					primary_color,
+					secondary_color,
+					tertiary_color,
 					logo,
 					item_id,
 					item_name,
@@ -788,6 +794,57 @@ PUT /menu/allergens/add
 			(401) Must be the restaurant manager to add a new allergen!
 		On error:
 			(500) Error adding new allergen
+
+GET /categories
+	Returns categories
+	Inputs: none
+	Outputs:
+		On success:
+			{
+				i:
+				{
+					category_id,
+					category_name
+				}
+			}
+		On error:
+			(500) Error retrieving categories
+
+PUT /categories/new
+	Creates a new category
+	Inputs (in body of request): category_name
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			(200) Successfully added new category!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: category_name
+		If the category already exists:
+			(409) Error: category already exists
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token:
+			(401) Must be a manager to add a new category!
+		On error:
+			(500) Error adding new category
+
+POST /categories/remove
+	Removes a category
+	Inputs (in body of request): category_name
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			(200) Successfully removed category!
+		If any inputs are missing:
+			(400) Error: Missing parameter. Required parameters: category_name
+		If the category doesn't exist:
+			(409) Error: category doesn't exist
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token:
+			(401) Must be a manager to remove a category!
+		On error:
+			(500) Error removing category
 
 
 //==================================================================================//

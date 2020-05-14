@@ -1,8 +1,9 @@
 /*
 	REST-API Server
 	Tucker Urbanski
+	Contributors: PJ Cappitelli, Emma Sinn, Brandon Tran
 	Date Created: 3/2/2020
-	Last Modified: 5/12/2020
+	Last Modified: 5/14/2020
 */
 
 // Built-in Node.js modules
@@ -78,6 +79,7 @@ console.log('Now listening on port 8000');
 					name,
 					address,
 					phone_number,
+					email,
 					opening,
 					closing,
 					font,
@@ -104,14 +106,14 @@ console.log('Now listening on port 8000');
 			Error retrieving restaurant information
 */
 app.get('/restaurant/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.restaurants NATURAL JOIN sample.menu WHERE restaurant_id = ?';
+	let query = 'SELECT * FROM sample.restaurants WHERE restaurant_id = ?; SELECT * FROM sample.menu WHERE restaurant_id = ?';
 
 	//Query database:
-	db.query(query, req.params.id, (err, rows) => {
+	db.query(query, [req.params.id, req.params.id], (err, rows) => {
 		if (err) {
 			res.status(500).send('Error retrieving restaurant information');
 		}   //if
-		else if (rows.length < 1) {
+		else if (rows[0].length < 1) {
 			res.status(409).send('Invalid restaurant_id');
 		}	//else if
 		else {
@@ -120,51 +122,58 @@ app.get('/restaurant/:id', (req, res) => {
 
 			//Add restaurant info to response:
 			response['restaurant'] = {
-				'name': rows[0].restaurant_name,
-				'address': rows[0].restaurant_addr,
-				'phone_number': rows[0].phone_number,
-				'opening': rows[0].opening_time,
-				'closing': rows[0].closing_time,
-				'font': rows[0].font,
-				'font_color': rows[0].font_color,
-				'primary_color': rows[0].primary_color,
-				'secondary_color': rows[0].secondary_color,
-				'tertiary_color': rows[0].tertiary_color,
-				'logo': rows[0].logo,
-				'cuisine': rows[0].cuisine,
-				'greeting': rows[0].alexa_greeting
+				'name': rows[0][0].restaurant_name,
+				'address': rows[0][0].restaurant_addr,
+				'phone_number': rows[0][0].phone_number,
+				'email': rows[0][0].email,
+				'opening': rows[0][0].opening_time,
+				'closing': rows[0][0].closing_time,
+				'font': rows[0][0].font,
+				'font_color': rows[0][0].font_color,
+				'primary_color': rows[0][0].primary_color,
+				'secondary_color': rows[0][0].secondary_color,
+				'tertiary_color': rows[0][0].tertiary_color,
+				'logo': rows[0][0].logo,
+				'cuisine': rows[0][0].cuisine,
+				'greeting': rows[0][0].alexa_greeting
 			};	//response
 
 			//Add menu to response:
 			response['menu'] = {};
-			for (let i=0; i<rows.length; i++) {
-				//Add each menu item to response:
-				response['menu'][rows[i].item_name] =   {
-					'item_id': rows[i].item_id,
-					'calories': rows[i].calorie_num,
-					'price': rows[i].price,
-					'category': rows[i].category,
-					'in_stock': rows[i].in_stock,
-					'description': rows[i].description,
-					'allergens': []
-				};	//response
-			}   //for
+			//If the restaurant has no menu items:
+			if (rows[1].length < 1) {
+				res.type('json').send(response);
+			}	//if
+			else {
+				for (let i=0; i<rows[1].length; i++) {
+					//Add each menu item to response:
+					response['menu'][rows[1][i].item_name] =   {
+						'item_id': rows[1][i].item_id,
+						'calories': rows[1][i].calorie_num,
+						'price': rows[1][i].price,
+						'category': rows[1][i].category,
+						'in_stock': rows[1][i].in_stock,
+						'description': rows[1][i].description,
+						'allergens': []
+					};	//response
+				}   //for
 
-			//Add allergens:
-			query = 'SELECT * FROM sample.menu natural join sample.allergens WHERE restaurant_id = ? ORDER BY item_id';
-			db.query(query, req.params.id, (err, rows) => {
-				if (err) {
-					res.status(500).send('Error retrieving menu');
-				}	//if
-				else {
-					for (let i=0; i<rows.length; i++) {
-						response['menu'][rows[i].item_name].allergens.push(rows[i].allergen_name);
-					}	//for
+				//Add allergens:
+				query = 'SELECT * FROM sample.menu natural join sample.allergens WHERE restaurant_id = ? ORDER BY item_id';
+				db.query(query, req.params.id, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error retrieving menu');
+					}	//if
+					else {
+						for (let i=0; i<rows.length; i++) {
+							response['menu'][rows[i].item_name].allergens.push(rows[i].allergen_name);
+						}	//for
 
-					//Send Response:
-					res.type('json').send(response);
-				}	//else
-			});	//db.query
+						//Send Response:
+						res.type('json').send(response);
+					}	//else
+				});	//db.query
+			}	//else
 		}   //else
 	}); //db.query
 }); //app.get
@@ -303,7 +312,7 @@ app.get('/fonts', (req, res) => {
 
 			//Loop through each row returned from query:
 			for (let i=0; i<rows.length; i++) {
-				//Add restaurant info to response:
+				//Add font info to response:
 				response[i] = {
 					'font_id': rows[i].font_id,
 					'font_name': rows[i].font_name
@@ -336,6 +345,8 @@ app.get('/fonts', (req, res) => {
 			Error updating restaurant customization
 */
 app.post('/restaurant/customization', verifyToken, upload.single('logo'), (req, res) => {
+	console.log('/restaurant/customization: ');
+	console.log(req);
 	//Verify that the JWT is valid:
 	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
@@ -1211,6 +1222,7 @@ app.put('/staff/register', (req, res) => {
 			res.status(409).send('Error: email already exists');
 		}	//else if
 		else {
+			let temp_password = rows[0].temp_password;
 			//Create a new salt
 			let salt = genSalt();
 			//Hash supplied password with salt
@@ -1247,7 +1259,7 @@ app.put('/staff/register', (req, res) => {
 							if (staff.position === 'manager') {
 								jwt.sign({staff}, process.env.JWT_SECRET, {expiresIn: '1h'}, (err, token) => {
 									//Add temp password flag to staff
-									staff['temp_password'] = rows[0].temp_password;
+									staff['temp_password'] = temp_password;
 									//Build response
 									let response = {
 										'token': token,
@@ -1262,7 +1274,7 @@ app.put('/staff/register', (req, res) => {
 							else {
 								jwt.sign({staff}, process.env.JWT_SECRET, {expiresIn: '12h'}, (err, token) => {
 									//Add temp password flag to staff
-									staff['temp_password'] = rows[0].temp_password;
+									staff['temp_password'] = temp_password;
 									//Build response
 									let response = {
 										'token': token,
@@ -1317,6 +1329,12 @@ app.put('/staff/register', (req, res) => {
 			Error updating staff info
 */
 app.post('/staff/update', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.staff_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.contact_num !== undefined && req.body.email !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: staff_id, first_name, last_name, contact_num, email)');
+		return;
+	}   //if
+
 	//Verify the JWT
 	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
@@ -1325,12 +1343,6 @@ app.post('/staff/update', verifyToken, (req, res) => {
 		else {
 			//Make sure the JWT is for a staff member:
 			if (auth.staff) {
-				//Make sure right number of parameters are entered:
-				if(!(req.body.staff_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.contact_num !== undefined && req.body.email !== undefined)) {
-					res.status(400).send('Error: Missing parameter. Required parameters: staff_id, first_name, last_name, contact_num, email)');
-					return;
-				}   //if
-
 				//Make sure the supplied staff_id and email are unique:
 				let query = 'SELECT * FROM sample.staff WHERE staff_id = ?; SELECT * FROM sample.staff WHERE email = ?';
 				db.query(query, [req.body.staff_id, req.body.email], (err, rows) => {
@@ -1349,10 +1361,10 @@ app.post('/staff/update', verifyToken, (req, res) => {
 					else {
 						//Build query and store staff_id:
 						let staff_id = auth.staff.staff_id;
+						let temp_password = rows[0].temp_password;
 						let query = 'UPDATE sample.staff SET staff_id = ?, first_name = ?, last_name = ?, contact_num = ?, email = ?';
 						query = query + ' WHERE staff_id = ?';
 						let parameters = [req.body.staff_id, req.body.first_name, req.body.last_name, req.body.contact_num, req.body.email, staff_id];
-
 						//Update staff info in db:
 						db.query(query, parameters, (err, rows) => {
 							if (err) {
@@ -1375,13 +1387,12 @@ app.post('/staff/update', verifyToken, (req, res) => {
 								if (staff.position === 'manager') {
 									jwt.sign({staff}, process.env.JWT_SECRET, {expiresIn: '1h'}, (err, token) => {
 										//Add temp password flag to staff
-										staff['temp_password'] = rows[0].temp_password;
+										staff['temp_password'] = temp_password;
 										//Build response
 										let response = {
 											'token': token,
 											staff
 										};  //response
-
 										//Send Response:
 										res.type('json').send(response);
 									});	//sign
@@ -1390,7 +1401,7 @@ app.post('/staff/update', verifyToken, (req, res) => {
 								else {
 									jwt.sign({staff}, process.env.JWT_SECRET, {expiresIn: '12h'}, (err, token) => {
 										//Add temp password flag to staff
-										staff['temp_password'] = rows[0].temp_password;
+										staff['temp_password'] = temp_password;
 										//Build response
 										let response = {
 											'token': token,
@@ -1714,7 +1725,7 @@ app.post('/customer/login', (req, res) => {
 
 						//Sign JWT and send token
 						//To add expiration date: jwt.sign({customer}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-						jwt.sign({customer}, process.env.JWT_SECRET, {expiresIn: '7d'}, (err, token) => {
+						jwt.sign({customer}, process.env.JWT_SECRET, {expiresIn: '5m'}, (err, token) => {
 							//Add temp password flag and image to customer
 							customer['temp_password'] = rows[0].temp_password;
 							customer['image'] = rows[0].image;
@@ -1891,6 +1902,7 @@ app.put('/customer/register', upload.single('image'), (req, res) => {
 			Error updating customer info
 */
 app.post('/customer/update', verifyToken, upload.single('image'), (req, res) => {
+	console.log(req);
 	//Make sure right number of parameters are entered:
 	if(!(req.body.customer_id !== undefined && req.body.first_name !== undefined && req.body.last_name !== undefined && req.body.email !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: customer_id, first_name, last_name, email, logo (optional)');
@@ -1996,6 +2008,11 @@ app.post('/customer/update', verifyToken, upload.single('image'), (req, res) => 
 					order_num,
 					restaurant_id,
 					restaurant_name,
+					font,
+					font_color,
+					primary_color,
+					secondary_color,
+					tertiary_color,
 					item_id,
 					item_name,
 					price,
@@ -2031,6 +2048,11 @@ app.get('/customer/history/:id', (req, res) => {
 					'order_num': rows[i].order_num,
 					'restaurant_id': rows[i].restaurant_id,
 					'restaurant_name': rows[i].restaurant_name,
+					'font': rows[i].font,
+					'font_color': rows[i].font_color,
+					'primary_color': rows[i].primary_color,
+					'secondary_color': rows[i].secondary_color,
+					'tertiary_color': rows[i].tertiary_color,
 					'logo': rows[i].logo,
 					'item_id': rows[i].item_id,
 					'item_name': rows[i].item_name,
@@ -2413,10 +2435,10 @@ app.put('/menu/add', verifyToken, upload.single('image'), (req, res) => {
 			//Check to make sure person is a manager at the restaurant:
 			if (auth.staff && auth.staff.position === 'manager' && parseInt(auth.staff.restaurant_id) === parseInt(req.body.restaurant_id)) {
 				//Make sure the menu item doesn't exist at the restaurant:
-				let parameters = [req.body.restaurant_id, req.body.item_name]
-				let query = 'Select * FROM sample.menu WHERE restaurant_id = ? AND item_name = ?';
+				let parameters = [req.body.restaurant_id, req.body.item_name, req.body.category]
+				let query = 'SELECT * FROM sample.menu WHERE restaurant_id = ? AND item_name = ?; SELECT * FROM sample.categories WHERE category_name = ?';
 				db.query(query, parameters, (err, rows) => {
-					if (rows.length > 0) {
+					if (rows[0].length > 0) {
 						res.status(409).send('Error: item already exists');
 					}   //if
 					else {
@@ -2439,6 +2461,13 @@ app.put('/menu/add', verifyToken, upload.single('image'), (req, res) => {
 							query = 'INSERT INTO sample.menu(restaurant_id, item_name, calorie_num, category, in_stock, price, description)';
 							query = query + ' VALUES (?, ?, ?, ?, 1, ?, ?)';
 						}	//else
+
+						//If category is new:
+						if (rows[1].length < 1) {
+							query = query + '; INSERT INTO sample.categories(category_name)';
+							query = query + ' VALUES(?)';
+							parameters.push(req.body.category);
+						}	//if
 
 						//Add new menu item to db:
 						db.query(query, parameters, (err, rows) =>
@@ -2480,6 +2509,8 @@ app.put('/menu/add', verifyToken, upload.single('image'), (req, res) => {
 			Error updating menu item
 */
 app.post('/menu/update', verifyToken, upload.single('image'), (req, res) => {
+	console.log('/menu/update: ');
+	console.log(req);
 	//Make sure right number of parameters are entered:
 	if(!(req.body.item_id !== undefined && req.body.restaurant_id !== undefined && req.body.item_name !== undefined && req.body.calorie_num !== undefined && req.body.category !== undefined && req.body.in_stock !== undefined && req.body.price !== undefined && req.body.description !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description, image (optional)');
@@ -2753,6 +2784,173 @@ app.put('/menu/allergens/add', verifyToken, (req, res) => {
 	});	//verify
 });	//app.put
 
+/*
+	Returns categories
+	Inputs: none
+	Outputs:
+		On success:
+			{
+				i:
+				{
+					category_id,
+					category_name
+				}
+			}
+		On error:
+			Error retrieving categories
+*/
+app.get('/categories', (req, res) => {
+	let query = 'SELECT * FROM sample.categories';
+
+	//Query database:
+	db.query(query, (err, rows) => {
+		if (err) {
+			res.status(500).send('Error retrieving categories');
+		}   //if
+		else {
+			//Build JSON object:
+			let response = {};
+
+			//Loop through each row returned from query:
+			for (let i=0; i<rows.length; i++) {
+				//Add each category to response:
+				response[i] = {
+					'category_id': rows[i].category_id,
+					'category_name': rows[i].category_name
+				};	//response
+			}	//for
+
+			//Send Response:
+			res.type('json').send(response);
+		}   //else
+	}); //db.query
+}); //app.get
+
+/*
+	Creates a new category
+	Inputs: category_name, JWT
+	Outputs:
+		On success:
+			Successfully added new category!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: category_name
+		If the category already exists:
+			Error: category already exists
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token:
+			Must be a manager to add a new category!
+		On error:
+			Error adding new category
+*/
+app.put('/categories/new', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if (!(req.body.category_name !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: category_name');
+		return;
+	}	//if
+
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Check to make sure person is a manager:
+			if (auth.staff && auth.staff.position === 'manager') {
+				//Check if the category already exists:
+				let query = 'SELECT * FROM sample.categories WHERE category_name = ?';
+				db.query(query, req.body.category_name, (err, rows) => {
+					if (rows.length > 0) {
+						res.status(409).send('Error: category already exists');
+					}	//if
+					else {
+						//Build query:
+						query = 'INSERT INTO sample.categories (category_name)';
+						query = query + ' VALUES (?)';
+
+						//Query database:
+						db.query(query, req.body.category_name, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error adding new category');
+							}   //if
+							else {
+								//Send Response:
+								res.status(200).send('Successfully added new category!');
+							}   //else
+						}); //db.query
+					}	//else
+				});	//db.query	
+			}	//if
+			else {
+				res.status(401).send('Must be a manager to add a new category!');
+			}	//else
+		}	//else
+	});	//verify
+}); //app.put
+
+/*
+	Removes a category
+	Inputs: category_name, JWT
+	Outputs:
+		On success:
+			Successfully removed category!
+		If any inputs are missing:
+			Error: Missing parameter. Required parameters: category_name
+		If the category doesn't exist:
+			Error: category doesn't exist
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token:
+			Must be a manager to remove a category!
+		On error:
+			Error removing category
+*/
+app.post('/categories/remove', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if (!(req.body.category_name !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: category_name');
+		return;
+	}	//if
+
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Check to make sure person is a manager:
+			if (auth.staff && auth.staff.position === 'manager') {
+				//Check if the category exists:
+				let query = 'SELECT * FROM sample.categories WHERE category_name = ?';
+				db.query(query, req.body.category_name, (err, rows) => {
+					if (rows.length < 1) {
+						res.status(409).send('Error: category doesn\'t exist');
+					}	//if
+					else {
+						//Build query:
+						query = 'DELETE FROM sample.categories WHERE category_name = ?';
+
+						//Query database:
+						db.query(query, req.body.category_name, (err, rows) => {
+							if (err) {
+								res.status(500).send('Error removing category');
+							}   //if
+							else {
+								//Send Response:
+								res.status(200).send('Successfully removed category!');
+							}   //else
+						}); //db.query
+					}	//else
+				});	//db.query	
+			}	//if
+			else {
+				res.status(401).send('Must be a manager to remove a category!');
+			}	//else
+		}	//else
+	});	//verify
+}); //app.post
+
 
 //==================================================================================//
 //							ENDPOINTS RELATING TO ALEXAS							//
@@ -2823,10 +3021,10 @@ app.put('/alexa/register', (req, res) => {
 		return;
 	}   //if
 
-	//Make sure the alexa_id doesn't exist:
-	let query = 'Select * FROM sample.alexas WHERE alexa_id = ?';
-	db.query(query, req.body.alexa_id, (err, rows) => {
-		if (rows.length > 0) {
+	//Make sure the alexa_id doesn't exist and check if the table is in the services table:
+	let query = 'SELECT * FROM sample.alexas WHERE alexa_id = ?; SELECT * FROM sample.services WHERE table_num = ?';
+	db.query(query, [req.body.alexa_id, req.body.table_num], (err, rows) => {
+		if (rows[0].length > 0) {
 			res.status(409).send('Error: alexa_id already exists');
 		}   //if
 		else {
@@ -2845,6 +3043,13 @@ app.put('/alexa/register', (req, res) => {
 					query = query + ' VALUES (?, ?, ?)';
 					query = query + '; INSERT INTO sample.customers(customer_id, first_name, last_name, email, salt, password)';
 					query = query + ' VALUES(?, ?, ?, ?, ?, ?)';
+
+					//Add table to services table if it doesn't exist:
+					if (rows[1].length < 1) {
+						query = query + '; INSERT INTO sample.services(restaurant_id, table_num, service_status)';
+						query = query + ' VALUES (?, ?, ?)';
+						parameters.push(req.body.restaurant_id, req.body.table_num, 'Good');
+					}	//if
 
 					//Add new alexa to db:
 					db.query(query, parameters, (err, rows) => {
