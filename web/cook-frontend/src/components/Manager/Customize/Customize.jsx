@@ -236,6 +236,7 @@ loadXHR(url) {
   handleModalShow = () => this.setState({ModalShow: true});
 
 renderInfo(){
+  const font = this.state.font;
   console.log(this.state.font)
     return (
           <>
@@ -370,8 +371,8 @@ renderInfo(){
            <Container >
             <Row className = "align-items-start">
             <Col>
-              <Card className="text-center m-2" style={itemStyle}>
-                  <Card.Header >Font 
+              <Card className="text-center m-2" style ={{'fontFamily' :font}}>
+                  <Card.Header  >Font 
                   <button onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
                   </Card.Header>
                       <Card.Body style = {{minHeight:'20vh'}}>
@@ -403,7 +404,8 @@ renderInfo(){
                               </div>
                               <br></br>
                               <div className="row m-2">
-                                  <button onClick = {this.handleSubmit} type="button" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                  <button onClick = {this.handleSubmit} type="button" className="btn btn-primary m-1" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                  <button onClick={() => this.editForm("") }  type="button" className="btn btn-outline-danger m-1" >Cancel</button>
                               </div>
                               
                            </form>
@@ -412,7 +414,7 @@ renderInfo(){
                   </Card>
                   </Col>
                   <Col>
-                  <Card className="text-center  m-2" style={itemStyle}>
+                  <Card className="text-center  m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow} >Logo
                       <button  onClick={() => this.editForm("Logo") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -424,7 +426,7 @@ renderInfo(){
                    </Card>
                   </Col>
                    <Col>
-                   <Card className="text-center m-2" style={itemStyle}>
+                   <Card className="text-center m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow}>Alexa Greeting
                       <button  onClick={() => this.editForm("Alexa Greeting") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -438,7 +440,7 @@ renderInfo(){
                  <Row className = "align-items-start">
 
                   <Col>
-                  <Card className="text-center m-2" style={itemStyle} >
+                  <Card className="text-center m-2" style ={{'fontFamily' :font}} >
                     <Card.Header onClick={this.handleModalShow}>Primary
                       <button onClick={() => this.editForm("Primary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -448,7 +450,7 @@ renderInfo(){
                    </Card>
                   </Col>
                   <Col>
-                  <Card className="text-center m-2" style={itemStyle}>
+                  <Card className="text-center m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow}>Secondary
                       <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -458,7 +460,7 @@ renderInfo(){
                    </Card>
                   </Col>
                    <Col>
-                   <Card className="text-center m-2" style={itemStyle}>
+                   <Card className="text-center m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow}>Tertiary
                       <button  onClick={() => this.editForm("Tertiary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -468,7 +470,7 @@ renderInfo(){
                    </Card>
                    </Col>
                   <Col>
-                   <Card className="text-center m-2" style={itemStyle}>
+                   <Card className="text-center m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow}>Font Color
                       <button  onClick={() => this.editForm("Font Color") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>

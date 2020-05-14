@@ -182,8 +182,7 @@ class SignUp extends React.Component {
         if (response.status !== 200) { this.handleShow(false, ""); }
         else {
           this.handleShow(true, "");
-          this.state.staff = response.data.staff;
-          this.state.token = response.data.token;
+          this.state.staff = response.data.substring(response.data.length-3);
           this.setState({
             redirect: true,
             show: true,
@@ -191,7 +190,7 @@ class SignUp extends React.Component {
         }
       })
       .catch(error => {
-        this.handleShow(false, error.response.data);
+        //this.handleShow(false, error.response.data);
         //this.setState({alertVariant: 'danger'});
         //this.setState({response: "Unknown error"});
         this.setState({ redirect: false });
@@ -219,8 +218,9 @@ class SignUp extends React.Component {
     //if successful submit redirect to Home page
     if (this.state.redirect === true) {
      /*set the cookies and redirect to the manager sign up page*/
-     cookies.set('mystaff', this.state.staff, {path: '/'}, {maxAge: 3600});
-     cookies.set('mytoken', this.state.token, {path: '/'}, {maxAge: 3600});
+     cookies.set('restaurant_id', this.state.staff, {path: '/'}, {maxAge: 3600});
+
+     console.log(cookies.get('restaurant_id'));
      return (
         <Container component="main" maxWidth="xs" className="p-3">
         {/*alert if successful or unsuccessful*/}

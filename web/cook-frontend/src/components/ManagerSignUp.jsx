@@ -14,7 +14,11 @@ import Cookies from 'universal-cookie';
 import Alert from 'react-bootstrap/Alert';
 import Home from './Home';
 import Link from '@material-ui/core/Link';
+import {Redirect} from "react-router-dom";
+import Form from 'react-bootstrap/Form';
 
+
+const cookies = new Cookies();
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -52,11 +56,13 @@ class ManagerSignUp extends React.Component{
         contact_num:'',
         email: '',
         password:'',
-        restaurant_id:this.cookies.get('mystaff').restaurant_id,
+        position: 'manager',
+        restaurant_id:this.cookies.get('restaurant_id'),
         confirm_password: '',
         redirect: false,
         show: false,
-        token:null
+        token:null,
+        staff: null
     };
     
     this.onChange = this.onChange.bind(this);
@@ -72,10 +78,10 @@ class ManagerSignUp extends React.Component{
         this.setState({ [e.target.name]: e.target.value });
       }
  handleSubmit(event){
-    console.log(this.state);
+    //console.log(this.state);
     event.preventDefault();
   
-    /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
+    https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
     
     //if any of the values necessary are not filled out
     if(this.state.staff_id=== '' || this.state.restaurant_id=== ''||
@@ -144,53 +150,37 @@ class ManagerSignUp extends React.Component{
       this.setState({show: true});
       return ;
     } 
-    if (this.state.password != this.state.confirm_password )
-    {  
-      this.setState({alertVariant: 'danger'});
-      this.setState({response: "Passwords must match"});
-      this.setState({redirect: false});
-      this.setState({show: true});
-      return ;
-    } 
 
     axios({
-      method: 'put',
-      url: process.env.REACT_APP_DB + '/staff/register',
+      method: 'PUT',
+      url:  process.env.REACT_APP_DB + '/staff/register',
+      //+'&logo='+this.state.file
       data: 'staff_id='+this.state.staff_id+'&restaurant_id='+this.state.restaurant_id
               +'&first_name='+this.state.first_name+'&last_name='+this.state.last_name
               +'&contact_num='+this.state.contact_num+'&email='+this.state.email
               +'&position='+this.state.position+'&password='+this.state.password,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       httpsAgent: new https.Agent({  
         rejectUnauthorized: false,
       }),
     })
-      .then(async response => {
-        await response;
-        
-        if (response.status !== 200) {this.handleShow(false,"");}
-        else 
-        {
-            this.handleShow(true,"");
-              this.setState({
-                redirect: true,
-                show: true,
-              });
-        }
-      })
-      .catch(error =>{
-        this.handleShow(false,error.response.data);
-        //this.setState({alertVariant: 'danger'});
-        //this.setState({response: "Unknown error"});
-        this.setState({redirect: false});
-        console.error("There was an error!", error);
-      });
+    .then(async response => {
+      await response;
+      console.log(response);
+      if (response.status !== 200) {this.handleShow(false);}
+      else {console.log("Success");}
+    })
+    .catch(error => {
+      this.handleShow(false);
+      console.error("There was an error!", error);
+    });
 
   }
     /* Used to show the correct alert after hitting save item */
   handleShow(success,message) {
+    console.log("in handle show" + success + message);
     if (success) {
       this.setState({response: "Successfully created staff member: " + this.state.first_name});
       this.setState({alertVariant: 'success'});
@@ -203,14 +193,18 @@ class ManagerSignUp extends React.Component{
     this.setState({show: true});
   }
 render() {
-    //if sucessful submit redirect to cook view
+     //if sucessful submit redirect to cook view
   if(this.state.redirect === true){
+        /*set the cookies and redirect to the manager  page*/
+     cookies.set('mytoken', this.state.token, {path: '/'}, {maxAge: 3600});
+     cookies.set('mystaff', this.state.staff, {path: '/'}, {maxAge: 3600});
+      console.log(cookies.get('mystaff'));
     return(
       <React.Fragment>
         <Alert show={this.state.show} variant={this.state.alertVariant}>
         {this.state.response}
         </Alert>
-        <Home section="" />
+         <Redirect to="/manager"/>
       </React.Fragment>
       );
   }  
@@ -222,6 +216,9 @@ render() {
         {/*alert if successful or unsuccessful*/}
         <Alert show={this.state.show} variant={this.state.alertVariant}>
         {this.state.response}
+        </Alert>
+         <Alert show={true} variant= 'success'>
+          Thank you for signing up with AutoGarcon - please create manager account to start
         </Alert>
         <CssBaseline />
         <div className={useStyles.paper}>
