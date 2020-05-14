@@ -129,7 +129,6 @@ class NewItem extends React.Component {
           +'&description='+this.state.description
           +'&image='+this.state.image
 			}
-			
 			axios({
 				method: requestMethod,
 				url: endpoint,
@@ -377,7 +376,7 @@ class NewItem extends React.Component {
 
                 <div className="form-group row">
                   <label className="col ">Name </label>
-                    <input className="form-control col" type="text" name="name" value={this.state.name} onChange={this.handleInputChange} defaultValue={this.state.name}>
+                    <input className="form-control col" type="text" name="name" value={this.state.name} onChange={this.handleInputChange}>
                     </input>
                 </div>
 
@@ -391,7 +390,7 @@ class NewItem extends React.Component {
 
                   <div className="form-group row">
                     <label className="col">Calories</label>
-                    <input className="form-control col" type="text" name="calories" value={this.state.calories} onChange={this.handleInputChange} defaultValue={this.state.calories}>
+                    <input className="form-control col" type="text" name="calories" value={this.state.calories} onChange={this.handleInputChange}>
                     </input>
                 </div>
 
@@ -401,7 +400,7 @@ class NewItem extends React.Component {
                       <div className="input-group-prepend">
                         <div className="input-group-text">$</div>
                       </div>
-                      <input type="text" className="form-control" name="price" value={this.state.price} onChange={this.handleInputChange} defaultValue={this.state.price}>
+                      <input type="text" className="form-control" name="price" value={this.state.price} onChange={this.handleInputChange}>
                       </input>
                     </div>
                 </div>
@@ -415,7 +414,7 @@ class NewItem extends React.Component {
                 
                 <div className="form-group">
                   <label htmlFor="itemDescription">Description</label>
-                  <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} defaultValue={this.state.description} placeholder="300 Character limit"></textarea>
+                  <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} placeholder="300 Character limit"></textarea>
                 </div>
 
                 <label htmlFor="customFile">Picture (Optional)</label>

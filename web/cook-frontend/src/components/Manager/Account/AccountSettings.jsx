@@ -236,6 +236,18 @@ class AccountSettings extends React.Component{
     else return (<></>)
   }
 
+  loadingAlert() {
+    if (this.state.showAlert && this.state.alertVariant === "danger") {
+      return (
+        <></>
+      )
+    } else {
+      return (
+        <div className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></div>
+      )
+    }
+  }
+
   render() {
     //if (this.cookies.get('mystaff') === undefined) return <Redirect to={'/login_manager'}/>
     return(
@@ -248,7 +260,7 @@ class AccountSettings extends React.Component{
 
           <Alert style={{"width": "70vw"}} show={this.state.showAlert} variant={this.state.alertVariant}>
             <div className="d-flex">
-              <div className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></div>
+              {this.loadingAlert()}
               <div className="pl-3">
                 {this.state.response}
               </div>
