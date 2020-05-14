@@ -8,7 +8,7 @@ import SignUp from "./components/SignUp";
 import ForgotPassword from "./components/ForgotPassword"
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import ChangePassword from "./components/ChangePassword"
-
+import ManagerSignUp from "./components/ManagerSignUp"
 import Home from "./components/Home";
 import PrivacyPolicy from './components/PrivacyPolicy';
 
@@ -57,6 +57,9 @@ class App extends React.Component{
               <Route path="/statistics">
                 <Manager/>
               </Route>
+	      <Route path="/manager_sign_up">
+                <ManagerSignUp/>
+              </Route>			       
               <Route path="/menu"
                 render={(props) => <Manager {...props} content={"menu"}/>} />
               <Route path="/general"
