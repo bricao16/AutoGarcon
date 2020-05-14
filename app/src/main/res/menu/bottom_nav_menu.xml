@@ -4,12 +4,14 @@
     <item
         android:id="@+id/action_scan"
         android:enabled="true"
+        android:theme="@style/Theme.MyApp"
         android:icon="@drawable/ic_qr_scan"
         android:title="QR Scan"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_home"
         android:enabled="true"
+        android:theme="@style/Theme.MyApp"
         android:icon="@drawable/ic_home"
         android:title="Home"
         app:showAsAction="ifRoom" />
@@ -17,7 +19,8 @@
         android:id="@+id/action_cart"
         android:enabled="true"
         android:icon="@drawable/ic_cart"
-        app:actionLayout ="@layout/action_item_layout"
+        android:theme="@style/Theme.MyApp"
         android:title="Cart"
+        app:actionLayout="@layout/action_item_layout"
         app:showAsAction="ifRoom" />
 </menu>

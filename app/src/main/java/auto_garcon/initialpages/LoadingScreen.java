@@ -35,6 +35,24 @@ import auto_garcon.singleton.VolleySingleton;
 public class LoadingScreen extends AppCompatActivity {
     private SharedPreference pref;
 
+
+    /**
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

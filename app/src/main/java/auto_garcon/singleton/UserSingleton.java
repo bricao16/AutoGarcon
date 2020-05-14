@@ -9,6 +9,7 @@ public class UserSingleton {
     private String username;
     private String email;
     private int restaurantID;
+    private int changePassword;
 
     public UserSingleton(String firstName, String lastName, String username, String email){
         this.firstName = firstName;
@@ -16,6 +17,7 @@ public class UserSingleton {
         this.username = username;
         this.email = email;
         this.restaurantID = -1;
+        this.changePassword=0;
     }
 
     public void setFirstName(String firstName) {
@@ -50,6 +52,9 @@ public class UserSingleton {
         return email;
     }
 
+    public  int getChangePassword(){return this.changePassword;}
+
+    public void setChangePassword(int changePassword){this.changePassword=changePassword;}
     public void setRestaurantID(int restaurantID) {
         this.restaurantID = restaurantID;
     }

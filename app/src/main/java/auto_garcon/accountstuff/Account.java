@@ -37,10 +37,21 @@ public class Account extends AppCompatActivity {
     private SharedPreference pref;//This object is used to store information about the user that can be used outside of this page
 
     /**
-     * This methods occurs when the user is brought to the Account xml
-     * It defines the constraint for the xml objects when they are interacted with
-     * It also handles the put request that updates a users information on the AutoGarcon database
-     * @param savedInstanceState contains the data that has been most recently supplied on the register xml after the creation of the app
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
