@@ -138,7 +138,8 @@ class NewItem extends React.Component {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
-				},
+        },
+        timeout: 8000,
 				httpsAgent: new https.Agent({  
 					rejectUnauthorized: false,
 				}),
@@ -151,7 +152,8 @@ class NewItem extends React.Component {
 				else {this.handleShow(true, message);}
 			})
 			.catch(error => {
-				this.handleShow(false, error.response.data);
+				if (error.response) {this.handleShow(false, error.response.data);}
+        else {this.handleShow(false, "Unknown error!");}
 				console.error("There was an error!", error);
 			});
 		}
@@ -188,6 +190,7 @@ class NewItem extends React.Component {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
       },
+      timeout: 8000,
       httpsAgent: new https.Agent({  
         rejectUnauthorized: false,
       }),
