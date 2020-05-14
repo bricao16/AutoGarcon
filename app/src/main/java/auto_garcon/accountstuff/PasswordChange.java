@@ -91,6 +91,7 @@ public class PasswordChange extends AppCompatActivity {
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
+                                    pref.getUser().setChangePassword(0);
                                     Toast.makeText(PasswordChange.this, response, Toast.LENGTH_LONG).show();
                                 }
                             },

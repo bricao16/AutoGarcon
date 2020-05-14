@@ -43,6 +43,7 @@ import java.util.Map;
 
 import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.Account;
+import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
@@ -309,32 +310,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                     itemToBeAdded.setNameOfItem(key);
                                     String whereToSendItem = menuItemCategories.getString("category");
 
-                                    if(itemToBeAdded.getCategory().equals("Alcohol") && alcohol_list != null) {
-                                        for(int i = 0; i < alcohol_list.size(); i++) {
-                                                alcohol_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                        }
-                                    }
-                                    else if(itemToBeAdded.getCategory().equals("Refillable Drink") && drink_list != null) {
-                                        for(int i = 0; i < drink_list.size(); i++) {
-                                                drink_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                        }
-                                    }
-                                    else if(itemToBeAdded.getCategory().equals("Dessert") && dessert_list != null) {
-                                        for(int i = 0; i < dessert_list.size(); i++) {
-                                                dessert_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                        }
-                                    }
-                                    else if(itemToBeAdded.getCategory().equals("Entree") && entree_list != null) {
-                                        for(int i = 0; i < entree_list.size(); i++) {
-                                            entree_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                        }
-                                    }
-                                    else if(itemToBeAdded.getCategory().equals("Appetizer") && appetizer_list != null){
-                                        for(int i = 0; i < appetizer_list.size(); i++) {
-                                            appetizer_list.get(i).setPrice(itemToBeAdded.getPrice());
-                                        }
-                                    }
-
                                     //if conditional filters out erroneous categories
                                     if((whereToSendItem.equals("Alcohol") || whereToSendItem.equals("Refillable Drink") || whereToSendItem.equals("Dessert") || whereToSendItem.equals("Entree") || whereToSendItem.equals("Appetizer"))
                                         && whereToSendItem.length() != 0) {
@@ -472,6 +447,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             itemToBeAdded.setPrice(menuItemCategories.getDouble("price"));
             itemToBeAdded.setCategory(menuItemCategories.getString("category"));
 
+
+
             itemToBeAdded.setAmountInStock(menuItemCategories.getInt("in_stock"));
             itemToBeAdded.setDescription(menuItemCategories.getString("description"));
         }
@@ -480,5 +457,34 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         }
 
         return itemToBeAdded;
+    }
+
+    /**
+     * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
+     * the activity had been stopped, but is now again being displayed to the
+     * user. It will usually be followed by {@link #onResume}. This is a good place to begin
+     * drawing visual elements, running animations, etc.
+     *
+     * <p>You can call {@link #finish} from within this function, in
+     * which case {@link #onStop} will be immediately called after {@link #onStart} without the
+     * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @see #onCreate
+     * @see #onStop
+     * @see #onResume
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+            //if not send them back to PasswordChange page and force them to update their password
+            Intent intent = new Intent(Menu.this, PasswordChange.class);
+            startActivity(intent);
+            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+        }
     }
 }

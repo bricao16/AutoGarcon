@@ -120,6 +120,7 @@ public class Login extends AppCompatActivity {
                                         pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
                                                 object.get("customer_id").toString(), object.get("email").toString()));
                                         pref.setAuthToken(token);
+                                        pref.getUser().setChangePassword(object.getInt("temp_password"));
                                         pref.changeLogStatus(true);
 
                                         startActivity(new Intent(Login.this, TwoButtonPage.class));
