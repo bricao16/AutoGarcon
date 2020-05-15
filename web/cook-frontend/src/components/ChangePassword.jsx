@@ -13,6 +13,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Alert from 'react-bootstrap/Alert';
 import Link from '@material-ui/core/Link';
+import {Redirect} from "react-router-dom";
 
 import Home from './Home';
 
@@ -41,12 +42,12 @@ const useStyles = makeStyles(theme => ({
   After entering their Staff ID, old password(temporary password), and new password, it will change their
   password to their new password
   */
-
+const cookies = new Cookies();
 class ChangePassword extends React.Component {
 
   constructor(props) {
     super(props);
-    this.cookies = new Cookies();
+    
 
     this.state = {
       staff_id: '',
@@ -55,7 +56,7 @@ class ChangePassword extends React.Component {
       confirm_new_password: '',
       redirect: false,
       show: false,
-      token: this.cookies.get('mytoken'),
+      token: cookies.get('mytoken'),
     };
 
     this.onChange = this.onChange.bind(this);
@@ -72,17 +73,32 @@ class ChangePassword extends React.Component {
   }
   handleSubmit(event) {
     console.log(this.state);
+    //make sure correct temp password
+    if (this.handleLogin() === false)
+    {
+      console.log("FALSE");
+    }
+
     event.preventDefault();
 
     //verify password
-    // if (this.state.password.length<6 || !/[A-Z]/.test(this.state.password) || !/[0-9]/.test(this.state.password) ||  this.state.password.length>50 )
-    // {  
-    //   this.setState({alertVariant: 'danger'});
-    //   this.setState({response: "Password must contain an uppercase letter, a digit and be between 6 and 50 characters"});
-    //   this.setState({redirect: false});
-    //   this.setState({show: true});
-    //   return ;
-    // } 
+    if (this.state.new_password.length<6 || !/[A-Z]/.test(this.state.new_password) || !/[0-9]/.test(this.state.new_password) ||  this.state.new_password.length>50 )
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Password must contain an uppercase letter, a digit and be between 6 and 50 characters"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
+    //verify confirm password
+    if (this.state.new_password !== this.state.confirm_new_password)
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Passwords must match"});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
     axios({
       method: 'post',
       url: process.env.REACT_APP_DB + '/staff/password/update',
@@ -110,10 +126,46 @@ class ChangePassword extends React.Component {
       })
       .catch(error => {
         this.handleShow(false, error.response.data);
-        //this.setState({alertVariant: 'danger'});
-        //this.setState({response: "Unknown error"});
         this.setState({ redirect: false });
         console.error("There was an error!", error);
+      });
+
+  }
+  handleLogin() {
+
+    /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
+    axios({
+      method: 'post',
+      url: process.env.REACT_APP_DB + '/staff/login',
+      data: 'username=' + this.state.staff_id + '&password=' + this.state.current_password,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false,
+      }),
+    })
+      .then(async response => {
+        await response;
+        //if a bad response alert the user
+        if (response.status !== 200) {
+          this.handleShow(response);
+        } else {
+          // if good response set the tokens
+          console.log(response);
+          this.setState({ redirect: false });
+          cookies.set('mystaff', response.data.staff, {path: '/'}, {maxAge: 28800});
+          cookies.set('mytoken', response.data.token, {path: '/'}, {maxAge: 28800});
+          this.setState({ redirect: false ,
+                          token : cookies.get('mytoken')});
+          return true;
+        }
+      })
+      .catch(error => {
+        this.handleShow(false, error.response.data);
+        this.setState({ redirect: false });
+        console.error("There was an error!", error);
+        return false;
       });
 
   }
@@ -129,18 +181,23 @@ class ChangePassword extends React.Component {
     }
 
     this.setState({ show: true });
+    setTimeout(() => {
+      this.setState({
+      show:false
+      });
+    }, 2000)
   }
   render() {
     //if sucessful submit redirect to Home
-    if (this.state.redirect === true) {
+    if (this.state.redirect === true ) {
+        /*setTimeout(() => {
+               this.props.history.push('/');
+            }, 1000)*/
       return (
         <div>
-          
           <Alert show={this.state.show} variant={this.state.alertVariant}>
             {this.state.response}
           </Alert>
-          
-
         </div>
       );
     }
@@ -190,7 +247,7 @@ class ChangePassword extends React.Component {
                   required
                   fullWidth
                   name="current_password"
-                  label="Current Password"
+                  label="Temp Password"
                   type="password"
                   id="current_password"
                   autoComplete="current_password"

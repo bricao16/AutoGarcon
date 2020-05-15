@@ -149,6 +149,15 @@ class ManagerSignUp extends React.Component{
       this.setState({show: true});
       return ;
     } 
+    //verify confirm password
+    if (this.state.password !== this.state.confirm_password)
+    {  
+      this.setState({alertVariant: 'danger'});
+      this.setState({response: "Passwords must match "});
+      this.setState({redirect: false});
+      this.setState({show: true});
+      return ;
+    } 
     var phone_number = this.state.contact_num.replace(/\D/g,'');
     axios({
       method: 'PUT',
