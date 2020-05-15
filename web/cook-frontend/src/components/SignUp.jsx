@@ -13,8 +13,9 @@ import axios from 'axios';
 import Link from '@material-ui/core/Link';
 import Alert from 'react-bootstrap/Alert';
 import ManagerSignUp from './ManagerSignUp'
-
+import TimePicker from 'react-time-picker';
 import Cookies from 'universal-cookie';
+import Form from 'react-bootstrap/Form';
 
 /*this sign up will be used to create a 
 restuarant. 
@@ -68,6 +69,8 @@ class SignUp extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
+    this.onChangeOpen = this.onChangeOpen.bind(this);
+    this.onChangeClose = this.onChangeClose.bind(this);
 
   }
 
@@ -88,6 +91,16 @@ class SignUp extends React.Component {
     */
     this.setState({ [e.target.name]: e.target.value });
 
+  }
+  onChangeOpen= (e) =>
+  {
+    var opening = e.replace(/\D/g,'');
+    this.setState({ opening: opening});
+  }
+  onChangeClose= (e) =>
+  {
+    var closing = e.replace(/\D/g,'');
+    this.setState({ closing: closing });
   }
 
 
@@ -326,36 +339,30 @@ class SignUp extends React.Component {
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <TextField onChange={this.onChange}
-                  variant="outlined"
-                  fullWidth
-                  id="opening"
-                  label="Opening Time"
-                  name="opening"
-                  value={this.state.opening}
-                  onChange={this.handleChange}
-                />
-                <i>*Please enter in military time</i>
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField onChange={this.onChange}
-                  variant="outlined"
-                  fullWidth
-                  id="closing"
-                  label="Closing Time"
-                  name="closing"
-                  value={this.state.closing}
-                  onChange={this.handleChange}
-                />
-                <i>*Please enter in military time</i>
-
-              </Grid>
-
-            </Grid>
+              <Form.Group controlId="formBasicEmail" className = "p-3">
+                <Form.Label className = "p-2">Opening </Form.Label>
+                <TimePicker
+                onChange={this.onChangeOpen}
+                value={this.state.openTimePicker}
+                disableClock ={ true}
+                clearIcon = {null}
+                style = {{float: 'right'}}
+              />
+              </Form.Group>
+              <br/>
+              <Form.Group controlId="formBasicEmail" className = "p-3">
+                <Form.Label className = "p-2">Closing </Form.Label>
+                <TimePicker
+                onChange={this.onChangeClose}
+                value={this.state.openTimePicker}
+                disableClock ={ true}
+                clearIcon = {null}
+                style = {{float: 'right'}}
+              />
+              </Form.Group>
+ 
             <br />
-
+            </Grid>
             <Button onClick={this.handleSubmit}
               type="submit"
               fullWidth
