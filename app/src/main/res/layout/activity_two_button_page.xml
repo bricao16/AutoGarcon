@@ -37,19 +37,20 @@
         android:background="@drawable/oval_button"
         android:text="QR Code Scanner"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.55"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.55" />
 
     <!-- home button -->
     <Button
         android:id="@+id/fav_button"
-        android:layout_width="match_parent"
+        android:layout_width="255dp"
         android:layout_height="100dp"
         android:layout_marginBottom="72dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/oval_button"
         android:text="Favorites Page"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,5 +58,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.85"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

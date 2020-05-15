@@ -13,8 +13,9 @@ import axios from 'axios';
 import Link from '@material-ui/core/Link';
 import Alert from 'react-bootstrap/Alert';
 import ManagerSignUp from './ManagerSignUp'
-
+import TimePicker from 'react-time-picker';
 import Cookies from 'universal-cookie';
+import Form from 'react-bootstrap/Form';
 
 /*this sign up will be used to create a 
 restuarant. 
@@ -68,6 +69,8 @@ class SignUp extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
+    this.onChangeOpen = this.onChangeOpen.bind(this);
+    this.onChangeClose = this.onChangeClose.bind(this);
 
   }
 
@@ -89,11 +92,20 @@ class SignUp extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
 
   }
+  onChangeOpen= (e) =>
+  {
+    var opening = e.replace(/\D/g,'');
+    this.setState({ opening: opening});
+  }
+  onChangeClose= (e) =>
+  {
+    var closing = e.replace(/\D/g,'');
+    this.setState({ closing: closing });
+  }
 
 
 
   handleSubmit(event) {
-    console.log(this.state);
 
     event.preventDefault();
 
@@ -157,14 +169,14 @@ class SignUp extends React.Component {
     } else if (!Number.isInteger(parseFloat(this.state.closing))) {
       this.handleValidation("No integer entered for closing time.  Please enter a time between 0 and 2400.");
     }
-
+    var phone_number = this.state.contact_num.replace(/\D/g,'');
     axios({
       method: 'put',
       url: process.env.REACT_APP_DB + '/restaurant/new',
       data: 
         '&restaurant_name=' + this.state.restaurant_name +
         '&restaurant_addr=' + this.state.restaurant_address + 
-        '&phone_number=' + this.state.contact_num +
+        '&phone_number=' + phone_number +
         '&email=' + this.state.email +
         '&opening_time=' + this.state.opening + 
         '&closing_time=' + this.state.closing + 
@@ -220,7 +232,6 @@ class SignUp extends React.Component {
      /*set the cookies and redirect to the manager sign up page*/
      cookies.set('restaurant_id', this.state.staff, {path: '/'}, {maxAge: 3600});
 
-     console.log(cookies.get('restaurant_id'));
      return (
         <Container component="main" maxWidth="xs" className="p-3">
         {/*alert if successful or unsuccessful*/}
@@ -328,36 +339,30 @@ class SignUp extends React.Component {
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <TextField onChange={this.onChange}
-                  variant="outlined"
-                  fullWidth
-                  id="opening"
-                  label="Opening Time"
-                  name="opening"
-                  value={this.state.opening}
-                  onChange={this.handleChange}
-                />
-                <i>*Please enter in military time</i>
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField onChange={this.onChange}
-                  variant="outlined"
-                  fullWidth
-                  id="closing"
-                  label="Closing Time"
-                  name="closing"
-                  value={this.state.closing}
-                  onChange={this.handleChange}
-                />
-                <i>*Please enter in military time</i>
-
-              </Grid>
-
-            </Grid>
+              <Form.Group controlId="formBasicEmail" className = "p-3">
+                <Form.Label className = "p-2">Opening </Form.Label>
+                <TimePicker
+                onChange={this.onChangeOpen}
+                value={this.state.openTimePicker}
+                disableClock ={ true}
+                clearIcon = {null}
+                style = {{float: 'right'}}
+              />
+              </Form.Group>
+              <br/>
+              <Form.Group controlId="formBasicEmail" className = "p-3">
+                <Form.Label className = "p-2">Closing </Form.Label>
+                <TimePicker
+                onChange={this.onChangeClose}
+                value={this.state.openTimePicker}
+                disableClock ={ true}
+                clearIcon = {null}
+                style = {{float: 'right'}}
+              />
+              </Form.Group>
+ 
             <br />
-
+            </Grid>
             <Button onClick={this.handleSubmit}
               type="submit"
               fullWidth
@@ -367,14 +372,6 @@ class SignUp extends React.Component {
             >
               Sign Up
               </Button>
-            <Grid container>
-              <Grid item xs>
-                {/* Create an account link */}
-                <Link href="/" variant="body2" style={{ color: '#0B658A' }}>
-                  {"Already have an account? Sign In"}
-                </Link>
-              </Grid>
-            </Grid>
           </form>
           <br></br>
           <br></br>

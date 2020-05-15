@@ -1,6 +1,6 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
-
+import TimePicker from 'react-time-picker';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
@@ -31,22 +31,29 @@ class StoreInfo extends React.Component{
       showPhone: false,
       showDescription: false,
       showCuisine:false,
+      showOpening:false,
+      showClosing:false,
       restaurantInfo: [],
       sectionEdit: "",
       show:false,
       name:this.props.info.name,
       address: this.props.info.address,
-      phone: this.props.info.phone_number,
+      phone: this.phoneFormat(this.props.info.phone_number),
 			description: this.props.info.description,
 			cuisine: "American",
-      opening: this.props.info.opening,
-      closing:this.props.info.closing,
+      opening: this.time_convert(this.props.info.opening),
+      closing: this.time_convert(this.props.info.closing),
+      openTimePicker: this.time_TimePicker(this.props.info.opening),
+      closeTimePicker: this.time_TimePicker(this.props.info.closing),
+      openingMil :this.props.info.opening,
+      closingMil :this.props.info.closing,
       edited: false,
       restaurant_id :this.cookies.get("mystaff").restaurant_id,
       token:this.cookies.get('mytoken')
     };
 
-    this.onChange = this.onChange.bind(this);
+    this.onChangeOpen = this.onChangeOpen.bind(this);
+    this.onChangeClose = this.onChangeClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
 		this.handleValidation = this.handleValidation.bind(this);
@@ -54,49 +61,60 @@ class StoreInfo extends React.Component{
 
   }
 
-  onChange = (e) => {
-        /*
-          Because we named the inputs to match their
-          corresponding values in state, it's
-          super easy to update the state
-        */
-        this.setState({ [e.target.name]: e.target.value });
-      }
+
   /* Used for connecting to restaurantInfo in database */
   handleSubmit(event) {
     console.log(this.state);
+    //var open = this.state.openingMil.replace(/\D/g,'');
+   // var close = this.state.closingMil.replace(/\D/g,'');
 		/*Validation for restaurant name.*/
 		if(this.state.name.length > 40){
 			this.handleValidation("Restaurant name is too long.  Please reduce to 40 characters or less.");
-		} else if (this.state.address.length > 40){
+      return;
+		} 
+    else if (this.state.address.length > 40){
+
 			this.handleValidation("Restaurant address is too long.  Please reduce to 40 characters or less.");
-			
+    }
+		/*Phone number */
+
+    else if (!(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.state.phone)))
+    {
+      this.handleValidation("Invalid phone number");
+      return ;
+    }
 		/*Validation for opening field.*/	
-		} else if (Number(this.state.opening) < 0 || Number(this.state.opening) > 2400){
-			this.handleValidation("Valid opening time not entered.  Please enter a time between 0 and 2400.");
-		} else if (isNaN((this.state.opening))){
-			this.handleValidation("No number entered for opening time.  Please enter a time between 0 and 2400.");		
-		} else if (!Number.isInteger(parseFloat(this.state.opening))){
-			this.handleValidation("No integer entered for opening time.  Please enter a time between 0 and 2400.");
+		else if (Number(this.state.openingMil) < 0 || Number(this.state.openingMil) > 2400){
+			this.handleValidation("Invalid opening time  entered.");
+      return;
+		} else if (isNaN((this.state.openingMil))){
+			this.handleValidation("No number entered for opening time.");	
+      return;	
+		} else if (!Number.isInteger(parseFloat(this.state.openingMil))){
+			this.handleValidation("No integer entered for opening time. ");
+      return;
 			
 		/*Validation for closing field.*/	
-		} else if (Number(this.state.closing) < 0 || Number(this.state.closing) > 2400){
-			this.handleValidation("Valid closing time not entered.  Please enter a time between 0 and 2400.");
-		} else if (isNaN((this.state.closing))){
-			this.handleValidation("No number entered for closing time.  Please enter a time between 0 and 2400.");		
-		} else if (!Number.isInteger(parseFloat(this.state.closing))){
-			this.handleValidation("No integer entered for closing time.  Please enter a time between 0 and 2400.");
+		} else if (Number(this.state.closingMil) < 0 || Number(this.state.closingMil) > 2400){
+			this.handleValidation("Valid closing time not entered.  ");
+      return;
+		} else if (isNaN((this.state.closingMil))){
+			this.handleValidation("No number entered for closing time. ");
+      return;		
+		} else if (!Number.isInteger(parseFloat(this.state.closingMil))){
+			this.handleValidation("No integer entered for closing time.");
+      return;
 		} else {
 			
-			console.log(this.state + "Reaching in here.");
+			var phone_number = this.state.phone.replace(/\D/g,'');
 			this.editForm("");
 			event.preventDefault();
 			axios({
 				method: 'POST',
 				url:  process.env.REACT_APP_DB +'/restaurant/update/',
 				data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
-				'&address='+this.state.address+'&phone='+this.state.phone+
-				'&opening='+this.state.opening+'&closing='+this.state.closing+'&cuisine='+this.state.cuisine+'&email='+"whatever",
+				'&address='+this.state.address+'&phone='+phone_number+
+				'&opening='+this.state.openingMil+'&closing='+this.state.closingMil+'&cuisine='+this.state.cuisine+'&email='+"whatever",
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'Authorization': 'Bearer ' + this.state.token
@@ -117,6 +135,10 @@ class StoreInfo extends React.Component{
 			});
 		}
 	}
+    /* Inserts dashes to format the number correctly */
+  phoneFormat(number) {
+    return this.insert(this.insert(number + "", 3, "-"), 7, "-");
+  }
     /* Used for handling changes to the input field */
   handleInputChange(event) {
     const target = event.target;
@@ -129,12 +151,25 @@ class StoreInfo extends React.Component{
       [name]: value
     });
   }
+  onChangeOpen= (e) =>
+  {
+    var opening = e.replace(/\D/g,'');
+    this.setState({ openingMil: opening});
+    if (this.state.edited === false) this.setState({edited: true})
+  }
+  onChangeClose= (e) =>
+  {
+    var closing = e.replace(/\D/g,'');
+    this.setState({ closingMil: closing });
+    if (this.state.edited === false) this.setState({edited: true})
+  }
 	
   /* Used to show the correct alert after hitting save item */
   handleShow(success, message) {
     if (success) {
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
+
     }
     else {
       this.setState({response: message})
@@ -143,10 +178,11 @@ class StoreInfo extends React.Component{
     this.setState({show: true});
 		
 		setTimeout(() => {
+      window.location.reload();
 			this.setState({
 			show:false
 			});
-		}, 2500)
+		}, 1000)
   }
 	
 	handleValidation(message){
@@ -170,19 +206,57 @@ class StoreInfo extends React.Component{
 	
 	/* Display the time in readable format on page */
 	time_convert(num) { 
-		const hours = Math.floor(num / 60);  
-		const minutes = num % 60;
+		const hours = (Math.floor(num / 100))%12;  
+		const minutes = num % 100;
+    var minutesString = minutes.toString();
+
+    if(minutes ===0)
+    {
+      minutesString = "00";
+    }
 		if(num < 1200){
-			return '${hours}:${minutes} AM';  
+			return hours +':' + minutesString +'AM';  
 		}	else {
-			return '${hours}:${minutes} PM';
+			return  hours +':' + minutesString +'PM'; 
 		}
 		console.log("Reaching into here.\n");
   }
-	
-	/* Dynamic fields that are shown if the internal state is stored as showing */
+
+  time_TimePicker(num) { 
+    const hours = Math.floor(num / 100);  
+    const minutes = num % 100;
+    var minutesString = minutes.toString();
+
+    if(minutes ===0)
+    {
+      minutesString = "00";
+    }
+    return hours +':' + minutesString ;  
+
+  }
+/* Dynamic fields that are shown if the internal state is stored as showing */
   fieldStatus(field) {
-    if (this.state['show'+field]) {
+    if(this.state['show'+field] && field === "Opening")
+    {
+      return  (       
+          <TimePicker
+          onChange={this.onChangeOpen}
+          value={this.state.openTimePicker}
+        />
+        );
+
+    }
+    else if(this.state['show'+field] && field === "Closing")
+    {
+      return  (       
+          <TimePicker
+          onChange={this.onChangeClose}
+          value={this.state.closeTimePicker}
+        />
+        );
+
+    }
+    else if (this.state['show'+field]) {
       return (
         <div className="py-2 pr-2">
           <input className="form-control" onChange={this.handleInputChange} name={snakeCase(field)} defaultValue={this.state[snakeCase(field)]}></input>
@@ -191,10 +265,17 @@ class StoreInfo extends React.Component{
     }
     else return (<></>)
   }
+  /* For inserting substrings.  This is necessary for field formats */
+  insert(str, index, value) {
+    return str.substr(0, index) + value + str.substr(index);
+  }
 
   /* Dynamic labels for each corresponding field */
   labelStatus(field) {
     let snakeCaseField = snakeCase(field)
+     // Format for phone number
+    //if (field == "Phone") text = this.phoneFormat(text);
+
     if (!this.state['show'+field]) {
       return (
         <small className="text-secondary">{this.state[snakeCaseField]}</small>

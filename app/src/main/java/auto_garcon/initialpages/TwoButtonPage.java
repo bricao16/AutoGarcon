@@ -20,6 +20,8 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
+import auto_garcon.ExceptionHandler;
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.homestuff.Home;
 import auto_garcon.menustuff.Menu;
@@ -56,10 +58,14 @@ public class TwoButtonPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NukeSSLCerts.nuke();
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
+
         setContentView(R.layout.activity_two_button_page);
         pref = new SharedPreference(this);//file for keeping track of cart
         Log.d("testing"," "+getIntent().getStringExtra("error"));
-        StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername(),
+        StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/favorites/" + pref.getUser().getUsername(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -84,7 +90,7 @@ public class TwoButtonPage extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if(error.networkResponse.statusCode == 500) {
+                        if(error.networkResponse!= null && error.networkResponse.statusCode == 500) {
                             Log.d("Error in loading screen", "Error retrieving favorites");
                         }
                     }

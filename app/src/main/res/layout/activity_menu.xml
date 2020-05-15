@@ -27,38 +27,50 @@
 
 
             <!-- logo of restaurant -->
-            <ImageView
-                android:id="@+id/restaurant_logo"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginTop="24dp"
-                android:layout_alignParentStart="true"/>
-            <!-- name of restaurant -->
-
-            <TextView
-                android:id="@+id/restaurant_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
-                android:gravity="center"
-                android:textSize="20sp"/>
-
-            <Button
-                android:id="@+id/add_restaurant"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_alignParentEnd="true"
-                android:textSize="14sp" />
+        <!-- name of restaurant -->
 
 
         <!-- list of menu items -->
+
+        <ImageView
+            android:id="@+id/restaurant_logo"
+            android:layout_width="119dp"
+            android:layout_height="64dp"
+            android:layout_below="@+id/xml_toolbar"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="286dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/restaurant_name"
+            android:layout_width="197dp"
+            android:layout_height="61dp"
+            android:layout_alignTop="@+id/restaurant_logo"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="86dp"
+            android:gravity="center"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/add_restaurant"
+            android:layout_width="74dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/xml_toolbar"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="-3dp"
+            android:layout_marginEnd="6dp"
+            android:textSize="8sp" />
+
         <ExpandableListView
             android:id="@+id/menu_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:animateLayoutChanges="true"
-            android:layout_marginTop="95dp"
+            android:layout_marginTop="105dp"
             android:layout_marginBottom="70dp" />
 
         <!-- bottom nav bar -->

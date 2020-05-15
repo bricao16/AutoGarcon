@@ -7,6 +7,7 @@ import Modal from 'react-bootstrap/Modal';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import sizeOf from 'image-size';
 
 /* 
   This component is to allow the manager to 
@@ -29,7 +30,7 @@ class NewItem extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-	this.handleValidation = this.handleValidation.bind(this);
+	  this.handleValidation = this.handleValidation.bind(this);
   }
 
   /* Used for handling changes to the input field */
@@ -48,19 +49,23 @@ class NewItem extends React.Component {
       // preliminary code to handle getting local file and finally printing to console
       // the results of our function ArrayBufferToBinary().
       //change the file name
-      this.setState({ imageName: target.files[0].name });
 
-      var file = target.files[0]; // get handle to local file.
-      var reader = new FileReader();
-      reader.onload = function(event) {
-        var data = event.target.result;
-        var finaldata = new Uint8Array(data);
+      if (target.files[0]) {
+        this.setState({ imageName: target.files[0].name });
 
-        //set our file to the correct data
-        this.setState({ image:  {'type': 'Bufferz', 'data': finaldata} });
-      }.bind(this);
+        var file = target.files[0]; // get handle to local file.
+        var reader = new FileReader();
+        reader.onload = function(event) {
+          var data = event.target.result;
+          var finaldata = new Uint8Array(data);
 
-      reader.readAsArrayBuffer(file); //gets an ArrayBuffer of the file
+          //set our file to the correct data
+          file.buffer = finaldata;
+          this.setState({image:  file});
+        }.bind(this);
+
+        reader.readAsArrayBuffer(file); //gets an ArrayBuffer of the file
+      }
     } else {
       this.setState({
         [name]: value
@@ -76,8 +81,15 @@ class NewItem extends React.Component {
     let endpoint;
     let body;
     let message;
-	
-		if(this.state.name.length > 40){
+    
+    if (this.state.image) {
+      var bufImg = Buffer.from(this.state.image.buffer);
+      var dimensions = sizeOf(bufImg);
+    }
+
+    if(dimensions && Math.abs(dimensions.width - dimensions.height) > 100) {
+      this.handleValidation("Image dimensions need to be a square (Width equals height).");
+    } else if(this.state.name.length > 40){
 			this.handleValidation("Name field is too large. Please reduce to 40 characters or less.");
 		} else if(this.state.category.length > 40) {
 			this.handleValidation("Category field is too large.  Please reduce to 40 characters or less.");
@@ -96,7 +108,6 @@ class NewItem extends React.Component {
     } else if(this.state.description.length < 1){
       this.handleValidation("Description field is required.");
     } else {
-			
 			this.state.price = Number(this.state.price).toFixed(2);
 
 
@@ -105,36 +116,31 @@ class NewItem extends React.Component {
 				message = "added"
 				requestMethod = "PUT"
 				endpoint = process.env.REACT_APP_DB + "/menu/add"
-				body = 'restaurant_id='+this.state.user.restaurant_id
-					+'&item_name='+this.state.name
-					+'&calorie_num='+this.state.calories
-					+'&category='+this.state.category
-					+'&price='+this.state.price
-          +'&in_stock='+this.state.in_stock
-          +'&description='+this.state.description
-          +'&image='+this.state.image
 			}
 			// Item needs to be edited
 			else {
 				message = "updated"
 				requestMethod = "POST"
 				endpoint = process.env.REACT_APP_DB + "/menu/update"
-				body = 'restaurant_id='+this.state.user.restaurant_id
-					+'&item_id='+this.state.item_id
-					+'&item_name='+this.state.name
-					+'&calorie_num='+this.state.calories
-					+'&category='+this.state.category
-					+'&price='+this.state.price
-          +'&in_stock='+this.state.in_stock
-          +'&description='+this.state.description
-          +'&image='+this.state.image
-			}
+      }
+      
+      var bodyFormData = new FormData();
+      bodyFormData.set('restaurant_id', this.state.user.restaurant_id);
+      bodyFormData.set('item_id', this.state.item_id);
+      bodyFormData.set('item_name', this.state.name);
+      bodyFormData.set('calorie_num', this.state.calories);
+      bodyFormData.set('category', this.state.category);
+      bodyFormData.set('price', this.state.price);
+      bodyFormData.set('in_stock', this.state.in_stock);
+      bodyFormData.set('description', this.state.description);
+      bodyFormData.append('image', this.state.image);
+
 			axios({
 				method: requestMethod,
 				url: endpoint,
-				data: body,
+        data: bodyFormData,
 				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
+					'Content-Type': 'multipart/form-data',
 					'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
         },
         timeout: 8000,

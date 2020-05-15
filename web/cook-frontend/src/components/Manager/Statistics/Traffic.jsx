@@ -17,7 +17,6 @@ class HighestSelling extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-              selectedTime: "Week",
               unselectedCategories: [],
               data:this.props.data,
               checked:true
@@ -84,13 +83,7 @@ class HighestSelling extends React.Component {
     render() {
         return (
             <Container>
-                {/*Dropdown of week and month*/}
-                <div className="form-group p-3" style={{'width':'10vw', 'float':'right'}}>
-                  <select className="form-control">
-                    <option onClick={()=>this.changeSelection("Week")}>Week</option>
-                    <option onClick={()=>this.changeSelection("Month")}>Month</option>
-                  </select>
-                </div>
+
                 {this.renderPlot()}
 
             </Container>

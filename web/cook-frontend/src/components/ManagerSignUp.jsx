@@ -78,7 +78,6 @@ class ManagerSignUp extends React.Component{
         this.setState({ [e.target.name]: e.target.value });
       }
  handleSubmit(event){
-    //console.log(this.state);
     event.preventDefault();
   
     https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
@@ -150,14 +149,14 @@ class ManagerSignUp extends React.Component{
       this.setState({show: true});
       return ;
     } 
-
+    var phone_number = this.state.contact_num.replace(/\D/g,'');
     axios({
       method: 'PUT',
       url:  process.env.REACT_APP_DB + '/staff/register',
       //+'&logo='+this.state.file
       data: 'staff_id='+this.state.staff_id+'&restaurant_id='+this.state.restaurant_id
               +'&first_name='+this.state.first_name+'&last_name='+this.state.last_name
-              +'&contact_num='+this.state.contact_num+'&email='+this.state.email
+              +'&contact_num='+phone_number+'&email='+this.state.email
               +'&position='+this.state.position+'&password='+this.state.password,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -168,9 +167,15 @@ class ManagerSignUp extends React.Component{
     })
     .then(async response => {
       await response;
-      console.log(response);
       if (response.status !== 200) {this.handleShow(false);}
-      else {console.log("Success");}
+      else {         
+            this.handleShow(true,"");
+              this.setState({
+                redirect: true,
+                show: true,
+                staff: response.data.staff,
+                token: response.data.token,
+              });}
     })
     .catch(error => {
       this.handleShow(false);
@@ -180,7 +185,6 @@ class ManagerSignUp extends React.Component{
   }
     /* Used to show the correct alert after hitting save item */
   handleShow(success,message) {
-    console.log("in handle show" + success + message);
     if (success) {
       this.setState({response: "Successfully created staff member: " + this.state.first_name});
       this.setState({alertVariant: 'success'});
@@ -198,7 +202,6 @@ render() {
         /*set the cookies and redirect to the manager  page*/
      cookies.set('mytoken', this.state.token, {path: '/'}, {maxAge: 3600});
      cookies.set('mystaff', this.state.staff, {path: '/'}, {maxAge: 3600});
-      console.log(cookies.get('mystaff'));
     return(
       <React.Fragment>
         <Alert show={this.state.show} variant={this.state.alertVariant}>

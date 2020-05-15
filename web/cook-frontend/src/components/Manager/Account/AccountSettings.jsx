@@ -175,6 +175,16 @@ class AccountSettings extends React.Component{
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
+  /* For inserting substrings.  This is necessary for field formats */
+  insert(str, index, value) {
+    return str.substr(0, index) + value + str.substr(index);
+  }
+
+  /* Inserts dashes to format the number correctly */
+  phoneFormat(number) {
+    return this.insert(this.insert(number + "", 3, "-"), 7, "-");
+  }
+
   /* Dynamic fields that are shown if the internal state is stored as showing */
   fieldStatus(field) {
     if (this.state['show'+field]) {
@@ -189,11 +199,15 @@ class AccountSettings extends React.Component{
 
   /* Dynamic labels for each corresponding field */
   labelStatus(field) {
-    let snakeCaseField = snakeCase(field)
+    let snakeCaseField = snakeCase(field);
+    let text = this.cookies.get("mystaff")[snakeCaseField];
+
+    // Format for phone number
+    if (field == "ContactNum") text = this.phoneFormat(text);
 
     if (!this.state['show'+field]) {
       return (
-        <small className="text-secondary">{this.cookies.get("mystaff")[snakeCaseField]}</small>
+        <small className="text-secondary">{text}</small>
       )
     }
     else return (<></>)

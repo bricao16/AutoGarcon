@@ -179,6 +179,21 @@ class Menu extends React.Component {
       this.resetNewItem();
     }  
   }
+
+  /* Loading spinner while image is loading */
+  loadingImage(item) {
+    if (!this.state.imageUrls[item]) {
+      return (
+        <div className="d-flex justify-content-center">
+          <div className="spinner-border" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </div>
+      )
+    }
+    else return (<></>)
+  }
+
   /* Aggregate all the menu categories onto cards and call the change which menu to display is clicked */
   renderMenuCategories(){
 
@@ -193,6 +208,7 @@ class Menu extends React.Component {
             <Card.Header style ={{'fontFamily' :font, 'backgroundColor': secondary, 'textAlign' : 'center', 'fontWeight': 'bold'}}>{item}</Card.Header>
              <Card.Body>
                 <img src={this.state.imageUrls[item]} alt = "category"  style = {{  'maxHeight': '250px'}} className="img-fluid rounded "></img>
+                {this.loadingImage(item)}
               </Card.Body>          
           </div>
         </Card>

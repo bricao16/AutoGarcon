@@ -17,3 +17,46 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+@font-face {
+  font-family: 'BenchNine';
+  src: local('BenchNine'), url(./assets/fonts/BenchNine-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Lato';
+  src: local('Lato'), url(./assets/fonts/Lato-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Lora';
+  src: local('Lora'), url(./assets/fonts/Lora-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Merriweather';
+  src: local('Merriweather'), url(./assets/fonts/Merriweather-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Montserrat';
+  src: local('Montserrat'), url(./assets/fonts/Montserrat-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: local('OpenSans'), url(./assets/fonts/OpenSans-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Oswald';
+  src: local('Oswald'), url(./assets/fonts/Oswald-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Playfair Display';
+  src: local('PlayfairDisplay'), url(./assets/fonts/PlayfairDisplay-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'PTSans';
+  src: local('PTSans'), url(./assets/fonts/PTSans-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Raleway';
+  src: local('Raleway'), url(./assets/fonts/Raleway-Medium.ttf) format('truetype');
+}
+
+
+

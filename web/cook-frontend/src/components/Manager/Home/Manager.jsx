@@ -205,11 +205,16 @@ class Manager extends React.Component{
       });} 
 
       //get logo image data from binary
-      const imageData = this.arrayBufferToBase64(this.state.restaurantJSON.restaurant.logo.data);
-      var binary = this.fixBinary(atob(imageData));
-      const blob = new Blob([binary], {type : 'image/png'});
-      const blobUrl =URL.createObjectURL(blob);
-      console.log(this.state);
+      const blobUrl = "";
+      if(this.state.restaurantJSON.restaurant.logo !== null)
+      {
+        const imageData = this.arrayBufferToBase64(this.state.restaurantJSON.restaurant.logo.data);
+        var binary = this.fixBinary(atob(imageData));
+        const blob = new Blob([binary], {type : 'image/png'});
+        const blobUrl =URL.createObjectURL(blob);
+        console.log(this.state);
+      }
+
 
 
       return (

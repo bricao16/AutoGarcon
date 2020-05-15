@@ -1,8 +1,21 @@
 package auto_garcon.menustuff;
 
+import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
+
+import auto_garcon.singleton.VolleySingleton;
+
 /**
  * Sorts out information for menu items
  *
@@ -11,6 +24,7 @@ public class MenuItem implements Serializable{
     private String category;
     private String nameOfItem;
     private String description;
+    private String[] allergens;
     private int amountInStock;
     private int calories;
     private double price;
@@ -107,8 +121,49 @@ public class MenuItem implements Serializable{
         return this.description;
     }
 
+    public void setAllergens(String[] allergens) { this.allergens = allergens;}
+
+    public String[] getAllergens() {
+        return this.allergens;
+    }
+
     public void setItemImage(byte[] itemImage){
         this.itemImage = itemImage;
+    }
+
+    public void setImage(Context context){
+         byte[] temp = new byte[1];
+        if(this.itemID!=-1){
+
+            StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/menu/image/" + this.itemID, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    try {
+                        JSONObject imageData = new JSONObject(response);
+                        Log.d("work","worked");
+
+                        byte[]  itemImageByteArray = new byte[imageData.getJSONObject("image").getJSONArray("data").length()];
+
+                        for(int i = 0; i < itemImageByteArray.length; i++) {
+                            itemImageByteArray[i] = (byte) (((int) imageData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
+                        }
+                        itemImage=itemImageByteArray;
+                    }
+                    catch(JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            VolleySingleton.getInstance(context).addToRequestQueue(getItemImageRequest);
+
+        }
     }
 
     public byte[] getItemImage() {

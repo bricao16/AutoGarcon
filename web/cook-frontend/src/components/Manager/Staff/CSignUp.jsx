@@ -145,13 +145,13 @@ class CSignUp extends React.Component{
       this.setState({show: true});
       return ;
     } 
-
+    var phone_number = this.state.contact_num.replace(/\D/g,'');
     axios({
       method: 'put',
       url: process.env.REACT_APP_DB + '/staff/register',
       data: 'staff_id='+this.state.staff_id+'&restaurant_id='+this.state.restaurant_id
               +'&first_name='+this.state.first_name+'&last_name='+this.state.last_name
-              +'&contact_num='+this.state.contact_num+'&email='+this.state.email
+              +'&contact_num='+phone_number+'&email='+this.state.email
               +'&position='+this.state.position+'&password='+this.state.password,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'

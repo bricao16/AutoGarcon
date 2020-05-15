@@ -66,7 +66,6 @@ class Customize extends React.Component{
       }
       else if(this.state.sectionEdit ==="Secondary")
       {
-        console.log("here");
         this.setState({ 'temp_secondary':  e.hex});
       }
       else if(this.state.sectionEdit ==="Tertiary")
@@ -76,7 +75,6 @@ class Customize extends React.Component{
       else if(this.state.sectionEdit ==="Font")
       {
         this.setState({ 'temp_font':  e.target.value});
-        console.log("here");
       }
       else if(this.state.sectionEdit ==="Font Color")
       {
@@ -90,7 +88,6 @@ class Customize extends React.Component{
     }
 
       onChangeFile = (e) => {
-        console.log(e.target.files[0]);
         //https://riptutorial.com/javascript/example/14207/getting-binary-representation-of-an-image-file
         // preliminary code to handle getting local file and finally printing to console
         // the results of our function ArrayBufferToBinary().
@@ -179,7 +176,6 @@ class Customize extends React.Component{
          this.setState({ 'alexaGreeting': this.state.temp_alexaGreeting},
           this.submitToDB);
       }
-    console.log(this.state);
     this.editForm("");
 }
 
@@ -189,6 +185,7 @@ class Customize extends React.Component{
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
       this.handleModalClose();
+      this.forceUpdate();
     }
     else {
       this.setState({response: 'Failed to update'})
@@ -198,15 +195,15 @@ class Customize extends React.Component{
     this.setState({show: true});
     
     setTimeout(() => {
+      window.location.reload();
       this.setState({
       show:false
       });
-    }, 2500)
+    }, 1000)
   }
 
 //change the category of which is being edited
 editForm = (category) => {
-  console.log(category);
     this.setState({
       sectionEdit: category
   });
@@ -237,7 +234,6 @@ loadXHR(url) {
 
 renderInfo(){
   const font = this.state.font;
-  console.log(this.state.font)
     return (
           <>
             <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
@@ -509,6 +505,7 @@ renderInfo(){
                         <div className="d-flex flex-wrap">
                             {this.renderInfo()}
                         </div>
+
                     </Container>
                 </div>
             </Container>

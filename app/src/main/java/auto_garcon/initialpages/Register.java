@@ -22,6 +22,7 @@ import com.example.auto_garcon.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
@@ -62,6 +63,7 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        NukeSSLCerts.nuke();
 
         pref = new SharedPreference(this);
 
@@ -138,7 +140,7 @@ public class Register extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, "http://50.19.176.137:8000/customer/register", obj,
+                    JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, "https://50.19.176.137:8001/customer/register", obj,
                             new Response.Listener<JSONObject>()
                             {
                                 @Override

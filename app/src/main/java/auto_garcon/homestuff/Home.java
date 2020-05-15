@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import auto_garcon.ExceptionHandler;
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Settings;
@@ -96,6 +98,9 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         pref = new SharedPreference(Home.this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        NukeSSLCerts.nuke();
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
@@ -155,7 +160,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-        StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername(),
+        StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/favorites/" + pref.getUser().getUsername(),
             new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

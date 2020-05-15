@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.badge.BadgeDrawable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,15 +53,17 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private int opening;
     private int closing;
     private byte[] itemImageByteArray;
+    private BadgeDrawable badge;
+
 
     Dialog addToCartPopup;
     Dialog confirmPopup;
 
-    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor,int opening,int closing) {
+    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor,int opening,int closing,BadgeDrawable drawable) {
 
         this.context = context;
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
-
+        this.badge =drawable;
         this.listDataHeader = listDataHeader;
         this.listHashMap = listHashMap;
         this.pref = new SharedPreference(context);
@@ -158,6 +161,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 TextView itemName = addToCartPopup.findViewById(R.id.item_name_menu_popup);
                 TextView itemPrice = addToCartPopup.findViewById(R.id.item_price_menu_popup);
                 TextView itemDescription = addToCartPopup.findViewById(R.id.item_description_menu_popup);
+                TextView itemAllergens  = addToCartPopup.findViewById(R.id.item_allergens_menu_popup);
 
                 final ImageView imageOfItem = addToCartPopup.findViewById(R.id.item_image_menu_popup);
                 StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/menu/image/" + getChild(i, j).getItemID(),
@@ -198,7 +202,18 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 itemName.setTextColor(Color.WHITE);
                 itemPrice.setText("Price: " + String.format("$%.02f", getChild(i, j).getPrice()));
                 itemPrice.setTextColor(Color.WHITE);
-                itemDescription.setText(getChild(i, j).getDescription());
+                if(getChild(i, j).getDescription()!="null") {
+                    itemDescription.setText(getChild(i, j).getDescription());
+                }
+                if(getChild(i, j).getAllergens().length!=0) {
+                    String allergenMessage = "Allergens: ";
+                    String[] allergensArray = getChild(i, j).getAllergens();
+                    for(int i = 0; i < allergensArray.length; i++) {
+                        allergenMessage = allergenMessage+ allergensArray[i]+" ";
+                    }
+                    itemAllergens.setText(allergenMessage);
+                    itemPrice.setTextColor(Color.WHITE);
+                }
 
                 //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
                 if(getChild(i, j).getAmountInStock() == 0) {
@@ -224,6 +239,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                         cart.addToCart(itemToBeAdded);
                         pref.setShoppingCart(cart);
+                        badge.setNumber(pref.getShoppingCart().getCart().size());
+                        badge.setVisible(false);
+                        badge.setVisible(true);
                         addToCartPopup.dismiss();
                     }
                     else if(pref.getShoppingCart().getRestaurantID() == restaurantID) {
@@ -242,6 +260,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                         pref.setShoppingCart(cart);
                         pref.getShoppingCart().setEndingHour(closing);
                         pref.getShoppingCart().setStartingHour(closing);
+                        badge.setNumber(pref.getShoppingCart().getCart().size());
+                        badge.setVisible(false);
+                        badge.setVisible(true);
                         addToCartPopup.dismiss();
                     }
                     else if(pref.getShoppingCart().getRestaurantID() != restaurantID) {
@@ -271,6 +292,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 cart.addToCart(itemToBeAdded);
 
                                 pref.setShoppingCart(cart);
+                                badge.setNumber(pref.getShoppingCart().getCart().size());
+                                badge.setVisible(false);
+                                badge.setVisible(true);
                                 pref.getShoppingCart().setEndingHour(closing);
                                 pref.getShoppingCart().setStartingHour(opening);
                                 confirmPopup.dismiss();
