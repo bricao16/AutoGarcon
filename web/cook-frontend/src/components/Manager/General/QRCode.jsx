@@ -1,8 +1,5 @@
 import React from "react";
-
 import Card from 'react-bootstrap/Card';
-
-
 import Cookies from 'universal-cookie';
 import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
@@ -99,10 +96,12 @@ class StoreInfo extends React.Component{
                      When their order is placed, the table number will be sent along with the order.
                   </Card.Text>
 
-                  <input className="form-control" type="text"  placeholder={this.state.myValue} onChange={this.onChange} >
+                  <input className="form-control" type="text" placeholder={this.state.myValue} onChange={this.onChange} >
                   </input>
                   <br/>
                       <button type="button" className="btn" style = {{'backgroundColor': secondary,'color': font_color,'fontFamily' :font }} onClick={this.handleSubmit}>Generate Code</button>
+											{this.state.QRValue}//
+											{this.state.myValue}
                   </Col>
                   <Col>
                   <QRCode

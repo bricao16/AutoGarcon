@@ -161,13 +161,14 @@ class StoreInfo extends React.Component{
 		}, 2500)
   }
 
-  //change the category of which is being edited
+  /* Change the category of which is being edited */
   editForm = (category) => {
       this.setState({
         sectionEdit: category
     })
   }
 	
+	/* Display the time in readable format on page */
 	time_convert(num) { 
 		const hours = Math.floor(num / 60);  
 		const minutes = num % 60;
@@ -178,7 +179,8 @@ class StoreInfo extends React.Component{
 		}
 		console.log("Reaching into here.\n");
   }
-/* Dynamic fields that are shown if the internal state is stored as showing */
+	
+	/* Dynamic fields that are shown if the internal state is stored as showing */
   fieldStatus(field) {
     if (this.state['show'+field]) {
       return (
@@ -239,29 +241,20 @@ class StoreInfo extends React.Component{
   }
 	
   renderInfo(){
-            const primary = this.props.primary;
-
-        const font = this.props.font;
-        const font_color = this.props.font_color
-     return(
+    const primary = this.props.primary;
+    const font = this.props.font;
+    const font_color = this.props.font_color
+    return(
       <div style={{"width": "70vw"}}>
-
         <div>
-
-          
-
           <ul className="list-group-flush " style={{"fontSize": "1.25rem"}}>
-
             <li className="list-group-item" style ={{'backgroundColor': primary, 'fontFamily': font, 'color': font_color, 'textAlign' : 'center'}}>
               <div className="d-flex align-items-start">
                 <div className="flex-grow-1">
                   <h2 className="text-center" >Restaurant Information</h2>
-
                 </div>
-
               </div>
             </li>
-
             <li className="list-group-item">
               <div className="d-flex align-items-start">
                 <div className="flex-grow-1">
@@ -274,7 +267,6 @@ class StoreInfo extends React.Component{
                 </button>
               </div>
             </li>
-
             <li className="list-group-item">
               <div className="d-flex align-items-start">
                 <div className="flex-grow-1">
@@ -287,7 +279,6 @@ class StoreInfo extends React.Component{
                 </button>
               </div>
             </li>
-
             <li className="list-group-item">
               <div className="d-flex align-items-start">
                 <div className="flex-grow-1">
@@ -338,7 +329,6 @@ class StoreInfo extends React.Component{
               </div>
             </li>
           </ul>
-
           <div className="d-flex justify-content-center">
             {this.updateButton()}
           </div>
@@ -346,36 +336,30 @@ class StoreInfo extends React.Component{
       </div>
     )
 
-
     }
     render() {
-        const {restaurantInfo } = this.state;
-        const fullResturantInfo = this.props;
+			const {restaurantInfo } = this.state;
+			const fullResturantInfo = this.props;
 
-        //put resturant info into an array
-        Object.keys(fullResturantInfo.info).forEach(function(key) {
-            restaurantInfo.push([key ,fullResturantInfo.info[key]]);
-        });
-				
-
-        return (
-            <Container onLoad= {()=>this.time_convert(this.state.restaurantInfo[3][1])} style = {backgroundStyle}>
-
-                <Alert show={this.state.show} variant={this.state.alertVariant}>
-                  {this.state.response}
-                </Alert>
-
-                    <Container >
-                        <div className="d-flex flex-wrap">
-                            {this.renderInfo()}
-                        </div>
-                    </Container>
-
-
-            </Container>
-        );
-    }
-}
+			//put resturant info into an array
+			Object.keys(fullResturantInfo.info).forEach(function(key) {
+					restaurantInfo.push([key ,fullResturantInfo.info[key]]);
+			});
+			
+			return (
+				<Container onLoad= {()=>this.time_convert(this.state.restaurantInfo[3][1])} style = {backgroundStyle}>
+					<Alert show={this.state.show} variant={this.state.alertVariant}>
+						{this.state.response}
+					</Alert>
+					<Container >
+						<div className="d-flex flex-wrap">
+							{this.renderInfo()}
+						</div>
+					</Container>
+				</Container>
+			);
+		}
+	}
 
 const backgroundStyle = {
 
