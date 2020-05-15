@@ -114,7 +114,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         final DrawerLayout drawerLayout = findViewById(R.id.restaurant_main);// associating xml objects with the java Object equivalent
         Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
         setSupportActionBar(toolbar);
-       // getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 

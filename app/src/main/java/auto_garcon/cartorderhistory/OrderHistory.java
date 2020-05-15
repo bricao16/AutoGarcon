@@ -160,7 +160,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
                                 item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
-                                item.setImage(OrderHistory.this);
+                             //   item.setImage(OrderHistory.this);
                                 carts.get(tracker-1).addToCart(item);
                             }
                             else{
@@ -168,7 +168,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
                                 item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
                                 item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
-                                item.setImage(OrderHistory.this);//get image ready
+                              //  item.setImage(OrderHistory.this);//get image ready
                                 item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
                                 order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());//get the new order number and add it to the item arraylsit
                                 carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));//get the new restaurant id and create a new shopping cart
@@ -179,7 +179,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 carts.get(tracker).setTertiaryColor(json.getAsJsonObject(""+i).get("tertiary_color").getAsString());
                                 date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());//add the date
                                 restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
-                                byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
+                               byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
 
                                 for(int j = 0; j < temp.length; j++) {
                                     temp[j] = (byte) (((int) json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
@@ -192,7 +192,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
                             item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());
                             item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
-                            item.setImage(OrderHistory.this);
+                         //   item.setImage(OrderHistory.this);
                             item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());
                             item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
                             order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());
@@ -204,7 +204,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             carts.get(i).setTertiaryColor(json.getAsJsonObject(""+i).get("tertiary_color").getAsString());
                             date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());
                             restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
-                            byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
+                           byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
 
                             for(int j = 0; j < temp.length; j++) {
                                 temp[j] = (byte) (((int) json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);

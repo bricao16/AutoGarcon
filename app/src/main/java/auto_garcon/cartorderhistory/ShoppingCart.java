@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -90,7 +91,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+       Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
         NukeSSLCerts.nuke();
 
         /**
@@ -100,6 +101,10 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          */
         pref = new SharedPreference(this);
         setContentView(R.layout.activity_shopping_cart);
+
+        for(int i =0 ; i<pref.getShoppingCart().getCart().size();i++){
+            pref.getShoppingCart().getCart().get(i).setImage(ShoppingCart.this);
+        }
 
         recyclerView = findViewById(R.id.shopping_cart_list);
         shoppingCart = pref.getShoppingCart();

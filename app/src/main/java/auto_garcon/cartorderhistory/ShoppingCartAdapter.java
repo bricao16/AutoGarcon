@@ -46,6 +46,10 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         this.menuItemArrayList = items;
         this.preference = new SharedPreference(context);
         this.isPlaced = false;
+
+        for(int i = 0 ;i<menuItemArrayList.size();i++){
+            menuItemArrayList.get(i).setImage(context);
+        }
     }
 
 
