@@ -45,6 +45,7 @@
     "react-scripts": "3.4.0",
     "react-stroke-7": "^1.1.0",
     "react-tap-event-plugin": "^3.0.3",
+    "react-time-picker": "^4.0.1",
     "react-to-print": "^2.7.0",
     "react-vis": "^1.11.7",
     "react-week-calendar": "^0.1.3",
