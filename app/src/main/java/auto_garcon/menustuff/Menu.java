@@ -4,9 +4,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.android.volley.AuthFailureError;
@@ -42,7 +43,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import auto_garcon.ExceptionHandler;
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
@@ -104,7 +104,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         setContentView(R.layout.activity_menu);
         NukeSSLCerts.nuke();
 
-
         pref = new SharedPreference(this);
 
         /**
@@ -114,7 +113,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         final DrawerLayout drawerLayout = findViewById(R.id.restaurant_main);// associating xml objects with the java Object equivalent
         Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
         setSupportActionBar(toolbar);
-       // getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
 
@@ -225,7 +224,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     addOrRemoveFavorite.setText("Remove from favorites");
                     pref.addToFavorites(getIntent().getIntExtra("restaurant id", 0));
 
-
                     StringRequest putRequest = new StringRequest(Request.Method.PUT, "http://50.19.176.137:8000/favorites/add",
                             new Response.Listener<String>()
                             {
@@ -271,24 +269,36 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     public void onResponse(String response) {
                         try {
                             JSONObject restaurantJSONObject = new JSONObject(response);
-                            String font;
-                            String primaryColor;
 
                             //parsing through json from get request to add them to menu
                             JSONObject restaurant = restaurantJSONObject.getJSONObject("restaurant");
+
+                            String primaryColor = restaurant.getString("primary_color");
+                            String secondaryColor = restaurant.getString("secondary_color");
+                            String tertiaryColor = restaurant.getString("tertiary_color");
+                            String fontColor = restaurant.getString("font_color");
+
                             restaurantName.setText(restaurant.getString("name"));
+                            restaurantName.setTextColor(Color.parseColor(fontColor));
+
+                            int font = Menu.this.getResources().getIdentifier(restaurant.getString("font").toLowerCase().replaceAll("\\s","") + "_regular", "font", Menu.this.getPackageName());
+
+                            Typeface typeface =  ResourcesCompat.getFont(Menu.this, font);
+                            addOrRemoveFavorite.setTypeface(typeface);
+                            restaurantName.setTypeface(typeface);
+
+                            restaurant.getString("cuisine");
+
                             restaurant.getString("address");
                             restaurant.getInt("phone_number");
                             restaurant.getInt("opening");
                             restaurant.getInt("closing");
 
-                            font = restaurant.getString("font");
-                            primaryColor = restaurant.getString("primary_color");
 
-                            restaurant.getString("cuisine");
+                            addOrRemoveFavorite.setBackgroundColor(Color.parseColor(secondaryColor));
 
-                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash,getIntent().getIntExtra("restaurant id", 0),
-                                    primaryColor, restaurant.getString("secondary_color"), restaurant.getString("tertiary_color"),restaurant.getInt("opening"),restaurant.getInt("closing"),badge);
+                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash,getIntent().getIntExtra("restaurant id", 0), font,  fontColor,
+                                    primaryColor, secondaryColor, tertiaryColor, restaurant.getInt("opening"), restaurant.getInt("closing"), badge);
                             listView = findViewById(R.id.menu_list);
                             listView.setAdapter(listAdapter);
 

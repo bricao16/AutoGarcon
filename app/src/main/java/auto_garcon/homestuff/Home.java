@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.badge.BadgeDrawable;
@@ -37,15 +34,11 @@ import com.squareup.seismic.ShakeDetector;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
-import auto_garcon.ExceptionHandler;
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
@@ -99,7 +92,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         NukeSSLCerts.nuke();
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+       // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
 
         //creating side nav drawer

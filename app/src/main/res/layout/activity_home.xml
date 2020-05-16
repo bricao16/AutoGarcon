@@ -36,6 +36,7 @@
             android:id="@+id/search_bar"
             android:layout_width="295dp"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:completionThreshold="3"
             android:dropDownAnchor="@id/dropdown_for_search"
             android:hint="Search For Restaurants"
@@ -45,8 +46,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:layout_constraintHorizontal_bias=".9"/>
+            app:layout_constraintVertical_bias="0.025"
+            app:layout_constraintHorizontal_bias=".98"/>
 
         <TextView
             android:id="@+id/dropdown_for_search"
@@ -57,7 +58,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.04"
-            app:layout_constraintHorizontal_bias=".9"/>
+            app:layout_constraintHorizontal_bias=".98"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/favorites_list"
@@ -105,7 +106,7 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             app:itemBackground="@color/colorPrimary"
             app:itemIconTint="@android:color/white"
             app:itemTextColor="@android:color/white"

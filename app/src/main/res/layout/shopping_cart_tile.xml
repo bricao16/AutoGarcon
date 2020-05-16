@@ -17,6 +17,8 @@
 
     <!-- constraint layout to manage layout of shopping cart row -->
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/shopping_cart_tile"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">

@@ -38,7 +38,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="10dp"
-            android:background="@drawable/ic_close_black_24dp"
+            android:background="@drawable/ic_close_black_24_newdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

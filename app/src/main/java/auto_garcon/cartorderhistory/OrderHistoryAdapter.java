@@ -5,10 +5,12 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,11 +56,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         this.carts = carts;
         this.date = date;
         this.restaurantName = restaurantName;
-        String hold = "";
 
-        for(int i = 0 ;i < this.logos.get(0).length; i++) {
-            hold = hold + "," + this.logos.get(0)[i];
-        }
     }
 
 
@@ -144,7 +142,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                     confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     confirmPopup.show();
                     Button confirmYes = confirmPopup.findViewById(R.id.popup_yes);
-                    Button confirmClose = confirmPopup.findViewById(R.id.confirm_close);
+                    ImageButton confirmClose = confirmPopup.findViewById(R.id.confirm_close);
 
                     confirmYes.setText("Confirm");
                     TextView dynamicPopupText= confirmPopup.findViewById(R.id.text_confirm_popup);
