@@ -2113,7 +2113,7 @@ app.post('/customer/update', verifyToken, upload.single('image'), (req, res) => 
 		On error:
 			Error retrieving order history
 */
-app.get('/customer/history/:id', (req, res) => {
+app.get('/customer/history/:id', verifyToken, (req, res) => {
 	//Verify that the JWT is valid:
 	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
@@ -2610,8 +2610,6 @@ app.put('/menu/add', verifyToken, upload.single('image'), (req, res) => {
 			Error updating menu item
 */
 app.post('/menu/update', verifyToken, upload.single('image'), (req, res) => {
-	console.log('/menu/update: ');
-	console.log(req);
 	//Make sure right number of parameters are entered:
 	if(!(req.body.item_id !== undefined && req.body.restaurant_id !== undefined && req.body.item_name !== undefined && req.body.calorie_num !== undefined && req.body.category !== undefined && req.body.in_stock !== undefined && req.body.price !== undefined && req.body.description !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description, image (optional)');
