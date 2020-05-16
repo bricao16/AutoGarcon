@@ -29,7 +29,7 @@ class NewItem extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-	this.handleValidation = this.handleValidation.bind(this);
+	  this.handleValidation = this.handleValidation.bind(this);
   }
 
   /* Used for handling changes to the input field */

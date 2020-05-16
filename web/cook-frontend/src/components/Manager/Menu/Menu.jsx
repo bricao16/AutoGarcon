@@ -4,11 +4,13 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import MenuItem from './MenuItem';
 import NewItem from './NewItem';
 import https from 'https';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 /*
   This component is used to render menu information which
@@ -36,6 +38,8 @@ class Menu extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.cookies = new Cookies();
     this.state = {
       menu:[],
       categories: [],
@@ -43,6 +47,8 @@ class Menu extends React.Component {
       newItem: false,
       showNewCategory: false,
       imageUrls :[],
+      showAlert: false,
+      token: this.cookies.get("mytoken"),
       newItemPrefill: {
         type: "default",
         item_id: null,
@@ -53,13 +59,11 @@ class Menu extends React.Component {
           "calories": "Calories",
           "in_stock": 0
         },
-      }
-
-                      
+      }              
     };
- this.updateImageUrl = this.updateImageUrl.bind(this);
- this.getImageBuf = this.getImageBuf.bind(this);
-
+    this.updateImageUrl = this.updateImageUrl.bind(this);
+    this.getImageBuf = this.getImageBuf.bind(this);
+    this.handleAlertShow = this.handleAlertShow.bind(this);
   }
 
    //convert blob to base 64
@@ -142,7 +146,7 @@ class Menu extends React.Component {
       .then(async response => {
         await response;
 
-        if (response.status !== 200) { this.handleShow(false, ""); }
+        if (response.status !== 200) { this.handleAlertShow(false, ""); }
         else if (response.data.image == null) throw new Error('404');
         else {
           return response.data.image.data
@@ -164,13 +168,15 @@ class Menu extends React.Component {
         renderCategory: category
     })
   }
+
   //change the newItem state.  Mainly for going back to the main menu page
   setNewItem = (state) => {
       this.setState({
         newItem: state
     })
   }
-   //toggle between creating a new menu item and not
+  
+  //toggle between creating a new menu item and not
   toggleNewItem = (itemProperties) => {
 
       this.setState({
@@ -245,15 +251,103 @@ class Menu extends React.Component {
     return this.state.menu.map((item, key) =>
         <MenuItem key={item} menu={item} category={this.state.renderCategory} onNew={this.toggleNewItem.bind(this)} primary ={this.props.primary}  secondary ={this.props.secondary}  teritary ={this.props.teritary}  font_color = {this.props.font_color} font ={this.props.font}/>
     );
-  }
+  };
   
   /* generate form for new item with prefilled of whats already on the menu for this item */
   newItemForm() {
     return <NewItem prefill = {this.state.newItemPrefill}/>
-  }
+  };
 
   handleModalClose = () => this.setState({ModalShow: false});
   handleModalShow = () => this.setState({ModalShow: true});
+
+  handleSubmit = (event) => {
+    const form = event.currentTarget;
+    event.preventDefault();
+    event.stopPropagation();
+    this.setState({
+      newCategoryLoading: true
+    });
+    
+
+    console.log(this.state.token)
+
+    axios({
+      method: 'PUT',
+      url:  process.env.REACT_APP_DB +'/categories/new',
+      data:
+        'category_name=' + this.state.newCategory,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.state.token
+      },
+      timeout: 8000,
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+    .then(async response => {
+      await response;
+
+      if (response.status !== 200) {this.handleAlertShow(false, response.data);}
+      /* The account was successfully updated so the cookies and internal state need to be updated
+       and the edit buttons need to be hidden */
+      else {
+        this.handleAlertShow(true, "New category added!");
+        setTimeout(function(){
+          window.location.reload();
+        }, 3000);
+      }
+    })
+    .catch(error => {
+      if (error.response) {this.handleAlertShow(false, error.response.data);}
+      else {this.handleAlertShow(false, "Unknown error!");}
+			console.error("There was an error!", error);
+    });
+    
+    this.setState({
+      newCategoryLoading: false
+    });
+  };
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  };
+
+  isLoadingCategory = () => {
+    if (this.newCategoryLoading) {
+      return (
+        <span>
+          <div className="spinner-border" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </span>
+      )
+    } else {
+      return (
+        <></>
+      )
+    }
+  }
+
+  /* Used to show the correct alert after hitting create category */
+  handleAlertShow(success, message) {
+    if (success) {
+      this.setState({alertResponse: message});
+      this.setState({alertVariant: 'success'});
+    }
+    else {
+      this.setState({alertResponse: message})
+      this.setState({alertVariant: 'danger'});
+    }
+
+    this.setState({showAlert: true});
+    setTimeout(() => {
+      if (this.state.showAlert) this.setState({showAlert:false});
+    }, 5000)
+  }
 
   // Default render method
   render() {
@@ -295,15 +389,19 @@ class Menu extends React.Component {
             </Modal.Header>
             <Modal.Body>
               <div className="container">
-                  <Form>
-                    <Form.Group controlId="formBasicEmail">
-                      <Form.Label>Category name</Form.Label>
-                      <Form.Control type="input" placeholder="Category" />
-                    </Form.Group>
-                    <Button variant="primary" type="submit">
-                      Create
-                    </Button>
-                  </Form>
+                <Alert show={this.state.showAlert} variant={this.state.alertVariant}>
+                  {this.state.alertResponse}
+                </Alert>
+                <Form onSubmit={this.handleSubmit}>
+                  <Form.Group controlId="formBasicEmail">
+                    <Form.Label>Category name</Form.Label>
+                    <Form.Control type="input" placeholder="Category" name="newCategory" onChange={e => this.handleChange(e)}/>
+                  </Form.Group>
+                  <Button variant="primary" type="submit">
+                    Create
+                  </Button>
+                  {this.isLoadingCategory}
+                </Form>
               </div>
             </Modal.Body>
           </Modal>
