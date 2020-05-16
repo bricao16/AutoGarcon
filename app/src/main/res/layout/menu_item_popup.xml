@@ -26,8 +26,8 @@
 
         <ImageView
             android:id="@+id/item_image_menu_popup"
-            android:layout_width="215dp"
-            android:layout_height="215dp"
+            android:layout_width="230dp"
+            android:layout_height="230dp"
             android:layout_marginTop="65dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -35,8 +35,8 @@
 
         <ImageView
             android:id="@+id/out_of_stock_background"
-            android:layout_width="215dp"
-            android:layout_height="215dp"
+            android:layout_width="230dp"
+            android:layout_height="230dp"
             android:layout_marginTop="65dp"
             android:background="@color/transparent_gray"
             app:layout_constraintEnd_toEndOf="parent"
@@ -45,8 +45,8 @@
 
         <TextView
             android:id="@+id/out_of_stock"
-            android:layout_width="215dp"
-            android:layout_height="215dp"
+            android:layout_width="230dp"
+            android:layout_height="230dp"
             android:layout_marginTop="65dp"
             android:text="@string/out_of_stock_string"
             android:textSize="36sp"
@@ -105,16 +105,32 @@
             app:layout_constraintVertical_bias="0.606" />
 
         <Button
+            android:id="@+id/customize_item_menu_popup"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="105dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:text="@string/Customize"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_calories_menu_popup"
+            app:layout_constraintVertical_bias="1.5"
+            app:layout_constraintHorizontal_bias="0.0"/>
+
+        <Button
             android:id="@+id/add_to_cart_menu_popup"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="145dp"
-            android:layout_height="39dp"
+            android:layout_width="105dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="5dp"
             android:text="@string/add_to_cart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_calories_menu_popup"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="1.5"
+            app:layout_constraintHorizontal_bias="1.0"/>
 
         <ImageButton
             android:id="@+id/add_to_cart_popup_close"

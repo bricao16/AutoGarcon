@@ -20,11 +20,9 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
-import auto_garcon.ExceptionHandler;
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.homestuff.Home;
-import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
@@ -59,7 +57,7 @@ public class TwoButtonPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NukeSSLCerts.nuke();
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+       // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
 
         setContentView(R.layout.activity_two_button_page);

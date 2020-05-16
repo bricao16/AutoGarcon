@@ -183,6 +183,10 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 carts.get(tracker).setPrimaryColor(individualItem.get("primary_color").getAsString());
                                 carts.get(tracker).setSecondaryColor(individualItem.get("secondary_color").getAsString());
                                 carts.get(tracker).setTertiaryColor(individualItem.get("tertiary_color").getAsString());
+                                carts.get(tracker).setFontColor(individualItem.get("font_color").getAsString());
+
+                                Log.d("SDFSDF", individualItem.get("font_color").getAsString());
+
                                 date.add(individualItem.get("order_date").getAsString());//add the date
                                 restaurantName.add(individualItem.get("restaurant_name").getAsString());
                                 byte[] temp = new byte[individualItem.getAsJsonObject("logo").getAsJsonArray("data").size()];
@@ -212,6 +216,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             carts.get(i).setPrimaryColor(individualItem.get("primary_color").getAsString());
                             carts.get(i).setSecondaryColor(individualItem.get("secondary_color").getAsString());
                             carts.get(i).setTertiaryColor(individualItem.get("tertiary_color").getAsString());
+                            carts.get(tracker).setFontColor(individualItem.get("font_color").getAsString());
+
                             date.add(individualItem.get("order_date").getAsString());
                             restaurantName.add(individualItem.get("restaurant_name").getAsString());
                             byte[] temp = new byte[individualItem.getAsJsonObject("logo").getAsJsonArray("data").size()];

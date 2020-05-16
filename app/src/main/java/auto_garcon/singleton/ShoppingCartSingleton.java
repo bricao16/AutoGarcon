@@ -94,7 +94,6 @@ public class ShoppingCartSingleton {
         return calories;
     }
 
-
     public int getRestaurantID() {
         return this.restaurantID;
     }
@@ -117,6 +116,14 @@ public class ShoppingCartSingleton {
 
     public int getFont() {
         return this.font;
+    }
+
+    public void setFontColor(String fontColor) {
+        this.fontColor = fontColor;
+    }
+
+    public String getFontColor() {
+        return this.fontColor;
     }
 
     public void setPrimaryColor(String primaryColor) {

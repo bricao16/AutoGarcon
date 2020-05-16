@@ -29,7 +29,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/shopping_cart_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="550dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +70,7 @@
 
         <!-- bottom nav bar -->
         <Button
-        android:id="@+id/btn_placeorder"
+        android:id="@+id/place_order"
         android:layout_width="300dp"
         android:layout_height="40dp"
         android:layout_above="@+id/bottom_navigation"
@@ -85,7 +85,7 @@
         app:layout_constraintVertical_bias="0.905"/>
 
         <Button
-            android:id="@+id/btn_cancel"
+            android:id="@+id/cancel_order"
             android:layout_width="300dp"
             android:layout_height="40dp"
             android:layout_above="@+id/bottom_navigation"

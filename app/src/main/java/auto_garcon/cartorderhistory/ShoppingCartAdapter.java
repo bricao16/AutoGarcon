@@ -3,6 +3,9 @@ package auto_garcon.cartorderhistory;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.auto_garcon.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import auto_garcon.menustuff.MenuItem;
 import auto_garcon.singleton.SharedPreference;
@@ -30,7 +33,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     //data fields
     private ArrayList<MenuItem> menuItemArrayList;
     private Context context;
-    private SharedPreference preference;
+    private SharedPreference pref;
     private ShoppingCartSingleton cart;
     //A constructor to listen the user actions (add, decrement, and remove)
     public boolean isPlaced;
@@ -44,10 +47,10 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     public ShoppingCartAdapter(Context context, ArrayList<MenuItem> items) {
         this.context = context;
         this.menuItemArrayList = items;
-        this.preference = new SharedPreference(context);
+        this.pref = new SharedPreference(context);
         this.isPlaced = false;
 
-        for(int i = 0 ;i<menuItemArrayList.size();i++){
+        for(int i = 0 ; i < menuItemArrayList.size(); i++){
             menuItemArrayList.get(i).setImage(context);
         }
     }
@@ -106,9 +109,10 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
      */
     @Override
     public void onBindViewHolder(@NonNull final ShoppingCartAdapter.ShoppingCartViewHolder holder, final int position) {
-        cart = preference.getShoppingCart();
+        cart = pref.getShoppingCart();
         //Creating a view of a menu item specified by each position.
         //Set the cost and the quantity to the view.
+
         holder.itemImage.setImageBitmap(BitmapFactory.decodeByteArray(menuItemArrayList.get(position).getItemImage(), 0, menuItemArrayList.get(position).getItemImage().length));
 
         holder.name.setText(menuItemArrayList.get(position).getNameOfItem());
@@ -132,7 +136,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
                 holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
                 cart.cartContainsItem(menuItemArrayList.get(position)).incrementQuantity();
-                preference.setShoppingCart(cart);
+                pref.setShoppingCart(cart);
             }
         });
         //If the user pushes the remove button on the item view, then the action is taken.
@@ -152,12 +156,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                             holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
                             holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
                             cart.cartContainsItem(menuItemArrayList.get(position)).decrementQuantity();
-                            preference.setShoppingCart(cart);
+                            pref.setShoppingCart(cart);
                         }
                         else {
                             menuItemArrayList.remove(position);
                             cart.setItems(menuItemArrayList);
-                            preference.setShoppingCart(cart);
+                            pref.setShoppingCart(cart);
                             notifyDataSetChanged();
                         }
             }
@@ -173,8 +177,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 }
 
                 menuItemArrayList.remove(position);
-                cart.setItems(menuItemArrayList);
-                preference.setShoppingCart(cart);
+                cart.removeFromCart(position);
+                pref.setShoppingCart(cart);
                 notifyDataSetChanged();
             }
         });
@@ -221,6 +225,9 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         //set the above variables to each tag on the xml file.
         public ShoppingCartViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            ShoppingCartSingleton shoppingCart = pref.getShoppingCart();
+            Typeface typeface = ResourcesCompat.getFont(context, shoppingCart.getFont());
             name = itemView.findViewById(R.id.item_name);
             quantity = itemView.findViewById(R.id.item_quantity);
             add = itemView.findViewById(R.id.addButton);
@@ -229,6 +236,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             removeItem = itemView.findViewById(R.id.removeItem);
             editItem = itemView.findViewById(R.id.editItem);
             itemImage = itemView.findViewById(R.id.item_image_shopping_cart_tile);
+
+            name.setTypeface(typeface);
+            quantity.setTypeface(typeface);
+            price.setTypeface(typeface);
+            removeItem.setTypeface(typeface);
+            editItem.setTypeface(typeface);
         }
     }
 

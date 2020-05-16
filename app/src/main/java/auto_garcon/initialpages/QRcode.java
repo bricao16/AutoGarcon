@@ -12,10 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.auto_garcon.R;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -26,17 +22,12 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.homestuff.Home;
 import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
-import auto_garcon.singleton.VolleySingleton;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
 /**
@@ -74,7 +65,7 @@ public class QRcode extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qr_code_page);
         pref = new SharedPreference(this);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+       // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
 
         //request permission

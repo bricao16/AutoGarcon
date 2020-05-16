@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.android.volley.Request;
@@ -32,7 +30,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 
-import auto_garcon.ExceptionHandler;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
@@ -52,6 +49,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private String secondaryColor;
     private String tertiaryColor;
     private int font;
+    private String fontColor;
     private int opening;
     private int closing;
     private Typeface typeface;
@@ -62,9 +60,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     Dialog addToCartPopup;
     Dialog confirmPopup;
 
-    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, int font,
-                                  String primaryColor, String secondaryColor, String tertiaryColor,int opening, int closing, BadgeDrawable drawable) {
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
+    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, int font, String fontColor,
+                                  String primaryColor, String secondaryColor, String tertiaryColor, int opening, int closing, BadgeDrawable drawable) {
+        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
 
         this.context = context;
         this.badge = drawable;
@@ -78,6 +76,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         this.opening = opening;
         this.closing = closing;
         this.font = font;
+        this.fontColor = fontColor;
         this.typeface = ResourcesCompat.getFont(context, font);
 
     }
@@ -128,13 +127,14 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
         TextView listHeader = view.findViewById(R.id.list_header);
         listHeader.setTypeface(typeface, Typeface.BOLD);
+        listHeader.setTextColor(Color.parseColor(fontColor));
         listHeader.setText(headerTitle);
         return view;
     }
 
     @Override
     public View getChildView(final int i, final int j, boolean b, View view, ViewGroup viewGroup) {
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
+        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
 
         if(view == null) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.expandable_menu_item, viewGroup, false);
@@ -147,6 +147,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
         txtListChild.setTypeface(typeface);
         txtListChildPrice.setTypeface(typeface);
+
+        txtListChild.setTextColor(Color.parseColor(fontColor));
+        txtListChildPrice.setTextColor(Color.parseColor(fontColor));
 
         txtListChild.setText(getChild(i, j).getNameOfItem());
         txtListChildPrice.setText(String.format("$%.02f", getChild(i, j).getPrice()));
@@ -167,6 +170,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 });
 
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart_menu_popup);
+                Button customize = addToCartPopup.findViewById(R.id.customize_item_menu_popup);
                 TextView itemName = addToCartPopup.findViewById(R.id.item_name_menu_popup);
                 TextView calorieCount = addToCartPopup.findViewById(R.id.item_calories_menu_popup);
                 TextView itemPrice = addToCartPopup.findViewById(R.id.item_price_menu_popup);
@@ -176,6 +180,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 ImageView outOfStockBackground = addToCartPopup.findViewById(R.id.out_of_stock_background);
 
                 addToCart.setTypeface(typeface);
+                customize.setTypeface(typeface);
                 itemName.setTypeface(typeface, Typeface.BOLD);
                 outOfStock.setTypeface(typeface, Typeface.BOLD);
 
@@ -184,27 +189,40 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 itemDescription.setTypeface(typeface);
                 itemAllergens.setTypeface(typeface);
 
+                addToCart.setTextColor(Color.parseColor(fontColor));
+                customize.setTextColor(Color.parseColor(fontColor));
+                itemName.setTextColor(Color.parseColor(fontColor));
+                calorieCount.setTextColor(Color.parseColor(fontColor));
+                itemPrice.setTextColor(Color.parseColor(fontColor));
+                itemDescription.setTextColor(Color.parseColor(fontColor));
+                itemAllergens.setTextColor(Color.parseColor(fontColor));
+
+                addToCart.setBackgroundColor(Color.parseColor(primaryColor));
+                customize.setBackgroundColor(Color.parseColor(primaryColor));
+
                 if(getChild(i, j).getAmountInStock() > 0) {
                     outOfStock.setVisibility(View.GONE);
                     outOfStockBackground.setVisibility(View.GONE);
+
+                    customize.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
 
                     addToCart.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if(pref.getShoppingCart().getCart().size() == 0) {
-                                cart = new ShoppingCartSingleton(restaurantID);
-                                cart.setPrimaryColor(primaryColor);
-                                cart.setSecondaryColor(secondaryColor);
-                                cart.setTertiaryColor(tertiaryColor);
-                                cart.setStartingHour(opening);
-                                cart.setEndingHour(closing);
+                                cart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
 
                                 MenuItem itemToBeAdded = getChild(i, j);
                                 itemToBeAdded.setItemImage(itemImageByteArray);
 
                                 cart.addToCart(itemToBeAdded);
                                 pref.setShoppingCart(cart);
-                                badge.setNumber(pref.getShoppingCart().getCart().size());
+                                badge.setNumber(cart.getCart().size());
                                 badge.setVisible(false);
                                 badge.setVisible(true);
                                 addToCartPopup.dismiss();
@@ -223,7 +241,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 }
 
                                 pref.setShoppingCart(cart);
-                                badge.setNumber(pref.getShoppingCart().getCart().size());
+                                badge.setNumber(cart.getCart().size());
                                 badge.setVisible(false);
                                 badge.setVisible(true);
                                 addToCartPopup.dismiss();
@@ -245,19 +263,14 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 confirmClearCart.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        cart = new ShoppingCartSingleton(restaurantID);
-                                        cart.setPrimaryColor(primaryColor);
-                                        cart.setSecondaryColor(secondaryColor);
-                                        cart.setTertiaryColor(tertiaryColor);
-                                        cart.setStartingHour(opening);
-                                        cart.setEndingHour(closing);
+                                        cart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
 
                                         MenuItem itemToBeAdded = getChild(i, j);
                                         itemToBeAdded.setItemImage(itemImageByteArray);
                                         cart.addToCart(itemToBeAdded);
 
                                         pref.setShoppingCart(cart);
-                                        badge.setNumber(pref.getShoppingCart().getCart().size());
+                                        badge.setNumber(cart.getCart().size());
                                         badge.setVisible(false);
                                         badge.setVisible(true);
                                         pref.getShoppingCart().setEndingHour(closing);
