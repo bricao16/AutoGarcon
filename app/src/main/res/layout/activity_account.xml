@@ -13,20 +13,6 @@
     android:background="@color/colorPrimaryDark"
     tools:context="auto_garcon.accountstuff.Account">
 
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:elevation="6dp"
-            android:src="@drawable/saleena"
-            app:civ_border_color="@color/white"
-            app:civ_border_width="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.15"/>
-
         <!-- Title For Account Page -->
         <TextView
             android:layout_width="wrap_content"
@@ -39,6 +25,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.05" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:elevation="6dp"
+            android:src="@drawable/saleena"
+            app:civ_border_color="@color/white"
+            app:civ_border_width="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15"/>
+
+        <Button
+            android:id="@+id/change_account_image"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:background="@drawable/oval_button"
+            android:gravity="center"
+            android:text="@string/change_image"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.35" />
+
         <!-- first name text -->
 
         <!-- first name input -->
@@ -52,7 +67,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.4" />
+            app:layout_constraintVertical_bias="0.43" />
 
         <!-- last name text -->
 
@@ -67,7 +82,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.44" />
+            app:layout_constraintVertical_bias="0.47" />
 
         <!-- last name input -->
         <TextView
@@ -80,7 +95,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.51" />
+            app:layout_constraintVertical_bias="0.53" />
 
         <!-- email text -->
 
@@ -96,7 +111,7 @@
             app:layout_constraintEnd_toEndOf="parent"
 
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.55" />
+            app:layout_constraintVertical_bias="0.57" />
 
         <!-- email input -->
 
@@ -111,7 +126,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.61" />
+            app:layout_constraintVertical_bias="0.63" />
 
         <EditText
             android:id="@+id/change_email"
@@ -125,7 +140,7 @@
             app:layout_constraintEnd_toEndOf="parent"
 
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.66" />
+            app:layout_constraintVertical_bias="0.67" />
 
         <!-- username input -->
 
@@ -161,7 +176,7 @@
 
         <Button
             android:id="@+id/save_acct_change"
-            android:layout_width="140dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:background="@drawable/oval_button"
             android:gravity="center"
@@ -176,7 +191,7 @@
 
         <Button
             android:id="@+id/change_password"
-            android:layout_width="180dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:background="@drawable/oval_button"
             android:gravity="center"

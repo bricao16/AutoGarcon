@@ -58,5 +58,6 @@
     <string name="submit">Submit</string>
     <string name="out_of_stock_string">Out of stock</string>
     <string name="Customize">Customize</string>
+    <string name="change_image">Change Image</string>
 
 </resources>
