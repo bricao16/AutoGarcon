@@ -140,7 +140,6 @@ public class MenuItem implements Serializable{
 
                     try {
                         JSONObject imageData = new JSONObject(response);
-                        Log.d("work","worked");
 
                         byte[]  itemImageByteArray = new byte[imageData.getJSONObject("image").getJSONArray("data").length()];
 

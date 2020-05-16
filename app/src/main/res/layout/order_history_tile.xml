@@ -64,16 +64,16 @@
 
         <TextView
             android:id="@+id/date"
-            android:layout_width="40dp"
-            android:layout_height="17dp"
+            android:layout_width="77dp"
+            android:layout_height="18dp"
             android:text="Date"
+            android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@+id/ReOrderButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/resturant"
             app:layout_constraintTop_toBottomOf="@+id/order_num2"
-            app:layout_constraintVertical_bias="0.586"
-            android:textSize="12sp"/>
+            app:layout_constraintVertical_bias="0.586" />
 
         <TextView
             android:id="@+id/resturant_num"

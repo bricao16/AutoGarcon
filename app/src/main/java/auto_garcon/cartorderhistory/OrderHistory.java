@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -31,6 +32,8 @@ import com.google.gson.JsonParser;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.*;
@@ -250,7 +253,15 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     public void onErrorResponse (VolleyError error){
                         Toast.makeText(OrderHistory.this, "An Error has Occured", Toast.LENGTH_LONG).show();
                     }
-                });
+                }){
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                        HashMap<String,String> headers = new HashMap<String,String>();
+                        headers.put("Authorization","Bearer " + pref.getAuth());
+                        return headers;
+                    }
+            };
+
 
         VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
     }
