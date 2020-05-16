@@ -56,7 +56,7 @@ restaurants
   restaurant_id     KEY             INT
   restaurant_name                   TEXT
   restaurant_addr                   TEXT
-  phone_number                      BIFINT
+  phone_number                      BIGINT
   opening_time                      BIGINT
   closing_time                      BIGINT
   font                              VARCHAR(50)
