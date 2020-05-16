@@ -100,8 +100,7 @@ class StoreInfo extends React.Component{
                   </input>
                   <br/>
                       <button type="button" className="btn" style = {{'backgroundColor': secondary,'color': font_color,'fontFamily' :font }} onClick={this.handleSubmit}>Generate Code</button>
-											{this.state.QRValue}//
-											{this.state.myValue}
+											
                   </Col>
                   <Col>
                   <QRCode
