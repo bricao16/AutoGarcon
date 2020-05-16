@@ -60,9 +60,7 @@ public class LoadingScreen extends AppCompatActivity {
 
         pref = new SharedPreference(LoadingScreen.this);
 
-        ShoppingCartSingleton cart = new ShoppingCartSingleton();
-
-        pref.setShoppingCart(cart);
+        pref.setShoppingCart(new ShoppingCartSingleton());
 
         /** Waits for 3000 milliseconds then goes to login activity*/
         new Handler().postDelayed(new Runnable() {

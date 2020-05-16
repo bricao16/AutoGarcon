@@ -12,7 +12,8 @@ public class ShoppingCartSingleton {
     private int restaurantID;
     private int startingHour;
     private int endingHour;
-    private String font;
+    private int font;
+    private String fontColor;
     private String primaryColor;
     private String secondaryColor;
     private String tertiaryColor;
@@ -23,19 +24,30 @@ public class ShoppingCartSingleton {
         this.tertiaryColor = "#FFFFFF";
 
         this.items = new ArrayList<MenuItem>();
-        this.startingHour = 0;
-        this.endingHour = 0;
     }
 
     public ShoppingCartSingleton(int restaurantID){
+        this.restaurantID = restaurantID;
+
         this.primaryColor = "#0B658A";
         this.secondaryColor = "#102644";
         this.tertiaryColor = "#FFFFFF";
 
         this.items = new ArrayList<MenuItem>();
+    }
+
+    public ShoppingCartSingleton(int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor, int font, String fontColor, int startingHour, int endingHour){
         this.restaurantID = restaurantID;
-        this.startingHour = 0;
-        this.endingHour = 0;
+
+        this.primaryColor = primaryColor;
+        this.secondaryColor = secondaryColor;
+        this.tertiaryColor = tertiaryColor;
+        this.font = font;
+        this.fontColor = fontColor;
+        this.startingHour = startingHour;
+        this.endingHour = endingHour;
+
+        this.items = new ArrayList<MenuItem>();
     }
 
     public ArrayList<MenuItem> getCart(){
@@ -82,9 +94,6 @@ public class ShoppingCartSingleton {
         return calories;
     }
 
-    public void setRestaurantID(int restaurantID) {
-        this.restaurantID = restaurantID;
-    }
 
     public int getRestaurantID() {
         return this.restaurantID;
@@ -101,11 +110,11 @@ public class ShoppingCartSingleton {
         return toReturn;
     }
 
-    public void setFont(String font) {
+    public void setFont(int font) {
         this.font = font;
     }
 
-    public String getFont() {
+    public int getFont() {
         return this.font;
     }
 
