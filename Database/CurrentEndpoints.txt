@@ -133,6 +133,7 @@ PUT /restaurant/new
 GET /orders/:id
 	Returns in progress orders for restaurant with restaurant_id = id
 	Inputs: restaurant_id
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			{
@@ -149,12 +150,17 @@ GET /orders/:id
 			}
 		If no in progress orders exist:
 			(200) No in progress orders
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not for a staff member at the restaurant:
+			(401) Must be a staff member to view orders!
 		On error:
 			(500) Error retrieving orders
 
 GET /orders/complete/:id
 	Returns complete orders for restaurant with restaurant_id = id
 	Inputs: restaurant_id
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			{
@@ -170,6 +176,10 @@ GET /orders/complete/:id
 			}
 		If no complete orders exist:
 			(200) No completed orders
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not for a staff member at the restaurant:
+			(401) Must be a staff member to view orders!
 		On error:
 			(500) Error retrieving orders
 
@@ -225,6 +235,7 @@ POST /orders/update
 GET /services/:id
 	Returns the service status of all the tables at the restaurant with restaurant_id = id
 	Inputs: restaurant_id
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			{
@@ -235,6 +246,10 @@ GET /services/:id
 			}
 		If no tables exist:
 			(200) No tables exist
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not for a staff member at the restaurant:
+			(401) Must be a staff member to view table statuses!
 		On error:
 			(500) Error retrieving statuses
 
@@ -279,6 +294,7 @@ PUT /services/new
 GET /favorites/:id
 	Returns information about a customer's favorite restaurants
 	Inputs: restaurant_id
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			{
@@ -289,11 +305,20 @@ GET /favorites/:id
 					phone_number,
 					opening_time,
 					closing_time,
+					font,
+					font_color,
+					primary_color,
+					secondary_color,
+					tertiary_color,
 					logo
 				}
 			}
 		If customer has no favorites:
 			(200) Customer has no favorites
+		If JWT is not valid or not supplied: 
+			(401) Must be authorized!
+		If JWT is for another customer:
+			(401) Can't view other customer's favorites!
 		On error:
 			(500) Error retrieving favorites
 
@@ -575,6 +600,7 @@ POST /customer/update
 GET /customer/history/:id
 	Retrieves a customer's order history
 	Inputs: customer_id
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			{
@@ -599,6 +625,10 @@ GET /customer/history/:id
 			}
 		If a user has no history:
 			(200) No order history for this customer
+		If JWT is not valid or not supplied: 
+			(401) Must be authorized!
+		If JWT is for another customer:
+			(401) Can't view other customer's history!
 		On error:
 			(500) Error retrieving order history
 
@@ -976,14 +1006,10 @@ POST /verify
 		On error/invalid token:
 			(401) Must be authorized!
 
-
-//==========================================================================//
-//								TEST ENDPOINTS 								//
-//==========================================================================//
-
-GET /orderstats/:id
+GET /orderstats/highestsellingcat/:id
 	Returns stats on which things were ordered the most per category at each restaurant
 	Inputs: restaurant_id
+	Inputs (in headers of request): Authorization: Bearer <token>
 	Outputs:
 		On success:
 			{
@@ -997,6 +1023,76 @@ GET /orderstats/:id
 			}
 		If no items ordered:
 			(200) Restaurant has no orders
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant:
+			(401) Must be the restaurant manager to view stats!
+		On error:
+			(500) Error retrieving stats
+
+GET /orderstats/ordersbyhour/:id
+	Returns stats on number of orders by the hour
+	Inputs: restaurant_id
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			{
+				i: {
+					restaurant_id
+					hour
+					num_orders
+				}
+			}
+		If no items ordered:
+			(200) Restaurant has no orders
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant:
+			(401) Must be the restaurant manager to view stats!
+		On error:
+			(500) Error retrieving stats
+
+GET /orderstats/ordersbyday/:id
+	Returns stats on number of orders by the day
+	Inputs: restaurant_id
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			{
+				i: {
+					restaurant_id
+					day
+					num_orders
+				}
+			}
+		If no items ordered:
+			(200) Restaurant has no orders
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant:
+			(401) Must be the restaurant manager to view stats!
+		On error:
+			(500) Error retrieving stats
+
+GET /orderstats/ordersbymonth/:id
+	Returns stats on number of orders by the month
+	Inputs: restaurant_id
+	Inputs (in headers of request): Authorization: Bearer <token>
+	Outputs:
+		On success:
+			{
+				i: {
+					restaurant_id
+					month
+					num_orders
+				}
+			}
+		If no items ordered:
+			(200) Restaurant has no orders
+		If JWT is not valid:
+			(401) Must be authorized!
+		If JWT is not a manager token for the restaurant:
+			(401) Must be the restaurant manager to view stats!
 		On error:
 			(500) Error retrieving stats
 

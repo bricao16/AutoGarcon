@@ -1,9 +1,9 @@
 /*
-	REST-API Server
+	AutoGarcon API
 	Tucker Urbanski
 	Contributors: PJ Cappitelli, Emma Sinn, Brandon Tran
 	Date Created: 3/2/2020
-	Last Modified: 5/14/2020
+	Last Modified: 5/16/2020
 */
 
 // Built-in Node.js modules
@@ -36,8 +36,8 @@ dotenv.config();
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+	user: process.env.EMAIL_USER,
+	pass: process.env.EMAIL_PASS
   }
 });
 
@@ -159,7 +159,7 @@ app.get('/restaurant/:id', (req, res) => {
 				}   //for
 
 				//Add allergens:
-				query = 'SELECT * FROM sample.menu natural join sample.allergens WHERE restaurant_id = ? ORDER BY item_id';
+				query = 'SELECT * FROM sample.menu NATURAL JOIN sample.allergens WHERE restaurant_id = ? ORDER BY item_id';
 				db.query(query, req.params.id, (err, rows) => {
 					if (err) {
 						res.status(500).send('Error retrieving menu');
@@ -345,19 +345,18 @@ app.get('/fonts', (req, res) => {
 			Error updating restaurant customization
 */
 app.post('/restaurant/customization', verifyToken, upload.single('logo'), (req, res) => {
-	console.log('/restaurant/customization: ');
-	console.log(req);
+	//Make sure right number of parameters are entered:
+	if(!(req.body.restaurant_id !== undefined && req.body.primary_color !== undefined && req.body.secondary_color !== undefined && req.body.tertiary_color !== undefined && req.body.font !== undefined && req.body.font_color !== undefined && req.body.greeting !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, greeting, logo (optional)');
+		return;
+	}   //if
+
 	//Verify that the JWT is valid:
 	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
 			res.status(401).send('Must be authorized!');
 		}   //if
 		else {
-			//Make sure right number of parameters are entered:
-			if(!(req.body.restaurant_id !== undefined && req.body.primary_color !== undefined && req.body.secondary_color !== undefined && req.body.tertiary_color !== undefined && req.body.font !== undefined && req.body.font_color !== undefined && req.body.greeting !== undefined)) {
-				res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, primary_color, secondary_color, tertiary_color, font, font_color, greeting, logo (optional)');
-				return;
-			}   //if
 			//Make sure the restaurant exists:
 			let query = 'Select * FROM sample.restaurants WHERE restaurant_id = ?';
 			db.query(query, req.body.restaurant_id, (err, rows) => {
@@ -444,9 +443,9 @@ app.put('/restaurant/new', (req, res) => {
 		}   //if
 		else {
 			//Build query and parameters:
-			query = 'INSERT INTO sample.restaurants(restaurant_name, restaurant_addr, phone_number, email, opening_time, closing_time, cuisine)';
+			query = 'INSERT INTO sample.restaurants (restaurant_name, restaurant_addr, phone_number, email, opening_time, closing_time, cuisine)';
 			query = query + ' VALUES (?, ?, ?, ?, ?, ?, ?)';
-			parameters = [req.body.restaurant_name, req.body.restaurant_addr, req.body.phone_number, req.body.email, req.body.opening_time, req.body.closing_time, req.body.cuisine];
+			let parameters = [req.body.restaurant_name, req.body.restaurant_addr, req.body.phone_number, req.body.email, req.body.opening_time, req.body.closing_time, req.body.cuisine];
 
 			//Add restaurant in db and get restaurant_id:
 			db.query(query, parameters, (err, rows) => {
@@ -470,7 +469,7 @@ app.put('/restaurant/new', (req, res) => {
 
 /*
 	Returns in progress orders for restaurant with restaurant_id = id
-	Inputs: restaurant_id
+	Inputs: restaurant_id, JWT
 	Outputs:
 		On success:
 			{
@@ -486,42 +485,60 @@ app.put('/restaurant/new', (req, res) => {
 			}
 		If no in progress orders exist:
 			No in progress orders
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not for a staff member at the restaurant:
+			Must be a staff member to view orders!
 		On error:
 			Error retrieving orders
 */
-app.get('/orders/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.menu natural join sample.orders natural join sample.orderdetails WHERE restaurant_id = ? and order_status like "In Progress" ORDER BY order_num';
-
-	//Query database:
-	db.query(query, req.params.id, (err, rows) => {
+app.get('/orders/:id', verifyToken, (req, res) => {
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
-			res.status(500).send('Error retrieving orders');
+			res.status(401).send('Must be authorized!');
 		}   //if
-		else if (rows.length < 1) {
-			res.status(200).send('No in progress orders');
-		}   //else if
 		else {
-			//Build JSON object:
-			let response = {};
+			if (auth.staff && parseInt(auth.staff.restaurant_id) === parseInt(req.params.id)) {
+				//Build query:
+				let query = 'SELECT * FROM sample.menu NATURAL JOIN sample.orders NATURAL JOIN sample.orderdetails WHERE restaurant_id = ? AND order_status LIKE "In Progress" ORDER BY order_num';
 
-			//Loop through each row returned from query:
-			for (let i=0; i<rows.length; i++) {
-				//Add each part of every order to response:
-				response[i] =   {
-					'order_num': rows[i].order_num,
-					'item_name': rows[i].item_name,
-					'quantity': rows[i].quantity,
-					'order_date': rows[i].order_date,
-					'table': rows[i].table_num,
-					'customization': rows[i].customization,
-					'category': rows[i].category
-				};	//response
-			}   //for
+				//Query database:
+				db.query(query, req.params.id, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error retrieving orders');
+					}   //if
+					else if (rows.length < 1) {
+						res.status(200).send('No in progress orders');
+					}   //else if
+					else {
+						//Build JSON object:
+						let response = {};
 
-			//Send Response:
-			res.type('json').send(response);
-		}   //else
-	}); //db.query
+						//Loop through each row returned from query:
+						for (let i=0; i<rows.length; i++) {
+							//Add each part of every order to response:
+							response[i] =   {
+								'order_num': rows[i].order_num,
+								'item_name': rows[i].item_name,
+								'quantity': rows[i].quantity,
+								'order_date': rows[i].order_date,
+								'table': rows[i].table_num,
+								'customization': rows[i].customization,
+								'category': rows[i].category
+							};	//response
+						}   //for
+
+						//Send Response:
+						res.type('json').send(response);
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Must be a staff member to view orders!');
+			}	//else
+		}	//else
+	});	//verify
 }); //app.get
 
 /*
@@ -542,42 +559,60 @@ app.get('/orders/:id', (req, res) => {
 			}
 		If no complete orders exist:
 			No completed orders
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not for a staff member at the restaurant:
+			Must be a staff member to view orders!
 		On error:
 			Error retrieving orders
 */
-app.get('/orders/complete/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.menu natural join sample.orders natural join sample.orderdetails WHERE restaurant_id = ? and order_status like "Complete" ORDER BY order_date desc';
-
-	//Query database:
-	db.query(query, req.params.id, (err, rows) => {
+app.get('/orders/complete/:id', verifyToken, (req, res) => {
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
-			res.status(500).send('Error retrieving orders');
+			res.status(401).send('Must be authorized!');
 		}   //if
-		else if (rows.length < 1) {
-			res.status(200).send('No completed orders');
-		}   //else if
 		else {
-			//Build JSON object:
-			let response = {};
+			if (auth.staff && parseInt(auth.staff.restaurant_id) === parseInt(req.params.id)) {
+				//Build query:
+				let query = 'SELECT * FROM sample.menu NATURAL JOIN sample.orders NATURAL JOIN sample.orderdetails WHERE restaurant_id = ? AND order_status LIKE "Complete" ORDER BY order_date desc';
 
-			//Loop through each row returned from query:
-			for (let i=0; i<rows.length; i++) {
-				//Add each part of every order to response:
-				response[i] =   {
-					'order_num': rows[i].order_num,
-					'item_name': rows[i].item_name,
-					'quantity': rows[i].quantity,
-					'order_date': rows[i].order_date,
-					'table': rows[i].table_num,
-					'customization': rows[i].customization,
-					'category': rows[i].category
-				};	//response
-			}   //for
+				//Query database:
+				db.query(query, req.params.id, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error retrieving orders');
+					}   //if
+					else if (rows.length < 1) {
+						res.status(200).send('No completed orders');
+					}   //else if
+					else {
+						//Build JSON object:
+						let response = {};
 
-			//Send Response:
-			res.type('json').send(response);
-		}   //else
-	}); //db.query
+						//Loop through each row returned from query:
+						for (let i=0; i<rows.length; i++) {
+							//Add each part of every order to response:
+							response[i] =   {
+								'order_num': rows[i].order_num,
+								'item_name': rows[i].item_name,
+								'quantity': rows[i].quantity,
+								'order_date': rows[i].order_date,
+								'table': rows[i].table_num,
+								'customization': rows[i].customization,
+								'category': rows[i].category
+							};	//response
+						}   //for
+
+						//Send Response:
+						res.type('json').send(response);
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Must be a staff member to view orders!');
+			}	//else
+		}	//else
+	});	//verify
 }); //app.get
 
 /*
@@ -617,7 +652,7 @@ app.put('/orders/place', verifyToken, (req, res) => {
 				let parameters = [req.body.restaurant_id, req.body.customer_id, 'In Progress', timestamp, req.body.table_num];
 
 				//Query to add order to orders table and retrieve the order_num
-				let query = ' INSERT INTO sample.orders(restaurant_id, customer_id, order_status, order_date, table_num)';
+				let query = ' INSERT INTO sample.orders (restaurant_id, customer_id, order_status, order_date, table_num)';
 				query = query + ' VALUES (?, ?, ?, ?, ?);';
 
 				//Add order to orders table in db:
@@ -630,7 +665,7 @@ app.put('/orders/place', verifyToken, (req, res) => {
 						if (!isEmptyObject(req.body.order)) {
 							let order_num = rows.insertId;
 							parameters = [];
-							query = 'INSERT INTO sample.orderdetails(order_num, item_id, quantity, customization)';
+							query = 'INSERT INTO sample.orderdetails (order_num, item_id, quantity, customization)';
 							query = query + ' VALUES';
 
 							//Loop through all items in order:
@@ -643,10 +678,10 @@ app.put('/orders/place', verifyToken, (req, res) => {
 
 									//Check if it is the last item for formatting
 									if (key === Object.keys(req.body.order)[Object.keys(req.body.order).length-1]) {
-										query = query + ' (?,?,?,?);';
+										query = query + ' (?, ?, ?, ?);';
 									}	//if
 									else {
-										query = query + ' (?,?,?,?),';
+										query = query + ' (?, ?, ?, ?),';
 									}	//else]
 								}	//if
 							}	//for
@@ -723,7 +758,7 @@ app.post('/orders/update', (req, res) => {
 
 /*
 	Returns the service status of all the tables at the restaurant with restaurant_id = id
-	Inputs: restaurant_id
+	Inputs: restaurant_id, JWT
 	Outputs:
 		On success:
 			{
@@ -734,37 +769,55 @@ app.post('/orders/update', (req, res) => {
 			}
 		If no tables exist:
 			No tables exist
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not for a staff member at the restaurant:
+			Must be a staff member to view table statuses!
 		On error:
 			Error retrieving statuses
 */
-app.get('/services/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.services WHERE restaurant_id = ?';
-
-	//Query database:
-	db.query(query, req.params.id, (err, rows) => {
+app.get('/services/:id', verifyToken, (req, res) => {
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
-			res.status(500).send('Error retrieving statuses');
+			res.status(401).send('Must be authorized!');
 		}   //if
-		else if (rows.length < 1) {
-			res.status(200).send('No tables exist');
-		}   //else if
 		else {
-			//Build JSON object:
-			let response = {};
+			if (auth.staff && parseInt(auth.staff.restaurant_id) === parseInt(req.params.id)) {
+				//Build query:
+				let query = 'SELECT * FROM sample.services WHERE restaurant_id = ?';
 
-			//Loop through each row returned from query:
-			for (let i=0; i<rows.length; i++) {
-				//Add each part of every order to response:
-				response[i] =   {
-					'table_num': rows[i].table_num,
-					'status': rows[i].service_status
-				};	//response
-			}   //for
+				//Query database:
+				db.query(query, req.params.id, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error retrieving statuses');
+					}   //if
+					else if (rows.length < 1) {
+						res.status(200).send('No tables exist');
+					}   //else if
+					else {
+						//Build JSON object:
+						let response = {};
 
-			//Send Response:
-			res.type('json').send(response);
-		}   //else
-	}); //db.query
+						//Loop through each row returned from query:
+						for (let i=0; i<rows.length; i++) {
+							//Add each part of every order to response:
+							response[i] =   {
+								'table_num': rows[i].table_num,
+								'status': rows[i].service_status
+							};	//response
+						}   //for
+
+						//Send Response:
+						res.type('json').send(response);
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Must be a staff member to view table statuses!');
+			}	//else
+		}	//else
+	});	//verify
 }); //app.get
 
 /*
@@ -837,6 +890,12 @@ app.post('/services/update', (req, res) => {
 			Error adding table
 */
 app.put('/services/new', verifyToken, (req, res) => {
+	//Make sure right number of parameters are entered:
+	if(!(req.body.restaurant_id !== undefined && req.body.table_num !== undefined)) {
+		res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, table_num');
+		return;
+	}   //if
+
 	//Verify that the person is a manager at the restaurant
 	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
@@ -845,12 +904,6 @@ app.put('/services/new', verifyToken, (req, res) => {
 		else {
 			//Check to make sure person is a manager at the restaurant:
 			if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === req.body.restaurant_id) {
-				//Make sure right number of parameters are entered:
-				if(!(req.body.restaurant_id !== undefined && req.body.table_num !== undefined)) {
-					res.status(400).send('Error: Missing parameter. Required parameters: restaurant_id, table_num');
-					return;
-				}   //if
-
 				//Make sure the restaurant exists:
 				let query = 'Select * FROM sample.restaurants WHERE restaurant_id = ?';
 				db.query(query, req.body.restaurant_id, (err, rows) => {
@@ -859,7 +912,7 @@ app.put('/services/new', verifyToken, (req, res) => {
 					}   //if
 					else {
 						//Build query and parameters:
-						query = 'INSERT INTO sample.services(restaurant_id, table_num, service_status)';
+						query = 'INSERT INTO sample.services (restaurant_id, table_num, service_status)';
 						query = query + ' VALUES (?, ?, ?);';
 						let parameters = [req.body.restaurant_id, req.body.table_num, 'Good'];
 
@@ -900,47 +953,76 @@ app.put('/services/new', verifyToken, (req, res) => {
 					phone_number,
 					opening_time,
 					closing_time,
+					font,
+					font_color,
+					primary_color,
+					secondary_color,
+					tertiary_color,
 					logo
 				}
 			}
 		If customer has no favorites:
 			Customer has no favorites
+		If JWT is not valid or not supplied: 
+			Must be authorized!
+		If JWT is for another customer:
+			Can't view other customer's favorites!
 		On error:
 			Error retrieving favorites
 */
-app.get('/favorites/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.favorites natural join sample.restaurants WHERE customer_id = ?';
-
-	//Query database:
-	db.query(query, req.params.id, (err, rows) => {
+app.get('/favorites/:id', verifyToken, (req, res) => {
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
-			res.status(500).send('Error retrieving favorites');
+			res.status(401).send('Must be authorized!');
 		}   //if
-		else if (rows.length < 1) {
-			res.status(200).send('Customer has no favorites');
-		}	//else if
 		else {
-			//Build JSON object:
-			let response = {};
+			//Make sure person isn't viewing another customer's favorites:
+			if (auth.customer && auth.customer.customer_id === req.params.id) {
+				//Build query:
+				let query = 'SELECT * FROM sample.favorites NATURAL JOIN sample.restaurants WHERE customer_id = ?';
 
-			//Loop through each row returned from query:
-			for (let i=0; i<rows.length; i++) {
-				//Add each restaurant's info to response:
-				response[i] =   {
-					'restaurant_id': rows[i].restaurant_id,
-					'restaurant_name': rows[i].restaurant_name,
-					'address': rows[i].restaurant_addr,
-					'phone_number': rows[i].phone_number,
-					'opening_time': rows[i].opening_time,
-					'closing_time': rows[i].closing_time,
-					'logo': rows[i].logo
-				};	//response
-			}   //for
+				//Query database:
+				db.query(query, req.params.id, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error retrieving favorites');
+					}   //if
+					else if (rows.length < 1) {
+						res.status(200).send('Customer has no favorites');
+					}	//else if
+					else {
+						//Build JSON object:
+						let response = {};
 
-			//Send Response:
-			res.type('json').send(response);
-		}   //else
-	}); //db.query
+						//Loop through each row returned from query:
+						for (let i=0; i<rows.length; i++) {
+							//Add each restaurant's info to response:
+							response[i] =   {
+								'restaurant_id': rows[i].restaurant_id,
+								'restaurant_name': rows[i].restaurant_name,
+								'address': rows[i].restaurant_addr,
+								'phone_number': rows[i].phone_number,
+								'opening_time': rows[i].opening_time,
+								'closing_time': rows[i].closing_time,
+								'font': rows[i].font,
+								'font_color': rows[i].font_color,
+								'primary_color': rows[i].primary_color,
+								'secondary_color': rows[i].secondary_color,
+								'tertiary_color': rows[i].tertiary_color,
+								'logo': rows[i].logo
+							};	//response
+						}   //for
+
+						//Send Response:
+						res.type('json').send(response);
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Can\'t view other customer\'s favorites!');
+			}	//else
+		}	//else
+	});	//verify
 }); //app.get
 
 /*
@@ -988,7 +1070,7 @@ app.put('/favorites/add', verifyToken, (req, res) => {
 					else {
 						//Add to favorites:
 						query = 'INSERT INTO sample.favorites (customer_id, restaurant_id)';
-						query = query + ' VALUES(?,?)';
+						query = query + ' VALUES (?, ?)';
 						db.query(query, parameters, (err, rows) => {
 							if (err) {
 								res.status(500).send('Error adding restaurant to favorites');
@@ -1233,8 +1315,8 @@ app.put('/staff/register', (req, res) => {
 				else {
 					//Build query and parameters:
 					let parameters = [req.body.staff_id, req.body.restaurant_id, req.body.first_name, req.body.last_name, req.body.contact_num,req.body.email, req.body.position, salt, derivedKey.toString('hex')];
-					let query = 'INSERT INTO sample.staff(staff_id, restaurant_id, first_name, last_name, contact_num, email, position, salt, password)';
-					query = query + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					let query = 'INSERT INTO sample.staff (staff_id, restaurant_id, first_name, last_name, contact_num, email, position, salt, password)';
+					query = query + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 					//Add new staff member to db:
 					db.query(query, parameters, (err, rows) => {
@@ -1619,7 +1701,7 @@ app.post('/staff/password/update', verifyToken, (req, res) => {
 */
 app.post('/staff/position/update', verifyToken, (req, res) => {
 	//Make sure right number of parameters are entered:
-	if(!(req.body.staff_id && req.body.position)) {
+	if(!(req.body.staff_id !== undefined && req.body.position !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: staff_id, position)');
 		return;
 	}   //if
@@ -1725,7 +1807,7 @@ app.post('/customer/login', (req, res) => {
 
 						//Sign JWT and send token
 						//To add expiration date: jwt.sign({customer}, process.env.JWT_SECRET, { expiresIn: '<time>' }, (err, token) => ...)
-						jwt.sign({customer}, process.env.JWT_SECRET, {expiresIn: '5m'}, (err, token) => {
+						jwt.sign({customer}, process.env.JWT_SECRET, {expiresIn: '7d'}, (err, token) => {
 							//Add temp password flag and image to customer
 							customer['temp_password'] = rows[0].temp_password;
 							customer['image'] = rows[0].image;
@@ -1816,16 +1898,16 @@ app.put('/customer/register', upload.single('image'), (req, res) => {
 						}	//if
 						//Build query and parameters:
 						parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex'), req.file.buffer];
-						query = 'INSERT INTO sample.customers(customer_id, first_name, last_name, email, salt, password, image)';
-						query = query + " VALUES(?, ?, ?, ?, ?, ?, ?)";
+						query = 'INSERT INTO sample.customers (customer_id, first_name, last_name, email, salt, password, image)';
+						query = query + " VALUES (?, ?, ?, ?, ?, ?, ?)";
 						image = req.file.buffer;
 					}	//if
 					//If no image is supplied:
 					else {
 						//Build query and parameters:
 						parameters = [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.email, salt, derivedKey.toString('hex')];
-						query = 'INSERT INTO sample.customers(customer_id, first_name, last_name, email, salt, password)';
-						query = query + " VALUES(?, ?, ?, ?, ?, ?)";
+						query = 'INSERT INTO sample.customers (customer_id, first_name, last_name, email, salt, password)';
+						query = query + " VALUES (?, ?, ?, ?, ?, ?)";
 
 					}	//else
 
@@ -2000,7 +2082,7 @@ app.post('/customer/update', verifyToken, upload.single('image'), (req, res) => 
 
 /*
 	Retrieves a customer's order history
-	Inputs: customer_id
+	Inputs: customer_id, JWT
 	Outputs:
 		On success:
 			{
@@ -2024,50 +2106,69 @@ app.post('/customer/update', verifyToken, upload.single('image'), (req, res) => 
 			}
 		If a user has no history:
 			No order history for this customer
+		If JWT is not valid or not supplied: 
+			Must be authorized!
+		If JWT is for another customer:
+			Can't view other customer's history!
 		On error:
 			Error retrieving order history
 */
-app.get('/customer/history/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.menu natural join sample.orders natural join sample.orderdetails natural join sample.restaurants WHERE customer_id = ? and order_status like "Complete" ORDER BY order_date desc';
-
-	//Query database:
-	db.query(query, req.params.id, (err, rows) => {
+app.get('/customer/history/:id', verifyToken, (req, res) => {
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
-			res.status(500).send('Error retrieving order history');
+			res.status(401).send('Must be authorized!');
 		}   //if
-		else if (rows.length < 1) {
-			res.status(200).send('No order history for this customer');
-		}   //else if
 		else {
-			//Build JSON object:
-			let response = {};
+			//Make sure person isn't viewing another customer's history:
+			if (auth.customer && auth.customer.customer_id === req.params.id) {
+				//Build query:
+				let query = 'SELECT * FROM sample.menu NATURAL JOIN sample.orders NATURAL JOIN sample.orderdetails NATURAL JOIN sample.restaurants WHERE customer_id = ? AND order_status LIKE "Complete" ORDER BY order_date desc';
 
-			//Add list of orders to response:
-			for (let i=0; i<rows.length; i++) {
-				response[i] =   {
-					'order_num': rows[i].order_num,
-					'restaurant_id': rows[i].restaurant_id,
-					'restaurant_name': rows[i].restaurant_name,
-					'font': rows[i].font,
-					'font_color': rows[i].font_color,
-					'primary_color': rows[i].primary_color,
-					'secondary_color': rows[i].secondary_color,
-					'tertiary_color': rows[i].tertiary_color,
-					'logo': rows[i].logo,
-					'item_id': rows[i].item_id,
-					'item_name': rows[i].item_name,
-					'price': rows[i].price,
-					'quantity': rows[i].quantity,
-					'order_date': rows[i].order_date,
-					'table': rows[i].table_num,
-					'customization': rows[i].customization
-				};	//response
-			}   //for
+				//Query database:
+				db.query(query, req.params.id, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error retrieving order history');
+					}   //if
+					else if (rows.length < 1) {
+						res.status(200).send('No order history for this customer');
+					}   //else if
+					else {
+						//Build JSON object:
+						let response = {};
 
-			//Send Response:
-			res.type('json').send(response);
-		}   //else
-	}); //db.query
+						//Add list of orders to response:
+						for (let i=0; i<rows.length; i++) {
+							response[i] =   {
+								'order_num': rows[i].order_num,
+								'restaurant_id': rows[i].restaurant_id,
+								'restaurant_name': rows[i].restaurant_name,
+								'font': rows[i].font,
+								'font_color': rows[i].font_color,
+								'primary_color': rows[i].primary_color,
+								'secondary_color': rows[i].secondary_color,
+								'tertiary_color': rows[i].tertiary_color,
+								'logo': rows[i].logo,
+								'item_id': rows[i].item_id,
+								'item_name': rows[i].item_name,
+								'price': rows[i].price,
+								'quantity': rows[i].quantity,
+								'order_date': rows[i].order_date,
+								'table': rows[i].table_num,
+								'customization': rows[i].customization
+							};	//response
+						}   //for
+
+						//Send Response:
+						res.type('json').send(response);
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Can\'t view other customer\'s history!');
+			}	//else
+		}	//else
+	});	//verify
 }); //app.get
 
 /*
@@ -2107,7 +2208,7 @@ app.get('/customer/inprogress/:id', verifyToken, (req, res) => {
 			//Check to make sure customer_id is same as the customer_id in JWT:
 			if (auth.customer && auth.customer.customer_id === req.params.id) {
 				//Build query:
-				let query = 'SELECT * FROM sample.menu natural join sample.orders natural join sample.orderdetails natural join sample.restaurants WHERE customer_id = ? and order_status like "In Progress" ORDER BY order_date desc';
+				let query = 'SELECT * FROM sample.menu NATURAL JOIN sample.orders NATURAL JOIN sample.orderdetails NATURAL JOIN sample.restaurants WHERE customer_id = ? AND order_status LIKE "In Progress" ORDER BY order_date desc';
 
 				//Query database:
 				db.query(query, req.params.id, (err, rows) => {
@@ -2451,21 +2552,21 @@ app.put('/menu/add', verifyToken, upload.single('image'), (req, res) => {
 							}	//if
 							//Build query and parameters:
 							parameters = [req.body.restaurant_id, req.body.item_name, req.body.calorie_num, req.body.category, req.body.price, req.body.description, req.file.buffer];
-							query = 'INSERT INTO sample.menu(restaurant_id, item_name, calorie_num, category, in_stock, price, description, image)';
+							query = 'INSERT INTO sample.menu (restaurant_id, item_name, calorie_num, category, in_stock, price, description, image)';
 							query = query + ' VALUES (?, ?, ?, ?, 1, ?, ?, ?)';
 						}	//if
 						//If no image is supplied:
 						else {
 							//Build query and parameters:
 							parameters = [req.body.restaurant_id, req.body.item_name, req.body.calorie_num, req.body.category, req.body.price, req.body.description];
-							query = 'INSERT INTO sample.menu(restaurant_id, item_name, calorie_num, category, in_stock, price, description)';
+							query = 'INSERT INTO sample.menu (restaurant_id, item_name, calorie_num, category, in_stock, price, description)';
 							query = query + ' VALUES (?, ?, ?, ?, 1, ?, ?)';
 						}	//else
 
 						//If category is new:
 						if (rows[1].length < 1) {
-							query = query + '; INSERT INTO sample.categories(category_name)';
-							query = query + ' VALUES(?)';
+							query = query + '; INSERT INTO sample.categories (category_name)';
+							query = query + ' VALUES (?)';
 							parameters.push(req.body.category);
 						}	//if
 
@@ -2509,8 +2610,6 @@ app.put('/menu/add', verifyToken, upload.single('image'), (req, res) => {
 			Error updating menu item
 */
 app.post('/menu/update', verifyToken, upload.single('image'), (req, res) => {
-	console.log('/menu/update: ');
-	console.log(req);
 	//Make sure right number of parameters are entered:
 	if(!(req.body.item_id !== undefined && req.body.restaurant_id !== undefined && req.body.item_name !== undefined && req.body.calorie_num !== undefined && req.body.category !== undefined && req.body.in_stock !== undefined && req.body.price !== undefined && req.body.description !== undefined)) {
 		res.status(400).send('Error: Missing parameter. Required parameters: item_id, restaurant_id, item_name, calorie_num, category, in_stock, price, description, image (optional)');
@@ -2760,7 +2859,7 @@ app.put('/menu/allergens/add', verifyToken, (req, res) => {
 						}	//if
 						else {
 							//Build query and parameters:
-							query = 'INSERT INTO sample.allergens(item_id, allergen_name)';
+							query = 'INSERT INTO sample.allergens (item_id, allergen_name)';
 							query = query + ' VALUES (?, ?)';
 							let parameters = [req.body.item_id, req.body.allergen];
 
@@ -2974,7 +3073,7 @@ app.post('/categories/remove', verifyToken, (req, res) => {
 			This alexa does not exist
 */
 app.get('/alexa/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.alexas natural join sample.restaurants WHERE alexa_id = ?';
+	let query = 'SELECT * FROM sample.alexas NATURAL JOIN sample.restaurants WHERE alexa_id = ?';
 
 	//Query database:
 	db.query(query, req.params.id, (err, rows) => {
@@ -3039,14 +3138,14 @@ app.put('/alexa/register', (req, res) => {
 				{
 					//Build query and parameters:
 					let parameters = [req.body.alexa_id, req.body.restaurant_id, req.body.table_num, req.body.alexa_id, 'Alexa', 'Alexa', 'alexa@autogarcon.com', salt, derivedKey.toString('hex')];
-					query = 'INSERT INTO sample.alexas(alexa_id, restaurant_id, table_num)';
+					query = 'INSERT INTO sample.alexas (alexa_id, restaurant_id, table_num)';
 					query = query + ' VALUES (?, ?, ?)';
-					query = query + '; INSERT INTO sample.customers(customer_id, first_name, last_name, email, salt, password)';
-					query = query + ' VALUES(?, ?, ?, ?, ?, ?)';
+					query = query + '; INSERT INTO sample.customers (customer_id, first_name, last_name, email, salt, password)';
+					query = query + ' VALUES (?, ?, ?, ?, ?, ?)';
 
 					//Add table to services table if it doesn't exist:
 					if (rows[1].length < 1) {
-						query = query + '; INSERT INTO sample.services(restaurant_id, table_num, service_status)';
+						query = query + '; INSERT INTO sample.services (restaurant_id, table_num, service_status)';
 						query = query + ' VALUES (?, ?, ?)';
 						parameters.push(req.body.restaurant_id, req.body.table_num, 'Good');
 					}	//if
@@ -3083,7 +3182,7 @@ app.put('/alexa/register', (req, res) => {
 			Error retrieving pending order
 */
 app.get('/alexa/pending/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.orders WHERE customer_id = ? AND order_status like "Pending"';
+	let query = 'SELECT * FROM sample.orders WHERE customer_id = ? AND order_status LIKE "Pending"';
 	let response = {};
 
 	//Query database:
@@ -3142,7 +3241,7 @@ app.put('/alexa/order/new', (req, res) => {
 	let parameters = [req.body.restaurant_id, req.body.alexa_id, 'Pending', timestamp, req.body.table_num];
 
 	//Query to add order to orders table and retrieve the order_num
-	let query = ' INSERT INTO sample.orders(restaurant_id, customer_id, order_status, order_date, table_num)';
+	let query = ' INSERT INTO sample.orders (restaurant_id, customer_id, order_status, order_date, table_num)';
 	query = query + ' VALUES (?, ?, ?, ?, ?);';
 
 	//Add order to orders table in db:
@@ -3187,7 +3286,7 @@ app.put('/alexa/order/update', (req, res) => {
 	}   //if
 
 	//Make sure the order exists:
-	let query = 'Select * FROM sample.orders WHERE order_num = ? AND order_status like "Pending"';
+	let query = 'Select * FROM sample.orders WHERE order_num = ? AND order_status LIKE "Pending"';
 	db.query(query, req.body.order_num, (err, rows) => {
 		if (rows.length == 0) {
 			res.status(409).send('Error: order does not exist or is not pending');
@@ -3201,7 +3300,7 @@ app.put('/alexa/order/update', (req, res) => {
 				if (rows.length < 1) {
 					parameters = [req.body.order_num, req.body.item_id, req.body.quantity, req.body.customization];
 					query = 'INSERT INTO sample.orderdetails (order_num, item_id, quantity, customization)';
-					query = query + ' VALUES (?,?,?,?)'
+					query = query + ' VALUES (?, ?, ?, ?)'
 
 					//Update order in db:
 					db.query(query, parameters, (err, rows) => {
@@ -3339,7 +3438,7 @@ app.post('/alexa/order/remove', (req, res) => {
 			Error retrieving order
 */
 app.get('/alexa/order/:id', (req, res) => {
-	let query = 'SELECT * FROM sample.menu natural join sample.orders natural join sample.orderdetails WHERE customer_id = ? and order_status like "Pending" ORDER BY order_num';
+	let query = 'SELECT * FROM sample.menu NATURAL JOIN sample.orders NATURAL JOIN sample.orderdetails WHERE customer_id = ? AND order_status LIKE "Pending" ORDER BY order_num';
 
 	//Query database:
 	db.query(query, req.params.id, (err, rows) => {
@@ -3404,14 +3503,9 @@ app.post('/verify', verifyToken, (req, res) => {
 	});	//verify
 }); //app.post
 
-
-//==========================================================================//
-//								TEST ENDPOINTS 								//
-//==========================================================================//
-
 /*
 	Returns stats on which things were ordered the most per category at each restaurant
-	Inputs: restaurant_id
+	Inputs: restaurant_id, JWT
 	Outputs:
 		On success:
 			{
@@ -3425,39 +3519,256 @@ app.post('/verify', verifyToken, (req, res) => {
 			}
 		If no items ordered:
 			Restaurant has no orders
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant:
+			Must be the restaurant manager to view stats!
 		On error:
 			Error retrieving stats
 */
-app.get('/orderstats/:id', (req, res) => {
-	let query = 'CALL sample.GetOrderStats(?)';
-
-	//Query database:
-	db.query(query, req.params.id, (err, rows) => {
+app.get('/orderstats/highestsellingcat/:id', verifyToken, (req, res) => {
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
 		if (err) {
-			res.status(500).send('Error retrieving stats');
+			res.status(401).send('Must be authorized!');
 		}   //if
-		else if (rows.length < 1) {
-			res.status(200).send('This restaurant has no orders');
-		}   //else if
 		else {
-			//Build JSON object:
-			let response = {};
+			//Check to make sure person is a manager at the restaurant:
+			if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === req.params.id) {
+				//Build query:
+				let query = 'CALL sample.GetHighestSellingCategory(?)';
+	
+				//Query database:
+				db.query(query, req.params.id, (err, rows) => {
+					if (err) {
+						res.status(500).send('Error retrieving stats');
+					}   //if
+					else if (rows.length < 1) {
+						res.status(200).send('This restaurant has no orders');
+					}   //else if
+					else {
+						//Build JSON object:
+						let response = {};
 
-			//Loop through each row returned from query:
-			for (let i=0; i<rows[0].length; i++) {
-				response[i] = {
-					'restaurant_id': rows[0][i].restaurant_id,
-					'category': rows[0][i].category,
-					'item_name': rows[0][i].item_name,
-					'item_id': rows[0][i].item_id,
-					'total_ordered': rows[0][i].total_ordered
-				};	//response
-			}   //for
+						//Loop through each row returned from query:
+						for (let i=0; i<rows[0].length; i++) {
+							response[i] = {
+								'restaurant_id': rows[0][i].restaurant_id,
+								'category': rows[0][i].category,
+								'item_name': rows[0][i].item_name,
+								'item_id': rows[0][i].item_id,
+								'total_ordered': rows[0][i].total_ordered
+							};	//response
+						}   //for
 
-			//Send Response:
-			res.type('json').send(response);
-		}   //else
-	}); //db.query
+						//Send Response:
+						res.type('json').send(response);
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Must be the restaurant manager to view stats!');
+			}	//else
+		}	//else
+	}); //verify
+}); //app.get
+
+/*
+	Returns stats on number of orders by the hour
+	Inputs: restaurant_id, JWT
+	Outputs:
+		On success:
+			{
+				i: {
+					restaurant_id
+					hour
+					num_orders
+				}
+			}
+		If no items ordered:
+			Restaurant has no orders
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant:
+			Must be the restaurant manager to view stats!
+		On error:
+			Error retrieving stats
+*/
+app.get('/orderstats/ordersbyhour/:id', verifyToken, (req, res) => {
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Check to make sure person is a manager at the restaurant:
+			if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === req.params.id) {
+				//Build query:
+				let query = 'CALL sample.GetOrdersByHour(?)';
+				
+				//Query database:
+				db.query(query, req.params.id, (err, rows) => {
+					if (err) {		
+						res.status(500).send('Error retrieving stats');		
+					}   //if
+					else if (rows.length < 1) {
+						res.status(200).send('This restaurant has no orders');
+					}   //else if
+					else {
+						//Build JSON object:
+						let response = {};
+
+						//Loop through each row returned from query:
+						for (let i=0; i<rows[0].length; i++) {
+							response[i] = {
+								'restaurant_id': rows[0][i].restaurant_id,
+								'hour': rows[0][i].hour,
+								'num_orders': rows[0][i].num_orders,
+							};	//response
+						}   //for
+
+						//Send Response:
+						res.type('json').send(response);
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Must be the restaurant manager to view stats!');
+			}	//else
+		}	//else
+	});	//verify
+}); //app.get
+
+/*
+	Returns stats on number of orders by the day
+	Inputs: restaurant_id, JWT
+	Outputs:
+		On success:
+			{
+				i: {
+					restaurant_id
+					day
+					num_orders
+				}
+			}
+		If no items ordered:
+			Restaurant has no orders
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant:
+			Must be the restaurant manager to view stats!
+		On error:
+			Error retrieving stats
+*/
+app.get('/orderstats/ordersbyday/:id', verifyToken, (req, res) => {
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Check to make sure person is a manager at the restaurant:
+			if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === req.params.id) {
+				//Build query:
+				let query = 'CALL sample.GetOrdersByDay(?)';
+				
+				//Query database:
+				db.query(query, req.params.id, (err, rows) => {
+					if (err) {		
+						res.status(500).send('Error retrieving stats');		
+					}   //if
+					else if (rows.length < 1) {
+						res.status(200).send('This restaurant has no orders');
+					}   //else if
+					else {
+						//Build JSON object:
+						let response = {};
+
+						//Loop through each row returned from query:
+						for (let i=0; i<rows[0].length; i++) {
+							response[i] = {
+								'restaurant_id': rows[0][i].restaurant_id,
+								'day': rows[0][i].day,
+								'num_orders': rows[0][i].num_orders,
+							};	//response
+						}   //for
+
+						//Send Response:
+						res.type('json').send(response);
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Must be the restaurant manager to view stats!');
+			}	//else
+		}	//else
+	});	//verify
+}); //app.get
+
+/*
+	Returns stats on number of orders by the month
+	Inputs: restaurant_id, JWT
+	Outputs:
+		On success:
+			{
+				i: {
+					restaurant_id
+					month
+					num_orders
+				}
+			}
+		If no items ordered:
+			Restaurant has no orders
+		If JWT is not valid:
+			Must be authorized!
+		If JWT is not a manager token for the restaurant:
+			Must be the restaurant manager to view stats!
+		On error:
+			Error retrieving stats
+*/
+app.get('/orderstats/ordersbymonth/:id', verifyToken, (req, res) => {
+	//Verify that the JWT is valid:
+	jwt.verify(req.token, process.env.JWT_SECRET, (err, auth) => {
+		if (err) {
+			res.status(401).send('Must be authorized!');
+		}   //if
+		else {
+			//Check to make sure person is a manager at the restaurant:
+			if (auth.staff && auth.staff.position === 'manager' && auth.staff.restaurant_id === req.params.id) {
+				//Build query:
+				let query = 'CALL sample.GetOrdersByMonth(?)';
+				
+				//Query database:
+				db.query(query, req.params.id, (err, rows) => {
+					if (err) {		
+						res.status(500).send('Error retrieving stats');		
+					}   //if
+					else if (rows.length < 1) {
+						res.status(200).send('This restaurant has no orders');
+					}   //else if
+					else {
+						//Build JSON object:
+						let response = {};
+
+						//Loop through each row returned from query:
+						for (let i=0; i<rows[0].length; i++) {
+							response[i] = {
+								'restaurant_id': rows[0][i].restaurant_id,
+								'month': rows[0][i].month,
+								'num_orders': rows[0][i].num_orders,
+							};	//response
+						}   //for
+
+						//Send Response:
+						res.type('json').send(response);
+					}   //else
+				}); //db.query
+			}	//if
+			else {
+				res.status(401).send('Must be the restaurant manager to view stats!');
+			}	//else
+		}	//else
+	});	//verify
 }); //app.get
 
 /*
