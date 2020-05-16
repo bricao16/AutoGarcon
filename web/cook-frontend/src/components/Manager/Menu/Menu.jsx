@@ -2,6 +2,9 @@ import React from "react";
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import MenuItem from './MenuItem';
 import NewItem from './NewItem';
 import https from 'https';
@@ -38,6 +41,7 @@ class Menu extends React.Component {
       categories: [],
       renderCategory: "main",
       newItem: false,
+      showNewCategory: false,
       imageUrls :[],
       newItemPrefill: {
         type: "default",
@@ -195,7 +199,7 @@ class Menu extends React.Component {
   }
 
   /* Aggregate all the menu categories onto cards and call the change which menu to display is clicked */
-  renderMenuCategories(){
+  renderMenuCategories() {
 
     const secondary = this.props.secondary;
     const font = this.props.font;
@@ -215,8 +219,10 @@ class Menu extends React.Component {
       </Col>  
     );
   }
-  //creates default placeholders for the new item
-  resetNewItem(){
+
+  /* creates default placeholders for the new item */
+  resetNewItem() {
+
     this.setState({
       newItemPrefill: {
         type: "default",
@@ -232,17 +238,22 @@ class Menu extends React.Component {
       }
     })
   }
-  //render the menu prop of the current category 
-  renderMenu(){
+
+  /* render the menu prop of the current category  */
+  renderMenu() {
     //onNew is a callback passed to call the new item form if it is edit is clicked
     return this.state.menu.map((item, key) =>
         <MenuItem key={item} menu={item} category={this.state.renderCategory} onNew={this.toggleNewItem.bind(this)} primary ={this.props.primary}  secondary ={this.props.secondary}  teritary ={this.props.teritary}  font_color = {this.props.font_color} font ={this.props.font}/>
     );
   }
-  //generate form for new item with prefilled of whats already on the menu for this item
-  newItemForm(){
+  
+  /* generate form for new item with prefilled of whats already on the menu for this item */
+  newItemForm() {
     return <NewItem prefill = {this.state.newItemPrefill}/>
   }
+
+  handleModalClose = () => this.setState({ModalShow: false});
+  handleModalShow = () => this.setState({ModalShow: true});
 
   // Default render method
   render() {
@@ -277,6 +288,25 @@ class Menu extends React.Component {
     if(renderCategory === "main" && newItem === false)
     {
       return (
+      <>
+        <Modal show={this.state.ModalShow} onHide={this.handleModalClose} style={{"left": "200px"}} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Create new category</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="container">
+                  <Form>
+                    <Form.Group controlId="formBasicEmail">
+                      <Form.Label>Category name</Form.Label>
+                      <Form.Control type="input" placeholder="Category" />
+                    </Form.Group>
+                    <Button variant="primary" type="submit">
+                      Create
+                    </Button>
+                  </Form>
+              </div>
+            </Modal.Body>
+          </Modal>
 
           <Container>
             <div style={backgroundStyle}>
@@ -286,10 +316,17 @@ class Menu extends React.Component {
               <Container fluid style={{'minHeight': '70vh'}}>
                 <div className="d-flex flex-wrap">
                     {this.renderMenuCategories()}
-                    <Col sm={6} className="p-3"> {/*add a create new category option*/}
+                    <Col sm={6} className="p-3">
                       <Card className="text-center" >
                         <div onClick={() => this.toggleNewItem("default") }>                     
                           <Card.Header style={createNewStyle}>Create New Item</Card.Header>
+                        </div>
+                      </Card>
+                    </Col>
+                    <Col sm={6} className="p-3">
+                      <Card className="text-center" >
+                        <div onClick={this.handleModalShow}>                     
+                          <Card.Header style={createNewStyle}>Create New Category</Card.Header>
                         </div>
                       </Card>
                     </Col>  
@@ -297,6 +334,7 @@ class Menu extends React.Component {
               </Container>
             </div>
           </Container>
+        </>
       );
     }
     else if (renderCategory !== "main" && newItem === false){

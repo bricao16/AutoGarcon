@@ -79,7 +79,6 @@ class NewItem extends React.Component {
     
     let requestMethod;
     let endpoint;
-    let body;
     let message;
     
     if (this.state.image) {
@@ -108,7 +107,9 @@ class NewItem extends React.Component {
     } else if(this.state.description.length < 1){
       this.handleValidation("Description field is required.");
     } else {
-			this.state.price = Number(this.state.price).toFixed(2);
+      this.setState({
+        price: Number(this.state.price).toFixed(2)
+      })
 
 
 			// Non existent so need to add item
@@ -299,7 +300,6 @@ class NewItem extends React.Component {
                   <label className="col">Category </label>
                   <select name="category" className="form-control col" onChange={this.handleInputChange} placeholder={this.state.category}>
                     {this.getCategories()}
-                    <option value="New Category">New Category</option>
                   </select>
                 </div>
 
@@ -390,7 +390,6 @@ class NewItem extends React.Component {
                   <label className="col">Category </label>
                   <select name="category" className="form-control col" value={this.state.category} onChange={this.handleInputChange} placeholder={this.state.category}>
                     {this.getCategories()}
-                    <option value="New Category">New Category</option>
                   </select>
                 </div>
 
@@ -420,7 +419,7 @@ class NewItem extends React.Component {
                 
                 <div className="form-group">
                   <label htmlFor="itemDescription">Description</label>
-                  <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} placeholder="300 Character limit"></textarea>
+                  <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} defaultValue={this.state.description}></textarea>
                 </div>
 
                 <label htmlFor="customFile">Picture (Optional)</label>
