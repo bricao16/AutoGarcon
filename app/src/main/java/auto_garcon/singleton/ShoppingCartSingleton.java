@@ -98,14 +98,15 @@ public class ShoppingCartSingleton {
     public int getRestaurantID() {
         return this.restaurantID;
     }
-    public void setStartingHour(int time){ this.startingHour=time; }
+    public void setStartingHour(int time){ this.startingHour = time; }
     public int  getStartingHour(){return this.startingHour;}
-    public void setEndingHour(int time){this.endingHour=time;}
+    public void setEndingHour(int time){this.endingHour = time;}
     public int  getEndingHour(){return this.endingHour;}
     public String toString(){
         String toReturn ="";
-        for(int i= 0; i<items.size();i++){
-            toReturn= toReturn+items.get(i).getNameOfItem()+ " Qty("+items.get(i).getQuantity()+")"+"\n";
+
+        for(int i = 0; i < items.size(); i++) {
+            toReturn = toReturn + items.get(i).getNameOfItem() + " Qty(" + items.get(i).getQuantity() + ")\n";
         }
         return toReturn;
     }

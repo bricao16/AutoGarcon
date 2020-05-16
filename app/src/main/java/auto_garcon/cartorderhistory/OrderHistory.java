@@ -152,37 +152,43 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     int tracker = 0;
 
                     for(int i = 0;i<json.size();i++){
+                        String indexAsString = Integer.toString(i);
+                        JsonObject individualItem = json.getAsJsonObject(indexAsString);
+
                         if(i!=0){//first item check
-                            if(order.get(tracker-1).equals(json.getAsJsonObject(""+i).get("order_num").getAsString())){//if there is an order that has the same id
+                            if(order.get(tracker-1).equals(json.getAsJsonObject(indexAsString).get("order_num").getAsString())){//if there is an order that has the same id
 
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();// get the item for that order
-                                item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
-                                item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
-                                item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
-                                item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
-                             //   item.setImage(OrderHistory.this);
+                                item.setNameOfItem(individualItem.get("item_name").getAsString());//set the item name
+                                item.setItemID(individualItem.get("item_id").getAsInt());
+                                item.setQuantity(individualItem.get("quantity").getAsInt());//set the new item quantity
+                                item.setPrice(individualItem.get("price").getAsDouble());
                                 carts.get(tracker-1).addToCart(item);
                             }
                             else{
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();//create the new item
-                                item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());//set the item name
-                                item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
-                                item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());//set the new item quantity
-                              //  item.setImage(OrderHistory.this);//get image ready
-                                item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
-                                order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());//get the new order number and add it to the item arraylsit
-                                carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));//get the new restaurant id and create a new shopping cart
+                                item.setNameOfItem(individualItem.get("item_name").getAsString());//set the item name
+                                item.setItemID(individualItem.get("item_id").getAsInt());
+                                item.setQuantity(individualItem.get("quantity").getAsInt());//set the new item quantity
+
+                                item.setPrice(individualItem.get("price").getAsDouble());
+                                order.add(individualItem.get("order_num").getAsString());//get the new order number and add it to the item arraylsit
+                                carts.add(new ShoppingCartSingleton(individualItem.get("restaurant_id").getAsInt()));//get the new restaurant id and create a new shopping cart
                                 carts.get(tracker).addToCart(item);//ad the new item to the cart
-                                carts.get(tracker).setFont(json.getAsJsonObject(""+i).get("font").getAsString());
-                                carts.get(tracker).setPrimaryColor(json.getAsJsonObject(""+i).get("primary_color").getAsString());
-                                carts.get(tracker).setSecondaryColor(json.getAsJsonObject(""+i).get("secondary_color").getAsString());
-                                carts.get(tracker).setTertiaryColor(json.getAsJsonObject(""+i).get("tertiary_color").getAsString());
-                                date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());//add the date
-                                restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
-                               byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
+
+                                int font = OrderHistory.this.getResources().getIdentifier(individualItem.get("font").getAsString().toLowerCase().replaceAll("\\s","") + "_regular",
+                                        "font", OrderHistory.this.getPackageName());
+                                carts.get(tracker).setFont(font);
+
+                                carts.get(tracker).setPrimaryColor(individualItem.get("primary_color").getAsString());
+                                carts.get(tracker).setSecondaryColor(individualItem.get("secondary_color").getAsString());
+                                carts.get(tracker).setTertiaryColor(individualItem.get("tertiary_color").getAsString());
+                                date.add(individualItem.get("order_date").getAsString());//add the date
+                                restaurantName.add(individualItem.get("restaurant_name").getAsString());
+                                byte[] temp = new byte[individualItem.getAsJsonObject("logo").getAsJsonArray("data").size()];
 
                                 for(int j = 0; j < temp.length; j++) {
-                                    temp[j] = (byte) (((int) json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
+                                    temp[j] = (byte) ((individualItem.getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
                                 }
                                 logos.add(temp);
                                 tracker=tracker+1;
@@ -190,24 +196,28 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                         }
                         else {
                             auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
-                            item.setNameOfItem(json.getAsJsonObject("" + i).get("item_name").getAsString());
-                            item.setItemID(json.getAsJsonObject(""+i).get("item_id").getAsInt());
-                         //   item.setImage(OrderHistory.this);
-                            item.setQuantity(json.getAsJsonObject("" + i).get("quantity").getAsInt());
-                            item.setPrice(json.getAsJsonObject(""+i).get("price").getAsDouble());
-                            order.add(json.getAsJsonObject("" + i).get("order_num").getAsString());
-                            carts.add(new ShoppingCartSingleton(json.getAsJsonObject("" + i).get("restaurant_id").getAsInt()));
+                            item.setNameOfItem(individualItem.get("item_name").getAsString());
+                            item.setItemID(individualItem.get("item_id").getAsInt());
+
+                            item.setQuantity(individualItem.get("quantity").getAsInt());
+                            item.setPrice(individualItem.get("price").getAsDouble());
+                            order.add(individualItem.get("order_num").getAsString());
+                            carts.add(new ShoppingCartSingleton(individualItem.get("restaurant_id").getAsInt()));
                             carts.get(i).addToCart(item);
-                            carts.get(i).setFont(json.getAsJsonObject(""+i).get("font").getAsString());
-                            carts.get(i).setPrimaryColor(json.getAsJsonObject(""+i).get("primary_color").getAsString());
-                            carts.get(i).setSecondaryColor(json.getAsJsonObject(""+i).get("secondary_color").getAsString());
-                            carts.get(i).setTertiaryColor(json.getAsJsonObject(""+i).get("tertiary_color").getAsString());
-                            date.add(json.getAsJsonObject("" + i).get("order_date").getAsString());
-                            restaurantName.add(json.getAsJsonObject(""+i).get("restaurant_name").getAsString());
-                           byte[] temp = new byte[json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").size()];
+
+                            int font = OrderHistory.this.getResources().getIdentifier(individualItem.get("font").getAsString().toLowerCase().replaceAll("\\s","") + "_regular",
+                                    "font", OrderHistory.this.getPackageName());
+                            carts.get(tracker).setFont(font);
+
+                            carts.get(i).setPrimaryColor(individualItem.get("primary_color").getAsString());
+                            carts.get(i).setSecondaryColor(individualItem.get("secondary_color").getAsString());
+                            carts.get(i).setTertiaryColor(individualItem.get("tertiary_color").getAsString());
+                            date.add(individualItem.get("order_date").getAsString());
+                            restaurantName.add(individualItem.get("restaurant_name").getAsString());
+                            byte[] temp = new byte[individualItem.getAsJsonObject("logo").getAsJsonArray("data").size()];
 
                             for(int j = 0; j < temp.length; j++) {
-                                temp[j] = (byte) (((int) json.getAsJsonObject(""+i).getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
+                                temp[j] = (byte) ((individualItem.getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
                             }
 
                             logos.add(temp);
