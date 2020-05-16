@@ -21,6 +21,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -35,8 +36,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import auto_garcon.NukeSSLCerts;
@@ -213,7 +216,15 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                     }
                 }
             }
-        );
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                HashMap<String,String> headers = new HashMap<String,String>();
+                headers.put("Authorization","Bearer " + pref.getAuth());
+                return headers;
+            }
+        };
 
         StringRequest getRequestForSearch = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/restaurants",
             new Response.Listener<String>() {
