@@ -54,11 +54,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         this.carts = carts;
         this.date = date;
         this.restaurantName = restaurantName;
-        String hold = "";
 
-        for(int i = 0 ;i < this.logos.get(0).length; i++) {
-            hold = hold + "," + this.logos.get(0)[i];
-        }
     }
 
 
