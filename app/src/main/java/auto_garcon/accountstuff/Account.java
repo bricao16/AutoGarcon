@@ -101,7 +101,7 @@ public class Account extends AppCompatActivity {
         accountImage.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog changeImagePopup = new Dialog(Account.this);
+                final Dialog changeImagePopup = new Dialog(Account.this);
                 changeImagePopup.setContentView(R.layout.account_image_popup);
                 changeImagePopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -118,6 +118,13 @@ public class Account extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         startActivityForResult(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), 1);
+                    }
+                });
+
+                changeImagePopup.findViewById(R.id.account_image_close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        changeImagePopup.dismiss();
                     }
                 });
             }

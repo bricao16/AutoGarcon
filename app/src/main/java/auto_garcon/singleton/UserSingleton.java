@@ -1,6 +1,7 @@
 package auto_garcon.singleton;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 /**
  * Class for holding user information

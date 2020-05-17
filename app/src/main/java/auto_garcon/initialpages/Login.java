@@ -123,9 +123,12 @@ public class Login extends AppCompatActivity {
                                         JSONObject object = response.getJSONObject("customer");
                                         String token = response.getString("token");
 
-                                        byte[] itemImageByteArray = new byte[]{};
 
+                                        byte[] itemImageByteArray = new byte[object.getJSONObject("image").getJSONArray("data").length()];
 
+                                        for(int i = 0; i < itemImageByteArray.length; i++) {
+                                            itemImageByteArray[i] = (byte) (((int) object.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
+                                        }
 
                                         pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
                                                 object.get("customer_id").toString(), object.get("email").toString(), BitmapFactory.decodeByteArray(itemImageByteArray, 0, itemImageByteArray.length)));
@@ -149,11 +152,9 @@ public class Login extends AppCompatActivity {
                                     error.printStackTrace();
                                     if(error.networkResponse.statusCode == 401){
                                         Toast.makeText(Login.this,"Invalid username or password",Toast.LENGTH_LONG).show();
-
                                     }
                                     else{
                                         Toast.makeText(Login.this,"Could not Sign in",Toast.LENGTH_LONG).show();
-
                                     }
                                 }
                             }
