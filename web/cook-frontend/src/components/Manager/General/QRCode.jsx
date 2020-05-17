@@ -35,15 +35,12 @@ class StoreInfo extends React.Component{
   }
 
   onChange = (e) => {
-        /*
-          Because we named the inputs to match their
-          corresponding values in state, it's
-          super easy to update the state
-        */
-        this.setState({ [e.target.name]: e.target.value });
-        console.log(this.state);
+
+        this.setState({ 
+					myValue: e.target.value
+				});
       }
-  /* Used for connecting to restaurantInfo in database */
+  /* Used for generating QR code */
   handleSubmit(event) {
 		
 		var string = this.state.restaurant_id + "," + this.state.myValue;
@@ -52,12 +49,6 @@ class StoreInfo extends React.Component{
 	  this.forceUpdate();
 	}
 
-  //change the category of which is being edited
-  editForm = (category) => {
-      this.setState({
-        sectionEdit: category
-    })
-  }
   render() {
       const {restaurantInfo } = this.state;
       const fullResturantInfo = this.props;
@@ -71,7 +62,6 @@ class StoreInfo extends React.Component{
       const tertiary = this.props.tertiary;
       const font = this.props.font;
       const font_color = this.props.font_color;
-
 
       return (
         <React.Fragment>
@@ -100,7 +90,6 @@ class StoreInfo extends React.Component{
                   </input>
                   <br/>
                       <button type="button" className="btn" style = {{'backgroundColor': secondary,'color': font_color,'fontFamily' :font }} onClick={this.handleSubmit}>Generate Code</button>
-											
                   </Col>
                   <Col>
                   <QRCode
