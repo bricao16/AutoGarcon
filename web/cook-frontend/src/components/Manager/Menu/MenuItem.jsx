@@ -24,7 +24,7 @@ class MenuItem extends React.Component {
     };
   }
 
-  // Parsing stock data for internal state consumption
+  /* Parsing stock data for internal state consumption */
   getStockState(in_stock){
     if(in_stock === 0) {
       return "Out of Stock";
@@ -40,9 +40,7 @@ class MenuItem extends React.Component {
       ModalShow: true,
       ModalLoading: true
     });
-
     await this.updateImageUrl();
-
     if (this.state.imageLoadFailed) {
       this.setState({
         ModalLoading: false,
@@ -51,7 +49,7 @@ class MenuItem extends React.Component {
     }
   }
 
-  //callback to newitemform when clicked edit button
+  /* callback to newitemform when clicked edit button */
   NewItemForm(e) {
     if (typeof this.props.onNew === 'function') {
       var props = {
@@ -66,12 +64,11 @@ class MenuItem extends React.Component {
           "description": this.props.menu[1].description
         }
       }
-      
       this.props.onNew(props);
     }
   }
 
-  //convert blob to base 64
+  /* convert blob to base 64 */
   arrayBufferToBase64( buffer ) {
     var binary = '';
     var bytes = new Uint8Array( buffer );
@@ -80,12 +77,11 @@ class MenuItem extends React.Component {
     for (var i = 0; i < len; i++) {
       binary += String.fromCharCode(bytes[i]);
     }
-
     return window.btoa( binary );
   }
 
-  // From http://stackoverflow.com/questions/14967647/ (continues on next line)
-  // encode-decode-image-with-base64-breaks-image (2013-04-21)
+  /* From http://stackoverflow.com/questions/14967647/ 
+		 encode-decode-image-with-base64-breaks-image (2013-04-21) */
   fixBinary (bin) {
     var length = bin.length;
     var buf = new ArrayBuffer(length);
@@ -98,27 +94,27 @@ class MenuItem extends React.Component {
   }
 
   updateImageUrl() {
-    //pull down image because modal is showing
+    /* pull down image because modal is showing */
     return this.getImageBuf(this.props.menu[1].item_id)
-      .then((res) => {
-        if (res == null) throw new Error('404')
+		.then((res) => {
+			if (res == null) throw new Error('404')
 
-        //get logo image data from binary
-        const imageData = this.arrayBufferToBase64(res);
-        var binary = this.fixBinary(atob(imageData));
-        const blob = new Blob([binary], {type : 'image/png'});
-        const blobUrl = URL.createObjectURL(blob);
-    
-        this.setState({
-          ModalLoading: false,
-          blobUrl: blobUrl
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          imageLoadFailed: true
-        })
-      });
+			/* get logo image data from binary */
+			const imageData = this.arrayBufferToBase64(res);
+			var binary = this.fixBinary(atob(imageData));
+			const blob = new Blob([binary], {type : 'image/png'});
+			const blobUrl = URL.createObjectURL(blob);
+	
+			this.setState({
+				ModalLoading: false,
+				blobUrl: blobUrl
+			});
+		})
+		.catch((error) => {
+			this.setState({
+				imageLoadFailed: true
+			})
+		});
   }
 
   async getImageBuf(id) {
