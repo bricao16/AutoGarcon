@@ -223,8 +223,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 cart.addToCart(itemToBeAdded);
                                 pref.setShoppingCart(cart);
                                 badge.setNumber(cart.getCart().size());
-                                badge.setVisible(false);
-                                badge.setVisible(true);
+
                                 addToCartPopup.dismiss();
                             }
                             else if(pref.getShoppingCart().getRestaurantID() == restaurantID) {
@@ -242,8 +241,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                                 pref.setShoppingCart(cart);
                                 badge.setNumber(cart.getCart().size());
-                                badge.setVisible(false);
-                                badge.setVisible(true);
+
                                 addToCartPopup.dismiss();
                             }
                             else if(pref.getShoppingCart().getRestaurantID() != restaurantID) {
@@ -271,8 +269,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                                         pref.setShoppingCart(cart);
                                         badge.setNumber(cart.getCart().size());
-                                        badge.setVisible(false);
-                                        badge.setVisible(true);
+
                                         pref.getShoppingCart().setEndingHour(closing);
                                         pref.getShoppingCart().setStartingHour(opening);
                                         confirmPopup.dismiss();
