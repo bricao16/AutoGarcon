@@ -146,7 +146,7 @@ public class MenuItem implements Serializable{
                         for(int i = 0; i < itemImageByteArray.length; i++) {
                             itemImageByteArray[i] = (byte) (((int) imageData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
                         }
-                        itemImage=itemImageByteArray;
+                        itemImage = itemImageByteArray;
                     }
                     catch(JSONException e) {
                         e.printStackTrace();

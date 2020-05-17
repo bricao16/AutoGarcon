@@ -2,13 +2,23 @@ package auto_garcon.accountstuff;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +29,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +38,7 @@ import auto_garcon.initialpages.Login;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Account extends AppCompatActivity {
     EditText changeFirstName;//used to extract data from xml page of the Account Activity
@@ -36,6 +48,8 @@ public class Account extends AppCompatActivity {
     Button saveAccountChanges;//used to identify when user wants to register
     TextView changePassword;//used to send user into Sign in Activity
     private SharedPreference pref;//This object is used to store information about the user that can be used outside of this page
+    private CircleImageView accountImage;
+    private Bitmap uploadToDatabase;
 
     /**
      * Called when the activity is starting.  This is where most initialization
@@ -81,6 +95,34 @@ public class Account extends AppCompatActivity {
         changeUsername.setText(pref.getUser().getUsername());
         changeEmail.setText(pref.getUser().getEmail());
 
+        accountImage = findViewById(R.id.account_image_change);
+        accountImage.setImageBitmap(pref.getUser().getImageBitmap());
+
+        accountImage.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog changeImagePopup = new Dialog(Account.this);
+                changeImagePopup.setContentView(R.layout.account_image_popup);
+                changeImagePopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                changeImagePopup.show();
+
+                changeImagePopup.findViewById(R.id.take_photo_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), 0);
+                    }
+                });
+
+                changeImagePopup.findViewById(R.id.choose_from_gallery_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivityForResult(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), 1);
+                    }
+                });
+            }
+        });
+
         /*
         * If user selects the save account changes buttons
         * users information will update in database given inputs
@@ -94,39 +136,50 @@ public class Account extends AppCompatActivity {
                 final String email = changeEmail.getText().toString().trim();
                 final String username = changeUsername.getText().toString().trim();
 
+                boolean validInputs = true;
+
                 if(TextUtils.isEmpty(firstName)){//checking if user entered their firstName
                     changeFirstName.setError("Please enter first name");
                     changeFirstName.requestFocus();
+                    validInputs = false;
                 }
-                else if(firstName.length()>50){//checking if firstname is less than 50 characters
+                if(firstName.length() > 50){//checking if firstname is less than 50 characters
                     changeFirstName.setError("Limit first name to less than 50 characters");
                     changeFirstName.requestFocus();
+                    validInputs = false;
                 }
-                else if (TextUtils.isEmpty(lastName)){//checking if user entered their lastName
+                if (TextUtils.isEmpty(lastName)){//checking if user entered their lastName
                     changeLastName.setError("Please enter last name");
                     changeLastName.requestFocus();
+                    validInputs = false;
                 }
-                else if(lastName.length()>50){//checking if lastname is less than 50 characters
+                if(lastName.length() > 50){//checking if lastname is less than 50 characters
                     changeLastName.setError("Limit last name to less than 50 characters");
                     changeLastName.requestFocus();
+                    validInputs = false;
                 }
-                else if(TextUtils.isEmpty(email)){//checking if user entered their email
+                if(TextUtils.isEmpty(email)){//checking if user entered their email
                     changeEmail.setError("Please enter email ");
                     changeEmail.requestFocus();
+                    validInputs = false;
                 }
-                else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
+                if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
                     changeEmail.setError("Please enter a valid email");
                     changeEmail.requestFocus();
+                    validInputs = false;
                 }
-                else if(TextUtils.isEmpty(username)){//checking if user entered their username
+                if(TextUtils.isEmpty(username)){//checking if user entered their username
                     changeUsername.setError("Please enter username ");
                     changeUsername.requestFocus();
+                    validInputs = false;
                 }
-                else if(username.length()>50){//checking if username is less than 50 characters
+                if(username.length() > 50){//checking if username is less than 50 characters
                     changeUsername.setError("Please enter a username with less than 50 characters");
                     changeUsername.requestFocus();
+                    validInputs = false;
                 }
-                else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email) && TextUtils.isEmpty(username))) {// if all the requirements are met than we can send our put request to the database
+
+                if(validInputs == true) {// if all the requirements are met than we can send our put request to the database
 
                     //put request for updating Account Information
                     StringRequest putRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/update",
@@ -137,7 +190,7 @@ public class Account extends AppCompatActivity {
                                     // response
                                     Toast.makeText(Account.this, response, Toast.LENGTH_LONG).show();
 
-                                    pref.setUser(new UserSingleton(firstName,  lastName, username, email));//updating preferences in app
+                                    pref.setUser(new UserSingleton(firstName,  lastName, username, email, uploadToDatabase));//updating preferences in app
 
                                     //sends user to two button page after information has been updated
                                     Intent twoButton = new Intent(Account.this, Login.class);// creating an intent to change to the twoButton xml
@@ -162,6 +215,11 @@ public class Account extends AppCompatActivity {
                             params.put("first_name", firstName);
                             params.put("last_name", lastName);
                             params.put("email", email);
+
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            uploadToDatabase.compress(Bitmap.CompressFormat.PNG, 100, baos);
+
+                            params.put("image", baos.toByteArray().toString());
                             return params;
                         }
 
@@ -174,10 +232,6 @@ public class Account extends AppCompatActivity {
                     };
                     VolleySingleton.getInstance(Account.this).addToRequestQueue(putRequest);// sending the request to the database
                 }
-                else {
-                    Toast.makeText(Account.this, "Error Occured", Toast.LENGTH_SHORT).show();//if the request couldn't be made show an error to the user
-                }
-
             }
         });
 
@@ -188,5 +242,42 @@ public class Account extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_CANCELED) {
+            switch (requestCode) {
+                case 0:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
+                        accountImage.setImageBitmap(selectedImage);
+                        uploadToDatabase = selectedImage;
+                    }
+
+                    break;
+                case 1:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Uri selectedImage = data.getData();
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                        if (selectedImage != null) {
+                            Cursor cursor = getContentResolver().query(selectedImage,
+                                    filePathColumn, null, null, null);
+                            if (cursor != null) {
+                                cursor.moveToFirst();
+
+                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                String picturePath = cursor.getString(columnIndex);
+                                accountImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+
+                                uploadToDatabase = BitmapFactory.decodeFile(picturePath);
+                                cursor.close();
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
     }
 }

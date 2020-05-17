@@ -3,6 +3,7 @@ package auto_garcon.initialpages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -87,15 +88,20 @@ public class Login extends AppCompatActivity {
                 final String username = usernameId.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String passwd = password.getText().toString().trim();//extracted data from xml object and converted into a string
 
+                boolean validInputs = true;
+
                 if(username.isEmpty()){//checks if the username they are trying to submit is empty
                     usernameId.setError("Please enter your username");
                     usernameId.requestFocus();
+                    validInputs = false;
                 }
-                else if (passwd.isEmpty()){//checks if the password the user is trying to submit is empty
+                if(passwd.isEmpty()){//checks if the password the user is trying to submit is empty
                     password.setError("Please enter your password");
                     password.requestFocus();
+                    validInputs = false;
                 }
-                else if (!(username.isEmpty() && passwd.isEmpty())) {//if everything is good we proceed with the get request
+
+                 if(validInputs == true) {//if everything is good we proceed with the get request
 
                     //post request for logging in
                     JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
@@ -117,8 +123,13 @@ public class Login extends AppCompatActivity {
                                         JSONObject object = response.getJSONObject("customer");
                                         String token = response.getString("token");
 
+                                        byte[] itemImageByteArray = new byte[]{};
+
+
+
                                         pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
-                                                object.get("customer_id").toString(), object.get("email").toString()));
+                                                object.get("customer_id").toString(), object.get("email").toString(), BitmapFactory.decodeByteArray(itemImageByteArray, 0, itemImageByteArray.length)));
+
                                         pref.setAuthToken(token);
                                         pref.getUser().setChangePassword(object.getInt("temp_password"));
                                         pref.changeLogStatus(true);
@@ -144,16 +155,11 @@ public class Login extends AppCompatActivity {
                                         Toast.makeText(Login.this,"Could not Sign in",Toast.LENGTH_LONG).show();
 
                                     }
-
-
                                 }
                             }
                     );
 
                     VolleySingleton.getInstance(Login.this).addToRequestQueue(postRequest);// making the actual request
-                }
-                else{
-                    Toast.makeText(Login.this, "Error Occurred", Toast.LENGTH_SHORT).show();// if something fails with our request display error
                 }
             }
         });
