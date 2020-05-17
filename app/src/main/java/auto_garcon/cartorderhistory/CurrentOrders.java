@@ -125,6 +125,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                         try {
                             JSONObject orderJSONObject = new JSONObject(response);
 
+
                             Iterator<String> keys = orderJSONObject.keys();
                             while(keys.hasNext()) {
                                 String key = keys.next();
@@ -140,7 +141,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                                     menuItemCategories.getDouble("price");
                                     menuItemCategories.getInt("quantity");
                                     menuItemCategories.getString("order_date");
-                                    //menuItemCategories.getString("table_num");
+                                    menuItemCategories.getString("table_num");
                                 }
                             }
                         }

@@ -3,6 +3,7 @@ package auto_garcon.initialpages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -84,47 +85,54 @@ public class Register extends AppCompatActivity {
                 final String passwd = password.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String username = userID.getText().toString().trim();//extracted data from xml object and converted into a string
 
+                boolean validInputs = true;
+
                 if(TextUtils.isEmpty(firstName)){//checking if user entered there firstName
                     userFirst.setError("Please enter first name");
                     userFirst.requestFocus();
+                    validInputs = false;
                 }
-                else if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
+                if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
                     userLast.setError("Please enter last name");
                     userLast.requestFocus();
+                    validInputs = false;
                 }
-                else if(TextUtils.isEmpty(email)){//checking if user entered their email
+                if(TextUtils.isEmpty(email)){//checking if user entered their email
                     emailId.setError("Please enter email id");
                     emailId.requestFocus();
+                    validInputs = false;
                 }
-
-                else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
+                if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
                     emailId.setError("Please enter a valid email");
                     emailId.requestFocus();
+                    validInputs = false;
                 }
-                else if(TextUtils.isEmpty(passwd)){//checking if user entered their password
-                    Log.d("Tag","test:"+Patterns.EMAIL_ADDRESS.matcher(email).matches());
+                if(TextUtils.isEmpty(passwd)){//checking if user entered their password
                     password.setError("Please enter your password");
                     password.requestFocus();
+                    validInputs = false;
                 }
-                else if(passwd.length()<6){//checks if the user entered a password lass than 6 characters
+                if(passwd.length() < 6){//checks if the user entered a password lass than 6 characters
                     password.setError("Password Must be Greater than 6 Characters");
                     password.requestFocus();
-
+                    validInputs = false;
                 }
-                else if(passwd.equals(passwd.toLowerCase())){//checks if the password contains one uppercase
+                if(passwd.equals(passwd.toLowerCase())){//checks if the password contains one uppercase
                     password.setError("Password Must contain at least one uppercase");
                     password.requestFocus();
+                    validInputs = false;
                 }
-                else if(passwd.equals(passwd.toUpperCase())){//checkis if password contains one lowercase
+                if(passwd.equals(passwd.toUpperCase())){//checkis if password contains one lowercase
                     password.setError("Password Must contain at least one lowercase");
                     password.requestFocus();
+                    validInputs = false;
                 }
-                else if(TextUtils.isEmpty(username)){
+                if(TextUtils.isEmpty(username)){
                     userID.setError("Please enter a username");
                     userID.requestFocus();
+                    validInputs = false;
                 }
-                else if(!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email)
-                        && TextUtils.isEmpty(passwd) && passwd.length()<6)) {// if all the requirments are met than we can send our put request to the database
+                if(validInputs == true) {// if all the requirments are met than we can send our put request to the database
 
                     //put request for registering
                     JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
@@ -150,8 +158,13 @@ public class Register extends AppCompatActivity {
                                         JSONObject object = response.getJSONObject("customer");
                                         String token = response.getString("token");
 
-                                        pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
-                                                object.get("customer_id").toString(), object.get("email").toString()));
+                                        byte[]  itemImageByteArray = new byte[object.getJSONObject("image").getJSONArray("data").length()];
+
+                                        for(int i = 0; i < itemImageByteArray.length; i++) {
+                                            itemImageByteArray[i] = (byte) (((int) object.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
+                                        }
+
+                                        pref.setUser(new UserSingleton(firstName,  lastName, username, email, BitmapFactory.decodeByteArray(itemImageByteArray, 0, itemImageByteArray.length)));
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 

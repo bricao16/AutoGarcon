@@ -294,7 +294,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             restaurant.getInt("opening");
                             restaurant.getInt("closing");
 
-
                             addOrRemoveFavorite.setBackgroundColor(Color.parseColor(secondaryColor));
 
                             listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash,getIntent().getIntExtra("restaurant id", 0), font,  fontColor,

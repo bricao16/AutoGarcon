@@ -1,4 +1,8 @@
 package auto_garcon.singleton;
+
+import android.graphics.Bitmap;
+import android.util.Log;
+
 /**
  * Class for holding user information
  *
@@ -8,44 +12,30 @@ public class UserSingleton {
     private String lastName;
     private String username;
     private String email;
+    private Bitmap image;
     private int restaurantID;
     private int changePassword;
 
-    public UserSingleton(String firstName, String lastName, String username, String email){
+    public UserSingleton(String firstName, String lastName, String username, String email, Bitmap image){
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.restaurantID = -1;
-        this.changePassword=0;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.changePassword = 0;
+        this.image = image;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getLastName() {
         return lastName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getUsername() {
         return username;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getEmail() {
@@ -62,4 +52,9 @@ public class UserSingleton {
     public int getRestaurantID() {
         return this.restaurantID;
     }
+
+    public Bitmap getImageBitmap() {
+        return this.image;
+    }
+
 }

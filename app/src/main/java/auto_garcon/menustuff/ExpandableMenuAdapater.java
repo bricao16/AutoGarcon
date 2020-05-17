@@ -275,7 +275,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                         confirmPopup.dismiss();
                                         addToCartPopup.dismiss();
                                         Toast.makeText(context, "Successfully added to cart.",Toast.LENGTH_LONG).show();
-
                                     }
                                 });
 
