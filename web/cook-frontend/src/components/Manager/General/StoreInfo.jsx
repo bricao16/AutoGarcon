@@ -41,7 +41,7 @@ class StoreInfo extends React.Component{
       address: this.props.info.address,
       phone: this.phoneFormat(this.props.info.phone_number),
 			description: this.props.info.description,
-			cuisine: "American",
+			cuisine: this.props.info.cuisine,
       opening: this.time_convert(this.props.info.opening),
       closing: this.time_convert(this.props.info.closing),
       openTimePicker: this.time_TimePicker(this.props.info.opening),

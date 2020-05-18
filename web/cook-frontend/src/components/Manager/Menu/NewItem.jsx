@@ -335,78 +335,88 @@ class NewItem extends React.Component {
       return(
         <Col className="pt-3 px-3">
           <Container>
-						<Alert show={this.state.show} variant={this.state.alertVariant}>
-							{this.state.response}
-						</Alert>
-						<Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
-							<Modal.Header closeButton>
-								<Modal.Title>Delete Item</Modal.Title>
-							</Modal.Header>
-							<Modal.Body>Are you sure you want to delete this item?</Modal.Body>
-							<Modal.Footer>
-								<Button variant="secondary" onClick={this.handleModalClose}>
-									Close
-								</Button>
-								<Button variant="danger" onClick={this.handleDelete}>
-									Delete item
-								</Button>
-							</Modal.Footer>
-						</Modal>
 
-						<div className="d-flex flex-row-reverse pb-3">
-							<button type="button" className="btn btn-outline-danger btn-sm" onClick={this.handleModalShow}>Delete Item</button>
-						</div>
+          <Alert show={this.state.show} variant={this.state.alertVariant}>
+            {this.state.response}
+          </Alert>
 
-						<div>
-							<form className="pb-1">
-								<div className="form-group row">
-									<label className="col ">Name </label>
-										<input className="form-control col" type="text" name="name" value={this.state.name} onChange={this.handleInputChange}>
-										</input>
-								</div>
-								<div className="form-group row">
-									<label className="col">Category </label>
-									<select name="category" className="form-control col" value={this.state.category} onChange={this.handleInputChange} placeholder={this.state.category}>
-										{this.getCategories()}
-									</select>
-								</div>
-								<div className="form-group row">
-									<label className="col">Calories</label>
-									<input className="form-control col" type="text" name="calories" value={this.state.calories} onChange={this.handleInputChange}>
-									</input>
-								</div>
-								<div className="form-group row">
-								<label className="col">Price</label>
-									<div className="col input-group mb-2 mr-sm-2">
-										<div className="input-group-prepend">
-											<div className="input-group-text">$</div>
-										</div>
-										<input type="text" className="form-control" name="price" value={this.state.price} onChange={this.handleInputChange}>
-										</input>
-									</div>
-								</div>
-								<div className="pretty p-switch p-fill d-flex flex-row-reverse">
-									<div>
-										<input type="checkbox" id="in_stock" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} checked={this.state.in_stock}/> 
-										<label className="pl-2" htmlFor="in_stock">In stock</label>
-									</div>
-								</div>	
-								<div className="form-group">
-									<label htmlFor="itemDescription">Description</label>
-									<textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} defaultValue={this.state.description}></textarea>
-								</div>
-								<label htmlFor="customFile">Picture (Optional)</label>
-								<div className="custom-file">
-									<input type="file" className="custom-file-input" id="customFile" name="image" accept="image/png, image/jpg, image/jpeg" onChange={this.handleInputChange}></input>
-									<label className="custom-file-label" htmlFor="customFile">{this.state.imageName}</label>
-								</div>
-								<div className="d-flex justify-content-center row p-2">
-									<button onClick={this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
-								</div>
-							</form>
-						</div>
-					</Container>
-				</Col>
+          <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Delete Item</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={this.handleModalClose}>
+                Close
+              </Button>
+              <Button variant="danger" onClick={this.handleDelete}>
+                Delete item
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
+            <div className="d-flex flex-row-reverse pb-3">
+              <button type="button" className="btn btn-outline-danger btn-sm" onClick={this.handleModalShow}>Delete Item</button>
+            </div>
+
+            <div>
+              <form className="pb-1">
+
+                <div className="form-group row">
+                  <label className="col ">Name </label>
+                    <input className="form-control col" type="text" name="name" value={this.state.name} onChange={this.handleInputChange}>
+                    </input>
+                </div>
+
+                <div className="form-group row">
+                  <label className="col">Category </label>
+                  <select name="category" className="form-control col" value={this.state.category} onChange={this.handleInputChange} placeholder={this.state.category}>
+                    {this.getCategories()}
+                  </select>
+                </div>
+
+                  <div className="form-group row">
+                    <label className="col">Calories</label>
+                    <input className="form-control col" type="text" name="calories" value={this.state.calories} onChange={this.handleInputChange}>
+                    </input>
+                </div>
+
+                <div className="form-group row">
+                <label className="col">Price</label>
+                    <div className="col input-group mb-2 mr-sm-2">
+                      <div className="input-group-prepend">
+                        <div className="input-group-text">$</div>
+                      </div>
+                      <input type="text" className="form-control" name="price" value={this.state.price} onChange={this.handleInputChange}>
+                      </input>
+                    </div>
+                </div>
+
+                <div className="pretty p-switch p-fill d-flex flex-row-reverse">
+                  <div>
+                    <input type="checkbox" id="in_stock" name="in_stock" value={this.state.in_stock} onChange={this.handleInputChange} checked={this.state.in_stock}/> 
+                    <label className="pl-2" htmlFor="in_stock">In stock</label>
+                  </div>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="itemDescription">Description</label>
+                  <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} defaultValue={this.state.description}></textarea>
+                </div>
+
+                <label htmlFor="customFile">Picture (Optional)</label>
+                <div className="custom-file">
+                  <input type="file" className="custom-file-input" id="customFile" name="image" accept="image/png, image/jpg, image/jpeg" onChange={this.handleInputChange}></input>
+                  <label className="custom-file-label" htmlFor="customFile">{this.state.imageName}</label>
+                </div>
+
+                <div className="d-flex justify-content-center row p-2">
+                  <button onClick={this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
+                </div>
+            </form>
+          </div>
+        </Container>
+      </Col>
       ); 
     }
   }
