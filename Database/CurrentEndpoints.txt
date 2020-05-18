@@ -260,7 +260,7 @@ POST /services/update
 		On success:
 			(200) Successfully updated status!
 		If any inputs are missing:
-			(400) Error: Missing parameter. Required parameters: restaurant_id, order_num, order_status
+			(400) Error: Missing parameter. Required parameters: restaurant_id, order_num, status
 		If the restaurant/table doesn't exist:
 			(409) Error: table does not exist at restaurant
 		If invalid status is entered:
@@ -642,6 +642,12 @@ GET /customer/inprogress/:id
 				i =   {
 					order_num,
 					restaurant_id,
+					restaurant_name,
+					font,
+					font_color,
+					primary_color,
+					secondary_color,
+					tertiary_color,
 					item_id,
 					item_name,
 					price,
