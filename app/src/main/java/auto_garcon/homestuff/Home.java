@@ -63,7 +63,6 @@ This retrieve data of restaurant pages from database by using JASON with https c
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     //data fields
     private SharedPreference pref;//a file to keep track of user data as long as it's logged in.
-    private ArrayList<RestaurantItem> items;//RestaurantItem generated through the database connection.
     //Here is for Search box
     //End of Search Box
     private List<String> allRestaurantNames;
@@ -137,8 +136,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         ShakeDetector shakeDetector = new ShakeDetector(this);
         shakeDetector.start(sensorManager);
 
-        items = new ArrayList<>();
-
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -171,9 +168,9 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
                         favoritesRecyclerView.setVisibility(View.VISIBLE);
                         favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
-                        favoritesRecyclerView.setAdapter(new HomeAdapter(Home.this, items));
 
                         try {
+                            ArrayList<RestaurantItem> favoritesList = new ArrayList<RestaurantItem>();
                             JSONObject favoritesJSONObject = new JSONObject(response);
                             //parsing through json from get request to add them to menu
                             Iterator<String> keys = favoritesJSONObject.keys();
@@ -193,6 +190,13 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                     itemToBeAdded.setOpeningTime(Integer.parseInt(item.get("opening_time").toString()));
                                     itemToBeAdded.setClosingTime(Integer.parseInt(item.get("closing_time").toString()));
 
+                                    int font = Home.this.getResources().getIdentifier(item.get("font").toString().toLowerCase().replaceAll("\\s","") + "_regular",
+                                            "font", Home.this.getPackageName());
+
+                                    itemToBeAdded.setFont(font);
+                                    itemToBeAdded.setFontColor(item.get("font_color").toString());
+                                    itemToBeAdded.setSecondaryColor(item.get("secondary_color").toString());
+
                                     JSONObject obj = item.getJSONObject("logo");
                                     byte[] temp = new byte[obj.getJSONArray("data").length()];
 
@@ -201,9 +205,11 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                     }
 
                                     itemToBeAdded.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
-                                    items.add(itemToBeAdded);
+                                    favoritesList.add(itemToBeAdded);
                                 }
                             }
+
+                            favoritesRecyclerView.setAdapter(new HomeAdapter(Home.this, favoritesList));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

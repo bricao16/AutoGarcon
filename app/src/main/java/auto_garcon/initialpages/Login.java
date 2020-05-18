@@ -66,7 +66,6 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
-
         pref = new SharedPreference(this);// creating a sharedPrefrence object that access the same file of all other shared prefrences on the app
 
         if(pref.getLoginStatus()){ // checks if they are already signed in if so we send them to the homepage if their already logged in
@@ -124,7 +123,7 @@ public class Login extends AppCompatActivity {
 
                                         byte[] itemImageByteArray = new byte[userData.getJSONObject("image").getJSONArray("data").length()];
 
-                                        for(int i = 0; i < itemImageByteArray.length; i++) {
+                                        for (int i = 0; i < itemImageByteArray.length; i++) {
                                             itemImageByteArray[i] = (byte) (((int) userData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
                                         }
 

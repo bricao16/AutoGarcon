@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<!-- xml layout for account activity that allows user to change
+     account information as well as navigate to change password activity -->
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- title for image selection register page -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,6 +25,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.06" />
 
+    <!-- subtitle for image selection register page -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,6 +39,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.15" />
 
+    <!-- account image has onclick that pulls up account_image_popup to set up user image -->
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/account_image_setup"
         android:layout_width="150dp"
@@ -45,6 +53,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3"/>
 
+    <!-- button to sign up sends http request and if succeeds goes to two button page -->
     <Button
         android:id="@+id/sign_up_button_register"
         style="?android:attr/borderlessButtonStyle"

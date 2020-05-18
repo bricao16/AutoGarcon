@@ -23,7 +23,7 @@ public class ShoppingCartSingleton {
         this.secondaryColor = "#102644";
         this.tertiaryColor = "#FFFFFF";
 
-        this.items = new ArrayList<MenuItem>();
+        this.items = new ArrayList<>();
     }
 
     public ShoppingCartSingleton(int restaurantID){

@@ -110,7 +110,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          * Ties the side navigation bar xml elements to Java objects and setting listeners for the
          * side navigation drawer as well as the elements within it.
          */
-        if(shoppingCart.getCart().size() == 0 || shoppingCart.getCart() == null) {
+        if(shoppingCart.getCart() == null || shoppingCart.getCart().size() == 0) {
             recyclerView.setVisibility(View.GONE);
             findViewById(R.id.place_order).setVisibility(View.GONE);
             findViewById(R.id.cancel_order).setVisibility(View.GONE);
