@@ -22,7 +22,7 @@ public class UserSingleton {
         this.lastName = lastName;
         this.username = username;
         this.email = email;
-        this.restaurantID = 124;
+        this.restaurantID = -1;
         this.changePassword = 0;
         this.tableID=1;
         this.image = image;
