@@ -30,6 +30,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,7 +45,7 @@ This is a container for menu pages that the user can see.
 public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private Context context;
     private List<String> listDataHeader;
-    private HashMap<String, List<MenuItem>> listHashMap;
+    private HashMap<String, ArrayList<MenuItem>> listHashMap;
     private SharedPreference pref;
     private ShoppingCartSingleton shoppingCart;
     private int restaurantID;
@@ -63,7 +64,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     Dialog addToCartPopup;
     Dialog confirmPopup;
 
-    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, List<MenuItem>> listHashMap, int restaurantID, int font, String fontColor,
+    public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, ArrayList<MenuItem>> listHashMap, int restaurantID, int font, String fontColor,
                                   String primaryColor, String secondaryColor, String tertiaryColor, int opening, int closing, BadgeDrawable drawable) {
         //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
 

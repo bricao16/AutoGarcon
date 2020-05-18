@@ -28,7 +28,6 @@ public class MenuItem implements Serializable{
     private int amountInStock;
     private int calories;
     private double price;
-    private double cost;
     private int quantity;
     private int itemID;
     private byte[] itemImage;

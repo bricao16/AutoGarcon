@@ -147,6 +147,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                             ArrayList<Integer> orderNumbers = new ArrayList<>();
                             HashMap<Integer, byte[]> logos = new HashMap<>();
                             HashMap<Integer, ShoppingCartSingleton> orders = new HashMap<>();
+                            HashMap<Integer, String> restaurantNames = new HashMap<>();
 
                             // response
                             try {
@@ -183,13 +184,14 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                                                     restaurantLogoByteArray[i] = (byte) (((int) menuItemCategories.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
                                                 }
 
+                                                restaurantNames.put(menuItemCategories.getInt("order_num"), menuItemCategories.getString("restaurant_name"));
                                                 logos.put(menuItemCategories.getInt("order_num"), restaurantLogoByteArray);
                                             }
                                         }
                                     }
                                 }
 
-                                currentOrdersList.setAdapter(new CurrentOrdersAdapter(CurrentOrders.this, orders, logos, orderNumbers));
+                                currentOrdersList.setAdapter(new CurrentOrdersAdapter(CurrentOrders.this, orders, logos, orderNumbers, restaurantNames));
                             }
                             catch (JSONException e) {
                                 e.printStackTrace();

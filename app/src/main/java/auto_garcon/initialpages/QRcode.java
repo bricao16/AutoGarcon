@@ -147,7 +147,7 @@ public class QRcode extends AppCompatActivity {
                         }
 
                         Intent menu = new Intent(QRcode.this, Menu.class);
-                        menu.putExtra("restaurant id", Integer.parseInt(data));
+                        menu.putExtra("restaurant id", user.getRestaurantID());
                         startActivity(menu);
                     }
                 });
