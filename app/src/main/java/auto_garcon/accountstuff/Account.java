@@ -217,8 +217,7 @@ public class Account extends AppCompatActivity {
                                         pref.setUser(new UserSingleton(userData.getString("first_name"), userData.getString("last_name"), userData.getString("customer_id"),
                                                 userData.getString("email"), itemImageByteArray));
 
-                                        String token = responseData.getString("token");
-                                        pref.setAuthToken(token);
+                                        pref.setAuthToken(responseData.getString("token"));
 
                                         startActivity(new Intent(Account.this, Home.class));
                                         Toast.makeText(Account.this, "Changes Saved", Toast.LENGTH_LONG).show();

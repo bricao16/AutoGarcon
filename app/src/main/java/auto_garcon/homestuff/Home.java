@@ -63,8 +63,6 @@ This retrieve data of restaurant pages from database by using JASON with https c
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     //data fields
     private SharedPreference pref;//a file to keep track of user data as long as it's logged in.
-    RecyclerView favoritesRecyclerView;//showing a list of restaurant pages
-    HomeAdapter homeAdapter;//generating a list of restaurant pages
     private ArrayList<RestaurantItem> items;//RestaurantItem generated through the database connection.
     //Here is for Search box
     //End of Search Box
@@ -140,7 +138,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         shakeDetector.start(sensorManager);
 
         items = new ArrayList<>();
-        favoritesRecyclerView = findViewById(R.id.favorites_list);
 
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -166,51 +163,50 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
             new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    try {
-                        JSONObject favoritesJSONObject = new JSONObject(response);
-                        //parsing through json from get request to add them to menu
-                        Iterator<String> keys = favoritesJSONObject.keys();
-                        while(keys.hasNext()) {
-                            String key = keys.next();
+                    if(response.contains("Customer has no favorites")) {
+                        findViewById(R.id.no_favorites).setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        RecyclerView favoritesRecyclerView = findViewById(R.id.favorites_list);
 
-                            if (favoritesJSONObject.get(key) instanceof JSONObject) {
-                                RestaurantItem itemToBeAdded = new RestaurantItem();
-                                JSONObject item = favoritesJSONObject.getJSONObject(key);
+                        favoritesRecyclerView.setVisibility(View.VISIBLE);
+                        favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
+                        favoritesRecyclerView.setAdapter(new HomeAdapter(Home.this, items));
 
-                                itemToBeAdded.setID(Integer.parseInt(item.get("restaurant_id").toString()));
-                                pref.addToFavorites(Integer.parseInt(item.get("restaurant_id").toString()));
+                        try {
+                            JSONObject favoritesJSONObject = new JSONObject(response);
+                            //parsing through json from get request to add them to menu
+                            Iterator<String> keys = favoritesJSONObject.keys();
+                            while(keys.hasNext()) {
+                                String key = keys.next();
 
-                                itemToBeAdded.setName(item.get("restaurant_name").toString());
-                                itemToBeAdded.setAddress(item.get("address").toString());
-                                itemToBeAdded.setPhoneNumber(Long.parseLong(item.get("phone_number").toString()));
-                                itemToBeAdded.setOpeningTime(Integer.parseInt(item.get("opening_time").toString()));
-                                itemToBeAdded.setClosingTime(Integer.parseInt(item.get("closing_time").toString()));
+                                if (favoritesJSONObject.get(key) instanceof JSONObject) {
+                                    RestaurantItem itemToBeAdded = new RestaurantItem();
+                                    JSONObject item = favoritesJSONObject.getJSONObject(key);
 
-                                JSONObject obj = item.getJSONObject("logo");
-                                byte[] temp = new byte[obj.getJSONArray("data").length()];
+                                    itemToBeAdded.setID(Integer.parseInt(item.get("restaurant_id").toString()));
+                                    pref.addToFavorites(Integer.parseInt(item.get("restaurant_id").toString()));
 
-                                for(int i = 0; i < obj.getJSONArray("data").length(); i++) {
-                                    temp[i] = (byte) (((int) obj.getJSONArray("data").get(i)) & 0xFF);
+                                    itemToBeAdded.setName(item.get("restaurant_name").toString());
+                                    itemToBeAdded.setAddress(item.get("address").toString());
+                                    itemToBeAdded.setPhoneNumber(Long.parseLong(item.get("phone_number").toString()));
+                                    itemToBeAdded.setOpeningTime(Integer.parseInt(item.get("opening_time").toString()));
+                                    itemToBeAdded.setClosingTime(Integer.parseInt(item.get("closing_time").toString()));
+
+                                    JSONObject obj = item.getJSONObject("logo");
+                                    byte[] temp = new byte[obj.getJSONArray("data").length()];
+
+                                    for(int i = 0; i < obj.getJSONArray("data").length(); i++) {
+                                        temp[i] = (byte) (((int) obj.getJSONArray("data").get(i)) & 0xFF);
+                                    }
+
+                                    itemToBeAdded.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
+                                    items.add(itemToBeAdded);
                                 }
-
-                                itemToBeAdded.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
-                                items.add(itemToBeAdded);
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
-                        if(response.contains("Customer has no favorites")) {
-                            favoritesRecyclerView.setVisibility(View.GONE);
-                        }
-                        else {
-                            ConstraintLayout constraintLayout = findViewById(R.id.no_favorites);
-                            constraintLayout.setVisibility(View.GONE);
-
-                            favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
-                            homeAdapter = new HomeAdapter(Home.this, items);
-                            favoritesRecyclerView.setAdapter(homeAdapter);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }
             },

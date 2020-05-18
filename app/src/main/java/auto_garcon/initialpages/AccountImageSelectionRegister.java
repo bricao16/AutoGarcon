@@ -107,8 +107,7 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
                                     pref.setUser(new UserSingleton(userData.getString("first_name"), userData.getString("last_name"), userData.getString("customer_id"),
                                             userData.getString("email"), itemImageByteArray));
 
-                                    String token = responseData.getString("token");
-                                    pref.setAuthToken(token);
+                                    pref.setAuthToken(responseData.getString("token"));
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();

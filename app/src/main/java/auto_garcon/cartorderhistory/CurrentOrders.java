@@ -134,66 +134,65 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                 {
                     @Override
                     public void onResponse(String response) {
-                        ArrayList<Integer> orderNumbers = new ArrayList<>();
-                        HashMap<Integer, byte[]> logos = new HashMap<>();
-                        HashMap<Integer, ShoppingCartSingleton> orders = new HashMap<>();
+                        if (response.equals("No order history for this customer")) {
+                            findViewById(R.id.no_current_orders).setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            RecyclerView currentOrdersList = findViewById(R.id.current_orders_list);
 
-                        // response
-                        try {
-                            JSONObject orderJSONObject = new JSONObject(response);
+                            currentOrdersList.setVisibility(View.VISIBLE);
+                            currentOrdersList.setLayoutManager(new LinearLayoutManager((CurrentOrders.this)));
 
-                            Iterator<String> keys = orderJSONObject.keys();
-                            while(keys.hasNext()) {
-                                String key = keys.next();
+                            ArrayList<Integer> orderNumbers = new ArrayList<>();
+                            HashMap<Integer, byte[]> logos = new HashMap<>();
+                            HashMap<Integer, ShoppingCartSingleton> orders = new HashMap<>();
 
-                                if (orderJSONObject.get(key) instanceof JSONObject) {
-                                    JSONObject menuItemCategories = orderJSONObject.getJSONObject(key);
+                            // response
+                            try {
+                                JSONObject orderJSONObject = new JSONObject(response);
 
-                                    if(orders.containsKey(menuItemCategories.getInt("order_num"))) {
-                                        ShoppingCartSingleton oldOrder = orders.get(menuItemCategories.getInt("order_num"));
+                                Iterator<String> keys = orderJSONObject.keys();
+                                while(keys.hasNext()) {
+                                    String key = keys.next();
 
-                                        oldOrder.addToCart(new auto_garcon.menustuff.MenuItem(menuItemCategories.getInt("item_id"), menuItemCategories.getString("item_name"),
-                                                menuItemCategories.getDouble("price"), menuItemCategories.getInt("quantity"), menuItemCategories.getString("customization")));
+                                    if (orderJSONObject.get(key) instanceof JSONObject) {
+                                        JSONObject menuItemCategories = orderJSONObject.getJSONObject(key);
 
-                                        orders.put(menuItemCategories.getInt("order_num"), oldOrder);
-                                    }
-                                    else {
-                                        ShoppingCartSingleton newOrder = new ShoppingCartSingleton();
+                                        if(orders.containsKey(menuItemCategories.getInt("order_num"))) {
+                                            ShoppingCartSingleton oldOrder = orders.get(menuItemCategories.getInt("order_num"));
 
-                                        newOrder.addToCart(new auto_garcon.menustuff.MenuItem(menuItemCategories.getInt("item_id"), menuItemCategories.getString("item_name"),
-                                                menuItemCategories.getDouble("price"), menuItemCategories.getInt("quantity"), menuItemCategories.getString("customization")));
+                                            oldOrder.addToCart(new auto_garcon.menustuff.MenuItem(menuItemCategories.getInt("item_id"), menuItemCategories.getString("item_name"),
+                                                    menuItemCategories.getDouble("price"), menuItemCategories.getInt("quantity"), menuItemCategories.getString("customization")));
 
-                                        orders.put(menuItemCategories.getInt("order_num"), newOrder);
-                                        orderNumbers.add(menuItemCategories.getInt("order_num"));
+                                            orders.put(menuItemCategories.getInt("order_num"), oldOrder);
+                                        }
+                                        else {
+                                            ShoppingCartSingleton newOrder = new ShoppingCartSingleton();
 
-                                        if(!logos.containsKey(menuItemCategories.getInt("order_num"))) {
-                                            byte[] restaurantLogoByteArray = new byte[menuItemCategories.getJSONObject("logo").getJSONArray("data").length()];
+                                            newOrder.addToCart(new auto_garcon.menustuff.MenuItem(menuItemCategories.getInt("item_id"), menuItemCategories.getString("item_name"),
+                                                    menuItemCategories.getDouble("price"), menuItemCategories.getInt("quantity"), menuItemCategories.getString("customization")));
 
-                                            for(int i = 0; i < restaurantLogoByteArray.length; i++) {
-                                                restaurantLogoByteArray[i] = (byte) (((int) menuItemCategories.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
+                                            orders.put(menuItemCategories.getInt("order_num"), newOrder);
+                                            orderNumbers.add(menuItemCategories.getInt("order_num"));
+
+                                            if(!logos.containsKey(menuItemCategories.getInt("order_num"))) {
+                                                byte[] restaurantLogoByteArray = new byte[menuItemCategories.getJSONObject("logo").getJSONArray("data").length()];
+
+                                                for(int i = 0; i < restaurantLogoByteArray.length; i++) {
+                                                    restaurantLogoByteArray[i] = (byte) (((int) menuItemCategories.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
+                                                }
+
+                                                logos.put(menuItemCategories.getInt("order_num"), restaurantLogoByteArray);
                                             }
-
-                                            logos.put(menuItemCategories.getInt("order_num"), restaurantLogoByteArray);
                                         }
                                     }
                                 }
-                            }
 
-                            if(response.contains("Customer has no favorites")) {
-                               // favoritesRecyclerView.setVisibility(View.GONE);
+                                currentOrdersList.setAdapter(new CurrentOrdersAdapter(CurrentOrders.this, orders, logos, orderNumbers));
                             }
-                            else {
-                                //ConstraintLayout constraintLayout = findViewById(R.id.no_favorites);
-                                //constraintLayout.setVisibility(View.GONE);
-
+                            catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            RecyclerView currentOrdersList = findViewById(R.id.current_orders_list);
-                            currentOrdersList.setLayoutManager(new LinearLayoutManager((CurrentOrders.this)));
-                            currentOrdersList.setAdapter(new CurrentOrdersAdapter(CurrentOrders.this, orders, logos, orderNumbers));
-                        }
-                        catch (JSONException e) {
-                            e.printStackTrace();
                         }
                     }
                 },

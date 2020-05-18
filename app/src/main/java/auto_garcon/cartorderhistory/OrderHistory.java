@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,8 +29,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +39,6 @@ import auto_garcon.homestuff.*;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
-import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
@@ -54,7 +50,6 @@ import auto_garcon.singleton.VolleySingleton;
  */
 public class OrderHistory extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    RecyclerView recyclerView;// for the adapter class to be used as a non final
     private SharedPreference pref;// used to reference user information
     private ArrayList<String> order;// used to capture user order number
     private ArrayList<ShoppingCartSingleton> carts;// used to handle items returned from the recent order history
@@ -94,7 +89,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         NukeSSLCerts.nuke();
 
         pref = new SharedPreference(this);
-        recyclerView = findViewById(R.id.order_list);
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.order_history_main);// associating xml objects with the java Object equivalent
         Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
@@ -117,8 +111,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
-        if(pref.getShoppingCart()!=null) {
-            if(pref.getShoppingCart().getCart().size()!=0){
+        if(pref.getShoppingCart() != null) {
+            if(pref.getShoppingCart().getCart().size() != 0){
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
@@ -142,27 +136,31 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-
         final StringRequest getRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/customer/history/" + pref.getUser().getUsername(), new Response.Listener<String>() {
-
             @Override
             public void onResponse(String response) {
                 if (response.equals("No order history for this customer")) {
-                    recyclerView.setVisibility(View.GONE);
+                    findViewById(R.id.no_order_history).setVisibility(View.VISIBLE);
+
                 } else {
+                    RecyclerView recyclerView = findViewById(R.id.order_history_list);
+
+                    recyclerView.setVisibility(View.VISIBLE);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
+
+
                     JsonParser parser = new JsonParser();
                     JsonObject json = (JsonObject) parser.parse(response);
 
-                    findViewById(R.id.no_order_history).setVisibility(View.GONE);
                     /*--------------------------------------------------------------*/
                     //parsing through json from get request to add them to menu
                     int tracker = 0;
 
-                    for(int i = 0;i<json.size();i++){
+                    for(int i = 0;i < json.size(); i++){
                         String indexAsString = Integer.toString(i);
                         JsonObject individualItem = json.getAsJsonObject(indexAsString);
 
-                        if(i!=0){//first item check
+                        if(i != 0){//first item check
                             if(order.get(tracker-1).equals(json.getAsJsonObject(indexAsString).get("order_num").getAsString())){//if there is an order that has the same id
 
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();// get the item for that order
@@ -237,15 +235,11 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
 
                             logos.add(temp);
 
-                            tracker=tracker+1;
+                            tracker = tracker + 1;
                         }
                     }
 
-
-                    OrderHistoryAdapter adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date,restaurantName,logos);//values that will be needed to input data into our xml objects that is handled in our adapter class
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
-
+                    recyclerView.setAdapter(new OrderHistoryAdapter(OrderHistory.this, pref ,order, carts, date, restaurantName, logos));
                 }
             }
         },

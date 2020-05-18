@@ -120,20 +120,19 @@ public class Login extends AppCompatActivity {
                                 public void onResponse(JSONObject response) {
                                     // response
                                     try {
-                                        JSONObject object = response.getJSONObject("customer");
-                                        String token = response.getString("token");
+                                        JSONObject userData = response.getJSONObject("customer");
 
-                                        byte[] itemImageByteArray = new byte[object.getJSONObject("image").getJSONArray("data").length()];
+                                        byte[] itemImageByteArray = new byte[userData.getJSONObject("image").getJSONArray("data").length()];
 
                                         for(int i = 0; i < itemImageByteArray.length; i++) {
-                                            itemImageByteArray[i] = (byte) (((int) object.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
+                                            itemImageByteArray[i] = (byte) (((int) userData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
                                         }
 
-                                        pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
-                                                object.get("customer_id").toString(), object.get("email").toString(), itemImageByteArray));
+                                        pref.setUser(new UserSingleton(userData.get("first_name").toString(),  userData.get("last_name").toString(),
+                                                userData.get("customer_id").toString(), userData.get("email").toString(), itemImageByteArray));
 
-                                        pref.setAuthToken(token);
-                                        pref.getUser().setChangePassword(object.getInt("temp_password"));
+                                        pref.setAuthToken(response.getString("token"));
+                                        pref.getUser().setChangePassword(userData.getInt("temp_password"));
                                         pref.changeLogStatus(true);
 
                                         startActivity(new Intent(Login.this, TwoButtonPage.class));

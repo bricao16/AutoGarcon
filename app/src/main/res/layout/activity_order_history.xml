@@ -23,7 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="65dp"
-            android:layout_marginBottom="135dp">
+            android:layout_marginBottom="135dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageView4"
@@ -69,9 +70,10 @@
             app:menu="@menu/bottom_nav_menu" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/order_list"
+            android:id="@+id/order_history_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             android:layout_above="@+id/bottom_navigation"
             android:layout_below="@+id/xml_toolbar"
             android:layout_alignParentStart="true"
