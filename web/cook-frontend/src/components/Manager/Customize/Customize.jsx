@@ -53,6 +53,7 @@ class Customize extends React.Component{
     this.onChangeFile = this.onChangeFile.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
+		this.handleValidation = this.handleValidation.bind(this);
 
   }
     /*
@@ -185,13 +186,29 @@ class Customize extends React.Component{
       }
       else if(this.state.sectionEdit ==="Alexa Greeting")
       {
-         this.setState({ 'alexaGreeting': this.state.temp_alexaGreeting},
-          this.submitToDB);
-
+				if(this.state.temp_alexaGreeting.length > 100){
+					this.handleValidation("Greeting is too long.  Please limit to 100 characters or less.");	
+					this.setState({'temp_alexaGreeting':'alexaGreeting'}); //revert temp gretting back to current greeting
+				} else {
+					 this.setState({ 'alexaGreeting': this.state.temp_alexaGreeting},
+						this.submitToDB);
+				}
       }
-
     this.editForm("");
-}
+	}
+	
+	/* Used to validate input for alexa greeting */
+	handleValidation(message){ 
+		this.setState({response: message});
+		this.setState({alertVariant: 'danger'});
+		this.setState({show: true});
+		
+		setTimeout(() => {
+			this.setState({
+			  show:false
+			});
+		}, 3000)
+  }
 
   /* Used to show the correct alert after hitting save item */
   handleShow(success, message) {
