@@ -35,6 +35,12 @@ import {
   } from "react-router-dom";
 
 const drawerWidth = 270;
+/*
+  This prop is used to render the Header for the manager view. The logo of 
+  the company will be rendered at the top of the page along with the name of the company.
+  The person who is logged in will have their name along with a dropdown that will
+  take them to their personal settings.
+*/
 
 const useStyles = makeStyles((theme) => ({
   root: {

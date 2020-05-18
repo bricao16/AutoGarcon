@@ -10,9 +10,13 @@ import validator from 'validator';
 
 
 /*
-This is the customize component for the currently logged in
-account. The info is prefilled from the cookies stored
-during log in. 
+This is the account setting component. It allows a user to 
+change their first and last name, email, and phone number 
+
+The token is checked before changes. Position is unable to be
+updated.
+
+
 */
 
 class AccountSettings extends React.Component{

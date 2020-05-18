@@ -35,13 +35,11 @@ class CookView extends React.Component{
 	}
   viewCook()
   {
-    console.log("here");
     return <Redirect to='/cook'/>
   }
   handleModalClose = () => this.setState({ModalShow: false});
   handleModalShow = () => this.setState({ModalShow: true});
   renderInfo(){
-    console.log(this.state.section);
     //get the styles
     const primary = this.props.primary;
     const secondary = this.props.secondary;
@@ -49,12 +47,14 @@ class CookView extends React.Component{
     const font_color = this.props.font_color;
      const section = this.state.section
     return(
+            //if cook view clicked go to cook view
             <React.Fragment>
             {section === "goCookView" ? 
               <Redirect to='/cook'/>
               :
 
               <Card>
+                {/* otherwise render two tabs for cook view or creating account */}
                 <Card.Header style = {{'backgroundColor': primary}}>
                   <Nav variant="tabs" defaultActiveKey="cookview" >
                     <Nav.Item>
@@ -70,6 +70,7 @@ class CookView extends React.Component{
                 {this.state.section === "cook" ? 
                 <Card.Body >
                 <Row>
+                  {/* some information on the cook view*/}
                   <Col>
                   <Card.Text style = {{'fontFamily' :font,fontSize: '1.2rem'}}>
                     Cook View shows the current orders coming in including the time ordered and time elapsed since order. 
@@ -82,7 +83,7 @@ class CookView extends React.Component{
                     <Card.Text style = {{'fontFamily' :font,fontSize: '1.2rem'}}>
                      <i>It is the only page cook accounts have access to </i>
                   </Card.Text>
-
+                  {/* button that takes to the cook view*/}
                   <div className = "text-center">
                     <Button onClick={() =>  this.viewCategory("goCookView") } className="btn btn-light " style = {{'backgroundColor': secondary,'color': font_color,'fontFamily' :font}}> Go to Cook View</Button>
                   </div>
@@ -97,6 +98,7 @@ class CookView extends React.Component{
                 <Card.Body  className="text-center">
                   <Row>
                   <Col>
+                {/* sign up information*/}
                   <ListGroup variant="flush" style = {{'fontFamily' :font,fontSize: '1.2rem', 'textAlign': 'left'}}>
                     <ListGroup.Item disabled> Give Staff access by creating an account for them. </ListGroup.Item>
                     <ListGroup.Item disabled><b>Cook</b> accounts have access to the Cook View only.</ListGroup.Item>
@@ -104,7 +106,7 @@ class CookView extends React.Component{
                     are given ability to create new accounts and edit restaurant information.</ListGroup.Item>
                    
                   </ListGroup>
-                  
+                  {/* sign up form*/}
                   </Col>
                   <Col>
                     <CSignUp/>
@@ -115,8 +117,6 @@ class CookView extends React.Component{
               </Card>
             }
             </React.Fragment>
-
-        
       );
   }
 	render(){
@@ -129,9 +129,7 @@ class CookView extends React.Component{
                     </div>
                 </Container>
         </Container>
-    
     );
-
 	}
 }
 

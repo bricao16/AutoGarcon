@@ -5,12 +5,12 @@ import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-var QRCode = require('qrcode.react');
+var QRCodeGenerator = require('qrcode.react');
 
 /* This component is used create the QR Codes a manager will want to print and
 place at each table.  The manager enters in the desired table number and presses 
 'generate code', which will then create a QR code for printing.*/
-class StoreInfo extends React.Component{
+class QRCode extends React.Component{
   constructor(props) {     
     super(props);
     
@@ -26,8 +26,8 @@ class StoreInfo extends React.Component{
       close:this.props.info.closing,
       restaurant_id :cookies.get("mystaff").restaurant_id,
       token:cookies.get('mytoken'),
-			myValue: "Please enter in the table number for your QR Code.",
-			QRValue: ",default"
+	  myValue: "Please enter in the table number for your QR Code.",
+	  QRValue: ",default"
     };
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -90,7 +90,7 @@ class StoreInfo extends React.Component{
 								<button type="button" className="btn" style = {{'backgroundColor': secondary,'color': font_color,'fontFamily' :font }} onClick={this.handleSubmit}>Generate Code</button>
 							</Col>
 							<Col>
-								<QRCode
+								<QRCodeGenerator
 									id="123456"
 									value={this.state.QRValue}
 									size={300}
@@ -114,5 +114,5 @@ class StoreInfo extends React.Component{
   }
 }
 
-export default StoreInfo;
+export default QRCode;
 

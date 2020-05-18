@@ -34,11 +34,10 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
-/*This Sign up page is used for the cook view,
-  a manager is able to register a cook account by inputing
-  staff_id, first_name, last_name, contact_num, 
-  email, password to the sign in page. The posision 
-  is attomatically set to cook and the resturant id is
+/*This Sign up page is used for the manager to
+   to register a cook account by inputing
+  staff_id, first_name, last_name, position, contact_num, 
+  email, password to the sign in page. The resturant id is
   taken from the cookies */
 class CSignUp extends React.Component{
 
@@ -209,7 +208,7 @@ render() {
   }  
   if(cookies.get('mystaff').position === "manager")
   {
-    //Registering cook account
+    //Registering staff account
     /*staff_id, restaurant_id, first_name, last_name, contact_num, email, position, password */
     return (
       <Container component="main" maxWidth="xs">
