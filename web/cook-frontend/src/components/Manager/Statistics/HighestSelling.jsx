@@ -9,13 +9,21 @@ import {
 } from 'react-vis';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
-//import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 
+/*this is the highest selling portion of the stats component 
+for the manager view. 
+
+The data for this is pulled from /orderstats/highestsellingcat/
+Each category is rendered on the x axis, and the
+number of items sold on the y in a bar graph. A label of the 
+item name is put on the bar of the its category.
+
+Checkboxes are rendered which allow toggling of removing
+and adding back cateogries to be displayed on the graph.*/
+
 const chartWidth = 800;
-
-
 const cookies = new Cookies();
 
 class HighestSelling extends React.Component {
@@ -30,8 +38,6 @@ class HighestSelling extends React.Component {
               chartHeight:null,
               isLoaded :false,
               token: cookies.get('mytoken'),
-              staff: cookies.get('mystaff'),
-
         };
         this.checkboxHandler = this.checkboxHandler.bind(this);
         this.updateData = this.updateData.bind(this);
@@ -59,11 +65,9 @@ class HighestSelling extends React.Component {
 
 
     }
-    /* Used for connecting to Resturant in database */
+    /* Used for connecting to database */
     componentDidMount() {
-
-      const https = require('https');
-
+    const https = require('https');
     axios({
         method: 'get',
         url: process.env.REACT_APP_DB + '/orderstats/highestsellingcat/' + this.state.staff.restaurant_id,
@@ -77,7 +81,6 @@ class HighestSelling extends React.Component {
         }),
       })
         .then(res => {  
-        console.log(res.data);
           var dataFormat = [];
           var maxHeight = 0;
           var i;
@@ -89,8 +92,6 @@ class HighestSelling extends React.Component {
                     maxHeight = res.data[i].total_ordered;
                 }
             }
-        
-        console.log(this.state.data);
          this.setState({
             data: dataFormat,
             full_data: dataFormat,
@@ -105,7 +106,7 @@ class HighestSelling extends React.Component {
           });
         })
     }
-    //create a checkbox for every category of menu item
+    //create a checkbox for every category in the pulled menu
     renderCheckBoxes(){
         return this.state.full_data.map((item) => 
             <Col key={item.x.toString()}>
@@ -132,6 +133,7 @@ class HighestSelling extends React.Component {
         }.bind(this));
     }
     renderPlot(){
+        //render a plot using react vis
         return(
         <FlexibleHeightXYPlot 
             xType="ordinal" 
@@ -185,11 +187,12 @@ class HighestSelling extends React.Component {
         }
         else
         {
+            //render the checkboxes and then render the graph below
             return (
                 <Container>
-                    {/*} <div className="d-flex flex-wrap pt-3">
+                     <div className="d-flex flex-wrap pt-3">
                         {this.renderCheckBoxes()}                
-                    </div>*/}
+                    </div>
                     <br/>
                     <br/>
                     <p style={{'float':'right'}}><i> All time highest selling times from each category </i></p>

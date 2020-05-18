@@ -234,6 +234,8 @@ class StoreInfo extends React.Component{
           <TimePicker
           onChange={this.onChangeOpen}
           value={this.state.openTimePicker}
+          disableClock ={ true}
+          clearIcon = {null}
         />
         );
     }
@@ -243,6 +245,8 @@ class StoreInfo extends React.Component{
 				<TimePicker
 				onChange={this.onChangeClose}
 				value={this.state.closeTimePicker}
+        disableClock ={ true}
+        clearIcon = {null}
 				/>
       );
     }

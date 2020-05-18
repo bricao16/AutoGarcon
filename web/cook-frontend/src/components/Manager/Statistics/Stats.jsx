@@ -4,18 +4,14 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import HighestSelling from './HighestSelling';
 import Traffic from './Traffic';
 /*this is the stats component for the manager
-view. The stats are stored in state and rendered 
-onto cards in by statsProp
-Currently not displaying any real info */
+view. The stats are pulled from the database in the
+Traffic and HighestSelling components. 
 
-const data = [
-    { "y": 100, "x": "Appetizer", "label":"Deep Fried Green Beans" },
-    { "y": 112, "x": "Drinks" , "label":"Coke"},
-    { "y": 230, "x": "Entree", "label":"Pasta" },
+This component simply allows toggling between those two
+components.*/
 
-];
 class Stats extends React.Component{
-
+    //default on the highest selling stats page
     constructor(props) {
         super(props);
         this.state = {
@@ -27,6 +23,7 @@ class Stats extends React.Component{
     }
 
     render() {
+        // dropdown of highest selling items and traffic pages 
         return (
             <Container>
              <Dropdown  className="p-3">
@@ -45,11 +42,11 @@ class Stats extends React.Component{
               <div style={backgroundStyle}>
              <Container fluid style={{'minHeight': '70vh'}}>
                 <div className="d-flex flex-wrap">
-
+                {/* render the correct page based on which is selected*/}
                 {this.state.selected === "Highest Selling Items" ? 
-                  <HighestSelling data={data} primary ={this.props.primary} font_color = {this.props.font_color} font ={this.props.font} />
+                  <HighestSelling  primary ={this.props.primary} font_color = {this.props.font_color} font ={this.props.font} />
                 :
-                  <Traffic data = {data} primary ={this.props.primary} font_color = {this.props.font_color} font ={this.props.font} />
+                  <Traffic primary ={this.props.primary} font_color = {this.props.font_color} font ={this.props.font} />
                 }
                 </div>
             </Container> 

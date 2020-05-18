@@ -85,10 +85,10 @@ export default function Login(props) {
         }
       })
       .catch(error => {
-        setAlertVariant('danger');
-        setResponse(error.response.data);
+        /*setAlertVariant('danger');
+        setResponse(error);
         setShow(true);
-        setRedirect(false);
+        setRedirect(false);*/
       });
   }
 

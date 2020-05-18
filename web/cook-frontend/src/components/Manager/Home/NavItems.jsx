@@ -122,7 +122,7 @@ export default function NavItems(props) {
   const tertiary = props.restaurantInfo[1][1].tertiary_color;
   const font = props.restaurantInfo[1][1].font;
   const font_color = props.restaurantInfo[1][1].font_color
-
+  console.log(props.imageBlob);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -175,7 +175,7 @@ export default function NavItems(props) {
       >
         <div className={classes.toolbar} style={{'backgroundColor' :'#f1f1f1' }}>
 					<Typography variant="h6" className ='pr-4' noWrap >
-					<img src={props.imageBlob}  width="auto" height="45px" style={{"borderRadius": "5px"}} alt="waiter" /> 
+					<img src={props.imageBlob}  width="auto" height="45px" style={{"borderRadius": "5px"}} alt="logo" /> 
 						 {/*<i>{props.restName}</i>*/}
 						</Typography>
 						<IconButton onClick={handleDrawerClose}>

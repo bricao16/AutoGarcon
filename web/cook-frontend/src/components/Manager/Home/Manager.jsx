@@ -195,17 +195,27 @@ class Manager extends React.Component{
 				restaurantInfo.push([key ,restaurantJSON[key]]);
 			});
 		} 
-
-		/* get logo image data from binary */
-		const blobUrl = "";
+		/*const blobUrl = "";
 		if(this.state.restaurantJSON.restaurant.logo !== null)
 		{
-			const imageData = this.arrayBufferToBase64(this.state.restaurantJSON.restaurant.logo.data);
+	        
+	        const imageData = this.arrayBufferToBase64(this.state.restaurantJSON.restaurant.logo.data);
+	        var binary = this.fixBinary(atob(imageData));
+	        const blob = new Blob([binary], {type : 'image/png'});
+	        const blobUrl = URL.createObjectURL(blob);
+	    }*/
+
+		var blobUrl = "";
+		if(this.state.restaurantJSON.restaurant.logo !== null)
+		{
+			console.log("IN NOT NULL");
+			const imageData = this.arrayBufferToBase64(this.state.restaurantJSON.restaurant.logo);
 			var binary = this.fixBinary(atob(imageData));
+			
 			const blob = new Blob([binary], {type : 'image/png'});
-			const blobUrl =URL.createObjectURL(blob);
-			console.log(this.state);
+			 blobUrl =URL.createObjectURL(blob);
 		}
+
 		return (
 			<React.Fragment >
 				{/*if cookies havent been accepted yet ask them*/}     
