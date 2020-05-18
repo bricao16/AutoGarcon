@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -23,17 +24,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 import auto_garcon.NukeSSLCerts;
+import auto_garcon.VolleyMultipartRequest;
 import auto_garcon.initialpages.Login;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
@@ -49,7 +56,7 @@ public class Account extends AppCompatActivity {
     TextView changePassword;//used to send user into Sign in Activity
     private SharedPreference pref;//This object is used to store information about the user that can be used outside of this page
     private CircleImageView accountImage;
-    private Bitmap uploadToDatabase;
+    private byte[] uploadToDatabase;
 
     /**
      * Called when the activity is starting.  This is where most initialization
@@ -96,7 +103,7 @@ public class Account extends AppCompatActivity {
         changeEmail.setText(pref.getUser().getEmail());
 
         accountImage = findViewById(R.id.account_image_change);
-        accountImage.setImageBitmap(pref.getUser().getImageBitmap());
+        accountImage.setImageBitmap(BitmapFactory.decodeByteArray(pref.getUser().getImageBitmap(), 0, pref.getUser().getImageBitmap().length));
 
         accountImage.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -111,6 +118,7 @@ public class Account extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), 0);
+                        changeImagePopup.dismiss();
                     }
                 });
 
@@ -118,6 +126,7 @@ public class Account extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         startActivityForResult(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), 1);
+                        changeImagePopup.dismiss();
                     }
                 });
 
@@ -188,33 +197,19 @@ public class Account extends AppCompatActivity {
 
                 if(validInputs == true) {// if all the requirements are met than we can send our put request to the database
 
-                    //put request for updating Account Information
-                    StringRequest putRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/update",
-                            new Response.Listener<String>()
-                            {
+                    VolleyMultipartRequest updateCustomerRequest = new VolleyMultipartRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/update",
+                            new Response.Listener<NetworkResponse>() {
                                 @Override
-                                public void onResponse(String response) {
-                                    // response
-                                    Toast.makeText(Account.this, response, Toast.LENGTH_LONG).show();
-
-                                    pref.setUser(new UserSingleton(firstName,  lastName, username, email, uploadToDatabase));//updating preferences in app
-
-                                    //sends user to two button page after information has been updated
-                                    Intent twoButton = new Intent(Account.this, Login.class);// creating an intent to change to the twoButton xml
-                                    startActivity(twoButton);// move to the two button page
-                                    finish();// this prevents the user from coming back to the Account page if they successfully updated the page
+                                public void onResponse(NetworkResponse response) {
+                                    String resultResponse = new String(response.data);
+                                    Log.d("SDFSDHRWN", resultResponse);
                                 }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {//if put request is un-successful we want display that there was an error to the user
-                                    // error
-                                    error.printStackTrace();
-                                    Toast.makeText(Account.this, error.toString(),Toast.LENGTH_LONG).show();
-                                }
-                            }
-                    ) {
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
 
+                        }
+                    }) {
                         @Override
                         protected Map<String, String> getParams() {// inserting parameters for the put request
                             Map<String, String> params = new HashMap<String, String>();
@@ -223,21 +218,29 @@ public class Account extends AppCompatActivity {
                             params.put("last_name", lastName);
                             params.put("email", email);
 
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            uploadToDatabase.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                            return params;
+                        }
 
-                            params.put("image", baos.toByteArray().toString());
+                        @Override
+                        protected Map<String, DataPart> getByteData() {
+                            Map<String, DataPart> params = new HashMap<>();
+                            // file name could found file base or direct access from real path
+                            // for now just get bitmap data from ImageView
+                            params.put("image", new DataPart("account.png", uploadToDatabase, "image/png"));
+
                             return params;
                         }
 
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
-                            HashMap<String,String> headers = new HashMap<String,String>();
+                            HashMap<String, String> headers = new HashMap<>();
                             headers.put("Authorization","Bearer " + pref.getAuth());
+
                             return headers;
                         }
                     };
-                    VolleySingleton.getInstance(Account.this).addToRequestQueue(putRequest);// sending the request to the database
+
+                    VolleySingleton.getInstance(Account.this).addToRequestQueue(updateCustomerRequest);// sending the request to the database
                 }
             }
         });
@@ -260,7 +263,11 @@ public class Account extends AppCompatActivity {
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         accountImage.setImageBitmap(selectedImage);
-                        uploadToDatabase = selectedImage;
+
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        selectedImage.compress(Bitmap.CompressFormat.PNG, 100, baos);
+
+                        uploadToDatabase = baos.toByteArray();
                     }
 
                     break;
@@ -278,7 +285,11 @@ public class Account extends AppCompatActivity {
                                 String picturePath = cursor.getString(columnIndex);
                                 accountImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 
-                                uploadToDatabase = BitmapFactory.decodeFile(picturePath);
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                BitmapFactory.decodeFile(picturePath).compress(Bitmap.CompressFormat.PNG, 100, baos);
+
+                                uploadToDatabase = baos.toByteArray();
+
                                 cursor.close();
                             }
                         }
