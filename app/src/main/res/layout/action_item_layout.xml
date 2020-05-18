@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Refrenced from stackoverflow: https://stackoverflow.com/questions/43194243/notification-badge-on-action-item-android -->
+
+<!-- Referenced from stackoverflow: https://stackoverflow.com/questions/43194243/notification-badge-on-action-item-android -->
+<!-- xml layout for shopping cart notification badge -->
+
 <FrameLayout
     style="?attr/actionButtonStyle"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -8,12 +11,14 @@
     android:clipToPadding="false"
     android:focusable="true">
 
+    <!-- shopping cart icon for bottom nav bar -->
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:src="@drawable/ic_cart"/>
 
+    <!-- notification badge for shopping cart -->
     <TextView
         android:id="@+id/cart_badge"
         android:layout_width="20dp"
