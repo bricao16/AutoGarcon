@@ -50,6 +50,7 @@ class Customize extends React.Component{
         };
 
     this.onChange = this.onChange.bind(this);
+    this.onChangeFile = this.onChangeFile.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
 
@@ -87,27 +88,32 @@ class Customize extends React.Component{
       
     }
 
-      onChangeFile = (e) => {
+      onChangeFile(e) {
+      const target = e.target;
+      const value = target.value;
+      const name = target.name;
         //https://riptutorial.com/javascript/example/14207/getting-binary-representation-of-an-image-file
         // preliminary code to handle getting local file and finally printing to console
         // the results of our function ArrayBufferToBinary().
-        //change the file name
-        this.setState({ fileName: e.target.files[0].name });
-        var file = e.target.files[0];// get handle to local file.
+        this.setState({ fileName: target.files[0].name });
+
+        var file = target.files[0]; /* get handle to local file. */
         var reader = new FileReader();
         reader.onload = function(event) {
-            var data = event.target.result;
-             const finaldata = new Uint8Array(data);
-              //set our file to the correct data
-            this.setState({ temp_file:  {'type': 'Bufferz', 'data': finaldata} });
+          var data = event.target.result;
+          var finaldata = new Uint8Array(data);
+
+          /* set our file to the correct data */
+          file.buffer = finaldata;
+          this.setState({file:  file});
         }.bind(this);
-        reader.readAsArrayBuffer(file); //gets an ArrayBuffer of the file
+        reader.readAsArrayBuffer(file); /* gets an ArrayBuffer of the file */
 
       }
   /* Used for connecting to Customization in database */
   submitToDB(){
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
-
+    console.log(this.state);
     axios({
       method: 'POST',
       url:  process.env.REACT_APP_DB +'/restaurant/customization',
@@ -168,14 +174,15 @@ class Customize extends React.Component{
       }
       else if(this.state.sectionEdit ==="Logo")
       {
-         this.setState({ 'file': this.state.temp_file},
-          this.submitToDB);
+          this.submitToDB();
       }
       else if(this.state.sectionEdit ==="Alexa Greeting")
       {
          this.setState({ 'alexaGreeting': this.state.temp_alexaGreeting},
           this.submitToDB);
+
       }
+
     this.editForm("");
 }
 
@@ -339,20 +346,14 @@ renderInfo(){
                         <Container>
                             <div className="input-group">
                               <div className="custom-file">
-                                <input
-                                  onChange={this.onChangeFile}
-                                  type="file"
-                                  className="custom-file-input"
-                                  id="inputGroupFile01"
-                                  aria-describedby="inputGroupFileAddon01"
-                                  multiple = {false}
-                                />
-                                <label className="custom-file-label" htmlFor="inputGroupFile01">
-                                  {this.state.fileName}
-                                </label>
-
+                                <input type="file" className="custom-file-input" id="customFile" name="image" accept="image/png, image/jpg, image/jpeg" onChange={this.onChangeFile}></input>
+                                <label className="custom-file-label" htmlFor="customFile">{this.state.fileName}</label>
                               </div>
-                            </div>
+                              <label className="custom-file-label" htmlFor="inputGroupFile01">
+                                {this.state.fileName}
+                              </label>
+                              </div>
+                 
                             <br/>
                             <div className="row m-2">
                                <button  onClick = {this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
