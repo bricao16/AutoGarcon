@@ -164,6 +164,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();// get the item for that order
                                 item.setNameOfItem(individualItem.get("item_name").getAsString());//set the item name
                                 item.setItemID(individualItem.get("item_id").getAsInt());
+                                item.setImage(OrderHistory.this);
                                 item.setQuantity(individualItem.get("quantity").getAsInt());//set the new item quantity
                                 item.setPrice(individualItem.get("price").getAsDouble());
                                 carts.get(tracker-1).addToCart(item);
@@ -172,6 +173,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();//create the new item
                                 item.setNameOfItem(individualItem.get("item_name").getAsString());//set the item name
                                 item.setItemID(individualItem.get("item_id").getAsInt());
+                                item.setImage(OrderHistory.this);
+
                                 item.setQuantity(individualItem.get("quantity").getAsInt());//set the new item quantity
 
                                 item.setPrice(individualItem.get("price").getAsDouble());
@@ -188,8 +191,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 carts.get(tracker).setTertiaryColor(individualItem.get("tertiary_color").getAsString());
                                 carts.get(tracker).setFontColor(individualItem.get("font_color").getAsString());
 
-                                Log.d("SDFSDF", individualItem.get("font_color").getAsString());
-
                                 date.add(individualItem.get("order_date").getAsString());//add the date
                                 restaurantName.add(individualItem.get("restaurant_name").getAsString());
                                 byte[] temp = new byte[individualItem.getAsJsonObject("logo").getAsJsonArray("data").size()];
@@ -205,6 +206,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
                             item.setNameOfItem(individualItem.get("item_name").getAsString());
                             item.setItemID(individualItem.get("item_id").getAsInt());
+                            item.setImage(OrderHistory.this);
 
                             item.setQuantity(individualItem.get("quantity").getAsInt());
                             item.setPrice(individualItem.get("price").getAsDouble());
@@ -239,9 +241,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     OrderHistoryAdapter adapter = new OrderHistoryAdapter(OrderHistory.this,pref,order,carts,date,restaurantName,logos);//values that will be needed to input data into our xml objects that is handled in our adapter class
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistory.this));
-
-
-
 
                 }
             }
