@@ -2,7 +2,6 @@ package auto_garcon.cartorderhistory;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,24 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.auto_garcon.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
-import auto_garcon.homestuff.RestaurantItem;
 import auto_garcon.menustuff.MenuItem;
 import auto_garcon.singleton.ShoppingCartSingleton;
 
 public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdapter.CurrentOrdersViewHolder>  {
     private LayoutInflater layoutInflater;//Instantiates a layout XML file into its corresponding View objects
-    private List<RestaurantItem> data;//an container of restaurant page items
     private Context context;//It allows access to application-specific resources and classes
     private HashMap<Integer, ShoppingCartSingleton> orders;
     private HashMap<Integer, byte[]> logos;
-    private Map.Entry order;
     private ArrayList<Integer> orderNumbers;
 
     CurrentOrdersAdapter(Context context, HashMap<Integer, ShoppingCartSingleton> orders, HashMap<Integer, byte[]> logos, ArrayList<Integer> orderNumbers) {

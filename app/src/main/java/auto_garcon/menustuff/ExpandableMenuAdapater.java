@@ -81,7 +81,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         this.font = font;
         this.fontColor = fontColor;
         this.typeface = ResourcesCompat.getFont(context, font);
-
     }
 
     @Override
@@ -239,7 +238,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                     addToCart.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(pref.getShoppingCart().getCart().size() == 0) {
+                            if(pref.getShoppingCart().getCart().size() == 0 || pref.getShoppingCart().getCart() == null) {
 
                                 shoppingCart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
 

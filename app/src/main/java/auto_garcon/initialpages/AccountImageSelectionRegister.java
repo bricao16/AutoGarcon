@@ -41,7 +41,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AccountImageSelectionRegister extends AppCompatActivity {
     private CircleImageView accountImage;
-    private byte[] uploadToDatabase;
+
     private SharedPreference pref;
 
     @Override

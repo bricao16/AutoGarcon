@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!-- xml layout for selecting photo popup -->
+
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <!-- button to go to camera -->
         <Button
             android:id="@+id/take_photo_button"
             android:layout_width="wrap_content"
@@ -21,6 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
+        <!-- button to go to image gallery -->
         <Button
             android:id="@+id/choose_from_gallery_button"
             android:layout_width="wrap_content"
@@ -33,6 +37,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- button to close popup -->
         <ImageButton
             android:id="@+id/account_image_close"
             android:layout_width="25dp"
