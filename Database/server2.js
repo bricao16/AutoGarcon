@@ -72,9 +72,8 @@ db.connect((err) => {
 }); //db.connect
 
 //Start server
-//var server = app.listen(8000);
-https.createServer(options, app).listen(8001);
-console.log('Now listening on port 8001');
+https.createServer(options, app).listen(8000);
+console.log('Now listening on port 8000');
 
 
 //======================================================================================//
