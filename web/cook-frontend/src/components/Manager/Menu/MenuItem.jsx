@@ -100,9 +100,11 @@ class MenuItem extends React.Component {
 			if (res == null) throw new Error('404')
 
 			/* get logo image data from binary */
-			const imageData = this.arrayBufferToBase64(res);
+      const imageData = this.arrayBufferToBase64(res);
+      console.log(imageData)
 			var binary = this.fixBinary(atob(imageData));
-			const blob = new Blob([binary], {type : 'image/png'});
+      const blob = new Blob([binary], {type : 'image/png'});
+      console.log(blob)
 			const blobUrl = URL.createObjectURL(blob);
 	
 			this.setState({
