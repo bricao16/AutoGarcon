@@ -331,6 +331,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 itemPrice.setText("Price: " + String.format("$%.02f", getChild(i, j).getPrice()));
                 itemPrice.setTextColor(Color.WHITE);
                 if(getChild(i, j).getDescription() != "null") {
+                    itemDescription.setTextColor(Color.WHITE);
                     itemDescription.setText(getChild(i, j).getDescription());
                 }
                 if(getChild(i, j).getAllergens().length!=0) {
@@ -339,6 +340,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                     for(int i = 0; i < allergensArray.length; i++) {
                         allergenMessage = allergenMessage + allergensArray[i] + " ";
                     }
+                    itemAllergens.setTextColor(Color.WHITE);
                     itemAllergens.setText(allergenMessage);
                     itemPrice.setTextColor(Color.WHITE);
                 }
