@@ -2,6 +2,8 @@ package auto_garcon.homestuff;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.auto_garcon.R;
@@ -16,7 +20,6 @@ import com.example.auto_garcon.R;
 import java.util.List;
 
 import auto_garcon.menustuff.Menu;
-import auto_garcon.singleton.SharedPreference;
 /*
 This is a container for restaurant pages that the user can see.
  */
@@ -25,14 +28,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     private LayoutInflater layoutInflater;//Instantiates a layout XML file into its corresponding View objects
     private List<RestaurantItem> data;//an container of restaurant page items
     private Context context;//It allows access to application-specific resources and classes
-    private SharedPreference pref;//a file to keep data of the user
 
 
     HomeAdapter(Context context, List<RestaurantItem> data) {
         this.layoutInflater = LayoutInflater.from(context);
         this.data = data;
         this.context = context;
-        this.pref = new SharedPreference(context);
     }
 
 
@@ -87,11 +88,28 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull HomeAdapter.ViewHolder holder, int position) {
         //bind the textview with data received
+        Typeface typeface =  ResourcesCompat.getFont(context, data.get(position).getFont());
+
+
+        holder.favoritesTileBackground.setCardBackgroundColor(Color.parseColor(data.get(position).getSecondaryColor()));
+
         holder.textTitle.setText(data.get(position).getName());
+        holder.textTitle.setTypeface(typeface);
+        holder.textTitle.setTextColor(Color.parseColor(data.get(position).getFontColor()));
+
         holder.textDescription.setText(data.get(position).getAddress());
+        holder.textDescription.setTypeface(typeface);
+        holder.textDescription.setTextColor(Color.parseColor(data.get(position).getFontColor()));
+
         holder.textPhoneNumber.setText(data.get(position).getPhoneNumber());
-        String textTime = data.get(position).getOpeningTime() + data.get(position).getOpeningTimeDay() + " - " + data.get(position).getClosingTime() + data.get(position).getClosingTimeDay();
+        holder.textPhoneNumber.setTypeface(typeface);
+        holder.textPhoneNumber.setTextColor(Color.parseColor(data.get(position).getFontColor()));
+
+        String textTime = data.get(position).getOpeningTime() + " - " + data.get(position).getClosingTime();
         holder.textHours.setText(textTime);
+        holder.textHours.setTypeface(typeface);
+        holder.textHours.setTextColor(Color.parseColor(data.get(position).getFontColor()));
+
         holder.restaurantLogo.setImageBitmap(data.get(position).getImageBitmap());
     }
 
@@ -111,6 +129,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         TextView textPhoneNumber;//restaurant phone number
         TextView textHours;//opening and closing hours
         ImageView restaurantLogo;//a image of restaurant
+        CardView favoritesTileBackground;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -130,6 +149,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             textPhoneNumber = itemView.findViewById(R.id.restaurant_number);
             textHours = itemView.findViewById(R.id.restaurant_hours);
             restaurantLogo = itemView.findViewById(R.id.restaurant_picture);
+            favoritesTileBackground = itemView.findViewById(R.id.favorites_tile_background);
         }
     }
 }

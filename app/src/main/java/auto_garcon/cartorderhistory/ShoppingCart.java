@@ -2,13 +2,14 @@ package auto_garcon.cartorderhistory;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 
 import auto_garcon.accountstuff.PasswordChange;
+import auto_garcon.accountstuff.Services;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
@@ -101,7 +103,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         pref = new SharedPreference(this);
         shoppingCart = pref.getShoppingCart();
 
-
         setContentView(R.layout.activity_shopping_cart);
 
         recyclerView = findViewById(R.id.shopping_cart_list);
@@ -110,7 +111,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          * Ties the side navigation bar xml elements to Java objects and setting listeners for the
          * side navigation drawer as well as the elements within it.
          */
-        if(shoppingCart.getCart().size() == 0 || shoppingCart.getCart() == null) {
+        if(shoppingCart.getCart() == null || shoppingCart.getCart().size() == 0) {
             recyclerView.setVisibility(View.GONE);
             findViewById(R.id.place_order).setVisibility(View.GONE);
             findViewById(R.id.cancel_order).setVisibility(View.GONE);
@@ -200,6 +201,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                                         item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
                                         item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
+                                        item.put("customization", shoppingCart.getCart().get(i).getCustomization());
                                         order.put(Integer.toString(i), item);
                                     }
 
@@ -302,6 +304,10 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
         usernameSideNavBar.setText(pref.getUser().getUsername());
 
+        ImageView userImageSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_account_picture);
+        userImageSideNavBar.setImageBitmap(BitmapFactory.decodeByteArray(pref.getUser().getImageBitmap(), 0, pref.getUser().getImageBitmap().length));
+
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
@@ -360,22 +366,25 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                startActivity(new Intent(ShoppingCart.this, Account.class));
+                startActivity(new Intent(getBaseContext(), Account.class));
                 break;
             case R.id.order_history:
-                startActivity(new Intent(ShoppingCart.this, OrderHistory.class));
+                startActivity(new Intent(getBaseContext(), OrderHistory.class));
                 break;
             case R.id.current_orders:
-                startActivity(new Intent(ShoppingCart.this, CurrentOrders.class));
+                startActivity(new Intent(getBaseContext(), CurrentOrders.class));
                 break;
             case R.id.settings:
-                startActivity(new Intent(ShoppingCart.this, Settings.class));
+                startActivity(new Intent(getBaseContext(), Settings.class));
+                break;
+            case R.id.services:
+                startActivity(new Intent(getBaseContext(), Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                startActivity(new Intent(ShoppingCart.this, Login.class));
+                startActivity(new Intent(getBaseContext(), Login.class));
                 break;
         }
         return false;

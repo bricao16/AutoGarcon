@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -35,13 +37,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
+import auto_garcon.accountstuff.Services;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
@@ -59,9 +64,6 @@ This retrieve data of restaurant pages from database by using JASON with https c
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     //data fields
     private SharedPreference pref;//a file to keep track of user data as long as it's logged in.
-    RecyclerView favoritesRecyclerView;//showing a list of restaurant pages
-    HomeAdapter homeAdapter;//generating a list of restaurant pages
-    private ArrayList<RestaurantItem> items;//RestaurantItem generated through the database connection.
     //Here is for Search box
     //End of Search Box
     private List<String> allRestaurantNames;
@@ -106,9 +108,14 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
         usernameSideNavBar.setText(pref.getUser().getUsername());
 
+        ImageView userImageSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_account_picture);
+        userImageSideNavBar.setImageBitmap(BitmapFactory.decodeByteArray(pref.getUser().getImageBitmap(), 0, pref.getUser().getImageBitmap().length));
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(Home.this);
+
+
 
         /**
          * It ties the bottom navigation bar xml element to a Java object and provides it with its
@@ -129,9 +136,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector shakeDetector = new ShakeDetector(this);
         shakeDetector.start(sensorManager);
-
-        items = new ArrayList<>();
-        favoritesRecyclerView = findViewById(R.id.favorites_list);
 
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -157,51 +161,59 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
             new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    try {
-                        JSONObject favoritesJSONObject = new JSONObject(response);
-                        //parsing through json from get request to add them to menu
-                        Iterator<String> keys = favoritesJSONObject.keys();
-                        while(keys.hasNext()) {
-                            String key = keys.next();
+                    if(response.contains("Customer has no favorites")) {
+                        findViewById(R.id.no_favorites).setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        RecyclerView favoritesRecyclerView = findViewById(R.id.favorites_list);
 
-                            if (favoritesJSONObject.get(key) instanceof JSONObject) {
-                                RestaurantItem itemToBeAdded = new RestaurantItem();
-                                JSONObject item = favoritesJSONObject.getJSONObject(key);
+                        favoritesRecyclerView.setVisibility(View.VISIBLE);
+                        favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
 
-                                itemToBeAdded.setID(Integer.parseInt(item.get("restaurant_id").toString()));
-                                pref.addToFavorites(Integer.parseInt(item.get("restaurant_id").toString()));
+                        try {
+                            ArrayList<RestaurantItem> favoritesList = new ArrayList<RestaurantItem>();
+                            JSONObject favoritesJSONObject = new JSONObject(response);
+                            //parsing through json from get request to add them to menu
+                            Iterator<String> keys = favoritesJSONObject.keys();
+                            while(keys.hasNext()) {
+                                String key = keys.next();
 
-                                itemToBeAdded.setName(item.get("restaurant_name").toString());
-                                itemToBeAdded.setAddress(item.get("address").toString());
-                                itemToBeAdded.setPhoneNumber(Long.parseLong(item.get("phone_number").toString()));
-                                itemToBeAdded.setOpeningTime(Integer.parseInt(item.get("opening_time").toString()));
-                                itemToBeAdded.setClosingTime(Integer.parseInt(item.get("closing_time").toString()));
+                                if (favoritesJSONObject.get(key) instanceof JSONObject) {
+                                    RestaurantItem itemToBeAdded = new RestaurantItem();
+                                    JSONObject item = favoritesJSONObject.getJSONObject(key);
 
-                                JSONObject obj = item.getJSONObject("logo");
-                                byte[] temp = new byte[obj.getJSONArray("data").length()];
+                                    itemToBeAdded.setID(Integer.parseInt(item.get("restaurant_id").toString()));
+                                    pref.addToFavorites(Integer.parseInt(item.get("restaurant_id").toString()));
 
-                                for(int i = 0; i < obj.getJSONArray("data").length(); i++) {
-                                    temp[i] = (byte) (((int) obj.getJSONArray("data").get(i)) & 0xFF);
+                                    itemToBeAdded.setName(item.get("restaurant_name").toString());
+                                    itemToBeAdded.setAddress(item.get("address").toString());
+                                    itemToBeAdded.setPhoneNumber(Long.parseLong(item.get("phone_number").toString()));
+                                    itemToBeAdded.setOpeningTime(Integer.parseInt(item.get("opening_time").toString()));
+                                    itemToBeAdded.setClosingTime(Integer.parseInt(item.get("closing_time").toString()));
+
+                                    int font = Home.this.getResources().getIdentifier(item.get("font").toString().toLowerCase().replaceAll("\\s","") + "_regular",
+                                            "font", Home.this.getPackageName());
+
+                                    itemToBeAdded.setFont(font);
+                                    itemToBeAdded.setFontColor(item.get("font_color").toString());
+                                    itemToBeAdded.setSecondaryColor(item.get("secondary_color").toString());
+
+                                    JSONObject obj = item.getJSONObject("logo");
+                                    byte[] temp = new byte[obj.getJSONArray("data").length()];
+
+                                    for(int i = 0; i < obj.getJSONArray("data").length(); i++) {
+                                        temp[i] = (byte) (((int) obj.getJSONArray("data").get(i)) & 0xFF);
+                                    }
+
+                                    itemToBeAdded.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
+                                    favoritesList.add(itemToBeAdded);
                                 }
-
-                                itemToBeAdded.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
-                                items.add(itemToBeAdded);
                             }
-                        }
 
-                        if(response.contains("Customer has no favorites")) {
-                            favoritesRecyclerView.setVisibility(View.GONE);
+                            favoritesRecyclerView.setAdapter(new HomeAdapter(Home.this, favoritesList));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        else {
-                            ConstraintLayout constraintLayout = findViewById(R.id.no_favorites);
-                            constraintLayout.setVisibility(View.GONE);
-
-                            favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
-                            homeAdapter = new HomeAdapter(Home.this, items);
-                            favoritesRecyclerView.setAdapter(homeAdapter);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }
             },
@@ -213,7 +225,15 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                     }
                 }
             }
-        );
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                HashMap<String,String> headers = new HashMap<String,String>();
+                headers.put("Authorization","Bearer " + pref.getAuth());
+                return headers;
+            }
+        };
 
         StringRequest getRequestForSearch = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/restaurants",
             new Response.Listener<String>() {
@@ -273,7 +293,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     public void hearShake(){
         allRestaurantIDs.get(randomGenerator.nextInt(allRestaurantNames.size()));
     }
-
     /**
      * Called when an item in the navigation menu is selected.
      *
@@ -284,22 +303,25 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                startActivity(new Intent(Home.this, Account.class));
+                startActivity(new Intent(getBaseContext(), Account.class));
                 break;
             case R.id.order_history:
-                startActivity(new Intent(Home.this, OrderHistory.class));
+                startActivity(new Intent(getBaseContext(), OrderHistory.class));
                 break;
             case R.id.current_orders:
-                startActivity(new Intent(Home.this, CurrentOrders.class));
+                startActivity(new Intent(getBaseContext(), CurrentOrders.class));
                 break;
             case R.id.settings:
-                startActivity(new Intent(Home.this, Settings.class));
+                startActivity(new Intent(getBaseContext(), Settings.class));
+                break;
+            case R.id.services:
+                startActivity(new Intent(getBaseContext(),Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                startActivity(new Intent(Home.this, Login.class));
+                startActivity(new Intent(getBaseContext(), Login.class));
                 break;
         }
         return false;

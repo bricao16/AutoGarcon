@@ -6,12 +6,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +46,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
     private List<String> listDataHeader;
     private HashMap<String, List<MenuItem>> listHashMap;
     private SharedPreference pref;
-    private ShoppingCartSingleton cart;
+    private ShoppingCartSingleton shoppingCart;
     private int restaurantID;
     private String primaryColor;
     private String secondaryColor;
@@ -78,7 +81,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         this.font = font;
         this.fontColor = fontColor;
         this.typeface = ResourcesCompat.getFont(context, font);
-
     }
 
     @Override
@@ -170,7 +172,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 });
 
                 Button addToCart = addToCartPopup.findViewById(R.id.add_to_cart_menu_popup);
-                Button customize = addToCartPopup.findViewById(R.id.customize_item_menu_popup);
+                final Button customize = addToCartPopup.findViewById(R.id.customize_item_menu_popup);
                 TextView itemName = addToCartPopup.findViewById(R.id.item_name_menu_popup);
                 TextView calorieCount = addToCartPopup.findViewById(R.id.item_calories_menu_popup);
                 TextView itemPrice = addToCartPopup.findViewById(R.id.item_price_menu_popup);
@@ -207,41 +209,70 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                     customize.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            final Dialog customizationPopup = new Dialog(context);
+                            customizationPopup.setContentView(R.layout.menu_item_edit_popup);
 
+                            customizationPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            customizationPopup.show();
+
+                            final EditText customization = customizationPopup.findViewById(R.id.text_menu_item_edit);
+                            customization.setText(getChild(i, j).getCustomization());
+
+                            customizationPopup.findViewById(R.id.menu_item_edit_submit).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    getChild(i, j).setCustomization(customization.getText().toString().trim() + "; ");
+                                    customizationPopup.dismiss();
+                                }
+                            });
+
+                            customizationPopup.findViewById(R.id.menu_item_edit_close).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    customizationPopup.dismiss();
+                                }
+                            });
                         }
                     });
 
                     addToCart.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(pref.getShoppingCart().getCart().size() == 0) {
-                                cart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
+                            if(pref.getShoppingCart().getCart().size() == 0 || pref.getShoppingCart().getCart() == null) {
+
+                                shoppingCart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
 
                                 MenuItem itemToBeAdded = getChild(i, j);
                                 itemToBeAdded.setItemImage(itemImageByteArray);
 
-                                cart.addToCart(itemToBeAdded);
-                                pref.setShoppingCart(cart);
-                                badge.setNumber(cart.getCart().size());
+                                getChild(i, j).setCustomization("");
+
+
+                                shoppingCart.addToCart(itemToBeAdded);
+                                pref.setShoppingCart(shoppingCart);
+                                badge.setNumber(shoppingCart.getCart().size());
                                 badge.setVisible(false);
                                 badge.setVisible(true);
                                 addToCartPopup.dismiss();
                             }
                             else if(pref.getShoppingCart().getRestaurantID() == restaurantID) {
-                                cart = pref.getShoppingCart();
+                                shoppingCart = pref.getShoppingCart();
 
-                                if(cart.cartContainsItem(getChild(i, j)) != null) {
-                                    cart.cartContainsItem(getChild(i, j)).incrementQuantity();
+                                if(shoppingCart.cartContainsItem(getChild(i, j)) != null) {
+                                    shoppingCart.cartContainsItem(getChild(i, j)).incrementQuantity();
+                                    shoppingCart.cartContainsItem(getChild(i, j)).setCustomization(shoppingCart.cartContainsItem(getChild(i, j)).getCustomization() + getChild(i, j).getCustomization());
                                 }
                                 else {
                                     MenuItem itemToBeAdded = getChild(i, j);
                                     itemToBeAdded.setItemImage(itemImageByteArray);
 
-                                    cart.addToCart(itemToBeAdded);
+                                    getChild(i, j).setCustomization("");
+
+                                    shoppingCart.addToCart(itemToBeAdded);
                                 }
 
-                                pref.setShoppingCart(cart);
-                                badge.setNumber(cart.getCart().size());
+                                pref.setShoppingCart(shoppingCart);
+                                badge.setNumber(shoppingCart.getCart().size());
                                 badge.setVisible(false);
                                 badge.setVisible(true);
                                 addToCartPopup.dismiss();
@@ -263,14 +294,18 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 confirmClearCart.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        cart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
+
+                                        shoppingCart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
 
                                         MenuItem itemToBeAdded = getChild(i, j);
                                         itemToBeAdded.setItemImage(itemImageByteArray);
-                                        cart.addToCart(itemToBeAdded);
 
-                                        pref.setShoppingCart(cart);
-                                        badge.setNumber(cart.getCart().size());
+                                        getChild(i, j).setCustomization("");
+
+                                        shoppingCart.addToCart(itemToBeAdded);
+
+                                        pref.setShoppingCart(shoppingCart);
+                                        badge.setNumber(shoppingCart.getCart().size());
                                         badge.setVisible(false);
                                         badge.setVisible(true);
                                         pref.getShoppingCart().setEndingHour(closing);
@@ -278,7 +313,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                         confirmPopup.dismiss();
                                         addToCartPopup.dismiss();
                                         Toast.makeText(context, "Successfully added to cart.",Toast.LENGTH_LONG).show();
-
                                     }
                                 });
 
@@ -323,7 +357,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 );
 
                 VolleySingleton.getInstance(context).addToRequestQueue(getItemImageRequest);
-
 
                 calorieCount.setText("Calories: " + getChild(i, j).getCalories());
                 calorieCount.setTextColor(Color.WHITE);

@@ -3,6 +3,7 @@ package auto_garcon.initialpages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -65,7 +66,6 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
-
         pref = new SharedPreference(this);// creating a sharedPrefrence object that access the same file of all other shared prefrences on the app
 
         if(pref.getLoginStatus()){ // checks if they are already signed in if so we send them to the homepage if their already logged in
@@ -87,15 +87,20 @@ public class Login extends AppCompatActivity {
                 final String username = usernameId.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String passwd = password.getText().toString().trim();//extracted data from xml object and converted into a string
 
+                boolean validInputs = true;
+
                 if(username.isEmpty()){//checks if the username they are trying to submit is empty
                     usernameId.setError("Please enter your username");
                     usernameId.requestFocus();
+                    validInputs = false;
                 }
-                else if (passwd.isEmpty()){//checks if the password the user is trying to submit is empty
+                if(passwd.isEmpty()){//checks if the password the user is trying to submit is empty
                     password.setError("Please enter your password");
                     password.requestFocus();
+                    validInputs = false;
                 }
-                else if (!(username.isEmpty() && passwd.isEmpty())) {//if everything is good we proceed with the get request
+
+                 if(validInputs == true) {//if everything is good we proceed with the get request
 
                     //post request for logging in
                     JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
@@ -114,13 +119,19 @@ public class Login extends AppCompatActivity {
                                 public void onResponse(JSONObject response) {
                                     // response
                                     try {
-                                        JSONObject object = response.getJSONObject("customer");
-                                        String token = response.getString("token");
+                                        JSONObject userData = response.getJSONObject("customer");
 
-                                        pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
-                                                object.get("customer_id").toString(), object.get("email").toString()));
-                                        pref.setAuthToken(token);
-                                        pref.getUser().setChangePassword(object.getInt("temp_password"));
+                                        byte[] itemImageByteArray = new byte[userData.getJSONObject("image").getJSONArray("data").length()];
+
+                                        for (int i = 0; i < itemImageByteArray.length; i++) {
+                                            itemImageByteArray[i] = (byte) (((int) userData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
+                                        }
+
+                                        pref.setUser(new UserSingleton(userData.get("first_name").toString(),  userData.get("last_name").toString(),
+                                                userData.get("customer_id").toString(), userData.get("email").toString(), itemImageByteArray));
+
+                                        pref.setAuthToken(response.getString("token"));
+                                        pref.getUser().setChangePassword(userData.getInt("temp_password"));
                                         pref.changeLogStatus(true);
 
                                         startActivity(new Intent(Login.this, TwoButtonPage.class));
@@ -138,22 +149,15 @@ public class Login extends AppCompatActivity {
                                     error.printStackTrace();
                                     if(error.networkResponse.statusCode == 401){
                                         Toast.makeText(Login.this,"Invalid username or password",Toast.LENGTH_LONG).show();
-
                                     }
                                     else{
                                         Toast.makeText(Login.this,"Could not Sign in",Toast.LENGTH_LONG).show();
-
                                     }
-
-
                                 }
                             }
                     );
 
                     VolleySingleton.getInstance(Login.this).addToRequestQueue(postRequest);// making the actual request
-                }
-                else{
-                    Toast.makeText(Login.this, "Error Occurred", Toast.LENGTH_SHORT).show();// if something fails with our request display error
                 }
             }
         });

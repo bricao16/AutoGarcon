@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -18,7 +19,9 @@ import com.example.auto_garcon.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.PasswordChange;
@@ -62,7 +65,8 @@ public class TwoButtonPage extends AppCompatActivity {
 
         setContentView(R.layout.activity_two_button_page);
         pref = new SharedPreference(this);//file for keeping track of cart
-        Log.d("testing"," "+getIntent().getStringExtra("error"));
+        pref.setShoppingCart(new ShoppingCartSingleton());
+        
         StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/favorites/" + pref.getUser().getUsername(),
                 new Response.Listener<String>() {
                     @Override
@@ -93,7 +97,15 @@ public class TwoButtonPage extends AppCompatActivity {
                         }
                     }
                 }
-        );
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                HashMap<String,String> headers = new HashMap<String,String>();
+                headers.put("Authorization","Bearer " + pref.getAuth());
+                return headers;
+            }
+        };
 
         VolleySingleton.getInstance(TwoButtonPage.this).addToRequestQueue(getRequestForFavorites);
 
@@ -139,7 +151,7 @@ public class TwoButtonPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+        if(pref.getUser().getChangePassword() == 1){//check if they have updated their password
             //if not send them back to PasswordChange page and force them to update their password
             Intent intent = new Intent(TwoButtonPage.this, PasswordChange.class);
             startActivity(intent);

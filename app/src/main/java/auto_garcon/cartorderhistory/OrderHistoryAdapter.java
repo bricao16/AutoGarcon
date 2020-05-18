@@ -115,8 +115,13 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     @Override
     public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderHistoryViewHolder holder, final int position) {
         holder.order_num.setText(restaurantName.get(position));// set the text for the order tile
-        holder.restaurant_num.setText(Integer.toString(carts.get(position).getRestaurantID()));// set the restruant id to allow us to re order
-        holder.date.setText(date.get(position));// set the date in the order tile card
+        int datePosition = date.get(position).indexOf("T");
+        if(datePosition==-1){
+            holder.date.setText(date.get(position));// set the date in the order tile card
+        }
+        else {
+            holder.date.setText(date.get(position).substring(0,datePosition));// set the date in the order tile card
+        }
         holder.restaurant.setImageBitmap(BitmapFactory.decodeByteArray(logos.get(position),0,logos.get(position).length));// set the image of the resturant to the image view on the order_tile card
 
         holder.items.setOnClickListener(new View.OnClickListener() {// when they user clicks on view items text view on the order tile card
@@ -130,6 +135,14 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                 popUp.show();
                 TextView historyItems = popUp.findViewById(R.id.order_items);
                 historyItems.setText(carts.get(position).toString());
+                TextView restaurantNamePop = popUp.findViewById(R.id.Restaurant);
+                restaurantNamePop.setText(restaurantName.get(position));
+                popUp.findViewById(R.id.add_to_cart_popup_close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popUp.dismiss();
+                    }
+                });
             }
         });
 
@@ -165,8 +178,6 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                 }
                 else {
                     Toast.makeText(ct, "Successfully added to cart.",Toast.LENGTH_LONG).show();
-                    //Clear the order if the item's are available during the correct time
-
                     pref.setShoppingCart(carts.get(position));
                 }
             }
@@ -188,7 +199,6 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
         TextView order_num;
         TextView date;
-        TextView restaurant_num;
         TextView items;
         Button reOrder;
         ImageView restaurant;
@@ -196,7 +206,6 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             super(v);
             order_num= v.findViewById(R.id.order_num2);
             date = v.findViewById(R.id.date);
-            restaurant_num = v.findViewById(R.id.resturant_num);
             items= v.findViewById(R.id.order_items);
             reOrder = v.findViewById(R.id.ReOrderButton);
             restaurant = v.findViewById(R.id.resturant);

@@ -23,19 +23,19 @@
         <!-- image of menu item that gets updated to the actual menu item
              image at runtime -->
 
+        <!-- item text that gets updated to the actual menu item name at runtime -->
+
         <Button
             android:id="@+id/ReOrderButton"
-            android:layout_width="253dp"
-            android:layout_height="39dp"
+            android:layout_width="203dp"
+            android:layout_height="35dp"
             android:text="ReOrder"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.257"
             app:layout_constraintStart_toEndOf="@+id/resturant"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
-
-        <!-- item text that gets updated to the actual menu item name at runtime -->
 
         <ImageView
             android:id="@+id/resturant"
@@ -58,48 +58,32 @@
             app:layout_constraintBottom_toTopOf="@+id/ReOrderButton"
             app:layout_constraintStart_toEndOf="@id/resturant"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_bias="1.0"
             tools:text="Order_number"
             tools:visibility="visible" />
 
         <TextView
             android:id="@+id/date"
-            android:layout_width="40dp"
-            android:layout_height="17dp"
+            android:layout_width="77dp"
+            android:layout_height="18dp"
             android:text="Date"
-            app:layout_constraintBottom_toTopOf="@+id/ReOrderButton"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.952"
             app:layout_constraintStart_toEndOf="@+id/resturant"
-            app:layout_constraintTop_toBottomOf="@+id/order_num2"
-            app:layout_constraintVertical_bias="0.586"
-            android:textSize="12sp"/>
-
-        <TextView
-            android:id="@+id/resturant_num"
-            android:layout_width="100dp"
-            android:layout_height="32dp"
-            android:text="TextView"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/order_num2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.034"
-            android:textSize="12sp" />
+            tools:layout_editor_absoluteY="0dp" />
 
         <TextView
             android:id="@+id/order_items"
             android:layout_width="85dp"
             android:layout_height="16dp"
+            android:layout_marginBottom="8dp"
             android:text="View order"
+            android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@+id/ReOrderButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.992"
-            app:layout_constraintStart_toEndOf="@+id/date"
-            app:layout_constraintTop_toBottomOf="@+id/resturant_num"
-            app:layout_constraintVertical_bias="0.606"
-            android:textSize="12sp"/>
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/date" />
 
         <!-- '-' image button -->
 
