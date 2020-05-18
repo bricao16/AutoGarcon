@@ -12,11 +12,11 @@ public class UserSingleton {
     private String lastName;
     private String username;
     private String email;
-    private Bitmap image;
+    private byte[] image;
     private int restaurantID;
     private int changePassword;
 
-    public UserSingleton(String firstName, String lastName, String username, String email, Bitmap image){
+    public UserSingleton(String firstName, String lastName, String username, String email, byte[] image){
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -53,7 +53,7 @@ public class UserSingleton {
         return this.restaurantID;
     }
 
-    public Bitmap getImageBitmap() {
+    public byte[] getImageBitmap() {
         return this.image;
     }
 

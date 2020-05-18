@@ -131,7 +131,7 @@ public class Login extends AppCompatActivity {
                                         }
 
                                         pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
-                                                object.get("customer_id").toString(), object.get("email").toString(), BitmapFactory.decodeByteArray(itemImageByteArray, 0, itemImageByteArray.length)));
+                                                object.get("customer_id").toString(), object.get("email").toString(), itemImageByteArray));
 
                                         pref.setAuthToken(token);
                                         pref.getUser().setChangePassword(object.getInt("temp_password"));

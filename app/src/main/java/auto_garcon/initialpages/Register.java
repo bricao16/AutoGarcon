@@ -164,7 +164,7 @@ public class Register extends AppCompatActivity {
                                             itemImageByteArray[i] = (byte) (((int) object.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
                                         }
 
-                                        pref.setUser(new UserSingleton(firstName,  lastName, username, email, BitmapFactory.decodeByteArray(itemImageByteArray, 0, itemImageByteArray.length)));
+                                        pref.setUser(new UserSingleton(firstName,  lastName, username, email, itemImageByteArray));
                                         pref.setAuthToken(token);
                                         pref.changeLogStatus(true);
 
