@@ -114,15 +114,23 @@ class Customize extends React.Component{
   submitToDB(){
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
     console.log(this.state);
+
+    var bodyFormData = new FormData();
+    bodyFormData.set('restaurant_id', this.state.restaurant_id);
+    bodyFormData.set('primary_color', this.state.primary);
+    bodyFormData.set('secondary_color', this.state.secondary);
+    bodyFormData.set('tertiary_color', this.state.tertiary);
+    bodyFormData.set('font', this.state.font);
+    bodyFormData.set('font_color', this.state.font_color);
+    bodyFormData.set('greeting', this.state.alexaGreeting);
+    bodyFormData.append('logo', this.state.file);
+
     axios({
       method: 'POST',
       url:  process.env.REACT_APP_DB +'/restaurant/customization',
-      //+'&logo='+this.state.file
-      data: 'restaurant_id='+this.state.restaurant_id+'&primary_color='+this.state.primary+
-      '&secondary_color='+this.state.secondary+'&tertiary_color='+this.state.tertiary+
-      '&font='+this.state.font+'&font_color='+this.state.font_color+'&logo='+this.state.file+'&greeting='+this.state.alexaGreeting,
+      data: bodyFormData,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'multipart/form-data',
         'Authorization': 'Bearer ' + this.state.token
       },
       httpsAgent: new https.Agent({  
@@ -174,7 +182,7 @@ class Customize extends React.Component{
       }
       else if(this.state.sectionEdit ==="Logo")
       {
-          this.submitToDB();
+        this.submitToDB();
       }
       else if(this.state.sectionEdit ==="Alexa Greeting")
       {
@@ -206,7 +214,7 @@ class Customize extends React.Component{
       this.setState({
       show:false
       });
-    }, 1000)
+    }, 3000)
   }
 
 //change the category of which is being edited
