@@ -12,6 +12,7 @@ public class UserSingleton {
     private String lastName;
     private String username;
     private String email;
+    private int tableID;
     private byte[] image;
     private int restaurantID;
     private int changePassword;
@@ -48,7 +49,8 @@ public class UserSingleton {
     public void setRestaurantID(int restaurantID) {
         this.restaurantID = restaurantID;
     }
-
+    public void setTableID(int tableID){this.tableID=tableID;}
+    public int getTableID(){return this.tableID;}
     public int getRestaurantID() {
         return this.restaurantID;
     }

@@ -130,6 +130,14 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                 popUp.show();
                 TextView historyItems = popUp.findViewById(R.id.order_items);
                 historyItems.setText(carts.get(position).toString());
+                TextView restaurantNamePop = popUp.findViewById(R.id.Restaurant);
+                restaurantNamePop.setText(restaurantName.get(position));
+                popUp.findViewById(R.id.add_to_cart_popup_close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popUp.dismiss();
+                    }
+                });
             }
         });
 
