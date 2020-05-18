@@ -175,7 +175,8 @@ class NewItem extends React.Component {
       method: 'GET',
       url: process.env.REACT_APP_DB + "/categories",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
       },
       timeout: 8000,
       httpsAgent: new https.Agent({  
