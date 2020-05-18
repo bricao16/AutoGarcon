@@ -112,8 +112,8 @@ class Menu extends React.Component {
         var joined = this.state.imageUrls;
         if(!this.state.imageUrls.hasOwnProperty(category))
         {
-            joined[category] = blobUrl;
-           this.setState({ imageUrls: joined });
+          joined[category] = blobUrl;
+          this.setState({ imageUrls: joined });
         }
         this.setState({
           ModalLoading: false,
