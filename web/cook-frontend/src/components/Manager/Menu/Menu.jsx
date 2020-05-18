@@ -404,6 +404,8 @@ class Menu extends React.Component {
 					<Container fluid style={{'minHeight': '70vh'}}>
 						<div className="d-flex flex-wrap">
 							{this.renderMenuCategories()}
+              </div>
+              <div className="d-flex flex-wrap">
 							<Col sm={6} className="p-3">
 								<Card className="text-center" >
 									<div onClick={() => this.toggleNewItem("default") }>                     

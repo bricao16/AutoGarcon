@@ -113,7 +113,6 @@ class Customize extends React.Component{
   /* Used for connecting to Customization in database */
   submitToDB(){
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
-    console.log(this.state);
 
     var bodyFormData = new FormData();
     bodyFormData.set('restaurant_id', this.state.restaurant_id);
