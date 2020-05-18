@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!-- xml layout for selecting photo popup -->
-
+<!--This file is used as a pop up option when clicking on the profile picture in the
+ account page. This is used to allow the user to change their profile picture by
+ accessing their camera and taking a new photo or accessing their photo gallery and choosing
+ a photo from there.-->
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -13,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <!-- button to go to camera -->
+        <!--This button is for accessing the camera of the device to take a new profile photo.-->
         <Button
             android:id="@+id/take_photo_button"
             android:layout_width="wrap_content"
@@ -24,7 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <!-- button to go to image gallery -->
+        <!--This button is for accessing the users photo gallery to choose an existing photo for the profile picture. -->
         <Button
             android:id="@+id/choose_from_gallery_button"
             android:layout_width="wrap_content"
@@ -37,7 +38,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- button to close popup -->
+        <!--This button is to close the pop up.-->
         <ImageButton
             android:id="@+id/account_image_close"
             android:layout_width="25dp"

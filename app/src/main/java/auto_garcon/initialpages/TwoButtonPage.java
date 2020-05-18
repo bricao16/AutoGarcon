@@ -62,11 +62,14 @@ public class TwoButtonPage extends AppCompatActivity {
         NukeSSLCerts.nuke();
        // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
-
         setContentView(R.layout.activity_two_button_page);
         pref = new SharedPreference(this);//file for keeping track of cart
-        pref.setShoppingCart(new ShoppingCartSingleton());
-        
+
+        /*
+        pref.logOut();
+        Intent intent = new Intent(TwoButtonPage.this, Login.class);
+        startActivity(intent);
+        */
         StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/favorites/" + pref.getUser().getUsername(),
                 new Response.Listener<String>() {
                     @Override

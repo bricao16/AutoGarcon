@@ -79,6 +79,10 @@ public class SharedPreference {
         Gson gson = new Gson();
         //here we extract the json String from our sharedPreference file
         String stringJson = sharedPreferences.getString("ShoppingCartSingleton", null);
+        if(stringJson == null)
+        {
+            return new ShoppingCartSingleton();
+        }
 
         //here we convert the json String to our Java Object
         return gson.fromJson(stringJson, ShoppingCartSingleton.class);

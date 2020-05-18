@@ -144,9 +144,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
             PlaceOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                   
                     if(pref.getShoppingCart().getStartingHour() > Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) && Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) < pref.getShoppingCart().getEndingHour()){
                         Toast.makeText(ShoppingCart.this,"The restaurant is currently closed.",Toast.LENGTH_LONG).show();
                     }
+
                     else if(pref.getUser().getRestaurantID() != shoppingCart.getRestaurantID()){
                         goToQRScannerPopup = new Dialog(ShoppingCart.this);
                         goToQRScannerPopup.setContentView(R.layout.confirm_popup);
