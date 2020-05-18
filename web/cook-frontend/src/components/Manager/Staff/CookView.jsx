@@ -80,7 +80,7 @@ class CookView extends React.Component{
                     and message customer's regarding their order. 
                   </Card.Text>
                     <Card.Text style = {{'fontFamily' :font,fontSize: '1.2rem'}}>
-                     <i>It is the only page staff accounts have access to </i>
+                     <i>It is the only page cook accounts have access to </i>
                   </Card.Text>
 
                   <div className = "text-center">

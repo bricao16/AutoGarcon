@@ -28,7 +28,9 @@ class HighestSelling extends React.Component {
               checked:true,
               staff: cookies.get('mystaff'),
               chartHeight:null,
-              isLoaded :false
+              isLoaded :false,
+              token: cookies.get('mytoken'),
+              staff: cookies.get('mystaff'),
 
         };
         this.checkboxHandler = this.checkboxHandler.bind(this);
@@ -59,13 +61,16 @@ class HighestSelling extends React.Component {
     }
     /* Used for connecting to Resturant in database */
     componentDidMount() {
+
       const https = require('https');
 
     axios({
         method: 'get',
-        url: process.env.REACT_APP_DB + '/orderstats/' + this.state.staff.restaurant_id,
+        url: process.env.REACT_APP_DB + '/orderstats/highestsellingcat/' + this.state.staff.restaurant_id,
+        data: 'restaurant_id='+this.state.restaurant_id,
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Bearer '+ this.state.token
         },
         httpsAgent: new https.Agent({  
           rejectUnauthorized: false,
@@ -182,9 +187,9 @@ class HighestSelling extends React.Component {
         {
             return (
                 <Container>
-                     <div className="d-flex flex-wrap pt-3">
+                    {/*} <div className="d-flex flex-wrap pt-3">
                         {this.renderCheckBoxes()}                
-                    </div>
+                    </div>*/}
                     <br/>
                     <br/>
                     <br/>
