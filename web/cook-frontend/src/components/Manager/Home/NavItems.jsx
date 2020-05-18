@@ -19,7 +19,6 @@ import AccountDropdown from "../../AccountDropdown";
 import StaffIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import CustomIcon from '@material-ui/icons/ColorLensOutlined';
 import GeneralIcon from '@material-ui/icons/ListAltOutlined';
-
 import Stats from '../Statistics/Stats';
 import Menu from '../Menu/Menu';
 import StoreInfo from '../General/StoreInfo';
@@ -78,7 +77,6 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   drawerClose: {
-    
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -110,9 +108,6 @@ const useStyles = makeStyles((theme) => ({
   textAlign: 'right',
   height: '67px'
   },
-
-
-
 }));
 
 
@@ -121,7 +116,7 @@ export default function NavItems(props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
 
-  //get the styles for the current restuarant
+  /* get the styles for the current restuarant */
   const primary = props.restaurantInfo[1][1].primary_color;
   const secondary = props.restaurantInfo[1][1].secondary_color;
   const tertiary = props.restaurantInfo[1][1].tertiary_color;
@@ -135,9 +130,8 @@ export default function NavItems(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-    console.log(font);
+  console.log(font);
   return (
-
     <div className={classes.root} style={{'fontFamily' :font}}>
       <CssBaseline />
       <AppBar
@@ -146,25 +140,24 @@ export default function NavItems(props) {
           [classes.appBarShift]: open,
         })}
       >
-        <Toolbar >
-        <div className="col">
-          <IconButton
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
-          >
-            <MenuIcon />
-          </IconButton>
-          </div>
+				<Toolbar >
+					<div className="col">
+						<IconButton
+							aria-label="open drawer"
+							onClick={handleDrawerOpen}
+							edge="start"
+							className={clsx(classes.menuButton, {
+								[classes.hide]: open,
+							})}
+						>
+							<MenuIcon />
+						</IconButton>
+					</div>
 
-          <div className="col text-right" style={{'fontFamily' :font}}>
-            <AccountDropdown firstName={props.firstName} lastName={props.lastName} className="pl-5 align-right"></AccountDropdown>
-          </div>
-        </Toolbar>
-        
+					<div className="col text-right" style={{'fontFamily' :font}}>
+						<AccountDropdown firstName={props.firstName} lastName={props.lastName} className="pl-5 align-right"></AccountDropdown>
+					</div>
+				</Toolbar>   
       </AppBar >
       <Drawer
         variant="permanent"
@@ -181,13 +174,13 @@ export default function NavItems(props) {
 
       >
         <div className={classes.toolbar} style={{'backgroundColor' :'#f1f1f1' }}>
-        <Typography variant="h6" className ='pr-4' noWrap >
-        <img src={props.imageBlob}  width="auto" height="45px" style={{"borderRadius": "5px"}} alt="waiter" /> 
-           {/*<i>{props.restName}</i>*/}
-          </Typography>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <MenuIcon /> : <MenuIcon />}
-          </IconButton>
+					<Typography variant="h6" className ='pr-4' noWrap >
+					<img src={props.imageBlob}  width="auto" height="45px" style={{"borderRadius": "5px"}} alt="waiter" /> 
+						 {/*<i>{props.restName}</i>*/}
+						</Typography>
+						<IconButton onClick={handleDrawerClose}>
+							{theme.direction === 'rtl' ? <MenuIcon /> : <MenuIcon />}
+						</IconButton>
         </div>
         <Divider />
         <List >

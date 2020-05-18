@@ -39,9 +39,9 @@ class Manager extends React.Component{
     }
 
 
-/* Used for connecting to Resturant in database */
+		/* Used for connecting to Resturant in database */
     componentDidMount() {
-      //if user doesnt have access
+      /* if user doesnt have access */
       if(this.state.staff === undefined || this.state.token === undefined  || this.state.staff.position !== "manager")
       {
         return(
@@ -59,50 +59,45 @@ class Manager extends React.Component{
       }
 
       const https = require('https');
-      
-      //instance.get("https://50.19.176.137:8001/restaurant/124");
-    axios({
-        method: 'get',
-        url: process.env.REACT_APP_DB + '/restaurant/' + this.state.staff.restaurant_id,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        httpsAgent: new https.Agent({  
-          rejectUnauthorized: false,
-        }),
-      })
-        .then(res => {
-          var finalJson = {
-            'menu': res.data.menu,
-            'restaurant': res.data.restaurant
-            // Https endpoint parsing:
-            //'menu': res.data[1].menu,
-            //'restaurant': res.data[0].restaurant
-          }
-          return finalJson;
-        })
-        .then((result) => {
-          /* Insert every category into the categories cookie store */
-          Object.keys(result.menu).forEach(item => {
-            if (!this.state.categories.includes(result.menu[item].category)) {
-              this.state.categories.push(result.menu[item].category)
-            }
-          })
-          cookies.set('categories', this.state.categories)
+			axios({
+				method: 'get',
+				url: process.env.REACT_APP_DB + '/restaurant/' + this.state.staff.restaurant_id,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				httpsAgent: new https.Agent({  
+					rejectUnauthorized: false,
+				}),
+			})
+			.then(res => {
+				var finalJson = {
+					'menu': res.data.menu,
+					'restaurant': res.data.restaurant
+				}
+				return finalJson;
+			})
+			.then((result) => {
+				/* Insert every category into the categories cookie store */
+				Object.keys(result.menu).forEach(item => {
+					if (!this.state.categories.includes(result.menu[item].category)) {
+						this.state.categories.push(result.menu[item].category)
+					}
+				})
+				cookies.set('categories', this.state.categories)
 
-          this.setState({
-            isLoaded: true,
-            restaurantJSON: result
-          });
-          })
-        .catch((error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        })
+				this.setState({
+					isLoaded: true,
+					restaurantJSON: result
+				});
+				})
+			.catch((error) => {
+				this.setState({
+					isLoaded: true,
+					error
+				});
+			})
     }
-    //convert blob to base 64
+    /* convert blob to base 64 */
     arrayBufferToBase64( buffer ) {
       var binary = '';
       var bytes = new Uint8Array( buffer );
@@ -112,8 +107,8 @@ class Manager extends React.Component{
       }
       return window.btoa( binary );
     }
-    // From http://stackoverflow.com/questions/14967647/ (continues on next line)
-    // encode-decode-image-with-base64-breaks-image (2013-04-21)
+    /* From http://stackoverflow.com/questions/14967647/
+       encode-decode-image-with-base64-breaks-image (2013-04-21) */
     fixBinary (bin) {
     var length = bin.length;
     var buf = new ArrayBuffer(length);
@@ -123,19 +118,17 @@ class Manager extends React.Component{
     }
     return buf;
   }
-  verifyManager()
-  {
-    //verify the token is a manager token
+  verifyManager(){
+    /* verify the token is a manager token */
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
     if(this.state.token === undefined )
     {
-      //if they dont even have a token return false
+      /* if they dont even have a token return false */
       return false;
     }
     axios({
       method: 'POST',
       url:  process.env.REACT_APP_DB +'/verify',
-      //+'&logo='+this.state.file
       data: 'token='+this.state.token,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -147,109 +140,99 @@ class Manager extends React.Component{
     })
     .then(async response => {
       await response;
-      //if not a manager
+      /* if not a manager */
       if (response.status !== 200) { return false}
       else {return true} 
     })
     .catch(error => {
-      //databse error
+      /* databse error */
       console.error("There was an error!", error);
       return false;
     });
-
   }
-    render() 
-    {
-      const manager = this.verifyManager(this.state.token);
-      /*verify a users access - if staff is unefined or not position of manager we want to
-      log out as well- even if they somehow got correct manager token the page will break and 
-      we need them to log back in */ 
-      if(this.state.staff === undefined || manager === false ||  this.state.staff.position !== "manager")
-      {
-        return(
-            <Container className="d-flex flex-column justify-content-center">
-                <Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
-                  <Nav.Link className="btn btn-secondary" href="/login_manager"> Session expired please log back in </Nav.Link>
-                </Nav>
-                <Switch>
-                  <Route exact path="/login_manager">
-                    <MLogin/>
-                  </Route>
-                </Switch>
-            </Container>
-        );
-      }
-      const { error, isLoaded, restaurantJSON, restaurantInfo,staff } = this.state;
-      //if error from database 
-      if (error) {
-        console.log(error)
-        return <div>Error: {error.message}</div>;
-      } 
-      //spinner while loading
-      else if (!isLoaded) {
-        return (
-          <div className="d-flex flex-column justify-content-center" style={{"height": "100vh", "width": "100vw"}}>
-            <div className="d-flex justify-content-center" style={{"width": "100vw"}}>
-              <div className="spinner-border" role="status">
-                <span className="sr-only">Loading...</span>
-              </div>
-            </div>
-          </div>
-        )
-      }
-      //on sucessful pull from databse
-      else {
-        //map the menu json to an array
-        Object.keys(this.state.restaurantJSON).forEach(function(key) {
-          restaurantInfo.push([key ,restaurantJSON[key]]);
-      });} 
+  render(){
+		const manager = this.verifyManager(this.state.token);
+		/*verify a users access - if staff is unefined or not position of manager we want to
+		log out as well- even if they somehow got correct manager token the page will break and 
+		we need them to log back in */ 
+		if(this.state.staff === undefined || manager === false ||  this.state.staff.position !== "manager")
+		{
+			return(
+				<Container className="d-flex flex-column justify-content-center">
+					<Nav defaultActiveKey="/" className="flex-column rounded" style={sectionStyle}>
+						<Nav.Link className="btn btn-secondary" href="/login_manager"> Session expired please log back in </Nav.Link>
+					</Nav>
+					<Switch>
+						<Route exact path="/login_manager">
+							<MLogin/>
+						</Route>
+					</Switch>
+				</Container>
+			);
+		}
+		const { error, isLoaded, restaurantJSON, restaurantInfo,staff } = this.state;
+		/* if error from database */
+		if (error) {
+			console.log(error)
+			return <div>Error: {error.message}</div>;
+		} 
+		/* spinner while loading */
+		else if (!isLoaded) {
+			return (
+				<div className="d-flex flex-column justify-content-center" style={{"height": "100vh", "width": "100vw"}}>
+					<div className="d-flex justify-content-center" style={{"width": "100vw"}}>
+						<div className="spinner-border" role="status">
+							<span className="sr-only">Loading...</span>
+						</div>
+					</div>
+				</div>
+			)
+		}
+		/* on sucessful pull from databse */
+		else {
+			/* map the menu json to an array */
+			Object.keys(this.state.restaurantJSON).forEach(function(key) {
+				restaurantInfo.push([key ,restaurantJSON[key]]);
+			});
+		} 
 
-      //get logo image data from binary
-      const blobUrl = "";
-      if(this.state.restaurantJSON.restaurant.logo !== null)
-      {
-        const imageData = this.arrayBufferToBase64(this.state.restaurantJSON.restaurant.logo.data);
-        var binary = this.fixBinary(atob(imageData));
-        const blob = new Blob([binary], {type : 'image/png'});
-        const blobUrl =URL.createObjectURL(blob);
-        console.log(this.state);
-      }
-
-
-
-      return (
-
-        <React.Fragment >
-          {/*if cookies havent been accepted yet ask them*/}
-          
-
-          
-            <NavItems restaurantInfo = {restaurantInfo} restName ={restaurantInfo[1][1].name} firstName={staff.first_name} lastName={staff.last_name} imageBlob = {blobUrl}/>
-        
-              {cookies.get('cookieAccept') === undefined ? 
-                  <CookieConsent style = {{'width': '100vw', 'textAlign': 'right'}}
-                  debug={true}
-                   enableDeclineButton
-                    flipButtons
-                    onAccept={() => {return cookies.set('cookieAccept',true)}}
-                    onDecline={() => {  cookies.remove('mytoken');
-                                        cookies.remove('mystaff');
-                                        cookies.remove('cookieAccept');
-                                        console.log(cookies.get('mystaff'));
-                                       }}
-                    >
-                    This website uses cookies to enhance the user experience.
-                  </CookieConsent>
-            :
-            <p></p>
-            }
-                   
-             </React.Fragment>
-              
-
-      );
-    }
+		/* get logo image data from binary */
+		const blobUrl = "";
+		if(this.state.restaurantJSON.restaurant.logo !== null)
+		{
+			const imageData = this.arrayBufferToBase64(this.state.restaurantJSON.restaurant.logo.data);
+			var binary = this.fixBinary(atob(imageData));
+			const blob = new Blob([binary], {type : 'image/png'});
+			const blobUrl =URL.createObjectURL(blob);
+			console.log(this.state);
+		}
+		return (
+			<React.Fragment >
+				{/*if cookies havent been accepted yet ask them*/}     
+				<NavItems restaurantInfo = {restaurantInfo} restName ={restaurantInfo[1][1].name} firstName={staff.first_name} lastName={staff.last_name} imageBlob = {blobUrl}/>
+			
+					{cookies.get('cookieAccept') === undefined ? 
+						<CookieConsent style = {{'width': '100vw', 'textAlign': 'right'}}
+							debug={true}
+			  			enableDeclineButton
+							flipButtons
+							onAccept={() => {return cookies.set('cookieAccept',true)}}
+							onDecline={() => {  
+								cookies.remove('mytoken');
+								cookies.remove('mystaff');
+								cookies.remove('cookieAccept');
+								console.log(cookies.get('mystaff'));
+							}}
+						>
+								This website uses cookies to enhance the user experience.
+							</CookieConsent>
+					:
+					<p></p>
+			  }						 
+			</React.Fragment>
+		);
   }
+}
 
 const sectionStyle = {
   'backgroundColor': '#ffffff',

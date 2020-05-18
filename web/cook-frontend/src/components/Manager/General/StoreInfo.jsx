@@ -8,6 +8,7 @@ import Alert from 'react-bootstrap/Alert';
 import EditFieldRightIcon from '@material-ui/icons/ChevronRight';
 import EditFieldDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import snakeCase from "lodash.snakecase";
+
 /* This component is used to render the 
 resturant information for the manager view.
 The resturant information is being called from the database in the
@@ -19,12 +20,12 @@ that contains the actual information. So this.props.info[0][1].
 This is mapped to an array and then rendered into cards. The cards are manually
 created rather than dynamically in aother component because under this section
 each of these cards MUST have all this information. */
+
 class StoreInfo extends React.Component{
   constructor(props) {     
     super(props);
     
     this.cookies = new Cookies();
-		
     this.state = {
       showName: false,
       showAddress: false,
@@ -58,16 +59,12 @@ class StoreInfo extends React.Component{
     this.handleShow = this.handleShow.bind(this);
 		this.handleValidation = this.handleValidation.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-
   }
-
 
   /* Used for connecting to restaurantInfo in database */
   handleSubmit(event) {
     console.log(this.state);
-    //var open = this.state.openingMil.replace(/\D/g,'');
-   // var close = this.state.closingMil.replace(/\D/g,'');
-		/*Validation for restaurant name.*/
+		/* Validation for restaurant name. */
 		if(this.state.name.length > 40){
 			this.handleValidation("Restaurant name is too long.  Please reduce to 40 characters or less.");
       return;
@@ -76,14 +73,13 @@ class StoreInfo extends React.Component{
 
 			this.handleValidation("Restaurant address is too long.  Please reduce to 40 characters or less.");
     }
-		/*Phone number */
-
+		/* Phone number */
     else if (!(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.state.phone)))
     {
       this.handleValidation("Invalid phone number");
       return ;
     }
-		/*Validation for opening field.*/	
+		/* Validation for opening field. */	
 		else if (Number(this.state.openingMil) < 0 || Number(this.state.openingMil) > 2400){
 			this.handleValidation("Invalid opening time  entered.");
       return;
@@ -92,9 +88,8 @@ class StoreInfo extends React.Component{
       return;	
 		} else if (!Number.isInteger(parseFloat(this.state.openingMil))){
 			this.handleValidation("No integer entered for opening time. ");
-      return;
-			
-		/*Validation for closing field.*/	
+      return;	
+		/* Validation for closing field. */	
 		} else if (Number(this.state.closingMil) < 0 || Number(this.state.closingMil) > 2400){
 			this.handleValidation("Valid closing time not entered.  ");
       return;
@@ -104,7 +99,7 @@ class StoreInfo extends React.Component{
 		} else if (!Number.isInteger(parseFloat(this.state.closingMil))){
 			this.handleValidation("No integer entered for closing time.");
       return;
-		} else {
+		} else { /* Pass all validation checks */
 			
 			var phone_number = this.state.phone.replace(/\D/g,'');
 			this.editForm("");
@@ -135,11 +130,11 @@ class StoreInfo extends React.Component{
 			});
 		}
 	}
-    /* Inserts dashes to format the number correctly */
+  /* Inserts dashes to format the number correctly */
   phoneFormat(number) {
     return this.insert(this.insert(number + "", 3, "-"), 7, "-");
   }
-    /* Used for handling changes to the input field */
+  /* Used for handling changes to the input field */
   handleInputChange(event) {
     const target = event.target;
     const value = target.value;
@@ -163,13 +158,11 @@ class StoreInfo extends React.Component{
     this.setState({ closingMil: closing });
     if (this.state.edited === false) this.setState({edited: true})
   }
-	
   /* Used to show the correct alert after hitting save item */
   handleShow(success, message) {
     if (success) {
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
-
     }
     else {
       this.setState({response: message})
@@ -226,15 +219,14 @@ class StoreInfo extends React.Component{
     const hours = Math.floor(num / 100);  
     const minutes = num % 100;
     var minutesString = minutes.toString();
-
     if(minutes ===0)
     {
       minutesString = "00";
     }
     return hours +':' + minutesString ;  
-
   }
-/* Dynamic fields that are shown if the internal state is stored as showing */
+	
+	/* Dynamic fields that are shown if the internal state is stored as showing */
   fieldStatus(field) {
     if(this.state['show'+field] && field === "Opening")
     {
@@ -244,17 +236,15 @@ class StoreInfo extends React.Component{
           value={this.state.openTimePicker}
         />
         );
-
     }
     else if(this.state['show'+field] && field === "Closing")
     {
       return  (       
-          <TimePicker
-          onChange={this.onChangeClose}
-          value={this.state.closeTimePicker}
-        />
-        );
-
+				<TimePicker
+				onChange={this.onChangeClose}
+				value={this.state.closeTimePicker}
+				/>
+      );
     }
     else if (this.state['show'+field]) {
       return (
@@ -273,8 +263,7 @@ class StoreInfo extends React.Component{
   /* Dynamic labels for each corresponding field */
   labelStatus(field) {
     let snakeCaseField = snakeCase(field)
-     // Format for phone number
-    //if (field == "Phone") text = this.phoneFormat(text);
+    /* Format for phone number */
 
     if (!this.state['show'+field]) {
       return (
@@ -372,7 +361,6 @@ class StoreInfo extends React.Component{
                 </button>
               </div>
             </li>
-
             <li className="list-group-item">
               <div className="d-flex align-items-start">
                 <div className="flex-grow-1">
@@ -416,31 +404,30 @@ class StoreInfo extends React.Component{
         </div>
       </div>
     )
+  }
+	render() {
+		const {restaurantInfo } = this.state;
+		const fullResturantInfo = this.props;
 
-    }
-    render() {
-			const {restaurantInfo } = this.state;
-			const fullResturantInfo = this.props;
-
-			//put resturant info into an array
-			Object.keys(fullResturantInfo.info).forEach(function(key) {
-					restaurantInfo.push([key ,fullResturantInfo.info[key]]);
-			});
-			
-			return (
-				<Container onLoad= {()=>this.time_convert(this.state.restaurantInfo[3][1])} style = {backgroundStyle}>
-					<Alert show={this.state.show} variant={this.state.alertVariant}>
-						{this.state.response}
-					</Alert>
-					<Container >
-						<div className="d-flex flex-wrap">
-							{this.renderInfo()}
-						</div>
-					</Container>
+		/* put resturant info into an array */
+		Object.keys(fullResturantInfo.info).forEach(function(key) {
+				restaurantInfo.push([key ,fullResturantInfo.info[key]]);
+		});
+		
+		return (
+			<Container onLoad= {()=>this.time_convert(this.state.restaurantInfo[3][1])} style = {backgroundStyle}>
+				<Alert show={this.state.show} variant={this.state.alertVariant}>
+					{this.state.response}
+				</Alert>
+				<Container >
+					<div className="d-flex flex-wrap">
+						{this.renderInfo()}
+					</div>
 				</Container>
-			);
-		}
+			</Container>
+		);
 	}
+}
 
 const backgroundStyle = {
 
