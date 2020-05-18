@@ -4,12 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +32,7 @@ import com.google.android.material.navigation.NavigationView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,12 +40,15 @@ import java.util.Map;
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
+import auto_garcon.accountstuff.Services;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.homestuff.Home;
+import auto_garcon.homestuff.HomeAdapter;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 
@@ -46,7 +56,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
 
     private SharedPreference pref;
 
-
+    private Map.Entry order;
 
     /**
      * Called when the activity is starting.  This is where most initialization
@@ -84,7 +94,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
-        if(pref.getShoppingCart()!=null) {
+        if(pref.getShoppingCart() != null) {
             if(pref.getShoppingCart().getCart().size()!=0){
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
@@ -92,6 +102,10 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
 
         TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
         usernameSideNavBar.setText(pref.getUser().getUsername());
+
+        ImageView userImageSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_account_picture);
+        userImageSideNavBar.setImageBitmap(BitmapFactory.decodeByteArray(pref.getUser().getImageBitmap(), 0, pref.getUser().getImageBitmap().length));
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(CurrentOrders.this);
@@ -121,31 +135,65 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                 {
                     @Override
                     public void onResponse(String response) {
-                        // response
-                        try {
-                            JSONObject orderJSONObject = new JSONObject(response);
-
-                            Iterator<String> keys = orderJSONObject.keys();
-                            while(keys.hasNext()) {
-                                String key = keys.next();
-
-                                if (orderJSONObject.get(key) instanceof JSONObject) {
-                                    auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
-                                    JSONObject menuItemCategories = orderJSONObject.getJSONObject(key);
-
-                                    menuItemCategories.getInt("order_num");
-                                    menuItemCategories.getInt("restaurant_id");
-                                    menuItemCategories.getInt("item_id");
-                                    menuItemCategories.getString("item_name");
-                                    menuItemCategories.getDouble("price");
-                                    menuItemCategories.getInt("quantity");
-                                    menuItemCategories.getString("order_date");
-                                    //menuItemCategories.getString("table_num");
-                                }
-                            }
+                        if (response.equals("No order history for this customer")) {
+                            findViewById(R.id.no_current_orders).setVisibility(View.VISIBLE);
                         }
-                        catch (JSONException e) {
-                            e.printStackTrace();
+                        else {
+                            RecyclerView currentOrdersList = findViewById(R.id.current_orders_list);
+
+                            currentOrdersList.setVisibility(View.VISIBLE);
+                            currentOrdersList.setLayoutManager(new LinearLayoutManager((CurrentOrders.this)));
+
+                            ArrayList<Integer> orderNumbers = new ArrayList<>();
+                            HashMap<Integer, byte[]> logos = new HashMap<>();
+                            HashMap<Integer, ShoppingCartSingleton> orders = new HashMap<>();
+
+                            // response
+                            try {
+                                JSONObject orderJSONObject = new JSONObject(response);
+
+                                Iterator<String> keys = orderJSONObject.keys();
+                                while(keys.hasNext()) {
+                                    String key = keys.next();
+
+                                    if (orderJSONObject.get(key) instanceof JSONObject) {
+                                        JSONObject menuItemCategories = orderJSONObject.getJSONObject(key);
+
+                                        if(orders.containsKey(menuItemCategories.getInt("order_num"))) {
+                                            ShoppingCartSingleton oldOrder = orders.get(menuItemCategories.getInt("order_num"));
+
+                                            oldOrder.addToCart(new auto_garcon.menustuff.MenuItem(menuItemCategories.getInt("item_id"), menuItemCategories.getString("item_name"),
+                                                    menuItemCategories.getDouble("price"), menuItemCategories.getInt("quantity"), menuItemCategories.getString("customization")));
+
+                                            orders.put(menuItemCategories.getInt("order_num"), oldOrder);
+                                        }
+                                        else {
+                                            ShoppingCartSingleton newOrder = new ShoppingCartSingleton();
+
+                                            newOrder.addToCart(new auto_garcon.menustuff.MenuItem(menuItemCategories.getInt("item_id"), menuItemCategories.getString("item_name"),
+                                                    menuItemCategories.getDouble("price"), menuItemCategories.getInt("quantity"), menuItemCategories.getString("customization")));
+
+                                            orders.put(menuItemCategories.getInt("order_num"), newOrder);
+                                            orderNumbers.add(menuItemCategories.getInt("order_num"));
+
+                                            if(!logos.containsKey(menuItemCategories.getInt("order_num"))) {
+                                                byte[] restaurantLogoByteArray = new byte[menuItemCategories.getJSONObject("logo").getJSONArray("data").length()];
+
+                                                for(int i = 0; i < restaurantLogoByteArray.length; i++) {
+                                                    restaurantLogoByteArray[i] = (byte) (((int) menuItemCategories.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
+                                                }
+
+                                                logos.put(menuItemCategories.getInt("order_num"), restaurantLogoByteArray);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                currentOrdersList.setAdapter(new CurrentOrdersAdapter(CurrentOrders.this, orders, logos, orderNumbers));
+                            }
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 },
@@ -173,26 +221,30 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
      *
      * @param nav_item The selected item
      * @return true to display the item as the selected item
-     */    @Override
+     */
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                startActivity(new Intent(CurrentOrders.this, Account.class));
+                startActivity(new Intent(getBaseContext(), Account.class));
                 break;
             case R.id.order_history:
-                startActivity(new Intent(CurrentOrders.this, OrderHistory.class));
+                startActivity(new Intent(getBaseContext(), OrderHistory.class));
                 break;
             case R.id.current_orders:
-                startActivity(new Intent(CurrentOrders.this, CurrentOrders.class));
+                startActivity(new Intent(getBaseContext(), CurrentOrders.class));
                 break;
             case R.id.settings:
-                startActivity(new Intent(CurrentOrders.this, Settings.class));
+                startActivity(new Intent(getBaseContext(), Settings.class));
+                break;
+            case R.id.services:
+                startActivity(new Intent(getBaseContext(), Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                startActivity(new Intent(CurrentOrders.this, Login.class));
+                startActivity(new Intent(getBaseContext(), Login.class));
                 break;
         }
         return false;

@@ -16,7 +16,6 @@ import com.example.auto_garcon.R;
 import java.util.List;
 
 import auto_garcon.menustuff.Menu;
-import auto_garcon.singleton.SharedPreference;
 /*
 This is a container for restaurant pages that the user can see.
  */
@@ -25,14 +24,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     private LayoutInflater layoutInflater;//Instantiates a layout XML file into its corresponding View objects
     private List<RestaurantItem> data;//an container of restaurant page items
     private Context context;//It allows access to application-specific resources and classes
-    private SharedPreference pref;//a file to keep data of the user
 
 
     HomeAdapter(Context context, List<RestaurantItem> data) {
         this.layoutInflater = LayoutInflater.from(context);
         this.data = data;
         this.context = context;
-        this.pref = new SharedPreference(context);
     }
 
 

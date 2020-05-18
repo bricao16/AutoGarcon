@@ -22,7 +22,7 @@ import auto_garcon.singleton.VolleySingleton;
  */
 public class MenuItem implements Serializable{
     private String category;
-    private String nameOfItem;
+    private String itemName;
     private String description;
     private String[] allergens;
     private int amountInStock;
@@ -39,12 +39,28 @@ public class MenuItem implements Serializable{
         this.quantity = 1;
     }
 
+    public MenuItem(int itemID, String itemName, double price, int quantity, String customization) {
+        this.itemID = itemID;
+        this.itemName = itemName;
+        this.price = price;
+        this.quantity = quantity;
+        this.customization = customization;
+    }
+
+    public void setCustomization(String customization) {
+        this.customization = customization;
+    }
+
+    public String getCustomization() {
+        return this.customization;
+    }
+
     public void setNameOfItem(String nameOfItem) {
-        this.nameOfItem = nameOfItem;
+        this.itemName = nameOfItem;
     }
 
     public String getNameOfItem(){
-        return this.nameOfItem;
+        return this.itemName;
     }
 
     public void setCalories(int calories) {
@@ -67,12 +83,8 @@ public class MenuItem implements Serializable{
         return this.price;
     }
 
-    public void setCost() {
-        this.cost = getPrice() * getQuantity();
-    }
-
     public double getCost() {
-        return this.cost;
+        return getPrice() * getQuantity();
     }
 
     public void setCategory(String category) {
@@ -140,14 +152,13 @@ public class MenuItem implements Serializable{
 
                     try {
                         JSONObject imageData = new JSONObject(response);
-                        Log.d("work","worked");
 
                         byte[]  itemImageByteArray = new byte[imageData.getJSONObject("image").getJSONArray("data").length()];
 
                         for(int i = 0; i < itemImageByteArray.length; i++) {
                             itemImageByteArray[i] = (byte) (((int) imageData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
                         }
-                        itemImage=itemImageByteArray;
+                        itemImage = itemImageByteArray;
                     }
                     catch(JSONException e) {
                         e.printStackTrace();

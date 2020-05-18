@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -61,6 +62,8 @@ public class LoadingScreen extends AppCompatActivity {
         pref = new SharedPreference(LoadingScreen.this);
 
         pref.setShoppingCart(new ShoppingCartSingleton());
+        ProgressBar pb = findViewById(R.id.pbLoading);
+        pb.setVisibility(ProgressBar.VISIBLE);
 
         /** Waits for 3000 milliseconds then goes to login activity*/
         new Handler().postDelayed(new Runnable() {

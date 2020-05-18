@@ -46,6 +46,7 @@ import java.util.Map;
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
+import auto_garcon.accountstuff.Services;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
@@ -71,14 +72,10 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private List<auto_garcon.menustuff.MenuItem> drink_list;
     private List<auto_garcon.menustuff.MenuItem> alcohol_list;
     private HashMap<String, List<auto_garcon.menustuff.MenuItem>> listHash;
-    private JSONObject obj;
-    private String addOrRemoveFavoritesURL;
     private Button addOrRemoveFavorite;
     private ImageView restaurantLogo;
     Dialog removeFromFavoritesPopup;
-    private TextView cartCounter;
     private TextView restaurantName;
-
 
     /**
      * Called when the activity is starting.  This is where most initialization
@@ -129,7 +126,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
          * onClick functionality to other activities and sets the listener.
          */
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-       final BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+        final BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
         if(pref.getShoppingCart()!=null) {
             if(pref.getShoppingCart().getCart().size()!=0){
@@ -294,7 +291,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             restaurant.getInt("opening");
                             restaurant.getInt("closing");
 
-
                             addOrRemoveFavorite.setBackgroundColor(Color.parseColor(secondaryColor));
 
                             listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash,getIntent().getIntExtra("restaurant id", 0), font,  fontColor,
@@ -366,8 +362,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
         VolleySingleton.getInstance(Menu.this).addToRequestQueue(getRequest);
 
-
-
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -387,9 +381,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 };
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-
     }
-
 
     /**
      * Called when an item in the navigation menu is selected.
@@ -401,22 +393,25 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                startActivity(new Intent(Menu.this, Account.class));
+                startActivity(new Intent(getBaseContext(), Account.class));
                 break;
             case R.id.order_history:
-                startActivity(new Intent(Menu.this, OrderHistory.class));
+                startActivity(new Intent(getBaseContext(), OrderHistory.class));
                 break;
             case R.id.current_orders:
-                startActivity(new Intent(Menu.this, CurrentOrders.class));
+                startActivity(new Intent(getBaseContext(), CurrentOrders.class));
                 break;
             case R.id.settings:
-                startActivity(new Intent(Menu.this, Settings.class));
+                startActivity(new Intent(getBaseContext(), Settings.class));
+                break;
+            case R.id.services:
+                startActivity(new Intent(getBaseContext(), Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                startActivity(new Intent(Menu.this, Login.class));
+                startActivity(new Intent(getBaseContext(), Login.class));
                 break;
         }
         return false;
