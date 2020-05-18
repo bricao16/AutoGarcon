@@ -11,6 +11,7 @@ var fs = require('fs');
 var path = require('path');
 var cors = require('cors');
 var crypto = require('crypto');
+var https = require('https');
 
 // NPM modules
 var express = require('express');
@@ -23,6 +24,9 @@ var luxon = require('luxon');
 var multer = require('multer');
 var nodemailer = require('nodemailer');
 var generator = require('generate-password');
+
+var key_filename = path.join(__dirname, 'key.pem');
+var cert_filename = path.join(__dirname, 'cert.pem');
 
 var app = express();
 var upload = multer();
@@ -50,6 +54,13 @@ var db = mysql.createConnection({
 	multipleStatements: true
 });
 
+//HTTPS Options
+var options = {
+	key: fs.readFileSync(key_filename),
+	cert: fs.readFileSync(cert_filename),
+	passphrase: process.env.SSL_PASSPHRASE
+}
+
 //Connect to db
 db.connect((err) => {
 	if (err) {
@@ -61,7 +72,7 @@ db.connect((err) => {
 }); //db.connect
 
 //Start server
-var server = app.listen(8000);
+https.createServer(options, app).listen(8000);
 console.log('Now listening on port 8000');
 
 
@@ -2181,11 +2192,6 @@ app.get('/customer/history/:id', verifyToken, (req, res) => {
 					order_num,
 					restaurant_id,
 					restaurant_name,
-					font,
-					font_color,
-					primary_color,
-					secondary_color,
-					tertiary_color,
 					item_id,
 					item_name,
 					price,
