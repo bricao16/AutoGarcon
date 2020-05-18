@@ -192,10 +192,12 @@ class HighestSelling extends React.Component {
                     </div>*/}
                     <br/>
                     <br/>
+                    <p style={{'float':'right'}}><i> All time highest selling times from each category </i></p>
                     <br/>
                     <div style = {{'height':'100%'}}>
                         {this.renderPlot()}
                     </div>
+
                 </Container>
             );
         }

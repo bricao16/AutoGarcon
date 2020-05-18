@@ -15,30 +15,36 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
 
+const MSEC_Hour = 4000000;
+const MSEC_Day = 4000000;
 
 const cookies = new Cookies();
+const timestamp = new Date('May 4 2020').getTime();
 class Traffic extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
               selectedTime: "Hour",
               unselectedCategories: [],
-              data:this.props.data,
+              data_hour:null,
+              data_day:null,
+              data_month:null,
               checked:true,
               token: cookies.get('mytoken'),
               staff: cookies.get('mystaff')
 
         };
 
-        this.updateData = this.updateData.bind(this);
+
         this.renderDay = this.renderDay.bind(this);
         this.renderMonth = this.renderMonth.bind(this);
         this.renderHour = this.renderHour.bind(this);
 
     }
     changeSelection(category){
-      console.log(category);
-      this.setState({'selectedTime':category})
+      this.setState({'selectedTime':category});
+      //this.getFromDB();
+      
     }
     //create a checkbox for every category of menu item
     renderCheckBoxes(){
@@ -54,83 +60,133 @@ class Traffic extends React.Component {
      /* Used for connecting to Resturant in database */
     componentDidMount() {
 
-      const https = require('https');
+    const https = require('https');
 
-    axios({
-        method: 'get',
-        url: process.env.REACT_APP_DB + '/orderstats/ordersbyhour/' + this.state.staff.restaurant_id,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Bearer '+ this.state.token
-        },
-        httpsAgent: new https.Agent({  
-          rejectUnauthorized: false,
-        }),
-      })
+     axios({
+          method: 'get',
+          url: process.env.REACT_APP_DB + '/orderstats/ordersbyhour/' + this.state.staff.restaurant_id,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Bearer '+ this.state.token
+          },
+          httpsAgent: new https.Agent({  
+            rejectUnauthorized: false,
+          }),
+        })
+          .then(res => {  
+            var dataFormat = [];
+            var maxHeight = 0;
+            var i;
+            for (i = 0; i < Object.keys(res.data).length; i++) {
+                  dataFormat.push({"y":res.data[i].num_orders, "x": (timestamp +res.data[i].hour *MSEC_Hour)});
+                  //find the max count to set the height of graph
+                  if(res.data[i].num_orders> maxHeight)
+                  {
+                      maxHeight = res.data[i].num_orders;
+                  }
+              }
+           this.setState({
+              data_hour: dataFormat,
+              chartHeight:maxHeight,
+              isLoaded :true
+            });
+            console.log(dataFormat);
+          })
+          .catch((error) => {
+            this.setState({
+              isLoaded: true,
+              error
+            });
+          })
+      
+        axios({
+
+          method: 'get',
+          url: process.env.REACT_APP_DB + '/orderstats/ordersbyday/' + this.state.staff.restaurant_id,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Bearer '+ this.state.token
+          },
+          httpsAgent: new https.Agent({  
+            rejectUnauthorized: false,
+          }),
+        })
         .then(res => {  
-        console.log(res.data);
-          var dataFormat = [];
-          var maxHeight = 0;
-          var i;
-          for (i = 0; i < Object.keys(res.data).length; i++) {
-                dataFormat.push({"y":res.data[i].total_ordered, "x":res.data[i].category, "label":res.data[i].item_name});
-                //find the max count to set the height of graph
-                if(res.data[i].total_ordered> maxHeight)
-                {
-                    maxHeight = res.data[i].total_ordered;
-                }
-            }
-        
-        console.log(this.state.data);
-         this.setState({
-            data: dataFormat,
-            full_data: dataFormat,
-            chartHeight:maxHeight,
-            isLoaded :true
-          });
+            var dataDay = [];
+            var maxHeight = 0;
+            var i;
+            for (i = 0; i < Object.keys(res.data).length; i++) {
+                  dataDay.push({"y":res.data[i].num_orders, "x": new Date(res.data[i].day).getTime()});
+                  //find the max count to set the height of graph
+                  if(res.data[i].num_orders> maxHeight)
+                  {
+                      maxHeight = res.data[i].num_orders;
+                  }
+              }
+          console.log(dataDay);
+           this.setState({
+              data_day: dataDay,
+              chartHeight:maxHeight,
+              isLoaded :true
+            });
+           
+          })
+          .catch((error) => {
+            this.setState({
+              isLoaded: true,
+              error
+            });
+          })
+
+        axios({
+          method: 'get',
+          url: process.env.REACT_APP_DB + '/orderstats/ordersbymonth/' + this.state.staff.restaurant_id,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Bearer '+ this.state.token
+          },
+          httpsAgent: new https.Agent({  
+            rejectUnauthorized: false,
+          }),
         })
-        .catch((error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        })
+        .then(res => {  
+          console.log(res.data);
+            var dataFormat = [];
+            var maxHeight = 0;
+            var i;
+            for (i = 0; i < Object.keys(res.data).length; i++) {
+                  dataFormat.push({"y":res.data[i].num_orders, "x": new Date(res.data[i].month).getTime()});
+                  //find the max count to set the height of graph
+                  if(res.data[i].num_orders> maxHeight)
+                  {
+                      maxHeight = res.data[i].num_orders;
+                  }
+              }
+           this.setState({
+              data_month: dataFormat,
+              chartHeight:maxHeight,
+              isLoaded :true
+            });
+            console.log(dataFormat);
+          })
+          .catch((error) => {
+            this.setState({
+              isLoaded: true,
+              error
+            });
+          })
     }
-    //change the data so it only renders correct categories
-    updateData(){
-        //reset the data
-        var joined = [];
-        var categories = this.state.unselectedCategories;
-        this.props.data.map(function(item){
-            if(!(categories.includes(item.x)))
-            {
-                //if its not unselected then add to data
-                joined.push(item);
-            }
-            this.setState({ data: joined });
-            this.setState({ unselectedCategories: categories });
-        }.bind(this));
-    }
+
     renderDay(){
-        const MSEC_DAILY = 6000000;
-        const timestamp = new Date('May 4 2020').getTime();
+
         return(
             <XYPlot xType="time" width={800} height={400} margin={{bottom: 50}} >
               <HorizontalGridLines />
               <VerticalGridLines />
-              <XAxis title="Hour"  tickTotal = {8} />
+              <XAxis title="Day"  tickTotal = {8} />
               <YAxis title="Number of Orders" />
               <LineSeries
-                data={[
-                  {x: timestamp + MSEC_DAILY, y: 3},
-                  {x: timestamp + MSEC_DAILY * 2, y: 5},
-                  {x: timestamp + MSEC_DAILY * 3, y: 15},
-                  {x: timestamp + MSEC_DAILY * 4, y: 17},
-                  {x: timestamp + MSEC_DAILY * 5, y: 12},
-                  {x: timestamp + MSEC_DAILY * 6, y: 10},
-                  {x: timestamp + MSEC_DAILY * 7, y: 14},
-                  {x: timestamp + MSEC_DAILY * 8, y: 9}
-                ]}
+                data= {this.state.data_day}
                 color = {this.props.primary}
               />
 
@@ -138,8 +194,6 @@ class Traffic extends React.Component {
         );
     }
     renderHour(){
-        const MSEC_DAILY = 6000000;
-        const timestamp = new Date('May 4 2020').getTime();
         return(
             <XYPlot xType="time" width={800} height={400} margin={{bottom: 50}} >
               <HorizontalGridLines />
@@ -147,16 +201,7 @@ class Traffic extends React.Component {
               <XAxis title="Hour"  tickTotal = {8} />
               <YAxis title="Number of Orders" />
               <LineSeries
-                data={[
-                  {x: timestamp + MSEC_DAILY, y: 3},
-                  {x: timestamp + MSEC_DAILY * 2, y: 5},
-                  {x: timestamp + MSEC_DAILY * 3, y: 15},
-                  {x: timestamp + MSEC_DAILY * 4, y: 17},
-                  {x: timestamp + MSEC_DAILY * 5, y: 12},
-                  {x: timestamp + MSEC_DAILY * 6, y: 20},
-                  {x: timestamp + MSEC_DAILY * 7, y: 14},
-                  {x: timestamp + MSEC_DAILY * 8, y: 9}
-                ]}
+                data= {this.state.data_hour}
                 color = {this.props.primary}
               />
 
@@ -170,19 +215,10 @@ class Traffic extends React.Component {
             <XYPlot xType="time" width={800} height={400} margin={{bottom: 50}} >
               <HorizontalGridLines />
               <VerticalGridLines />
-              <XAxis title="Hour"  tickTotal = {8} />
+              <XAxis title="Month"  tickTotal = {8} />
               <YAxis title="Number of Orders" />
               <LineSeries
-                data={[
-                  {x: timestamp + MSEC_DAILY, y: 3},
-                  {x: timestamp + MSEC_DAILY * 2, y: 20},
-                  {x: timestamp + MSEC_DAILY * 3, y: 15},
-                  {x: timestamp + MSEC_DAILY * 4, y: 17},
-                  {x: timestamp + MSEC_DAILY * 5, y: 12},
-                  {x: timestamp + MSEC_DAILY * 6, y: 10},
-                  {x: timestamp + MSEC_DAILY * 7, y: 14},
-                  {x: timestamp + MSEC_DAILY * 8, y: 9}
-                ]}
+                data= {this.state.data_month}
                 color = {this.props.primary}
               />
 
@@ -190,6 +226,7 @@ class Traffic extends React.Component {
         );
     }
     render() {
+
         return (
             <Container>
                 {/*Dropdown of  hour, day and month*/}
