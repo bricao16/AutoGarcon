@@ -13,6 +13,9 @@
         android:title="@string/current_orders"/>
 
     <item
+        android:id="@+id/services"
+        android:title="@string/services" />
+    <item
         android:id="@+id/settings"
         android:title="@string/settings"/>
 
