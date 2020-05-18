@@ -19,44 +19,36 @@
             android:layout_height="wrap_content"
             android:background="@color/colorAccent" />
 
-        <Button
-            android:id="@+id/Help"
-            android:layout_width="341dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="150dp"
-            android:layout_marginEnd="100dp"
-            android:text="FAQ" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/Bill"
-            android:layout_width="347dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/faqButton"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="70dp"
-            android:layout_marginEnd="100dp"
-            android:text="Privacy Policy" />
+            <Button
+                android:id="@+id/Bill"
+                android:layout_width="233dp"
+                android:layout_height="56dp"
+                android:text="@string/Help"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.491"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Help"
+                app:layout_constraintVertical_bias="0.254" />
 
-        <Button
-            android:id="@+id/termsLegalButton"
-            android:layout_width="347dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/privacyLegalButton"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="70dp"
-            android:layout_marginEnd="100dp"
-            android:text="Terms and Conditions" />
+            <Button
+                android:id="@+id/Help"
+                android:layout_width="233dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="296dp"
+                android:text="@string/Bill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.483"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/userHelpInfo"
+            android:id="@+id/services"
             android:layout_width="243dp"
             android:layout_height="30dp"
             android:layout_alignParentStart="true"
@@ -65,7 +57,7 @@
             android:layout_marginStart="100dp"
             android:layout_marginTop="18dp"
             android:layout_marginEnd="100dp"
-            android:text="Help"
+            android:text="@string/services"
             android:textAlignment="center"
             android:textSize="18sp" />
 

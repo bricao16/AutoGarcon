@@ -51,15 +51,18 @@
     <string name="item">Item</string>
     <string name="Remove">Remove</string>
     <string name="privacy">privacy</string>
-    <string name ="error">Oops! Something went wrong. </string>
+    <string name="error">Oops! Something went wrong. </string>
     <string name="wifiError">Please connect to the Internet.</string>
-    <string name = "errorBody">Please enter a short description of what happened</string>
-    <string name ="errorSubject">Please tell us what your problem relates too</string>
+    <string name="errorBody">Please enter a short description of what happened</string>
+    <string name="errorSubject">Please tell us what your problem relates too</string>
     <string name="submit">Submit</string>
     <string name="out_of_stock_string">Out of stock</string>
     <string name="Customize">Customize</string>
     <string name="change_image">Change Image</string>
     <string name="choose_from_gallery">Choose From Gallery</string>
     <string name="take_photo">Take Photo</string>
+    <string name ="Help">I need Assistance</string>
+    <string name="Bill">Bill please</string>
+    <string name="services">Services</string>
 
 </resources>
