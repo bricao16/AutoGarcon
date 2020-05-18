@@ -1,12 +1,9 @@
 package auto_garcon;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.StringRequest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,29 +22,14 @@ import java.util.Map;
  * Sketch Project Studio
  * Created by Angga on 27/04/2016 12.05.
  */
-public class VolleyMultipartRequest extends Request<NetworkResponse> {
+public class VolleyMultipartRequest extends StringRequest {
     private final String twoHyphens = "--";
     private final String lineEnd = "\r\n";
     private final String boundary = "apiclient-" + System.currentTimeMillis();
 
-    private Response.Listener<NetworkResponse> mListener;
+    private Response.Listener<String> mListener;
     private Response.ErrorListener mErrorListener;
     private Map<String, String> mHeaders;
-
-    /**
-     * Default constructor with predefined header and post method.
-     *
-     * @param url           request destination
-     * @param headers       predefined custom header
-     * @param listener      on success achieved 200 code from request
-     * @param errorListener on error http or library timeout
-     */
-    public VolleyMultipartRequest(String url, Map<String, String> headers, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
-        super(Method.POST, url, errorListener);
-        this.mListener = listener;
-        this.mErrorListener = errorListener;
-        this.mHeaders = headers;
-    }
 
     /**
      * Constructor with option method and default header configuration.
@@ -57,8 +39,8 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
      * @param listener      on success event handler
      * @param errorListener on error event handler
      */
-    public VolleyMultipartRequest(int method, String url, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
-        super(method, url, errorListener);
+    public VolleyMultipartRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(method, url, listener, errorListener);
         this.mListener = listener;
         this.mErrorListener = errorListener;
     }
@@ -112,22 +94,6 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
     }
 
     @Override
-    protected Response<NetworkResponse> parseNetworkResponse(NetworkResponse response) {
-        try {
-            return Response.success(
-                    response,
-                    HttpHeaderParser.parseCacheHeaders(response));
-        } catch (Exception e) {
-            return Response.error(new ParseError(e));
-        }
-    }
-
-    @Override
-    protected void deliverResponse(NetworkResponse response) {
-        mListener.onResponse(response);
-    }
-
-    @Override
     public void deliverError(VolleyError error) {
         mErrorListener.onErrorResponse(error);
     }
@@ -174,7 +140,6 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
     private void buildTextPart(DataOutputStream dataOutputStream, String parameterName, String parameterValue) throws IOException {
         dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
         dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"" + parameterName + "\"" + lineEnd);
-        //dataOutputStream.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
         dataOutputStream.writeBytes(lineEnd);
         dataOutputStream.writeBytes(parameterValue + lineEnd);
     }
@@ -224,23 +189,6 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
         private String type;
 
         /**
-         * Default data part
-         */
-        public DataPart() {
-        }
-
-        /**
-         * Constructor with data.
-         *
-         * @param name label of data
-         * @param data byte data
-         */
-        public DataPart(String name, byte[] data) {
-            fileName = name;
-            content = data;
-        }
-
-        /**
          * Constructor with mime data type.
          *
          * @param name     label of data
@@ -260,15 +208,6 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
          */
         public String getFileName() {
             return fileName;
-        }
-
-        /**
-         * Setter file name.
-         *
-         * @param fileName string file name
-         */
-        public void setFileName(String fileName) {
-            this.fileName = fileName;
         }
 
         /**

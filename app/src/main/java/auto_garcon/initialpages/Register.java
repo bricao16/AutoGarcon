@@ -39,7 +39,7 @@ public class Register extends AppCompatActivity {
     EditText userFirst;//used to extract data from xml page of the Registration Activity
     EditText userLast;//used to extract data from xml page of the Registration Activity
     EditText password;//used to extract data from xml page of the Registration Activity
-    Button buttonSignUp;//used to identify when user wants to register
+    Button nextButton;//used to identify when user wants to register
     TextView textViewLogin;//used to send user into Sign in Activity
     EditText userID;//used to extract data from xml page of the Registration Activity
     private SharedPreference pref;//This object is used to store information about the user that can be used outside of this page
@@ -73,11 +73,11 @@ public class Register extends AppCompatActivity {
         userFirst = findViewById(R.id.first_name_enter_register);// associating xml objects with the java Object equivalent
         userLast = findViewById(R.id.last_name_enter_register);// associating xml objects with the java Object equivalent
         password = findViewById(R.id.password_enter_register);// associating xml objects with the java Object equivalent
-        buttonSignUp = findViewById(R.id.sign_up_button_register);// associating xml objects with the java Object equivalent
+        nextButton = findViewById(R.id.next_button_on_register);// associating xml objects with the java Object equivalent
         textViewLogin = findViewById(R.id.yes_account_register);// associating xml objects with the java Object equivalent
 
         /**/
-        buttonSignUp.setOnClickListener(new View.OnClickListener(){
+        nextButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 final String firstName = userFirst.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String lastName = userLast.getText().toString().trim();//extracted data from xml object and converted into a string
@@ -133,68 +133,15 @@ public class Register extends AppCompatActivity {
                     validInputs = false;
                 }
                 if(validInputs == true) {// if all the requirments are met than we can send our put request to the database
+                    Intent imageSelection = new Intent(Register.this, AccountImageSelectionRegister.class);
 
-                    //put request for registering
-                    JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
-                    try{
-                        obj.put("customer_id", username);
-                        obj.put("first_name",firstName);
-                        obj.put("last_name",lastName);
-                        obj.put("email",email);
-                        obj.put("password", passwd);
-                    }
-                    catch (JSONException e){
-                        //TODO figure out how to handle this other than stack trace
-                        e.printStackTrace();
-                    }
+                    imageSelection.putExtra("first_name", firstName);
+                    imageSelection.putExtra("last_name", lastName);
+                    imageSelection.putExtra("email", email);
+                    imageSelection.putExtra("username", username);
+                    imageSelection.putExtra("password", passwd);
 
-                    JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, "https://50.19.176.137:8001/customer/register", obj,
-                            new Response.Listener<JSONObject>()
-                            {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    // response
-                                    try {
-                                        JSONObject object = response.getJSONObject("customer");
-                                        String token = response.getString("token");
-
-                                        byte[]  itemImageByteArray = new byte[object.getJSONObject("image").getJSONArray("data").length()];
-
-                                        for(int i = 0; i < itemImageByteArray.length; i++) {
-                                            itemImageByteArray[i] = (byte) (((int) object.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
-                                        }
-
-                                        pref.setUser(new UserSingleton(firstName,  lastName, username, email, itemImageByteArray));
-                                        pref.setAuthToken(token);
-                                        pref.changeLogStatus(true);
-
-                                        startActivity(new Intent(Register.this, TwoButtonPage.class));
-                                        finish();//prevents user from coming back
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    // error if the request fails
-
-                                    if(error.networkResponse.statusCode == 409){
-                                        Toast.makeText(Register.this, "Customer username already exist please enter a different username", Toast.LENGTH_LONG).show();
-                                    }
-                                    else{
-                                        Toast.makeText(Register.this,"User could not be created",Toast.LENGTH_LONG).show();
-                                    }
-                                    error.printStackTrace();
-                                }
-                            }
-                    );
-
-                    VolleySingleton.getInstance(Register.this).addToRequestQueue(putRequest);// making the actual request
-                }
-                else{
-                    Toast.makeText(Register.this, "Error Occurred", Toast.LENGTH_SHORT).show();// if something fails with our request display error
+                    startActivity(imageSelection);
                 }
             }
         });

@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,6 +42,8 @@ import java.util.Map;
 
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.VolleyMultipartRequest;
+import auto_garcon.cartorderhistory.ShoppingCart;
+import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
@@ -198,9 +201,32 @@ public class Account extends AppCompatActivity {
                 if(validInputs == true) {// if all the requirements are met than we can send our put request to the database
 
                     VolleyMultipartRequest updateCustomerRequest = new VolleyMultipartRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/update",
-                            new Response.Listener<NetworkResponse>() {
+                            new Response.Listener<String>() {
                                 @Override
-                                public void onResponse(NetworkResponse response) {}
+                                public void onResponse(String response) {
+                                    try {
+                                        JSONObject responseData = new JSONObject(response);
+                                        JSONObject userData = responseData.getJSONObject("customer");
+
+                                        byte[] itemImageByteArray = new byte[userData.getJSONObject("image").getJSONArray("data").length()];
+
+                                        for(int i = 0; i < itemImageByteArray.length; i++) {
+                                            itemImageByteArray[i] = (byte) (((int) userData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
+                                        }
+
+                                        pref.setUser(new UserSingleton(userData.getString("first_name"), userData.getString("last_name"), userData.getString("customer_id"),
+                                                userData.getString("email"), itemImageByteArray));
+
+                                        String token = responseData.getString("token");
+                                        pref.setAuthToken(token);
+
+                                        startActivity(new Intent(Account.this, Home.class));
+                                        Toast.makeText(Account.this, "Changes Saved", Toast.LENGTH_LONG).show();
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
@@ -223,7 +249,11 @@ public class Account extends AppCompatActivity {
                             Map<String, DataPart> params = new HashMap<>();
                             // file name could found file base or direct access from real path
                             // for now just get bitmap data from ImageView
-                            params.put("image", new DataPart("account.png", uploadToDatabase, "image/png"));
+
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            ((BitmapDrawable) accountImage.getDrawable()).getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+                            params.put("image", new DataPart("account.png", baos.toByteArray(), "image/png"));
 
                             return params;
                         }
@@ -260,11 +290,6 @@ public class Account extends AppCompatActivity {
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         accountImage.setImageBitmap(selectedImage);
-
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        selectedImage.compress(Bitmap.CompressFormat.PNG, 100, baos);
-
-                        uploadToDatabase = baos.toByteArray();
                     }
 
                     break;
@@ -281,11 +306,6 @@ public class Account extends AppCompatActivity {
                                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                                 String picturePath = cursor.getString(columnIndex);
                                 accountImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                BitmapFactory.decodeFile(picturePath).compress(Bitmap.CompressFormat.PNG, 100, baos);
-
-                                uploadToDatabase = baos.toByteArray();
 
                                 cursor.close();
                             }

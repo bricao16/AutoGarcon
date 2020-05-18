@@ -20,7 +20,7 @@
             android:background="@color/colorAccent" />
 
         <Button
-            android:id="@+id/Help"
+            android:id="@+id/faqButton"
             android:layout_width="341dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -32,7 +32,7 @@
             android:text="FAQ" />
 
         <Button
-            android:id="@+id/Bill"
+            android:id="@+id/privacyLegalButton"
             android:layout_width="347dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/faqButton"

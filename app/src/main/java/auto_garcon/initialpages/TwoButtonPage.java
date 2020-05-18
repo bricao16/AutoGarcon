@@ -150,7 +150,7 @@ public class TwoButtonPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+        if(pref.getUser().getChangePassword() == 1){//check if they have updated their password
             //if not send them back to PasswordChange page and force them to update their password
             Intent intent = new Intent(TwoButtonPage.this, PasswordChange.class);
             startActivity(intent);

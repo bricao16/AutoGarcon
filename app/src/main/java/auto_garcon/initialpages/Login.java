@@ -123,7 +123,6 @@ public class Login extends AppCompatActivity {
                                         JSONObject object = response.getJSONObject("customer");
                                         String token = response.getString("token");
 
-
                                         byte[] itemImageByteArray = new byte[object.getJSONObject("image").getJSONArray("data").length()];
 
                                         for(int i = 0; i < itemImageByteArray.length; i++) {
