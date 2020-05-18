@@ -23,20 +23,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/Bill"
-                android:layout_width="233dp"
-                android:layout_height="56dp"
-                android:text="@string/Help"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.491"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Help"
-                app:layout_constraintVertical_bias="0.254" />
+
 
             <Button
-                android:id="@+id/Help"
+                android:id="@+id/Bill"
                 android:layout_width="233dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="296dp"
@@ -45,6 +35,18 @@
                 app:layout_constraintHorizontal_bias="0.483"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/Help"
+                android:layout_width="233dp"
+                android:layout_height="56dp"
+                android:text="@string/Help"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.491"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Bill"
+                app:layout_constraintVertical_bias="0.254" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
