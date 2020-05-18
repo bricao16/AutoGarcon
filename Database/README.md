@@ -8,7 +8,7 @@ Files:
 -Queries: Temporary file for potential queries we will have
 -package.json: required packages to run server.js  
 -Server.js: HTTP version of API created by Tucker
--server2.js: HTTPS version of API
+-Server2.js: HTTPS version of API
 
 Folders:  
 +documentation  
