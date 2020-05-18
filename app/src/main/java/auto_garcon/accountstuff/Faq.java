@@ -1,6 +1,7 @@
 package auto_garcon.accountstuff;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -8,6 +9,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +44,8 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_faq);
+        pref = new SharedPreference(this);
+
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.terms_main);// associating xml objects with the java Object equivalent
@@ -53,6 +57,12 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+        usernameSideNavBar.setText(pref.getUser().getUsername());
+
+        ImageView userImageSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_account_picture);
+        userImageSideNavBar.setImageBitmap(BitmapFactory.decodeByteArray(pref.getUser().getImageBitmap(), 0, pref.getUser().getImageBitmap().length));
+
         // get our html content
         //Privacy Policy
         String htmlTermsAsString = "<!DOCTYPE html> <html> <head> <meta charset='utf-8'> <meta name='viewport' content='width=device-width'> </head> <body> <strong> FAQ:<br><br> </strong> <strong> Forgot Password </strong> <p> If you happen to forget your password, you may select the forgot password button and you will be promted to reset your password through your email.<br> </p> <strong> Changing Account Information </strong> <p> Go to the side menu bar, select account, and fill in your information. Once you are done select save and your account information will be updated. <br> </p> <strong> Viewing a Menu </strong> <p> There are two ways of viewing a restaurants menu. 1) Scanning QR code of the restaurant. 2) On the Home page you may search for restaurants and add them to your favorites. Adding them to your favorites allows you to always have it on your homescreen unlessyou decide to remove it in which case you may remove it by selecting the remove from favorites button on the given menus page. <br> </p> <strong> How to Order </strong> <p> Scan QR code at participating restaurant, select item(s) from restaurant, in your cart review your order and submit. At any point before placing the order you may modify your cart. In your cart you may incresae and decrease the quantity of the number of a selected item you would like.<br> </p> <strong> Viewing Orders Placed </strong> <p> Select side menu bar, select Order History. If you have any past orders you may view what you ordered. You may also reorder past orders which means it will automatically fill your cart with those items. It will still require you to have scanned the restaurants QR code.<br> </p> <strong> Other </strong> <p> Any further questions do not hesitate to contact us at autoGarcon@gmail.com.<br> </p> </body> </html>";
@@ -62,7 +72,6 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
         textView.setText(htmlTermsAsSpanned);
         textView.setMovementMethod(new ScrollingMovementMethod());
 
-        pref = new SharedPreference(this);
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =

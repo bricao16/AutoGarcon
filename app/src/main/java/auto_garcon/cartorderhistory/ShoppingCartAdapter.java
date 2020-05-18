@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -116,7 +117,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.itemImage.setImageBitmap(BitmapFactory.decodeByteArray(menuItemArrayList.get(position).getItemImage(), 0, menuItemArrayList.get(position).getItemImage().length));
 
         holder.name.setText(menuItemArrayList.get(position).getNameOfItem());
-        menuItemArrayList.get(position).setCost();
         holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
         holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
         //If the user pushes the add button on the item view, then the action is taken.
@@ -130,7 +130,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 //Getting a item that the user pushed the add button
                 //Incrementing the quantity and recalculating the total cost of the item.
                 menuItemArrayList.get(position).incrementQuantity();
-                menuItemArrayList.get(position).setCost();
 
                 //Set its view again to show the updated quantity.
                 holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
@@ -151,7 +150,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                         //Decrementing the quantity and recalculating the total cost of the item.
                         if(menuItemArrayList.get(position).getQuantity() > 1){
                             menuItemArrayList.get(position).decrementQuantity();
-                            menuItemArrayList.get(position).setCost();
                             //Set its view again to show the updated quantity.
                             holder.quantity.setText("Qty(" + menuItemArrayList.get(position).getQuantity() + ")");
                             holder.price.setText(String.format("$%.02f", menuItemArrayList.get(position).getCost()));
@@ -186,14 +184,25 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.editItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                menuItemEditPopup = new Dialog(context);
-                menuItemEditPopup.setContentView(R.layout.menu_item_edit_popup);
-                menuItemEditPopup.show();
+                final Dialog customizationPopup = new Dialog(context);
+                customizationPopup.setContentView(R.layout.shopping_cart_edit_popup);
+                customizationPopup.show();
 
-                menuItemEditPopup.findViewById(R.id.menu_item_edit_close).setOnClickListener(new View.OnClickListener() {
+                final EditText customization = customizationPopup.findViewById(R.id.text_menu_item_edit);
+                customization.setText(menuItemArrayList.get(position).getCustomization());
+
+                customizationPopup.findViewById(R.id.menu_item_edit_submit).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        menuItemEditPopup.dismiss();
+                        menuItemArrayList.get(position).setCustomization(customization.getText().toString().trim());
+                        customizationPopup.dismiss();
+                    }
+                });
+
+                customizationPopup.findViewById(R.id.menu_item_edit_close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        customizationPopup.dismiss();
                     }
                 });
             }

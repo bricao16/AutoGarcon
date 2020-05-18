@@ -19,7 +19,7 @@
             android:scrollbars="vertical"
             android:maxLines="6"
             android:textSize="12sp"
-            android:hint="@string/customization_hint_on_menu"
+            android:hint="@string/customization_hint_on_shopping_cart"
             android:background="@color/light_gray"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

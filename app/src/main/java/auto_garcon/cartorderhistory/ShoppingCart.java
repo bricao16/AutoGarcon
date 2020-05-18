@@ -2,13 +2,14 @@ package auto_garcon.cartorderhistory;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -100,7 +101,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          */
         pref = new SharedPreference(this);
         shoppingCart = pref.getShoppingCart();
-
 
         setContentView(R.layout.activity_shopping_cart);
 
@@ -200,6 +200,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                                         item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
                                         item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
+                                        item.put("customization", shoppingCart.getCart().get(i).getCustomization());
                                         order.put(Integer.toString(i), item);
                                     }
 
@@ -301,6 +302,10 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
         TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
         usernameSideNavBar.setText(pref.getUser().getUsername());
+
+        ImageView userImageSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_account_picture);
+        userImageSideNavBar.setImageBitmap(BitmapFactory.decodeByteArray(pref.getUser().getImageBitmap(), 0, pref.getUser().getImageBitmap().length));
+
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();

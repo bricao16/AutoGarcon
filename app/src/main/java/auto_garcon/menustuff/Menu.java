@@ -71,14 +71,10 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private List<auto_garcon.menustuff.MenuItem> drink_list;
     private List<auto_garcon.menustuff.MenuItem> alcohol_list;
     private HashMap<String, List<auto_garcon.menustuff.MenuItem>> listHash;
-    private JSONObject obj;
-    private String addOrRemoveFavoritesURL;
     private Button addOrRemoveFavorite;
     private ImageView restaurantLogo;
     Dialog removeFromFavoritesPopup;
-    private TextView cartCounter;
     private TextView restaurantName;
-
 
     /**
      * Called when the activity is starting.  This is where most initialization
@@ -129,7 +125,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
          * onClick functionality to other activities and sets the listener.
          */
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-       final BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+        final BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
         if(pref.getShoppingCart()!=null) {
             if(pref.getShoppingCart().getCart().size()!=0){
@@ -365,8 +361,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
         VolleySingleton.getInstance(Menu.this).addToRequestQueue(getRequest);
 
-
-
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -386,7 +380,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 };
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-
     }
 
 

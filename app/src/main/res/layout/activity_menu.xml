@@ -46,8 +46,8 @@
 
         <TextView
             android:id="@+id/restaurant_name"
-            android:layout_width="197dp"
-            android:layout_height="61dp"
+            android:layout_width="195dp"
+            android:layout_height="60dp"
             android:layout_alignTop="@+id/restaurant_logo"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="2dp"
@@ -57,7 +57,7 @@
 
         <Button
             android:id="@+id/add_restaurant"
-            android:layout_width="74dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/xml_toolbar"
             android:layout_alignParentEnd="true"

@@ -16,6 +16,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
+ * Derived from https://gist.github.com/anggadarkprince/a7c536da091f4b26bb4abf2f92926594
+ */
+
+/**
  * Custom request to make multipart header and upload file.
  *
  * Sketch Project Studio
@@ -38,9 +42,7 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
      * @param listener      on success achieved 200 code from request
      * @param errorListener on error http or library timeout
      */
-    public VolleyMultipartRequest(String url, Map<String, String> headers,
-                                  Response.Listener<NetworkResponse> listener,
-                                  Response.ErrorListener errorListener) {
+    public VolleyMultipartRequest(String url, Map<String, String> headers, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
         super(Method.POST, url, errorListener);
         this.mListener = listener;
         this.mErrorListener = errorListener;
@@ -55,9 +57,7 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
      * @param listener      on success event handler
      * @param errorListener on error event handler
      */
-    public VolleyMultipartRequest(int method, String url,
-                                  Response.Listener<NetworkResponse> listener,
-                                  Response.ErrorListener errorListener) {
+    public VolleyMultipartRequest(int method, String url, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
         super(method, url, errorListener);
         this.mListener = listener;
         this.mErrorListener = errorListener;

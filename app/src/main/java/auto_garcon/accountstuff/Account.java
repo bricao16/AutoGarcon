@@ -200,10 +200,7 @@ public class Account extends AppCompatActivity {
                     VolleyMultipartRequest updateCustomerRequest = new VolleyMultipartRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/update",
                             new Response.Listener<NetworkResponse>() {
                                 @Override
-                                public void onResponse(NetworkResponse response) {
-                                    String resultResponse = new String(response.data);
-                                    Log.d("SDFSDHRWN", resultResponse);
-                                }
+                                public void onResponse(NetworkResponse response) {}
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
