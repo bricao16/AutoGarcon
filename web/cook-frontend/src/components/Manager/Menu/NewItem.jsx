@@ -23,6 +23,8 @@ class NewItem extends React.Component {
     this.state.item_id = props.prefill.item_id
     this.state.show = false
     this.state.imageName = "Choose file"
+    this.state.init = true
+    this.state.categories = []
     this.state.cookies = new Cookies();
     this.state.user = this.state.cookies.get("mystaff");
     this.parseStock(props.prefill.in_stock);
@@ -161,12 +163,44 @@ class NewItem extends React.Component {
 		}
   }
 
-  getCategories() {
-    return (
-      this.state.cookies.get('categories').map(category => 
-        <option key={category} value={category}>{category}</option>
-      )
-    )
+  /* For initializing the category options on the form */
+  async getCategories() {
+    let result = []
+    /* No longer first initialization */
+    this.setState({
+      init: false
+    });
+
+    await axios({
+      method: 'GET',
+      url: process.env.REACT_APP_DB + "/categories",
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      timeout: 8000,
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+    /* fetch(endpoint, requestOptions) and await response */
+    .then(async response => {
+      await response;
+
+      if (response.status !== 200) {console.error("There was an error!");}
+      else {
+        for (let category in response.data) {
+          result.push(response.data[category].category_name);
+        }
+      }
+    })
+    .catch(error => {
+      console.error("There was an error!", error);
+    });
+
+    /* Set categories of internal state */
+    this.setState({
+      categories: result.map(category => <option key={category} value={category}>{category}</option>)
+    })
   }
 
   /* item needs to be deleted */
@@ -227,7 +261,8 @@ class NewItem extends React.Component {
 			if (this.state.show) this.setState({show:false});
 		}, 5000)
   }
-	
+  
+  /* Handling of validation alerts */
   handleValidation(message){
 	  this.setState({response: message});
 	  this.setState({alertVariant: 'danger'});
@@ -238,6 +273,8 @@ class NewItem extends React.Component {
 			if (this.state.show) this.setState({show:false});
 		}, 5000)
   }
+
+  /* Show and close modal methods */
   handleModalClose = () => this.setState({ModalShow: false});
   handleModalShow = () => this.setState({ModalShow: true});
 
@@ -256,6 +293,11 @@ class NewItem extends React.Component {
   render(){
     /* Make sure stock is correctly represented as true or false in the component's state */
     this.parseStock(this.state.in_stock)
+
+    /* Update categories on load */
+    if (this.state.init) {
+      this.getCategories()
+    }
 
     if(this.state.type === "default"){
       return ( 
@@ -288,7 +330,7 @@ class NewItem extends React.Component {
                 <div className="form-group row">
                   <label className="col">Category </label>
                   <select name="category" className="form-control col" onChange={this.handleInputChange} placeholder={this.state.category}>
-                    {this.getCategories()}
+                    {this.state.categories}
                   </select>
                 </div>
                  <div className="form-group row">
@@ -371,7 +413,7 @@ class NewItem extends React.Component {
                 <div className="form-group row">
                   <label className="col">Category </label>
                   <select name="category" className="form-control col" value={this.state.category} onChange={this.handleInputChange} placeholder={this.state.category}>
-                    {this.getCategories()}
+                    {this.state.categories}
                   </select>
                 </div>
 
