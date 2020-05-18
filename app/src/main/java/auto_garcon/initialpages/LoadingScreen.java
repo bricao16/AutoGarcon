@@ -1,12 +1,8 @@
 package auto_garcon.initialpages;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -58,12 +54,6 @@ public class LoadingScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_screen);
-
-        pref = new SharedPreference(LoadingScreen.this);
-
-        pref.setShoppingCart(new ShoppingCartSingleton());
-        ProgressBar pb = findViewById(R.id.pbLoading);
-        pb.setVisibility(ProgressBar.VISIBLE);
 
         /** Waits for 3000 milliseconds then goes to login activity*/
         new Handler().postDelayed(new Runnable() {
