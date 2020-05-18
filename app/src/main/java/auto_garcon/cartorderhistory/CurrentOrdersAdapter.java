@@ -26,13 +26,15 @@ public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdap
     private HashMap<Integer, ShoppingCartSingleton> orders;
     private HashMap<Integer, byte[]> logos;
     private ArrayList<Integer> orderNumbers;
+    HashMap<Integer, String> restaurantNames;
 
-    CurrentOrdersAdapter(Context context, HashMap<Integer, ShoppingCartSingleton> orders, HashMap<Integer, byte[]> logos, ArrayList<Integer> orderNumbers) {
+    CurrentOrdersAdapter(Context context, HashMap<Integer, ShoppingCartSingleton> orders, HashMap<Integer, byte[]> logos, ArrayList<Integer> orderNumbers, HashMap<Integer, String> restaurantNames) {
         this.layoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.orders = orders;
         this.logos = logos;
         this.orderNumbers = orderNumbers;
+        this.restaurantNames = restaurantNames;
     }
 
     @NonNull
@@ -46,8 +48,7 @@ public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdap
     public void onBindViewHolder(@NonNull CurrentOrdersAdapter.CurrentOrdersViewHolder holder, final int position) {
         holder.restaurantLogo.setImageBitmap(BitmapFactory.decodeByteArray(logos.get(orderNumbers.get(position)), 0, logos.get(orderNumbers.get(position)).length));
 
-        holder.textTitle.setText("SDFSDFSDFSDF");
-
+        holder.textTitle.setText(restaurantNames.get(orderNumbers.get(position)));
         holder.totalCost.setText("Total: " + String.format("$%.02f", orders.get(orderNumbers.get(position)).getCostOfItems()));
 
         holder.items.setAdapter(new RecyclerView.Adapter() {

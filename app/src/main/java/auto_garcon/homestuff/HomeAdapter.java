@@ -105,7 +105,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         holder.textPhoneNumber.setTypeface(typeface);
         holder.textPhoneNumber.setTextColor(Color.parseColor(data.get(position).getFontColor()));
 
-        String textTime = data.get(position).getOpeningTime() + " - " + data.get(position).getClosingTime();
+        String textTime = data.get(position).timeIntToString(data.get(position).getOpeningTime()) + " - " + data.get(position).timeIntToString(data.get(position).getClosingTime());
         holder.textHours.setText(textTime);
         holder.textHours.setTypeface(typeface);
         holder.textHours.setTextColor(Color.parseColor(data.get(position).getFontColor()));

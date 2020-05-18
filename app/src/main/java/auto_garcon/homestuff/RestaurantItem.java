@@ -9,8 +9,8 @@ This is an object of restaurant page.
  */
 public class RestaurantItem implements Serializable {
     private int ID;//restaurant id
-    private String openingTime;//restaurant opening hour
-    private String closingTime;//restaurant closing hour
+    private int openingTime;//restaurant opening hour
+    private int closingTime;//restaurant closing hour
     private Bitmap image;//restaurant image for the page
     private String address;//restaurant address
     private String name;//restaurant name
@@ -30,52 +30,41 @@ public class RestaurantItem implements Serializable {
     }
     //set restaurant opening hour
     public void setOpeningTime(int openingTime){
-        String openingTimeFinished = Integer.toString(openingTime);
+        this.openingTime = openingTime;
+    }
 
-        Log.d("asdgadsgas", openingTime+"");
+    public String timeIntToString(int time) {
+        String finishedTime = Integer.toString(time % 1200);
 
-        if(openingTimeFinished.length() > 2) {
-            openingTimeFinished = openingTime % 1200 + ":" + openingTimeFinished.substring(openingTimeFinished.length() - 2);
+        if(finishedTime.length() == 3) {
+            finishedTime = finishedTime.substring(0, 1) + ":" + finishedTime.substring(1, 3);
         }
         else {
-            openingTimeFinished = openingTime + ":00";
+            finishedTime = finishedTime.substring(0, 2) + ":" + finishedTime.substring(2, 4);
         }
 
-
-        if(openingTime > 1200) {
-            openingTimeFinished = openingTimeFinished + "pm";
+        if(time >= 1200) {
+            finishedTime = finishedTime + "pm";
         }
         else {
-            openingTimeFinished = openingTimeFinished + "am";
+            finishedTime = finishedTime + "am";
         }
 
-        this.openingTime = openingTimeFinished;
+        return finishedTime;
     }
 
     //get restaurant opening hour
-    public String getOpeningTime(){
+    public int getOpeningTime(){
         return this.openingTime;
     }
     //get restaurant opening hour day
     //set restaurant closing hour
     public void setClosingTime(int closingTime){
-        String closingTimeFinished = Integer.toString(closingTime);
-
-        closingTimeFinished = closingTimeFinished.substring(closingTimeFinished.length() - 2);
-        closingTimeFinished = closingTime % 12 + closingTimeFinished;
-
-        if(closingTime > 12) {
-            closingTimeFinished = closingTimeFinished + "pm";
-        }
-        else {
-            closingTimeFinished = closingTimeFinished + "am";
-        }
-
-        this.closingTime = closingTimeFinished;
+        this.closingTime = closingTime;
     }
 
     //get restaurant closing hour
-    public String getClosingTime(){
+    public int getClosingTime(){
         return this.closingTime;
     }
     //get restaurant closing hour day

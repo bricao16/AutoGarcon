@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -65,13 +66,13 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private SharedPreference pref;
     private ExpandableListView listView;
     private ExpandableListAdapter listAdapter;
-    private List<String> listDataHeader;
+    private ArrayList<String> listDataHeader;
     private List<auto_garcon.menustuff.MenuItem> appetizer_list;
     private List<auto_garcon.menustuff.MenuItem> entree_list;
     private List<auto_garcon.menustuff.MenuItem> dessert_list;
     private List<auto_garcon.menustuff.MenuItem> drink_list;
     private List<auto_garcon.menustuff.MenuItem> alcohol_list;
-    private HashMap<String, List<auto_garcon.menustuff.MenuItem>> listHash;
+    private HashMap<String, ArrayList<auto_garcon.menustuff.MenuItem>> listHash;
     private Button addOrRemoveFavorite;
     private ImageView restaurantLogo;
     Dialog removeFromFavoritesPopup;
@@ -320,32 +321,20 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                     itemToBeAdded.setNameOfItem(key);
                                     String whereToSendItem = menuItemCategories.getString("category");
 
-                                    //if conditional filters out erroneous categories
-                                    if((whereToSendItem.equals("Alcohol") || whereToSendItem.equals("Refillable Drink") || whereToSendItem.equals("Dessert") || whereToSendItem.equals("Entree") || whereToSendItem.equals("Appetizer"))
-                                        && whereToSendItem.length() != 0) {
-                                        addToList(itemToBeAdded, whereToSendItem);}
-                                }
-                            }
+                                    if(listDataHeader.contains(whereToSendItem)) {
+                                        ArrayList<auto_garcon.menustuff.MenuItem> listOfItemsInCategory = listHash.get(whereToSendItem);
 
-                            if(appetizer_list != null && appetizer_list.size() > 0) {
-                                listDataHeader.add("Appetizer");
-                                listHash.put(listDataHeader.get(listDataHeader.size() - 1), appetizer_list);
-                            }
-                            if(entree_list != null && entree_list.size()  > 0) {
-                                listDataHeader.add("Entree");
-                                listHash.put(listDataHeader.get(listDataHeader.size() - 1), entree_list);
-                            }
-                            if(dessert_list != null && dessert_list.size() > 0) {
-                                listDataHeader.add("Dessert");
-                                listHash.put(listDataHeader.get(listDataHeader.size() - 1), dessert_list);
-                            }
-                            if(drink_list != null && drink_list.size() > 0) {
-                                listDataHeader.add("Refillable Drinks");
-                                listHash.put(listDataHeader.get(listDataHeader.size() - 1), drink_list);
-                            }
-                            if(alcohol_list != null && alcohol_list.size() > 0) {
-                                listDataHeader.add("Alcohol");
-                                listHash.put(listDataHeader.get(listDataHeader.size() - 1), alcohol_list);
+                                        listOfItemsInCategory.add(itemToBeAdded);
+                                        listHash.put(whereToSendItem, listOfItemsInCategory);
+                                    }
+                                    else {
+                                        ArrayList<auto_garcon.menustuff.MenuItem> listOfItemsInCategory = new ArrayList<>();
+                                        listOfItemsInCategory.add(itemToBeAdded);
+                                        listDataHeader.add(whereToSendItem);
+
+                                        listHash.put(whereToSendItem, listOfItemsInCategory);
+                                    }
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -424,28 +413,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      * current menu does not have a category for the item being added it will add that category.
      * It then adds the actual item to the category it belongs in.
      * */
-
-    private void addToList(auto_garcon.menustuff.MenuItem key, String category) {
-        switch(category){
-            case "Appetizer":
-                appetizer_list.add(key);
-                break;
-            case "Entree":
-                entree_list.add(key);
-                break;
-            case "Dessert":
-                dessert_list.add(key);
-                break;
-            case "Refillable Drink":
-                drink_list.add(key);
-                break;
-            case "Alcohol":
-                alcohol_list.add(key);
-                break;
-            default:
-                break;
-        }
-    }
 
     private auto_garcon.menustuff.MenuItem creatingToBeAddedItem(JSONObject menuItemCategories) {
         auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
