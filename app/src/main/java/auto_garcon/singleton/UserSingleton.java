@@ -22,10 +22,11 @@ public class UserSingleton {
         this.lastName = lastName;
         this.username = username;
         this.email = email;
-        this.restaurantID = -1;
         this.changePassword = 0;
-        this.tableID=1;
         this.image = image;
+
+        this.restaurantID = -1;
+        this.tableID = -1;
     }
 
     public String getFirstName() {
@@ -44,13 +45,19 @@ public class UserSingleton {
         return email;
     }
 
-    public  int getChangePassword(){return this.changePassword;}
+    public  int getChangePassword() {
+        return this.changePassword;
+    }
 
-    public void setChangePassword(int changePassword){this.changePassword=changePassword;}
+    public void setChangePassword(int changePassword) {
+        this.changePassword = changePassword;
+    }
     public void setRestaurantID(int restaurantID) {
         this.restaurantID = restaurantID;
     }
-    public void setTableID(int tableID){this.tableID=tableID;}
+    public void setTableID(int tableID) {
+        this.tableID = tableID;
+    }
     public int getTableID(){return this.tableID;}
     public int getRestaurantID() {
         return this.restaurantID;

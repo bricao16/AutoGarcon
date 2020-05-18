@@ -120,67 +120,74 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
                 };
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        Button buttonHelp;
         Button buttonBill;
+        Button buttonHelp;
 
-        buttonHelp = findViewById(R.id.Help);//assigning the help button from the xml to a java object
         buttonBill = findViewById(R.id.Bill);// assigning the bill button from the xml to a java object
+        buttonHelp = findViewById(R.id.Help);//assigning the help button from the xml to a java object
 
 
         //when the bill button has been clicked
         buttonBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(Services.this,"A service member will be with you shortly",Toast.LENGTH_LONG).show();
+                if(pref.getUser().getRestaurantID() == -1|| pref.getUser().getTableID() == -1) {
+                    Toast.makeText(Services.this, "Please scan QR code",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Toast.makeText(Services.this,"A service member will be with you shortly",Toast.LENGTH_LONG).show();
 
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Services.this,"Error Occured",Toast.LENGTH_LONG).show();
-                    }
-                }){
-                    @Override
-                    protected Map<String, String> getParams() {// inserting parameters for the put request
-                        Map<String, String> params = new HashMap<String, String>();
-                        params.put("restaurant_id",""+pref.getUser().getRestaurantID());
-                        params.put("table_num",""+pref.getUser().getTableID());
-                        params.put("status","Good");
-                        return params;
-                    }
-                };
-                VolleySingleton.getInstance(Services.this).addToRequestQueue(updateStringRequest);
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) { }
+                    }){
+                        @Override
+                        protected Map<String, String> getParams() {// inserting parameters for the put request
+                            Map<String, String> params = new HashMap<>();
+                            params.put("restaurant_id",""+ pref.getUser().getRestaurantID());
+                            params.put("table_num","" + pref.getUser().getTableID());
+                            params.put("status","Good");
+                            return params;
+                        }
+                    };
 
+                    VolleySingleton.getInstance(Services.this).addToRequestQueue(updateStringRequest);
+                }
             }
         });
         // when the help button has been clicked
         buttonHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(Services.this,"Help is on the way",Toast.LENGTH_LONG).show();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Services.this,"Error Occured",Toast.LENGTH_LONG).show();
-                    }
-                }){
-                    @Override
-                    protected Map<String, String> getParams() {// inserting parameters for the put request
-                        Map<String, String> params = new HashMap<String, String>();
-                        params.put("restaurant_id",""+pref.getUser().getRestaurantID());
-                        params.put("table_num",""+pref.getUser().getTableID());
-                        params.put("status","Help");
-                        return params;
-                    }
-                };
-                VolleySingleton.getInstance(Services.this).addToRequestQueue(updateStringRequest);
+                if(pref.getUser().getRestaurantID() == -1|| pref.getUser().getTableID() == -1) {
+                    Toast.makeText(Services.this, "Please scan QR code",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Toast.makeText(Services.this,"Help is on the way",Toast.LENGTH_LONG).show();
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) { }
+                    }){
+                        @Override
+                        protected Map<String, String> getParams() {// inserting parameters for the put request
+                            Map<String, String> params = new HashMap<String, String>();
+                            params.put("restaurant_id",""+pref.getUser().getRestaurantID());
+                            params.put("table_num",""+pref.getUser().getTableID());
+                            params.put("status","Help");
+                            return params;
+                        }
+                    };
+
+                    VolleySingleton.getInstance(Services.this).addToRequestQueue(updateStringRequest);
+                }
             }
         });
 
