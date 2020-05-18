@@ -12,23 +12,23 @@ import snakeCase from "lodash.snakecase";
 /* This component is used to render the 
 resturant information for the manager view.
 The resturant information is being called from the database in the
-MTasks and being passed down store info. The information for a store 
+Manager and being passed down through nav items store info. The information for a store 
 is stored under the title "info" coming in from the props. This is a 3d
 array, the first element has resturant information, and the second element of
 that contains the actual information. So this.props.info[0][1].
 
-This is mapped to an array and then rendered into cards. The cards are manually
+This is mapped to an array and then rendered into their fields. The fields are manually
 created rather than dynamically in aother component because under this section
-each of these cards MUST have all this information. */
+each of these fields MUST be filled out. */
 
 class StoreInfo extends React.Component{
   constructor(props) {     
     super(props);
-    
     this.cookies = new Cookies();
     this.state = {
       showName: false,
       showAddress: false,
+      showEmail:false,
       showPhone: false,
       showDescription: false,
       showCuisine:false,
@@ -39,6 +39,7 @@ class StoreInfo extends React.Component{
       show:false,
       name:this.props.info.name,
       address: this.props.info.address,
+      email: this.props.info.email,
       phone: this.phoneFormat(this.props.info.phone_number),
 			description: this.props.info.description,
 			cuisine: this.props.info.cuisine,
@@ -63,7 +64,6 @@ class StoreInfo extends React.Component{
 
   /* Used for connecting to restaurantInfo in database */
   handleSubmit(event) {
-    console.log(this.state);
 		/* Validation for restaurant name. */
 		if(this.state.name.length > 40){
 			this.handleValidation("Restaurant name is too long.  Please reduce to 40 characters or less.");
@@ -99,6 +99,12 @@ class StoreInfo extends React.Component{
 		} else if (!Number.isInteger(parseFloat(this.state.closingMil))){
 			this.handleValidation("No integer entered for closing time.");
       return;
+    }
+    else if (!(/\S+@\S+\.\S+/.test(this.state.email)))
+    {  
+      //verify email formatting
+      this.handleValidation("Invalid email");
+      return ;
 		} else { /* Pass all validation checks */
 			
 			var phone_number = this.state.phone.replace(/\D/g,'');
@@ -109,7 +115,7 @@ class StoreInfo extends React.Component{
 				url:  process.env.REACT_APP_DB +'/restaurant/update/',
 				data: 'restaurant_id='+this.state.restaurant_id+'&name='+this.state.name+
 				'&address='+this.state.address+'&phone='+phone_number+
-				'&opening='+this.state.openingMil+'&closing='+this.state.closingMil+'&cuisine='+this.state.cuisine+'&email='+"whatever",
+				'&opening='+this.state.openingMil+'&closing='+this.state.closingMil+'&cuisine='+this.state.cuisine+'&email='+this.state.email,
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'Authorization': 'Bearer ' + this.state.token
@@ -212,7 +218,6 @@ class StoreInfo extends React.Component{
 		}	else {
 			return  hours +':' + minutesString +'PM'; 
 		}
-		console.log("Reaching into here.\n");
   }
 
   time_TimePicker(num) { 
@@ -318,6 +323,7 @@ class StoreInfo extends React.Component{
     const primary = this.props.primary;
     const font = this.props.font;
     const font_color = this.props.font_color
+    //toggling between edit and non edit for eah field
     return(
       <div style={{"width": "70vw"}}>
         <div>
@@ -362,6 +368,18 @@ class StoreInfo extends React.Component{
                 </div>
                 <button onClick={(event) => this.showField(event)} className="btn btn-link" name="Phone" style={{"cursor": "pointer"}}>
                   {this.toggleEditIcon("Phone")}
+                </button>
+              </div>
+            </li>
+            <li className="list-group-item">
+              <div className="d-flex align-items-start">
+                <div className="flex-grow-1">
+                  <div>Email</div>
+                  {this.labelStatus("Email")}
+                  {this.fieldStatus("Email")}
+                </div>
+                <button onClick={(event) => this.showField(event)} className="btn btn-link" name="Email" style={{"cursor": "pointer"}}>
+                  {this.toggleEditIcon("Email")}
                 </button>
               </div>
             </li>

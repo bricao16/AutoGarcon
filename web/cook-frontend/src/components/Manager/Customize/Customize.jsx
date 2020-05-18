@@ -23,7 +23,7 @@ section or renders what is there from the database.*/
 class Customize extends React.Component{
     constructor(props) {     
         super(props);
-        
+        //get all the state given from nav items
         const cookies = new Cookies();
         this.state = {
           customizeInfo: [],
@@ -87,13 +87,11 @@ class Customize extends React.Component{
       }
       
     }
-
-      onChangeFile(e) {
+    //specifcally change the image 
+    onChangeFile(e) {
       const target = e.target;
-      const value = target.value;
-      const name = target.name;
         //https://riptutorial.com/javascript/example/14207/getting-binary-representation-of-an-image-file
-        // preliminary code to handle getting local file and finally printing to console
+        // preliminary code to handle getting local file 
         // the results of our function ArrayBufferToBinary().
         this.setState({ fileName: target.files[0].name });
 
@@ -110,11 +108,10 @@ class Customize extends React.Component{
         reader.readAsArrayBuffer(file); /* gets an ArrayBuffer of the file */
 
       }
+
   /* Used for connecting to Customization in database */
   submitToDB(){
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
-    console.log(this.state);
-
     var bodyFormData = new FormData();
     bodyFormData.set('restaurant_id', this.state.restaurant_id);
     bodyFormData.set('primary_color', this.state.primary);
@@ -186,11 +183,9 @@ class Customize extends React.Component{
       }
       else if(this.state.sectionEdit ==="Alexa Greeting")
       {
-         this.setState({ 'alexaGreeting': this.state.temp_alexaGreeting},
-          this.submitToDB);
-
+        this.setState({ 'alexaGreeting': this.state.temp_alexaGreeting},
+        this.submitToDB);
       }
-
     this.editForm("");
 }
 
@@ -224,9 +219,6 @@ editForm = (category) => {
   });
 }
 
-change(event){
-  this.setState({value: event.target.value});
-}
 //convert image to blob from https://stackoverflow.com/questions/42471755/convert-image-into-blob-using-javascript
 loadXHR(url) {
     return new Promise(function(resolve, reject) {
@@ -244,13 +236,15 @@ loadXHR(url) {
         catch(err) {reject(err.message)}
     });
 }
-  handleModalClose = () => this.setState({ModalShow: false});
-  handleModalShow = () => this.setState({ModalShow: true});
+//show or hide the popups to edit fields
+handleModalClose = () => this.setState({ModalShow: false});
+handleModalShow = () => this.setState({ModalShow: true});
 
 renderInfo(){
   const font = this.state.font;
     return (
           <>
+            {/*popup boxes for editing fields*/}
             <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
               <Modal.Header closeButton>
                 <Modal.Title>{this.state.sectionEdit}</Modal.Title>
@@ -370,10 +364,9 @@ renderInfo(){
                          </Container>
                       </Modal.Body>
                     }
-
-
             </Modal>
            <Container >
+            {/* render the fields when they are not being edited */}
             <Row className = "align-items-start">
             <Col>
               <Card className="text-center m-2" style ={{'fontFamily' :font}}>
@@ -382,7 +375,6 @@ renderInfo(){
                   </Card.Header>
                       <Card.Body style = {{minHeight:'20vh'}}>
                           {/* if Font is not the section to edit render the database info and a button to edit*/}
-
                           {this.state.sectionEdit !== "Font" ?
                             <p style={{margin: "0", padding: "0.8em"}}>{this.state.font}</p>
                               :   
@@ -390,9 +382,7 @@ renderInfo(){
                               {/* choose font and submit to change font */}
                               <div style= {{float: 'left'}}>
                                   <select id="lang" onChange={this.onChange} >
-                                      {/* <option value="Selected">{this.state.customizeInfo[5][1]}</option> */}
-                                      
-                                      {/* dropdown menu options */}
+                                      {/* dropdown font options */}
                                       <option value="Oswald" style ={{'fontFamily' :'Oswald'}}>{this.state.fonts[0]}</option>
                                       <option value="Raleway" style ={{'fontFamily' :'Raleway'}}>{this.state.fonts[1]}</option>
                                       <option value="Open Sans" style ={{'fontFamily' :'Open Sans'}}>{this.state.fonts[2]}</option>
@@ -403,8 +393,6 @@ renderInfo(){
                                       <option value="Playfair Display" style ={{'fontFamily' :'Playfair Display'}}>{this.state.fonts[7]}</option>
                                       <option value="Benchnine" style ={{'fontFamily' :'Benchnine'}}>{this.state.fonts[8]}</option>
                                       <option value="Merriweather" style ={{'fontFamily' :'Merriweather'}}>{this.state.fonts[9]}</option>
-
-
                                   </select>     
                               </div>
                               <br></br>
@@ -412,13 +400,13 @@ renderInfo(){
                                   <button onClick = {this.handleSubmit} type="button" className="btn btn-primary m-1" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
                                   <button onClick={() => this.editForm("") }  type="button" className="btn btn-outline-danger m-1" >Cancel</button>
                               </div>
-                              
                            </form>
                           }
                       </Card.Body>
                   </Card>
                   </Col>
                   <Col>
+                {/* display logo */}
                   <Card className="text-center  m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow} >Logo
                       <button  onClick={() => this.editForm("Logo") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
@@ -431,6 +419,7 @@ renderInfo(){
                    </Card>
                   </Col>
                    <Col>
+                 {/* display alexa greeting */}
                    <Card className="text-center m-2" style ={{'fontFamily' :font}}>
                     <Card.Header onClick={this.handleModalShow}>Alexa Greeting
                       <button  onClick={() => this.editForm("Alexa Greeting") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
@@ -441,41 +430,40 @@ renderInfo(){
                     </Card>
                   </Col>
                 </Row>
-
                  <Row className = "align-items-start">
-
+                  {/* display primary color */}
                   <Col>
                   <Card className="text-center m-2" style ={{'fontFamily' :font}} >
                     <Card.Header onClick={this.handleModalShow}>Primary
                       <button onClick={() => this.editForm("Primary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
                     <Card.Body style={{backgroundColor:this.state.primary,minHeight:'10vh'}}>
-
                     </Card.Body>
                    </Card>
                   </Col>
                   <Col>
                   <Card className="text-center m-2" style ={{'fontFamily' :font}}>
+                    {/* display secondary color */}
                     <Card.Header onClick={this.handleModalShow}>Secondary
                       <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
                     <Card.Body style={{backgroundColor:this.state.secondary, minHeight:'10vh'}}>
-
                     </Card.Body>
                    </Card>
                   </Col>
                    <Col>
                    <Card className="text-center m-2" style ={{'fontFamily' :font}}>
+                      {/* display tertiary color */}
                     <Card.Header onClick={this.handleModalShow}>Tertiary
                       <button  onClick={() => this.editForm("Tertiary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
                     <Card.Body style={{backgroundColor:this.state.tertiary,minHeight:'10vh' }}>
-
                     </Card.Body>
                    </Card>
                    </Col>
                   <Col>
                    <Card className="text-center m-2" style ={{'fontFamily' :font}}>
+                    {/* display font color */}
                     <Card.Header onClick={this.handleModalShow}>Font Color
                       <button  onClick={() => this.editForm("Font Color") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
@@ -489,18 +477,19 @@ renderInfo(){
         )
 
 }
+
     render() {
         const {customizeInfo } = this.state;
         const resturantInfo = this.props.info;
-        //get the styles
+        //get the styles we need
         const primary = this.props.primary;
-
         const font = this.state.font;
         const font_color = this.props.font_color
         //put resturant info into an array
         Object.keys(resturantInfo).forEach(function(key) {
             customizeInfo.push([key ,resturantInfo[key]]);
         });
+        //call render info which renders fields pulled from db
         return (
             <Container>
                 <div style={backgroundStyle}>
@@ -514,25 +503,16 @@ renderInfo(){
                         <div className="d-flex flex-wrap">
                             {this.renderInfo()}
                         </div>
-
                     </Container>
                 </div>
             </Container>
         );
     }
 }
-
-
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1',
   'minWidth': '75vw',
   'fontFamily' :'Open Sans'
 }
-
-const itemStyle = {
-    'borderBottom': 'grey solid 1px',
-
-};
-
 
 export default Customize;
