@@ -7,10 +7,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -26,12 +30,14 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
+import auto_garcon.singleton.VolleySingleton;
 
 
 public class Services extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
@@ -61,6 +67,7 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
         setContentView(R.layout.activity_services);
 
 
+        pref = new SharedPreference(this);
 
 
         //creating side nav drawer
@@ -73,7 +80,12 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(Services.this);
 
-        pref = new SharedPreference(this);
+        TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+        usernameSideNavBar.setText(pref.getUser().getUsername());
+
+        ImageView userImageSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_account_picture);
+        userImageSideNavBar.setImageBitmap(BitmapFactory.decodeByteArray(pref.getUser().getImageBitmap(), 0, pref.getUser().getImageBitmap().length));
+
 
         /**
          * It ties the bottom navigation bar xml element to a Java object and provides it with its
@@ -122,6 +134,7 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
                 StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Toast.makeText(Services.this,"A service member will be with you shortly",Toast.LENGTH_LONG).show();
 
                     }
                 }, new Response.ErrorListener() {
@@ -135,10 +148,12 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
                         Map<String, String> params = new HashMap<String, String>();
                         params.put("restaurant_id",""+pref.getUser().getRestaurantID());
                         params.put("table_num",""+pref.getUser().getTableID());
-                        params.put("status","Bill");
+                        params.put("status","Good");
                         return params;
                     }
                 };
+                VolleySingleton.getInstance(Services.this).addToRequestQueue(updateStringRequest);
+
             }
         });
         // when the help button has been clicked
@@ -148,7 +163,7 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
                 StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        Toast.makeText(Services.this,"Help is on the way",Toast.LENGTH_LONG).show();
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -165,6 +180,7 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
                         return params;
                     }
                 };
+                VolleySingleton.getInstance(Services.this).addToRequestQueue(updateStringRequest);
             }
         });
 
@@ -179,23 +195,25 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                Intent account = new Intent(getBaseContext(),   Account.class);
-                startActivity(account);
+                startActivity(new Intent(Services.this, Account.class));
                 break;
             case R.id.order_history:
-                Intent orderHistory = new Intent(getBaseContext(),   OrderHistory.class);
-                startActivity(orderHistory);
+                startActivity(new Intent(Services.this, OrderHistory.class));
+                break;
+            case R.id.current_orders:
+                startActivity(new Intent(Services.this, CurrentOrders.class));
                 break;
             case R.id.settings:
-                Intent settings = new Intent(getBaseContext(),   Settings.class);
-                startActivity(settings);
+                startActivity(new Intent(Services.this, Settings.class));
+                break;
+            case R.id.services:
+                startActivity(new Intent(Services.this,Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                Intent login = new Intent(getBaseContext(),   Login.class);
-                startActivity(login);
+                startActivity(new Intent(Services.this, Login.class));
                 break;
         }
         return false;

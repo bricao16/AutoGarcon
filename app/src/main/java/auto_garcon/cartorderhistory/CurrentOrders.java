@@ -40,6 +40,7 @@ import java.util.Map;
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
+import auto_garcon.accountstuff.Services;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.homestuff.Home;
 import auto_garcon.homestuff.HomeAdapter;
@@ -220,26 +221,30 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
      *
      * @param nav_item The selected item
      * @return true to display the item as the selected item
-     */    @Override
+     */
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                startActivity(new Intent(CurrentOrders.this, Account.class));
+                startActivity(new Intent(getBaseContext(), Account.class));
                 break;
             case R.id.order_history:
-                startActivity(new Intent(CurrentOrders.this, OrderHistory.class));
+                startActivity(new Intent(getBaseContext(), OrderHistory.class));
                 break;
             case R.id.current_orders:
-                startActivity(new Intent(CurrentOrders.this, CurrentOrders.class));
+                startActivity(new Intent(getBaseContext(), CurrentOrders.class));
                 break;
             case R.id.settings:
-                startActivity(new Intent(CurrentOrders.this, Settings.class));
+                startActivity(new Intent(getBaseContext(), Settings.class));
+                break;
+            case R.id.services:
+                startActivity(new Intent(getBaseContext(), Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                startActivity(new Intent(CurrentOrders.this, Login.class));
+                startActivity(new Intent(getBaseContext(), Login.class));
                 break;
         }
         return false;

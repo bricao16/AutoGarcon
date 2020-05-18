@@ -23,6 +23,7 @@ import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
@@ -95,28 +96,35 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
 
-    //onClick for side nav bar
+    /**
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param nav_item The selected item
+     * @return true to display the item as the selected item
+     */
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item) {
-        switch (nav_item.getItemId()) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
+        switch(nav_item.getItemId()){
             case R.id.account:
-                Intent account = new Intent(getBaseContext(), Account.class);
-                startActivity(account);
+                startActivity(new Intent(getBaseContext(), Account.class));
                 break;
             case R.id.order_history:
-                Intent orderHistory = new Intent(getBaseContext(), OrderHistory.class);
-                startActivity(orderHistory);
+                startActivity(new Intent(getBaseContext(), OrderHistory.class));
+                break;
+            case R.id.current_orders:
+                startActivity(new Intent(getBaseContext(), CurrentOrders.class));
                 break;
             case R.id.settings:
-                Intent settings = new Intent(getBaseContext(), Settings.class);
-                startActivity(settings);
+                startActivity(new Intent(getBaseContext(), Settings.class));
+                break;
+            case R.id.services:
+                startActivity(new Intent(getBaseContext(),Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                Intent login = new Intent(getBaseContext(), Login.class);
-                startActivity(login);
+                startActivity(new Intent(getBaseContext(), Login.class));
                 break;
         }
         return false;
