@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.auto_garcon.R;
@@ -112,12 +115,28 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
     @Override
     public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderHistoryViewHolder holder, final int position) {
+        Typeface typeface = ResourcesCompat.getFont(this.ct, carts.get(position).getFont());
+
+        holder.orderTile.setCardBackgroundColor(Color.parseColor(carts.get(position).getPrimaryColor()));
         holder.order_num.setText(restaurantName.get(position));// set the text for the order tile
+        holder.order_num.setTypeface(typeface);//setting font
+        holder.order_num.setTextColor(Color.parseColor(carts.get(position).getFontColor()));//setting color
+        holder.items.setTypeface(typeface);
+        holder.items.setTextColor(Color.parseColor(carts.get(position).getFontColor()));
+        holder.reOrder.setTypeface(typeface);
+        holder.reOrder.setTextColor(Color.parseColor(carts.get(position).getFontColor()));
+        holder.reOrder.setBackgroundColor(Color.parseColor(carts.get(position).getTertiaryColor()));
+
+
         int datePosition = date.get(position).indexOf("T");
         if (datePosition == -1) {
             holder.date.setText(date.get(position));// set the date in the order tile card
+            holder.date.setTypeface(typeface);//setting font
+            holder.date.setTextColor(Color.parseColor(carts.get(position).getFontColor()));//setting color
         } else {
             holder.date.setText(date.get(position).substring(0, datePosition));// set the date in the order tile card
+            holder.date.setTypeface(typeface);//setting font
+            holder.date.setTextColor(Color.parseColor(carts.get(position).getFontColor()));//setting color
         }
         holder.restaurant.setImageBitmap(BitmapFactory.decodeByteArray(logos.get(position), 0, logos.get(position).length));// set the image of the resturant to the image view on the order_tile card
 
@@ -198,9 +217,11 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         TextView items;
         Button reOrder;
         ImageView restaurant;
+        CardView orderTile;
 
         public OrderHistoryViewHolder(@NonNull View v) {
             super(v);
+            orderTile = v.findViewById(R.id.order_tile);
             order_num = v.findViewById(R.id.order_num2);
             date = v.findViewById(R.id.date);
             items = v.findViewById(R.id.order_items);
