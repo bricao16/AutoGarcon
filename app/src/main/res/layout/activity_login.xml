@@ -37,7 +37,7 @@
         android:inputType="textPersonName"
         android:maxLength="50"
         android:textSize="16sp"
-
+        android:digits="qwertyuiopasdfghjklzxcvbnm 1234567890 QWERTYUIOPASDFGHJKLZXCVBNM `~!#$%^&amp;*()=+/*-?.,"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,10 +51,10 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:hint="@string/password"
+        android:digits="qwertyuiopasdfghjklzxcvbnm 1234567890 QWERTYUIOPASDFGHJKLZXCVBNM `~!#$%^&amp;*()=+/*-?.,"
         android:inputType="textPassword"
         android:maxLength="50"
         android:textSize="16sp"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
