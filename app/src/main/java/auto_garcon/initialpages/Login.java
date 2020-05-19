@@ -76,6 +76,9 @@ public class Login extends AppCompatActivity {
         textViewSignUp = findViewById(R.id.no_account_login);// associating xml objects with the java Object equivalent
         forgotPassword = findViewById(R.id.forgot_password_login);
 
+        /**
+         * onClick to send login volley request if the input fields are valid
+         */
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,8 +146,9 @@ public class Login extends AppCompatActivity {
                                     error.printStackTrace();
                                     if (error.networkResponse.statusCode == 401) {
                                         Toast.makeText(Login.this, "Invalid username or password", Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(Login.this, "Could not Sign in", Toast.LENGTH_LONG).show();
+                                    }
+                                    if (error.networkResponse.statusCode == 500) {
+                                        Toast.makeText(Login.this, "Error logging in", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }
@@ -155,6 +159,9 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        /**
+         * onClick to go to Register activity
+         */
         textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {// if user wants to go register page this will send them there
@@ -162,6 +169,9 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        /**
+         * used if user forgot password
+         */
         Drawable drawable = getDrawable(R.drawable.icons8forgotpassword);
         drawable.setBounds(0, 0, (int) (drawable.getIntrinsicWidth() * .5), (int) (drawable.getIntrinsicHeight() * .5));// making the drawable scalable
         //todo : https://icons8.com refrence this in about page

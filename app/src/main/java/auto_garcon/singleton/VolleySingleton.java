@@ -14,11 +14,20 @@ public class VolleySingleton {
     private static Context mCtx;
     private RequestQueue mRequestQueue;
 
+    /**
+     * assigns instance variable mRequestQueue to the current Volley request queue
+     * @param context Context gets assigned to instance variable mCtx, used to specify what context the request is coming from
+     */
     private VolleySingleton(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
     }
 
+    /**
+     *
+     * @param context used to know what context to create the new VolleySingleton in
+     * @return instance mInstance
+     */
     public static synchronized VolleySingleton getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new VolleySingleton(context);
@@ -26,6 +35,10 @@ public class VolleySingleton {
         return mInstance;
     }
 
+    /**
+     *
+     * returns instance variable mRequestQueue if null creates a new one and assigns to instance variable
+     */
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
@@ -35,6 +48,9 @@ public class VolleySingleton {
         return mRequestQueue;
     }
 
+    /**
+     * @param req volley request to be added to request queue
+     */
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
     }

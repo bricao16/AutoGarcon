@@ -1,5 +1,6 @@
 package auto_garcon.accountstuff;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +21,8 @@ import com.example.auto_garcon.R;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.homestuff.Home;
+import auto_garcon.initialpages.Login;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
 
@@ -62,6 +65,9 @@ public class PasswordChange extends AppCompatActivity {
         final EditText newPassword = findViewById(R.id.new_password);
         Button savePasswordChange = findViewById(R.id.save_password_change);
 
+        /**
+         * onClick that will sends change password volley request
+         */
         savePasswordChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,12 +96,26 @@ public class PasswordChange extends AppCompatActivity {
                                 public void onResponse(String response) {
                                     pref.getUser().setChangePassword(0);
                                     Toast.makeText(PasswordChange.this, response, Toast.LENGTH_LONG).show();
+
+                                    startActivity(new Intent(getBaseContext(), Home.class));
+                                    Toast.makeText(getBaseContext(), "Password Saved", Toast.LENGTH_LONG).show();
                                 }
                             },
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
+                                    if (error.networkResponse.statusCode == 400) {
+                                        Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                                    }
+                                    if (error.networkResponse.statusCode == 401) {
+                                        pref.changeLogStatus(false);
 
+                                        startActivity(new Intent(getBaseContext(), Login.class));
+                                        Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                                    }
+                                    if (error.networkResponse.statusCode == 500) {
+                                        Toast.makeText(getBaseContext(), "Error updating", Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }) {
 

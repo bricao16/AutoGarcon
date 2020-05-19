@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.auto_garcon.R;
@@ -24,8 +27,9 @@ import java.util.ArrayList;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 
-/*
-This is a container for history pages that the user can see.
+/**
+ *
+ *  This is a container for history pages that the user can see.
  */
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.OrderHistoryViewHolder> {
     Dialog popUp;
@@ -41,11 +45,11 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     /**
      * This constructor initializes our variables passed in from the shopping cart page
      *
-     * @param ctx
-     * @param preference
-     * @param order
-     * @param carts
-     * @param date
+     * @param ctx this Context represents the current state of the app we will use this initalize the instance variable ct as the Context for this java class
+     * @param preference This sharedPreference represents the sharedPreference from the orderHistory page we use this initialize our sharedPreference variable so we can access user or current Shopping cart information
+     * @param order This Arraylist represents the order num for all the previous completed orders. We use this to initialize our order arraylist instance variable so we can access this info in later parts of code
+     * @param carts This ArrayList represents the carts for all previous completed orders pulled from database. We use this to initialize our carts arrayList instance variable so we can access this info in later parts of the code
+     * @param date This Arraylist represents the date for all our previous completed orders. We use this to intialize our date arraylist instance variable so we can access in later parts of the code
      */
     public OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date, ArrayList<String> restaurantName, ArrayList<byte[]> logos) {
         ct = ctx;
@@ -112,12 +116,28 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
     @Override
     public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderHistoryViewHolder holder, final int position) {
+        Typeface typeface = ResourcesCompat.getFont(this.ct, carts.get(position).getFont());
+
+        holder.orderTile.setCardBackgroundColor(Color.parseColor(carts.get(position).getSecondaryColor()));
         holder.order_num.setText(restaurantName.get(position));// set the text for the order tile
+        holder.order_num.setTypeface(typeface);//setting font
+        holder.order_num.setTextColor(Color.parseColor(carts.get(position).getFontColor()));//setting color
+        holder.items.setTypeface(typeface);
+        holder.items.setTextColor(Color.parseColor(carts.get(position).getFontColor()));
+        holder.reOrder.setTypeface(typeface);
+        holder.reOrder.setTextColor(Color.parseColor(carts.get(position).getFontColor()));
+        holder.reOrder.setBackgroundColor(Color.parseColor(carts.get(position).getPrimaryColor()));
+
+
         int datePosition = date.get(position).indexOf("T");
         if (datePosition == -1) {
             holder.date.setText(date.get(position));// set the date in the order tile card
+            holder.date.setTypeface(typeface);//setting font
+            holder.date.setTextColor(Color.parseColor(carts.get(position).getFontColor()));//setting color
         } else {
             holder.date.setText(date.get(position).substring(0, datePosition));// set the date in the order tile card
+            holder.date.setTypeface(typeface);//setting font
+            holder.date.setTextColor(Color.parseColor(carts.get(position).getFontColor()));//setting color
         }
         holder.restaurant.setImageBitmap(BitmapFactory.decodeByteArray(logos.get(position), 0, logos.get(position).length));// set the image of the resturant to the image view on the order_tile card
 
@@ -191,6 +211,11 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         return order.size();
     }
 
+
+    /**
+     * This class represents each card xml as a java object and allows access to each xml object
+     * within a card
+     */
     public class OrderHistoryViewHolder extends RecyclerView.ViewHolder {
 
         TextView order_num;
@@ -198,9 +223,15 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         TextView items;
         Button reOrder;
         ImageView restaurant;
+        CardView orderTile;
 
+        /**
+         * In this method we set the respected xml java objects to their associated xml objects
+         * @param v this parameter allows us to access the xml object for a specified card tile
+         */
         public OrderHistoryViewHolder(@NonNull View v) {
             super(v);
+            orderTile = v.findViewById(R.id.order_tile);
             order_num = v.findViewById(R.id.order_num2);
             date = v.findViewById(R.id.date);
             items = v.findViewById(R.id.order_items);

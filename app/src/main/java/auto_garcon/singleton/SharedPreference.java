@@ -90,10 +90,17 @@ public class SharedPreference {
         editor.apply();
     }
 
+    /**
+     * this method returns the authorization token of the user stored within the sharedPreference file
+     */
     public String getAuth() {
         return sharedPreferences.getString(context.getString(R.string.pref_auth_token), "Token");
     }
 
+    /**
+     * this method takes in a string value and stores it within the sharedPreference file
+     * @param authToken the token represents the value that will be stored
+     */
     public void setAuthToken(String authToken) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -101,6 +108,10 @@ public class SharedPreference {
         editor.commit();
     }
 
+
+    /**
+     * this method returns a shopping cart that is storend within the sharedPreference file
+     */
     public ShoppingCartSingleton getShoppingCart() {
         // this gson object will be used to convert our json string into a java object
         Gson gson = new Gson();
@@ -114,6 +125,10 @@ public class SharedPreference {
         return gson.fromJson(stringJson, ShoppingCartSingleton.class);
     }
 
+    /**
+     * this method stores the shopping cart object passed in our sharedPreference file
+     * @param shoppingCart this represents the shoppingCartSingleton that will be stored
+     */
     public void setShoppingCart(ShoppingCartSingleton shoppingCart) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -128,6 +143,10 @@ public class SharedPreference {
         editor.apply();
     }
 
+    /**
+     * This returns an arraylist of all the favorite restaurants id
+     * @return
+     */
     public List<Integer> getFavorites() {
         Gson gson = new Gson();
         String stringJson = sharedPreferences.getString("favorite restaurants", null);
@@ -142,6 +161,10 @@ public class SharedPreference {
         return toBeReturned;
     }
 
+    /**
+     * this method removes the restaurant id from the arraylist of favorite restaurants ids
+     * @param oldFavorite the resturant id to be removed
+     */
     public void removeFromFavorites(int oldFavorite) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
@@ -161,6 +184,10 @@ public class SharedPreference {
         editor.apply();
     }
 
+    /**
+     * this method adds the resturant id of the users favorites restaurant into an arraylist in sharedPreference
+     * @param newFavorite this represents the resutrant of id of the favorite restaurant
+     */
     public void addToFavorites(int newFavorite) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
@@ -185,6 +212,9 @@ public class SharedPreference {
         editor.apply();
     }
 
+    /**
+     * This method returns the timeStamp which is saved within the sharedPreference file if there is none we return the current time
+     */
     public Calendar getTimeStamp() {
         Gson gson = new Gson();
         String stringJson = sharedPreferences.getString("timeStamp", null);
@@ -197,6 +227,9 @@ public class SharedPreference {
 
     }
 
+    /**
+     * this method sets the timestamp to the current time and saves it within in our sharedPreference file
+     */
     public void SetTimeStamp() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();

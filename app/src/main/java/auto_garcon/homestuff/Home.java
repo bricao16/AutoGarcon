@@ -55,10 +55,9 @@ import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
 
-/*
-This show a list of restaurant pages, and
-dealing with user actions such as searching.
-This retrieve data of restaurant pages from database by using JASON with https connection.
+/**
+ * This show a list of restaurant pages, and dealing with user actions such as searching.
+ * This retrieve data of restaurant pages from database by using JASON with https connection.
  */
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     AutoCompleteTextView searchBar;
@@ -179,7 +178,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                                         JSONObject item = favoritesJSONObject.getJSONObject(key);
 
                                         itemToBeAdded.setID(Integer.parseInt(item.get("restaurant_id").toString()));
-                                        pref.addToFavorites(Integer.parseInt(item.get("restaurant_id").toString()));
 
                                         itemToBeAdded.setName(item.get("restaurant_name").toString());
                                         itemToBeAdded.setAddress(item.get("address").toString());
@@ -216,6 +214,12 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse.statusCode == 401) {
+                            pref.changeLogStatus(false);
+
+                            startActivity(new Intent(getBaseContext(), Login.class));
+                            Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                        }
                         if (error.networkResponse.statusCode == 500) {
                             Toast.makeText(Home.this, "Error retrieving restaurants", Toast.LENGTH_LONG).show();
                         }

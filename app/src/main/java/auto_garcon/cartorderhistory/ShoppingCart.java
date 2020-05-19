@@ -140,11 +140,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
             PlaceOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int time = Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR);
-
-                    if (time < 12) {
-                        time = time + 12;
-                    }
+                    int time = Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR_OF_DAY);
 
                     String minute = Integer.toString(Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
 
@@ -157,7 +153,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                     if (pref.getShoppingCart().getStartingHour() > time || pref.getShoppingCart().getEndingHour() < time) {
                         Toast.makeText(ShoppingCart.this, "The restaurant is currently closed.", Toast.LENGTH_LONG).show();
                     }
-                    if (Calendar.getInstance().getTimeInMillis() - pref.getTimeStamp().getTimeInMillis() > 5000) {
+                    else if (Calendar.getInstance().getTimeInMillis() - pref.getTimeStamp().getTimeInMillis() > 60000) {
                         Toast.makeText(ShoppingCart.this, "QR code has timed out please Scan the QR code Again", Toast.LENGTH_LONG).show();
                     } else if (pref.getUser().getRestaurantID() != shoppingCart.getRestaurantID()) {
                         final Dialog goToQRScannerPopup = new Dialog(ShoppingCart.this);
@@ -218,7 +214,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                                     obj.put("restaurant_id", Integer.toString(shoppingCart.getRestaurantID()));
                                     obj.put("customer_id", pref.getUser().getUsername());
-                                    obj.put("table_num", 6);
+                                    obj.put("table_num", pref.getUser().getTableID());
                                     obj.put("order", order);
                                 } catch (JSONException e) {
                                     //TODO figure out how to handle this other than stack trace
@@ -243,7 +239,18 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                             @Override
                                             public void onErrorResponse(VolleyError error) {
                                                 error.printStackTrace();
-                                                Toast.makeText(ShoppingCart.this, error.toString(), Toast.LENGTH_LONG).show();
+                                                if (error.networkResponse.statusCode == 400) {
+                                                    Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                                                }
+                                                if (error.networkResponse.statusCode == 401) {
+                                                    pref.changeLogStatus(false);
+
+                                                    startActivity(new Intent(getBaseContext(), Login.class));
+                                                    Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                                                }
+                                                if (error.networkResponse.statusCode == 500) {
+                                                    Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                                                }
                                             }
                                         }
                                 ) {

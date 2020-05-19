@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.auto_garcon.R;
 
+/**
+ * This class allows the user to send an email to autoGarcon with the error that crashed the app
+ */
 public class SendErrorEmail extends AppCompatActivity {
     private static final String autoGarconEmail = "autogarcon@gmail.com";// the address that the email will be sent to
     private EditText edit_body;

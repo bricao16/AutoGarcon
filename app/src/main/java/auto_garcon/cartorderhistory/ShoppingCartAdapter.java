@@ -44,8 +44,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     /**
      * This constructor initializes our variables passed in from the shopping cart page
      *
-     * @param context
-     * @param items
+     * @param context represents the current state of the app we initalize with this to allow us access to edit the current state of the app
+     * @param items this represents all the items in our current shopping cart we initalize with this so we can set the information for our tiles relating to the shopping cart
      */
     public ShoppingCartAdapter(Context context, ArrayList<MenuItem> items) {
         this.context = context;
@@ -192,8 +192,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 customization = customizationPopup.findViewById(R.id.text_menu_item_edit);
                 customization.setText(menuItemArrayList.get(position).getCustomization());
 
-                Log.d("SDasdfFSDF", menuItemArrayList.get(position).getCustomization());
-
                 customizationPopup.findViewById(R.id.menu_item_edit_submit).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -223,19 +221,21 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         return menuItemArrayList.size();
     }//A number of items on the list
 
-    public void setIsPlaced(boolean isPlaced) {
+    private void setIsPlaced(boolean isPlaced) {
         this.isPlaced = isPlaced;
     }
 
-    public void setIsChanged(boolean isChanged) {
+    private void setIsChanged(boolean isChanged) {
         this.isChanged = isChanged;
     }
 
-    public boolean isMenuChangedAfterPlaced() {
+    private boolean isMenuChangedAfterPlaced() {
         return isPlaced && isChanged;
     }
 
-    //Creating holder to keep menu items as a list dynamically.
+    /**
+     * This is  holder class used  to keep menu items as a list dynamically.
+     */
     public class ShoppingCartViewHolder extends RecyclerView.ViewHolder {
 
         TextView name;//A name of food
@@ -247,7 +247,10 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         TextView editItem;
         ImageView itemImage;
 
-        //set the above variables to each tag on the xml file.
+        /**
+         * In this method we set the respected xml java objects to their associated xml objects
+         * @param itemView this parameter allows us to access the xml object for a specified card tile
+         */
         public ShoppingCartViewHolder(@NonNull View itemView) {
             super(itemView);
 

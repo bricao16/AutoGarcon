@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,7 +97,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-
         /**
          * Ties the side navigation bar xml elements to Java objects and setting listeners for the
          * side navigation drawer as well as the elements within it.
@@ -127,7 +127,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
-
+        /**
+         * Ties certain xml elements to Java objects and sets up things needed for expandable list
+         */
         restaurantName = findViewById(R.id.restaurant_name);
         restaurantLogo = findViewById(R.id.restaurant_logo);
         listDataHeader = new ArrayList<>();
@@ -140,6 +142,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             addOrRemoveFavorite.setText("Add to Favorites");
         }
 
+        /**
+         * request for adding or removing the restaurant from their favorites list
+         */
         addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,13 +162,17 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     dynamicPopupText.setText("Are you sure you want to remove from favorites?");
 
                     Button removeFromFavorites = removeFromFavoritesPopup.findViewById(R.id.popup_yes);
-                    Button confirmClose = removeFromFavoritesPopup.findViewById(R.id.confirm_close);
+                    ImageButton confirmClose = removeFromFavoritesPopup.findViewById(R.id.confirm_close);
+
 
                     removeFromFavorites.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             addOrRemoveFavorite.setText("Add to favorites");
 
+                            /**
+                             * remove from favorites request
+                             */
                             StringRequest deleteRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/favorites/delete",
                                     new Response.Listener<String>() {
                                         @Override
@@ -176,7 +185,22 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
                                             error.printStackTrace();
-                                            Toast.makeText(Menu.this, error.toString(), Toast.LENGTH_LONG).show();
+
+                                            if (error.networkResponse.statusCode == 400) {
+                                                Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                                            }
+                                            if (error.networkResponse.statusCode == 401) {
+                                                pref.changeLogStatus(false);
+
+                                                startActivity(new Intent(getBaseContext(), Login.class));
+                                                Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                                            }
+                                            if (error.networkResponse.statusCode == 409) {
+                                                Toast.makeText(getBaseContext(), "favorite doesn't exist", Toast.LENGTH_LONG).show();
+                                            }
+                                            if (error.networkResponse.statusCode == 500) {
+                                                Toast.makeText(getBaseContext(), "Error deleting favorite", Toast.LENGTH_LONG).show();
+                                            }
                                         }
                                     }
                             ) {
@@ -205,6 +229,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                         }
                     });
                 } else {
+                    /**
+                     * add to favorites request
+                     */
                     addOrRemoveFavorite.setText("Remove from favorites");
                     pref.addToFavorites(getIntent().getIntExtra("restaurant id", 0));
 
@@ -221,7 +248,21 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
                                     error.printStackTrace();
-                                    Toast.makeText(Menu.this, error.toString(), Toast.LENGTH_LONG).show();
+                                    if (error.networkResponse.statusCode == 400) {
+                                        Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                                    }
+                                    if (error.networkResponse.statusCode == 401) {
+                                        pref.changeLogStatus(false);
+
+                                        startActivity(new Intent(getBaseContext(), Login.class));
+                                        Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                                    }
+                                    if (error.networkResponse.statusCode == 409) {
+                                        Toast.makeText(getBaseContext(), "favorite already exists", Toast.LENGTH_LONG).show();
+                                    }
+                                    if (error.networkResponse.statusCode == 500) {
+                                        Toast.makeText(getBaseContext(), "Error adding restaurant to favorites", Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }
                     ) {
@@ -246,6 +287,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             }
         });
 
+        /**
+         * request to get restaurant data and its menu
+         */
         StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/restaurant/" + getIntent().getIntExtra("restaurant id", 0),
                 new Response.Listener<String>() {
                     @Override
@@ -331,13 +375,24 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Menu.this, error.toString(), Toast.LENGTH_LONG).show();
+                        if (error.networkResponse.statusCode == 409) {
+                            pref.changeLogStatus(false);
+
+                            startActivity(new Intent(getBaseContext(), Login.class));
+                            Toast.makeText(getBaseContext(), "invalid restaurant id", Toast.LENGTH_LONG).show();
+                        }
+                        if (error.networkResponse.statusCode == 500) {
+                            Toast.makeText(getBaseContext(), "Error retrieving restaurant information", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
         );
 
         VolleySingleton.getInstance(Menu.this).addToRequestQueue(getRequest);
 
+        /**
+         * setting up onClick events for bottom navbar
+         */
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -399,6 +454,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      * The method is what filters the restaurant items that are displayed on the menu. If the
      * current menu does not have a category for the item being added it will add that category.
      * It then adds the actual item to the category it belongs in.
+     * @param menuItemCategories JSONObject to get the data for our MenuItem
      */
 
     private auto_garcon.menustuff.MenuItem creatingToBeAddedItem(JSONObject menuItemCategories) {

@@ -243,7 +243,15 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(OrderHistory.this, "An Error has Occured", Toast.LENGTH_LONG).show();
+                        if (error.networkResponse.statusCode == 401) {
+                            pref.changeLogStatus(false);
+
+                            startActivity(new Intent(getBaseContext(), Login.class));
+                            Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                        }
+                        if (error.networkResponse.statusCode == 500) {
+                            Toast.makeText(getBaseContext(), "Error retrieving order history", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }) {
             @Override
@@ -301,6 +309,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
      * <p>You can call {@link #finish} from within this function, in
      * which case {@link #onStop} will be immediately called after {@link #onStart} without the
      * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
+     *
+     * This is used to force the user to change their password when they open up this activity
      *
      * <p><em>Derived classes must call through to the super class's
      * implementation of this method.  If they do not, an exception will be

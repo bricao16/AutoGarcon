@@ -36,11 +36,17 @@ import java.util.Map;
 
 import auto_garcon.VolleyMultipartRequest;
 import auto_garcon.homestuff.Home;
+import auto_garcon.initialpages.Login;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * This class represents the object of an Account page
+ * It allows the user to customize their account information
+ * it also allows the user access to the forgotPassword function
+ */
 public class Account extends AppCompatActivity {
     EditText changeFirstName;//used to extract data from xml page of the Account Activity
     EditText changeLastName;//used to extract data from xml page of the Account Activity
@@ -97,6 +103,9 @@ public class Account extends AppCompatActivity {
         accountImage = findViewById(R.id.account_image_change);
         accountImage.setImageBitmap(BitmapFactory.decodeByteArray(pref.getUser().getImageBitmap(), 0, pref.getUser().getImageBitmap().length));
 
+        /**
+         * onClick that will show popup to prompt user to take photo or choose from gallery
+         */
         accountImage.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,6 +115,9 @@ public class Account extends AppCompatActivity {
 
                 changeImagePopup.show();
 
+                /**
+                 * onClick take photo
+                 */
                 changeImagePopup.findViewById(R.id.take_photo_button).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -114,6 +126,9 @@ public class Account extends AppCompatActivity {
                     }
                 });
 
+                /**
+                 * onClick choose from gallery
+                 */
                 changeImagePopup.findViewById(R.id.choose_from_gallery_button).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -122,6 +137,9 @@ public class Account extends AppCompatActivity {
                     }
                 });
 
+                /**
+                 * onClick dismiss popup
+                 */
                 changeImagePopup.findViewById(R.id.account_image_close).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -131,7 +149,7 @@ public class Account extends AppCompatActivity {
             }
         });
 
-        /*
+        /**
          * If user selects the save account changes buttons
          * users information will update in database given inputs
          * */
@@ -210,7 +228,6 @@ public class Account extends AppCompatActivity {
 
                                         startActivity(new Intent(Account.this, Home.class));
                                         Toast.makeText(Account.this, "Changes Saved", Toast.LENGTH_LONG).show();
-
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -218,7 +235,21 @@ public class Account extends AppCompatActivity {
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            if (error.networkResponse.statusCode == 400) {
+                                Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                            }
+                            if (error.networkResponse.statusCode == 401) {
+                                pref.changeLogStatus(false);
 
+                                startActivity(new Intent(getBaseContext(), Login.class));
+                                Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                            }
+                            if (error.networkResponse.statusCode == 409) {
+                                Toast.makeText(getBaseContext(), "Username and/or email already exists or invalid image type", Toast.LENGTH_LONG).show();
+                            }
+                            if (error.networkResponse.statusCode == 500) {
+                                Toast.makeText(getBaseContext(), "Error updating", Toast.LENGTH_LONG).show();
+                            }
                         }
                     }) {
                         @Override
@@ -247,7 +278,7 @@ public class Account extends AppCompatActivity {
                         }
 
                         @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                        public Map<String, String> getHeaders() {//adds header to request
                             HashMap<String, String> headers = new HashMap<>();
                             headers.put("Authorization", "Bearer " + pref.getAuth());
 
@@ -260,6 +291,9 @@ public class Account extends AppCompatActivity {
             }
         });
 
+        /**
+         * onClick to go to PasswordChange activity
+         */
         changePassword.setOnClickListener(new View.OnClickListener() {// when the user clicks on this link we change to xml to the log in layout
             @Override
             public void onClick(View view) {//will change password
@@ -268,7 +302,30 @@ public class Account extends AppCompatActivity {
             }
         });
     }
-
+    /**
+     * Called when an activity you launched exits, giving you the requestCode
+     * you started it with, the resultCode it returned, and any additional
+     * data from it.  The <var>resultCode</var> will be
+     * {@link #RESULT_CANCELED} if the activity explicitly returned that,
+     * didn't return any result, or crashed during its operation.
+     *
+     * this will return data from selecting an image from the camera or gallery into the class
+     *
+     * <p>You will receive this call immediately before onResume() when your
+     * activity is re-starting.
+     *
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     * @see #startActivityForResult
+     * @see #createPendingResult
+     * @see #setResult(int)
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

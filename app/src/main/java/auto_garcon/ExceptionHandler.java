@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+/**
+ * this class represent our exception handling it is used to capture exceptions that aren't handled explicitly by us
+ */
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     private Context errorContex;
 
@@ -18,6 +21,11 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
         this.errorContex = ctx;
     }
 
+    /**
+     * This method checks if there internet connect
+     * @param context this is used to get information on the current state of the device and app
+     * @return true or false if there is internet connection
+     */
     public static boolean hasInternetConnection(final Context context) {
         final ConnectivityManager connectivityManager = (ConnectivityManager) context.
                 getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -35,6 +43,9 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
      * given uncaught exception.
      * <p>Any exception thrown by this method will be ignored by the
      * Java Virtual Machine.
+     *
+     *this method also allows us to capture the error information to pass it onto our errorEmail class
+     *
      *
      * @param t the thread
      * @param e the exception

@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- toolbar that allows side nav bar to open -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/no_order_history"
             android:layout_width="match_parent"
@@ -53,7 +54,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- toolbar that allows side nav bar to open -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/xml_toolbar"
             android:layout_width="match_parent"
