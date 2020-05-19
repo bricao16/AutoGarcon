@@ -36,7 +36,6 @@ import auto_garcon.singleton.VolleySingleton;
  */
 public class TwoButtonPage extends AppCompatActivity {
     private SharedPreference pref;//saving user transaction data such as food item chosen by the user.
-    private ShoppingCartSingleton shoppingCart;//keeping food item chosen by the user.
 
     /**
      * Called when the activity is starting.  This is where most initialization
@@ -92,7 +91,15 @@ public class TwoButtonPage extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error.networkResponse != null && error.networkResponse.statusCode == 500) {
-                            Log.d("Error in loading screen", "Error retrieving favorites");
+                            if (error.networkResponse.statusCode == 401) {
+                                pref.changeLogStatus(false);
+
+                                startActivity(new Intent(getBaseContext(), Login.class));
+                                Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                            }
+                            if (error.networkResponse.statusCode == 500) {
+                                Toast.makeText(getBaseContext(), "Error retrieving restaurants", Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 }

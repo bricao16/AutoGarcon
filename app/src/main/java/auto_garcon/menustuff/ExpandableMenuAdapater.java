@@ -401,15 +401,10 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 shoppingCart = pref.getShoppingCart();
 
                                 if (shoppingCart.cartContainsItem(currentChild) != null) {
-                                    Toast.makeText(context, shoppingCart.cartContainsItem(currentChild).getCustomization(), Toast.LENGTH_LONG).show();
-
                                     shoppingCart.cartContainsItem(currentChild).incrementQuantity();
                                     shoppingCart.cartContainsItem(currentChild).setCustomization(shoppingCart.cartContainsItem(currentChild).getCustomization() + currentChild.getCustomization());
-                                    currentChild.setCustomization("");
-
                                 } else {
                                     MenuItem itemToBeAdded = currentChild;
-                                    currentChild.setCustomization("");
 
                                     itemToBeAdded.setItemImage(itemImageByteArray);
 
@@ -417,6 +412,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 }
 
                                 pref.setShoppingCart(shoppingCart);
+                                currentChild.setCustomization("");
                                 badge.setNumber(shoppingCart.getCart().size());
                                 badge.setVisible(false);
                                 badge.setVisible(true);
@@ -445,13 +441,14 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                         shoppingCart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
 
                                         MenuItem itemToBeAdded = currentChild;
-                                        currentChild.setCustomization("");
 
                                         itemToBeAdded.setItemImage(itemImageByteArray);
 
                                         shoppingCart.addToCart(itemToBeAdded);
 
                                         pref.setShoppingCart(shoppingCart);
+                                        currentChild.setCustomization("");
+
                                         badge.setNumber(shoppingCart.getCart().size());
                                         badge.setVisible(false);
                                         badge.setVisible(true);

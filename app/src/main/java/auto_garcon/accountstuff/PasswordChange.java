@@ -126,7 +126,6 @@ public class PasswordChange extends AppCompatActivity {
                             params.put("current_password", oldPasswordString);
                             params.put("new_password", newPasswordString);
 
-                            Log.d("SDSDFIO", params.toString());
                             return params;
                         }
 
