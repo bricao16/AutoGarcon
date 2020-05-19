@@ -237,7 +237,21 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
                                     error.printStackTrace();
-                                    Toast.makeText(Menu.this, error.toString(), Toast.LENGTH_LONG).show();
+                                    if (error.networkResponse.statusCode == 400) {
+                                        Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                                    }
+                                    if (error.networkResponse.statusCode == 401) {
+                                        pref.changeLogStatus(false);
+
+                                        startActivity(new Intent(getBaseContext(), Login.class));
+                                        Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                                    }
+                                    if (error.networkResponse.statusCode == 409) {
+                                        Toast.makeText(getBaseContext(), "favorite already exists", Toast.LENGTH_LONG).show();
+                                    }
+                                    if (error.networkResponse.statusCode == 500) {
+                                        Toast.makeText(getBaseContext(), "Error adding restaurant to favorites", Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }
                     ) {
@@ -347,7 +361,15 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Menu.this, error.toString(), Toast.LENGTH_LONG).show();
+                        if (error.networkResponse.statusCode == 409) {
+                            pref.changeLogStatus(false);
+
+                            startActivity(new Intent(getBaseContext(), Login.class));
+                            Toast.makeText(getBaseContext(), "invalid restaurant id", Toast.LENGTH_LONG).show();
+                        }
+                        if (error.networkResponse.statusCode == 500) {
+                            Toast.makeText(getBaseContext(), "Error retrieving restaurant information", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
         );
