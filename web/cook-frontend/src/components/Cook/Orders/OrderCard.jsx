@@ -50,7 +50,8 @@ const useStyles = makeStyles(theme => ({
     fontSize: '1.5em'
   },
   completed: {
-    background: 'rgb(76, 175, 80)!important'
+    background: 'rgb(76, 175, 80)!important',
+    color: '#fff'
   }
 }));
 
