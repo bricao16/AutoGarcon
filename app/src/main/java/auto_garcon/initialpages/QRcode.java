@@ -99,7 +99,9 @@ public class QRcode extends AppCompatActivity {
             }
         }
 
-
+        /**
+         * onClick for bottom navbar
+         */
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -122,12 +124,19 @@ public class QRcode extends AppCompatActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
 
+    /**
+     * sets up camera and calls setupQReader so it can take in QR codes
+     */
     private void setupCamera() {
         txt_result = findViewById(R.id.code_info);
         surfaceView = findViewById(R.id.camera_view);
         setupQReader();
     }
 
+    /**
+     * allows camera to read QR codes and how to handle the QR code
+     * such as going to the correct menu page and setting the correct SharedPreference data
+     */
     private void setupQReader() {
         QReader = new QREader.Builder(this, surfaceView, new QRDataListener() {
             @Override

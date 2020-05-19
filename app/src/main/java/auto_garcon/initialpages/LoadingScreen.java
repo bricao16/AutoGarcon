@@ -42,7 +42,6 @@ public class LoadingScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_screen);
 
-
         ProgressBar pb = findViewById(R.id.pbLoading);
         pb.setVisibility(ProgressBar.VISIBLE);
 

@@ -104,6 +104,9 @@ public class Services extends AppCompatActivity implements NavigationView.OnNavi
             }
         }
 
+        /**
+         * onClick for bottom navbar
+         */
         //if a bottom navbar item is clicked send them to the respected activity
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -132,6 +135,9 @@ public class Services extends AppCompatActivity implements NavigationView.OnNavi
         buttonHelp = findViewById(R.id.Help);//assigning the help button from the xml to a java object
 
 
+        /**
+         * onClick that sends volley request for bill
+         */
         //when the bill button has been clicked
         buttonBill.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +174,10 @@ public class Services extends AppCompatActivity implements NavigationView.OnNavi
                 }
             }
         });
-        // when the help button has been clicked
+
+        /**
+         * onClick sends volley request for help
+         */
         buttonHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

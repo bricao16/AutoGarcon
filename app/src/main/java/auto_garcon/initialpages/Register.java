@@ -53,6 +53,9 @@ public class Register extends AppCompatActivity {
 
         pref = new SharedPreference(this);
 
+        /**
+         * ties xml elemnts to Java objects and sets some properties from SharePreferences
+         */
         userID = findViewById(R.id.username_enter_register);// associating xml objects with the java Object equivalent
         emailId = findViewById(R.id.email_enter_register);// associating xml objects with the java Object equivalent
         userFirst = findViewById(R.id.first_name_enter_register);// associating xml objects with the java Object equivalent
@@ -61,7 +64,9 @@ public class Register extends AppCompatActivity {
         nextButton = findViewById(R.id.next_button_on_register);// associating xml objects with the java Object equivalent
         textViewLogin = findViewById(R.id.yes_account_register);// associating xml objects with the java Object equivalent
 
-        /**/
+        /**
+         * onClick that check for valid inputs and goes to AccountImageSelectionRegister to finish registration process
+         */
         nextButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 final String firstName = userFirst.getText().toString().trim();//extracted data from xml object and converted into a string
@@ -131,6 +136,9 @@ public class Register extends AppCompatActivity {
             }
         });
 
+        /**
+         * onClick to go to Login activity
+         */
         textViewLogin.setOnClickListener(new View.OnClickListener() {// when the user clicks on this link we change to xml to the log in layout
             @Override
             public void onClick(View view) {

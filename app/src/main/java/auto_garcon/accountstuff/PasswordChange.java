@@ -65,6 +65,9 @@ public class PasswordChange extends AppCompatActivity {
         final EditText newPassword = findViewById(R.id.new_password);
         Button savePasswordChange = findViewById(R.id.save_password_change);
 
+        /**
+         * onClick that will sends change password volley request
+         */
         savePasswordChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
