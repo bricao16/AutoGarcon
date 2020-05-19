@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -114,7 +115,15 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        if (error.networkResponse.statusCode == 400) {
+                            Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                        }
+                        if (error.networkResponse.statusCode == 409) {
+                            Toast.makeText(getBaseContext(), "username and/or email already exists or invalid image type", Toast.LENGTH_LONG).show();
+                        }
+                        if (error.networkResponse.statusCode == 500) {
+                            Toast.makeText(getBaseContext(), "Error creating new customer", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }) {
                     @Override

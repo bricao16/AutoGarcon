@@ -143,8 +143,9 @@ public class Login extends AppCompatActivity {
                                     error.printStackTrace();
                                     if (error.networkResponse.statusCode == 401) {
                                         Toast.makeText(Login.this, "Invalid username or password", Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(Login.this, "Could not Sign in", Toast.LENGTH_LONG).show();
+                                    }
+                                    if (error.networkResponse.statusCode == 500) {
+                                        Toast.makeText(Login.this, "Error logging in", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }

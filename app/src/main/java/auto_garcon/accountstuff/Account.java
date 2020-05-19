@@ -36,6 +36,7 @@ import java.util.Map;
 
 import auto_garcon.VolleyMultipartRequest;
 import auto_garcon.homestuff.Home;
+import auto_garcon.initialpages.Login;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
@@ -210,7 +211,6 @@ public class Account extends AppCompatActivity {
 
                                         startActivity(new Intent(Account.this, Home.class));
                                         Toast.makeText(Account.this, "Changes Saved", Toast.LENGTH_LONG).show();
-
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -218,7 +218,21 @@ public class Account extends AppCompatActivity {
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            if (error.networkResponse.statusCode == 400) {
+                                Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                            }
+                            if (error.networkResponse.statusCode == 401) {
+                                pref.changeLogStatus(false);
 
+                                startActivity(new Intent(getBaseContext(), Login.class));
+                                Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                            }
+                            if (error.networkResponse.statusCode == 409) {
+                                Toast.makeText(getBaseContext(), "Username and/or email already exists or invalid image type", Toast.LENGTH_LONG).show();
+                            }
+                            if (error.networkResponse.statusCode == 500) {
+                                Toast.makeText(getBaseContext(), "Error updating", Toast.LENGTH_LONG).show();
+                            }
                         }
                     }) {
                         @Override
@@ -247,7 +261,7 @@ public class Account extends AppCompatActivity {
                         }
 
                         @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                        public Map<String, String> getHeaders() {//adds header to request
                             HashMap<String, String> headers = new HashMap<>();
                             headers.put("Authorization", "Bearer " + pref.getAuth());
 

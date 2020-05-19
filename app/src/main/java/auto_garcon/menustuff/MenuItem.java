@@ -1,6 +1,7 @@
 package auto_garcon.menustuff;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -138,7 +139,7 @@ public class MenuItem implements Serializable {
         this.allergens = allergens;
     }
 
-    public void setImage(Context context) {
+    public void setImage(final Context context) {
         if (this.itemID != -1) {
 
             StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/menu/image/" + this.itemID, new Response.Listener<String>() {
@@ -162,7 +163,12 @@ public class MenuItem implements Serializable {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
+                    if (error.networkResponse.statusCode == 409) {
+                        Toast.makeText(context, "image does not exist", Toast.LENGTH_LONG).show();
+                    }
+                    if (error.networkResponse.statusCode == 500) {
+                        Toast.makeText(context, "Error retrieving image", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
             VolleySingleton.getInstance(context).addToRequestQueue(getItemImageRequest);

@@ -243,7 +243,18 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                             @Override
                                             public void onErrorResponse(VolleyError error) {
                                                 error.printStackTrace();
-                                                Toast.makeText(ShoppingCart.this, error.toString(), Toast.LENGTH_LONG).show();
+                                                if (error.networkResponse.statusCode == 400) {
+                                                    Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                                                }
+                                                if (error.networkResponse.statusCode == 401) {
+                                                    pref.changeLogStatus(false);
+
+                                                    startActivity(new Intent(getBaseContext(), Login.class));
+                                                    Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                                                }
+                                                if (error.networkResponse.statusCode == 500) {
+                                                    Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                                                }
                                             }
                                         }
                                 ) {

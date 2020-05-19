@@ -97,8 +97,8 @@ public class Register extends AppCompatActivity {
                     password.requestFocus();
                     validInputs = false;
                 }
-                if (passwd.length() < 6) {//checks if the user entered a password lass than 6 characters
-                    password.setError("Password Must be Greater than 6 Characters");
+                if (passwd.length() < 8) {//checks if the user entered a password lass than 8 characters
+                    password.setError("Password Must be Greater than 8 Characters");
                     password.requestFocus();
                     validInputs = false;
                 }
@@ -107,7 +107,7 @@ public class Register extends AppCompatActivity {
                     password.requestFocus();
                     validInputs = false;
                 }
-                if (passwd.equals(passwd.toUpperCase())) {//checkis if password contains one lowercase
+                if (passwd.equals(passwd.toUpperCase())) {//check if password contains one lowercase
                     password.setError("Password Must contain at least one lowercase");
                     password.requestFocus();
                     validInputs = false;

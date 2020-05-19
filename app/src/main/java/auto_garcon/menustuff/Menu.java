@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -157,7 +158,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     dynamicPopupText.setText("Are you sure you want to remove from favorites?");
 
                     Button removeFromFavorites = removeFromFavoritesPopup.findViewById(R.id.popup_yes);
-                    Button confirmClose = removeFromFavoritesPopup.findViewById(R.id.confirm_close);
+                    ImageButton confirmClose = removeFromFavoritesPopup.findViewById(R.id.confirm_close);
 
                     removeFromFavorites.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -176,7 +177,22 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
                                             error.printStackTrace();
-                                            Toast.makeText(Menu.this, error.toString(), Toast.LENGTH_LONG).show();
+
+                                            if (error.networkResponse.statusCode == 400) {
+                                                Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                                            }
+                                            if (error.networkResponse.statusCode == 401) {
+                                                pref.changeLogStatus(false);
+
+                                                startActivity(new Intent(getBaseContext(), Login.class));
+                                                Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                                            }
+                                            if (error.networkResponse.statusCode == 409) {
+                                                Toast.makeText(getBaseContext(), "favorite doesn't exist", Toast.LENGTH_LONG).show();
+                                            }
+                                            if (error.networkResponse.statusCode == 500) {
+                                                Toast.makeText(getBaseContext(), "Error deleting favorite", Toast.LENGTH_LONG).show();
+                                            }
                                         }
                                     }
                             ) {
