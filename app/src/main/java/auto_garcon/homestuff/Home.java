@@ -2,7 +2,6 @@ package auto_garcon.homestuff;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +29,6 @@ import com.example.auto_garcon.R;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.squareup.seismic.ShakeDetector;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Services;
@@ -59,7 +58,7 @@ import auto_garcon.singleton.VolleySingleton;
  * This show a list of restaurant pages, and dealing with user actions such as searching.
  * This retrieve data of restaurant pages from database by using JASON with https connection.
  */
-public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
+public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     AutoCompleteTextView searchBar;
     Random randomGenerator;
     //data fields
@@ -90,8 +89,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         pref = new SharedPreference(Home.this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
-
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
@@ -124,13 +122,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
-
-
-        //shake feature
-        randomGenerator = new Random();
-        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        ShakeDetector shakeDetector = new ShakeDetector(this);
-        shakeDetector.start(sensorManager);
 
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -285,14 +276,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForFavorites);
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForSearch);
-    }
-
-    /**
-     * Called on the main thread when the device is shaken.
-     */
-    @Override
-    public void hearShake() {
-        allRestaurantIDs.get(randomGenerator.nextInt(allRestaurantNames.size()));
     }
 
     /**

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.auto_garcon.R;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.NukeSSLCerts;
 import auto_garcon.singleton.SharedPreference;
 
@@ -41,6 +42,8 @@ public class LoadingScreen extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_screen);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
 
         ProgressBar pb = findViewById(R.id.pbLoading);
         pb.setVisibility(ProgressBar.VISIBLE);

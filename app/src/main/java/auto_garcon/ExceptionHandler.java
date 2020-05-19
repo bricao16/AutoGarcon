@@ -23,6 +23,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     /**
      * This method checks if there internet connect
+     *
      * @param context this is used to get information on the current state of the device and app
      * @return true or false if there is internet connection
      */
@@ -43,9 +44,8 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
      * given uncaught exception.
      * <p>Any exception thrown by this method will be ignored by the
      * Java Virtual Machine.
-     *
-     *this method also allows us to capture the error information to pass it onto our errorEmail class
-     *
+     * <p>
+     * this method also allows us to capture the error information to pass it onto our errorEmail class
      *
      * @param t the thread
      * @param e the exception

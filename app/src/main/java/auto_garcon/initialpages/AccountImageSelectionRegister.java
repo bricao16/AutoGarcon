@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.VolleyMultipartRequest;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
@@ -63,6 +64,8 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_image_selection_register);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
         pref = new SharedPreference(AccountImageSelectionRegister.this);
 
         accountImage = findViewById(R.id.account_image_setup);
@@ -196,8 +199,8 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
      * sets the accountImage picture on the activity when returns from camera or gallery
      *
      * @param requestCode if user chose take photo or choose from gallery
-     * @param resultCode if user canceled request
-     * @param data data that will be used to set new user image
+     * @param resultCode  if user canceled request
+     * @param data        data that will be used to set new user image
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

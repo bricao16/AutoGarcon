@@ -2,7 +2,6 @@ package auto_garcon.initialpages;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -23,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.homestuff.Home;
 import auto_garcon.singleton.SharedPreference;
@@ -36,7 +36,6 @@ import auto_garcon.singleton.VolleySingleton;
  */
 public class TwoButtonPage extends AppCompatActivity {
     private SharedPreference pref;//saving user transaction data such as food item chosen by the user.
-    private ShoppingCartSingleton shoppingCart;//keeping food item chosen by the user.
 
     /**
      * Called when the activity is starting.  This is where most initialization
@@ -57,7 +56,7 @@ public class TwoButtonPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         setContentView(R.layout.activity_two_button_page);
         pref = new SharedPreference(this);//file for keeping track of cart
@@ -92,7 +91,15 @@ public class TwoButtonPage extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error.networkResponse != null && error.networkResponse.statusCode == 500) {
-                            Log.d("Error in loading screen", "Error retrieving favorites");
+                            if (error.networkResponse.statusCode == 401) {
+                                pref.changeLogStatus(false);
+
+                                startActivity(new Intent(getBaseContext(), Login.class));
+                                Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                            }
+                            if (error.networkResponse.statusCode == 500) {
+                                Toast.makeText(getBaseContext(), "Error retrieving restaurants", Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 }

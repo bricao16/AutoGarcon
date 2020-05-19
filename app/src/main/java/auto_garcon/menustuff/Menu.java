@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Services;
@@ -90,7 +91,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         pref = new SharedPreference(this);
 
@@ -454,6 +455,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      * The method is what filters the restaurant items that are displayed on the menu. If the
      * current menu does not have a category for the item being added it will add that category.
      * It then adds the actual item to the category it belongs in.
+     *
      * @param menuItemCategories JSONObject to get the data for our MenuItem
      */
 

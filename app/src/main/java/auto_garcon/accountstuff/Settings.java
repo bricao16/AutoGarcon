@@ -21,6 +21,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
@@ -57,6 +58,9 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
         pref = new SharedPreference(this);
 
 

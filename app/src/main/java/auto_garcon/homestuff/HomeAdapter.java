@@ -22,7 +22,7 @@ import java.util.List;
 import auto_garcon.menustuff.Menu;
 
 /**
- *This is a container for restaurant pages that the user can see.
+ * This is a container for restaurant pages that the user can see.
  */
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     //data fields

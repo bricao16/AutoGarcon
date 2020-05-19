@@ -42,10 +42,10 @@ public class MenuItem implements Serializable {
     /**
      * Constructor used to help create objects that will be used in CurrentOrders
      *
-     * @param itemID int assigned to instance variable itemID
-     * @param itemName String assigned to instance variable itemName
-     * @param price double assigned to instance variable price
-     * @param quantity int assigned to instance variable quantity
+     * @param itemID        int assigned to instance variable itemID
+     * @param itemName      String assigned to instance variable itemName
+     * @param price         double assigned to instance variable price
+     * @param quantity      int assigned to instance variable quantity
      * @param customization String assigned to instance variable customization
      */
     public MenuItem(int itemID, String itemName, double price, int quantity, String customization) {
@@ -223,6 +223,7 @@ public class MenuItem implements Serializable {
     /**
      * sets byte[] itemImage instance variable by pulling the image from the database using its ID
      * with volley request
+     *
      * @param context used to specify where to display errors if they occur
      */
     public void setImage(final Context context) {

@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -34,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.VolleyMultipartRequest;
 import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
@@ -75,7 +75,7 @@ public class Account extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         pref = new SharedPreference(this);
 
@@ -189,6 +189,10 @@ public class Account extends AppCompatActivity {
                     changeEmail.requestFocus();
                     validInputs = false;
                 }
+                if (email.length() > 50) {
+                    changeEmail.setError("Please enter a email less than 50 characters");
+                    changeEmail.requestFocus();
+                }
                 if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {// use android built patterns function to test if the email matches
                     changeEmail.setError("Please enter a valid email");
                     changeEmail.requestFocus();
@@ -201,6 +205,11 @@ public class Account extends AppCompatActivity {
                 }
                 if (username.length() > 50) {//checking if username is less than 50 characters
                     changeUsername.setError("Please enter a username with less than 50 characters");
+                    changeUsername.requestFocus();
+                    validInputs = false;
+                }
+                if (android.text.TextUtils.isDigitsOnly(username)) {
+                    changeUsername.setError("Please enter a username that is not only numbers");
                     changeUsername.requestFocus();
                     validInputs = false;
                 }
@@ -302,13 +311,14 @@ public class Account extends AppCompatActivity {
             }
         });
     }
+
     /**
      * Called when an activity you launched exits, giving you the requestCode
      * you started it with, the resultCode it returned, and any additional
      * data from it.  The <var>resultCode</var> will be
      * {@link #RESULT_CANCELED} if the activity explicitly returned that,
      * didn't return any result, or crashed during its operation.
-     *
+     * <p>
      * this will return data from selecting an image from the camera or gallery into the class
      *
      * <p>You will receive this call immediately before onResume() when your
@@ -317,11 +327,10 @@ public class Account extends AppCompatActivity {
      * @param requestCode The integer request code originally supplied to
      *                    startActivityForResult(), allowing you to identify who this
      *                    result came from.
-     * @param resultCode The integer result code returned by the child activity
-     *                   through its setResult().
-     * @param data An Intent, which can return result data to the caller
-     *               (various data can be attached to Intent "extras").
-     *
+     * @param resultCode  The integer result code returned by the child activity
+     *                    through its setResult().
+     * @param data        An Intent, which can return result data to the caller
+     *                    (various data can be attached to Intent "extras").
      * @see #startActivityForResult
      * @see #createPendingResult
      * @see #setResult(int)

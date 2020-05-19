@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Services;
@@ -59,9 +60,8 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
      * thrown.</em></p>
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see #onStart
      * @see #onSaveInstanceState
      * @see #onRestoreInstanceState
@@ -71,6 +71,8 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_orders);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
 
         pref = new SharedPreference(CurrentOrders.this);
         //creating side nav drawer
@@ -85,8 +87,8 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
-        if(pref.getShoppingCart() != null) {
-            if(pref.getShoppingCart().getCart().size()!=0){
+        if (pref.getShoppingCart() != null) {
+            if (pref.getShoppingCart().getCart().size() != 0) {
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
@@ -109,7 +111,8 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
          */
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
                                 startActivity(new Intent(CurrentOrders.this, QRcode.class));
@@ -131,14 +134,12 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
          * volley request to get current orders for specified user
          */
         StringRequest getRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/customer/inprogress/" + pref.getUser().getUsername(),
-                new Response.Listener<String>()
-                {
+                new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         if (response.equals("No order history for this customer")) {
                             findViewById(R.id.no_current_orders).setVisibility(View.VISIBLE);
-                        }
-                        else {
+                        } else {
                             RecyclerView currentOrdersList = findViewById(R.id.current_orders_list);
 
                             currentOrdersList.setVisibility(View.VISIBLE);
@@ -154,22 +155,21 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                                 JSONObject orderJSONObject = new JSONObject(response);
 
                                 Iterator<String> keys = orderJSONObject.keys();
-                                while(keys.hasNext()) {
+                                while (keys.hasNext()) {
                                     String key = keys.next();
 
                                     if (orderJSONObject.get(key) instanceof JSONObject) {
                                         JSONObject menuItemCategories = orderJSONObject.getJSONObject(key);
 
-                                        if(orders.containsKey(menuItemCategories.getInt("order_num"))) {
+                                        if (orders.containsKey(menuItemCategories.getInt("order_num"))) {
                                             ShoppingCartSingleton oldOrder = orders.get(menuItemCategories.getInt("order_num"));
 
                                             oldOrder.addToCart(new auto_garcon.menustuff.MenuItem(menuItemCategories.getInt("item_id"), menuItemCategories.getString("item_name"),
                                                     menuItemCategories.getDouble("price"), menuItemCategories.getInt("quantity"), menuItemCategories.getString("customization")));
 
                                             orders.put(menuItemCategories.getInt("order_num"), oldOrder);
-                                        }
-                                        else {
-                                            int font = CurrentOrders.this.getResources().getIdentifier(menuItemCategories.getString("font").toLowerCase().replaceAll("\\s","") + "_regular", "font", CurrentOrders.this.getPackageName());
+                                        } else {
+                                            int font = CurrentOrders.this.getResources().getIdentifier(menuItemCategories.getString("font").toLowerCase().replaceAll("\\s", "") + "_regular", "font", CurrentOrders.this.getPackageName());
 
                                             ShoppingCartSingleton newOrder = new ShoppingCartSingleton(menuItemCategories.getString("restaurant_name"), menuItemCategories.getInt("restaurant_id"), font, menuItemCategories.getString("font_color"),
                                                     menuItemCategories.getString("primary_color"), menuItemCategories.getString("secondary_color"), menuItemCategories.getString("tertiary_color"));
@@ -180,10 +180,10 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                                             orders.put(menuItemCategories.getInt("order_num"), newOrder);
                                             orderNumbers.add(menuItemCategories.getInt("order_num"));
 
-                                            if(!logos.containsKey(menuItemCategories.getInt("order_num"))) {
+                                            if (!logos.containsKey(menuItemCategories.getInt("order_num"))) {
                                                 byte[] restaurantLogoByteArray = new byte[menuItemCategories.getJSONObject("logo").getJSONArray("data").length()];
 
-                                                for(int i = 0; i < restaurantLogoByteArray.length; i++) {
+                                                for (int i = 0; i < restaurantLogoByteArray.length; i++) {
                                                     restaurantLogoByteArray[i] = (byte) (((int) menuItemCategories.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
                                                 }
 
@@ -195,8 +195,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                                 }
 
                                 currentOrdersList.setAdapter(new CurrentOrdersAdapter(CurrentOrders.this, orders, logos, orderNumbers, restaurantNames));
-                            }
-                            catch (JSONException e) {
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -220,8 +219,8 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
-                HashMap<String,String> headers = new HashMap<String, String>();
-                headers.put("Authorization","Bearer " + pref.getAuth());
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + pref.getAuth());
                 return headers;
             }
         };
@@ -236,8 +235,8 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
      * @return true to display the item as the selected item
      */
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
-        switch(nav_item.getItemId()){
+    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item) {
+        switch (nav_item.getItemId()) {
             case R.id.account:
                 startActivity(new Intent(getBaseContext(), Account.class));
                 break;
@@ -262,6 +261,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
         }
         return false;
     }
+
     /**
      * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
      * the activity had been stopped, but is now again being displayed to the
@@ -271,7 +271,7 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
      * <p>You can call {@link #finish} from within this function, in
      * which case {@link #onStop} will be immediately called after {@link #onStart} without the
      * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
-     *
+     * <p>
      * This is used to force the user to change their password when they open up this activity
      *
      * <p><em>Derived classes must call through to the super class's
@@ -285,11 +285,11 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onStart() {
         super.onStart();
-        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+        if (pref.getUser().getChangePassword() == 1) {//check if they have updated their password
             //if not send them back to PasswordChange page and force them to update their password
             Intent intent = new Intent(CurrentOrders.this, PasswordChange.class);
             startActivity(intent);
-            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Update your Password", Toast.LENGTH_LONG).show();
         }
     }
 }

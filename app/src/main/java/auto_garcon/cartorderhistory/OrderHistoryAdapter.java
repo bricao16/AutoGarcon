@@ -28,8 +28,7 @@ import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 
 /**
- *
- *  This is a container for history pages that the user can see.
+ * This is a container for history pages that the user can see.
  */
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.OrderHistoryViewHolder> {
     Dialog popUp;
@@ -45,11 +44,11 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     /**
      * This constructor initializes our variables passed in from the shopping cart page
      *
-     * @param ctx this Context represents the current state of the app we will use this initalize the instance variable ct as the Context for this java class
+     * @param ctx        this Context represents the current state of the app we will use this initalize the instance variable ct as the Context for this java class
      * @param preference This sharedPreference represents the sharedPreference from the orderHistory page we use this initialize our sharedPreference variable so we can access user or current Shopping cart information
-     * @param order This Arraylist represents the order num for all the previous completed orders. We use this to initialize our order arraylist instance variable so we can access this info in later parts of code
-     * @param carts This ArrayList represents the carts for all previous completed orders pulled from database. We use this to initialize our carts arrayList instance variable so we can access this info in later parts of the code
-     * @param date This Arraylist represents the date for all our previous completed orders. We use this to intialize our date arraylist instance variable so we can access in later parts of the code
+     * @param order      This Arraylist represents the order num for all the previous completed orders. We use this to initialize our order arraylist instance variable so we can access this info in later parts of code
+     * @param carts      This ArrayList represents the carts for all previous completed orders pulled from database. We use this to initialize our carts arrayList instance variable so we can access this info in later parts of the code
+     * @param date       This Arraylist represents the date for all our previous completed orders. We use this to intialize our date arraylist instance variable so we can access in later parts of the code
      */
     public OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date, ArrayList<String> restaurantName, ArrayList<byte[]> logos) {
         ct = ctx;
@@ -227,6 +226,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
         /**
          * In this method we set the respected xml java objects to their associated xml objects
+         *
          * @param v this parameter allows us to access the xml object for a specified card tile
          */
         public OrderHistoryViewHolder(@NonNull View v) {
