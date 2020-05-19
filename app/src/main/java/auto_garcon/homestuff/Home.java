@@ -55,10 +55,9 @@ import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
 
-/*
-This show a list of restaurant pages, and
-dealing with user actions such as searching.
-This retrieve data of restaurant pages from database by using JASON with https connection.
+/**
+ * This show a list of restaurant pages, and dealing with user actions such as searching.
+ * This retrieve data of restaurant pages from database by using JASON with https connection.
  */
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     AutoCompleteTextView searchBar;

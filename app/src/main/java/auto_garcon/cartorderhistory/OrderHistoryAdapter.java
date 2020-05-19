@@ -27,8 +27,9 @@ import java.util.ArrayList;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 
-/*
-This is a container for history pages that the user can see.
+/**
+ *
+ *  This is a container for history pages that the user can see.
  */
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.OrderHistoryViewHolder> {
     Dialog popUp;
