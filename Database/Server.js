@@ -856,7 +856,7 @@ app.post('/services/update', (req, res) => {
 				return;
 			}	//if
 
-			query = 'UPDATE sample.services SET service_status = ? WHERE restaurant_id = ? AND table_n	um = ?';
+			query = 'UPDATE sample.services SET service_status = ? WHERE restaurant_id = ? AND table_num = ?';
 			parameters = [req.body.status, req.body.restaurant_id, req.body.table_num];
 
 			//Edit status in db:
