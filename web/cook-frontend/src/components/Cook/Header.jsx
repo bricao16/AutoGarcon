@@ -58,6 +58,20 @@ function Header(props){
     setTab(newTab);
   };
 
+  function renderBadge(){
+    const count = updateRequestCount();
+    if(count > 0){
+      return (
+        <Badge badgeContent={
+          <span style={{color: theme.palette.text.primary}}>{count}</span>
+        } color="secondary" className={classes.badge}>
+          <span>Service Requests</span>
+        </Badge>
+      );
+    }
+    return <span>Service Requests</span>;
+  }
+
   function updateRequestCount(){
     let count = 0;
     if(Object.keys(serviceData).length > 0){
@@ -67,7 +81,7 @@ function Header(props){
         }
       });
     }
-    return <span style={{color: theme.palette.text.primary}}>{count}</span>;
+    return count;
   }
 
   return(
@@ -77,14 +91,7 @@ function Header(props){
           <img src={companyLogo}  width="auto" height="45px" alt="company logo" className={classes.logo}/>
           <StyledTabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
             <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
-            {/*<Tab label="Edit Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />*/}
-            <Tab label={
-                <Badge badgeContent={updateRequestCount()} color="secondary" className={classes.badge}>
-                  <span>Service Requests</span>
-                </Badge>
-              } color="primary" className={classes.tab + " px-3"} component={Link} to={'/cook/service'}
-            />
-            {/*<Tab label="Messages" color="primary" className={classes.tab} component={Link} to={'/cook/messages'} />*/}
+            <Tab label={ renderBadge() } color="primary" className={classes.tab + " px-3"} component={Link} to={'/cook/service'} />
           </StyledTabs>
           <div className={classes.account}>
             <AccountDropdown firstName={cookies.staff.first_name} lastName={cookies.staff.last_name} />
