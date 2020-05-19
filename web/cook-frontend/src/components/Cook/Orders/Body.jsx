@@ -16,6 +16,7 @@ import CustomDialog from "./CustomDialog";
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import RestoreIcon from '@material-ui/icons/Restore';
+import {forEach} from "react-bootstrap/cjs/ElementChildren";
 // import $ from "jquery"; will be used in future
 
 function Alert(props) {
@@ -25,12 +26,6 @@ function Alert(props) {
 const useStyles = makeStyles((theme) => ({
   main: {
     margin: theme.spacing(3)
-  },
-  cardsContainer: {
-
-  },
-  toolbarContainer:{
-
   },
   button: {
     marginLeft: theme.spacing(1),
@@ -154,16 +149,26 @@ function Body(props){
         if(!order.category) {
           order.category = 'Category';
         }
-        // if(order.customization) {
-        //   order.customization = order.customization.split(";").filter(string => {
-        //     return string.trim() !== '';
-        //   });
-        // }
+        if(order.customization) {
+          order.customization = order.customization.split(";").filter(string => {
+            return string.trim() !== '';
+          });
+        }
         if(!(order.category in newOrders[order.order_num].items)){
           newOrders[order.order_num].items[order.category] = [];
         }
         // Add item to order
-        newOrders[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name, customization: order.customization});
+        if(order.customization){
+          let i;
+          for(i = 0; i < order.customization.length; i++){
+            newOrders[order.order_num].items[order.category].push({quantity: 1, title: order.item_name, customization: order.customization[i]});
+          }
+          if(order.quantity - i > 0){
+            newOrders[order.order_num].items[order.category].push({quantity: order.quantity - i, title: order.item_name});
+          }
+        } else {
+          newOrders[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name, customization: order.customization});
+        }
       });
     }
     setUpdatedOrders(newOrders);
@@ -301,7 +306,7 @@ function Body(props){
           <Toolbar buttons={toolbarButtons()}/>
         </div>
         <div className={classes.separator}/>
-        <div className={classes.cardsContainer} >
+        <div>
           <OrderCards orders={orders} handleOrderClick={orderClicked} expandedOrders={expandedOrders} selectedCard={selectedCard} isCompleted={completedTab.current}/>
         </div>
       </div>

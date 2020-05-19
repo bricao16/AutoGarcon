@@ -5,105 +5,58 @@ import Cookies from 'universal-cookie';
 //import clsx from 'clsx';
 import axios from "axios";
 import https from "https";
+import Header from "./Header";
+import Card from "./Card";
+import {Container} from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   main: {
-    flex: 1,
+    margin: theme.spacing(4),
+    padding: 0,
     display: 'flex',
-    flexDirection: 'row',
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    // background: '#fafafa'
+    flexDirection: 'column'
   },
-  tableContainer: {
-    margin: theme.spacing(3)
+  cardsContainer: {
+    display: 'flex'
   },
-  selected: {
-    border: 'solid 1px black'
+  note: {
+    fontSize: '1.1em'
   }
 }));
 
 
 const universalCookies = new Cookies();
 
-function ServiceRequests() {
+function ServiceRequests(props) {
   const theme = useTheme();
   const classes = useStyles(theme);
 
-  const cookies = {
-    token: universalCookies.get('mytoken'),
-    staff: universalCookies.get('mystaff')
-  };
+  const {serviceData, changeStatus} = props;
 
-  const [serviceData, setServiceData] = useState({});
-
-  const [selected, setSelected] = useState(null);
-
-
-  useEffect(() => {
-    getServiceData();
-  }, []);
-
-  function getServiceData(){
-    const url = process.env.REACT_APP_DB + '/services/' + cookies.staff.restaurant_id;
-    axios.get(url, {
-      httpsAgent: new https.Agent({
-        rejectUnauthorized: false,
-      }),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Bearer ' + cookies.token
-      },
-    })
-      .then(res => res.data)
-      .then(data => {
-        setServiceData(data);
-        if(Object.keys(data).length){
-          setSelected(0);
+  function updateRequestCount(){
+    let count = 0;
+    if(Object.keys(serviceData).length > 0){
+      Object.values(serviceData).forEach(table => {
+        if(table.status !== 'Good'){
+          count++;
         }
-      })
-      .catch(error =>{
-        console.error(error);
       });
+    }
+    return count;
   }
 
-  function changeStatus(status, table_num){
-    const url = process.env.REACT_APP_DB + '/services/update';
-    const data = 'restaurant_id=' + cookies.staff.restaurant_id + '&table_num=' + table_num + '&status=' + status;
-    axios.post(url,
-      data,
-      {
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false
-        }),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Bearer ' + cookies.token
-        },
-      })
-      .then((r) => {
-        if(r.status === 200){
-          getServiceData();
-        }
-      })
-      .catch(error =>{
-        console.log('post request error');
-        console.error(error);
-      });
-  }
-
-  function renderTableService(){
+  function renderTableCards(){
     let tables = [];
     if(Object.keys(serviceData).length) {
+      console.log(serviceData);
       let index = 0;
       Object.values(serviceData).forEach(table => {
-        tables.push(
-          <div className={classes.tableContainer} key={index}>
-            <p>Table {table.table_num}</p>
-            <p>Status {table.status}</p>
-            <button onClick={() => changeStatus("Good", table.table_num)}>Finished</button>
-          </div>
-        );
-        index++;
+        if(table.status !== 'Good'){
+          tables.push(
+            <Card key={index} table={table.table_num} status={table.status} onClick={changeStatus}/>
+          );
+          index++;
+        }
       });
     }
     return tables;
@@ -113,8 +66,14 @@ function ServiceRequests() {
   // Render Cook view
   return (
     <ThemeProvider theme={theme}>
+      <Header title={"Table Service Requests"}/>
       <div className={classes.main}>
-        {renderTableService()}
+        <p className={classes.note}>
+          {updateRequestCount()} Pending Service Requests
+        </p>
+        <div className={classes.cardsContainer}>
+          {renderTableCards()}
+        </div>
       </div>
     </ThemeProvider>
   )

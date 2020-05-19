@@ -45,6 +45,8 @@ function Cook() {
   const [loading, setLoading] = useState(true);
   const [restaurantData, setRestaurantData] = useState({});
 
+  const [serviceData, setServiceData] = useState({});
+
   // Verify user is a manager or cook
   useEffect(() => {
     verifyCook(cookies.token).then(res => {
@@ -76,6 +78,57 @@ function Cook() {
       });
   }
 
+  useEffect(() => {
+    if(!loading){
+      getServiceData();
+    }
+  }, [loading]);
+
+  function getServiceData(){
+    const url = process.env.REACT_APP_DB + '/services/' + cookies.staff.restaurant_id;
+    axios.get(url, {
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false,
+      }),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + cookies.token
+      },
+    })
+      .then(res => res.data)
+      .then(data => {
+        setServiceData(data);
+      })
+      .catch(error =>{
+        console.error(error);
+      });
+  }
+
+  function changeStatus(status, table_num){
+    const url = process.env.REACT_APP_DB + '/services/update';
+    const data = 'restaurant_id=' + cookies.staff.restaurant_id + '&table_num=' + table_num + '&status=' + status;
+    axios.post(url,
+      data,
+      {
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false
+        }),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Bearer ' + cookies.token
+        },
+      })
+      .then((r) => {
+        if(r.status === 200){
+          getServiceData();
+        }
+      })
+      .catch(error =>{
+        console.log('post request error');
+        console.error(error);
+      });
+  }
+
   // Check if user is logged in
   // If they aren't then send them to log in page
   if (verificationComplete && !verified.current) {
@@ -87,8 +140,12 @@ function Cook() {
   // While loading, display loading message
   if(loading){
     return(
-      <div className="spinner-border" role="status">
-        <span className="sr-only">Loading...</span>
+      <div className="d-flex flex-column justify-content-center" style={{"height": "100vh", "width": "100vw"}}>
+        <div className="d-flex justify-content-center" style={{"width": "100vw"}}>
+          <div className="spinner-border" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </div>
       </div>
     );
   }
@@ -107,21 +164,21 @@ function Cook() {
             </Route>
             {/* Render cook order page when on /cook/orders */}
             <Route path="/cook/orders">
-              <Header cookies={cookies} restaurantData={restaurantData} tab={0}/>
+              <Header cookies={cookies} restaurantData={restaurantData} tab={0} serviceData={serviceData}/>
               <Orders/>
             </Route>
             {/* Render cook menu page when on /cook/menu */}
-            <Route exact path="/cook/menu">
-              <Header cookies={cookies} restaurantData={restaurantData} tab={1}/>
-              <Menu menu={restaurantData.menu} primary={restaurantData.restaurant.primary_color}
-                    secondary={restaurantData.restaurant.secondary_color}
-                    tertiary={restaurantData.restaurant.tertiary_color}
-                    font={restaurantData.restaurant.font}
-                    font_color={restaurantData.restaurant.font_color} />
-            </Route>
+            {/*<Route exact path="/cook/menu">*/}
+            {/*  <Header cookies={cookies} restaurantData={restaurantData} tab={1} serviceData={serviceData}/>*/}
+            {/*  <Menu menu={restaurantData.menu} primary={restaurantData.restaurant.primary_color}*/}
+            {/*        secondary={restaurantData.restaurant.secondary_color}*/}
+            {/*        tertiary={restaurantData.restaurant.tertiary_color}*/}
+            {/*        font={restaurantData.restaurant.font}*/}
+            {/*        font_color={restaurantData.restaurant.font_color} />*/}
+            {/*</Route>*/}
             <Route exact path="/cook/service">
-              <Header cookies={cookies} restaurantData={restaurantData} tab={2}/>
-              <ServiceRequests cookies={cookies} />
+              <Header cookies={cookies} restaurantData={restaurantData} tab={1} serviceData={serviceData}/>
+              <ServiceRequests cookies={cookies} serviceData={serviceData} changeStatus={changeStatus}/>
             </Route>
           </Switch>
         </div>

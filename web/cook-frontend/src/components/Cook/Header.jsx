@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom'
 import AccountDropdown from "../AccountDropdown";
 import axios from "axios";
 import https from "https";
+import Typography from "@material-ui/core/Typography";
 
 const StyledTabs = withStyles({
   indicator: {
@@ -35,7 +36,8 @@ const useStyles = makeStyles((theme) => ({
   },
   logo: {
     color: 'black',
-    marginLeft: theme.spacing(2)
+    marginLeft: theme.spacing(2),
+    borderRadius: "5px"
   }
 }));
 
@@ -52,14 +54,11 @@ function Header(props){
   // const theme = useTheme();
   const classes = useStyles(theme);
 
-  const {cookies, restaurantData} = props;
+  const {cookies, restaurantData, serviceData} = props;
 
   const logoData = restaurantData.restaurant.logo.data;
   const buffer = Buffer.from(logoData).toString('base64');
   const companyLogo = "data:image/png;base64,"+buffer;
-
-  const [requestCount, setRequestCount] = useState(0);
-
 
   // Changes which tab is highlighted
   const [tab, setTab] = React.useState(props.tab);
@@ -67,28 +66,16 @@ function Header(props){
     setTab(newTab);
   };
 
-  useEffect(() => {
-    getServiceData();
-  }, []);
-
-  function getServiceData(){
-    const url = process.env.REACT_APP_DB + '/services/' + cookies.staff.restaurant_id;
-    axios.get(url, {
-      httpsAgent: new https.Agent({
-        rejectUnauthorized: false,
-      }),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Bearer ' + cookies.token
-      },
-    })
-      .then(res => res.data)
-      .then(data => {
-        setRequestCount(Object.keys(data).length);
-      })
-      .catch(error =>{
-        console.error(error);
+  function updateRequestCount(){
+    let count = 0;
+    if(Object.keys(serviceData).length > 0){
+      Object.values(serviceData).forEach(table => {
+        if(table.status !== 'Good'){
+          count++;
+        }
       });
+    }
+    return count;
   }
 
   return(
@@ -98,9 +85,9 @@ function Header(props){
           <img src={companyLogo}  width="auto" height="45px" alt="company logo" className={classes.logo}/>
           <StyledTabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
             <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
-            <Tab label="Edit Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />
+            {/*<Tab label="Edit Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />*/}
             <Tab label={
-                <Badge badgeContent={requestCount} color="primary">
+                <Badge badgeContent={updateRequestCount()} color="primary">
                   <span>Service Requests</span>
                 </Badge>
               } color="primary" className={classes.tab} component={Link} to={'/cook/service'}
