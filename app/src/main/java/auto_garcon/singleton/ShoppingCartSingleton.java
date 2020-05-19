@@ -9,6 +9,7 @@ import auto_garcon.menustuff.MenuItem;
  */
 public class ShoppingCartSingleton {
     private  ArrayList<MenuItem> items;
+    private String restaurantName;
     private int restaurantID;
     private int startingHour;
     private int endingHour;
@@ -38,7 +39,6 @@ public class ShoppingCartSingleton {
 
     public ShoppingCartSingleton(int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor, int font, String fontColor, int startingHour, int endingHour){
         this.restaurantID = restaurantID;
-
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
         this.tertiaryColor = tertiaryColor;
@@ -46,6 +46,18 @@ public class ShoppingCartSingleton {
         this.fontColor = fontColor;
         this.startingHour = startingHour;
         this.endingHour = endingHour;
+
+        this.items = new ArrayList<MenuItem>();
+    }
+
+    public ShoppingCartSingleton(String restaurantName, int restaurantID, int font, String fontColor, String primaryColor, String secondaryColor, String tertiaryColor) {
+        this.restaurantName = restaurantName;
+        this.restaurantID = restaurantID;
+        this.font = font;
+        this.fontColor = fontColor;
+        this.primaryColor = primaryColor;
+        this.secondaryColor = secondaryColor;
+        this.tertiaryColor = tertiaryColor;
 
         this.items = new ArrayList<MenuItem>();
     }
@@ -82,16 +94,6 @@ public class ShoppingCartSingleton {
         }
 
         return cost;
-    }
-
-    public double getCaloriesOfItems(){
-        double calories = 0;
-
-        for(int i = 0; i < items.size(); i++) {
-            calories = calories + items.get(i).getPrice();
-        }
-
-        return calories;
     }
 
     public int getRestaurantID() {

@@ -7,6 +7,7 @@
     android:background="@color/gray">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/current_orders_tile_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +34,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="5dp"
                 android:text="Restaurant Title"
                 android:textColor="@android:color/background_dark"
                 android:textSize="14sp"
@@ -46,7 +47,7 @@
                 android:id="@+id/list_of_items"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="21dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/restaurant_picture"
                 app:layout_constraintTop_toBottomOf="@id/restaurant_title"/>

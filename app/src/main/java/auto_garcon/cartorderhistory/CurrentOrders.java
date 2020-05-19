@@ -5,12 +5,14 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -168,7 +170,10 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                                             orders.put(menuItemCategories.getInt("order_num"), oldOrder);
                                         }
                                         else {
-                                            ShoppingCartSingleton newOrder = new ShoppingCartSingleton();
+                                            int font = CurrentOrders.this.getResources().getIdentifier(menuItemCategories.getString("font").toLowerCase().replaceAll("\\s","") + "_regular", "font", CurrentOrders.this.getPackageName());
+
+                                            ShoppingCartSingleton newOrder = new ShoppingCartSingleton(menuItemCategories.getString("restaurant_name"), menuItemCategories.getInt("restaurant_id"), font, menuItemCategories.getString("font_color"),
+                                                    menuItemCategories.getString("primary_color"), menuItemCategories.getString("secondary_color"), menuItemCategories.getString("tertiary_color"));
 
                                             newOrder.addToCart(new auto_garcon.menustuff.MenuItem(menuItemCategories.getInt("item_id"), menuItemCategories.getString("item_name"),
                                                     menuItemCategories.getDouble("price"), menuItemCategories.getInt("quantity"), menuItemCategories.getString("customization")));

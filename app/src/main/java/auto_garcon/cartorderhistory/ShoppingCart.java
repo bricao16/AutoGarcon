@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -143,8 +144,15 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
             PlaceOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   
-                    if(pref.getShoppingCart().getStartingHour() > Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) && Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR) < pref.getShoppingCart().getEndingHour()){
+                    int time = Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR);
+
+                    if(time < 12) {
+                        time = time + 12;
+                    }
+
+                     time = Integer.parseInt(Integer.toString(time) + Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
+                    
+                    if(pref.getShoppingCart().getStartingHour() > time || pref.getShoppingCart().getEndingHour() < time){
                         Toast.makeText(ShoppingCart.this,"The restaurant is currently closed.",Toast.LENGTH_LONG).show();
                     }
 

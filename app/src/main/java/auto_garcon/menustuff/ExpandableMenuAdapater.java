@@ -144,6 +144,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
             view.setBackgroundColor(Color.parseColor(tertiaryColor));
         }
 
+        final MenuItem currentChild = getChild(i, j);
 
         TextView txtListChild = view.findViewById(R.id.list_item);
         TextView txtListChildPrice = view.findViewById(R.id.list_item_price);
@@ -154,8 +155,8 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         txtListChild.setTextColor(Color.parseColor(fontColor));
         txtListChildPrice.setTextColor(Color.parseColor(fontColor));
 
-        txtListChild.setText(getChild(i, j).getNameOfItem());
-        txtListChildPrice.setText(String.format("$%.02f", getChild(i, j).getPrice()));
+        txtListChild.setText(currentChild.getNameOfItem());
+        txtListChildPrice.setText(String.format("$%.02f", currentChild.getPrice()));
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,7 +204,28 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 addToCart.setBackgroundColor(Color.parseColor(primaryColor));
                 customize.setBackgroundColor(Color.parseColor(primaryColor));
 
-                if(getChild(i, j).getAmountInStock() > 0) {
+                itemName.setText(currentChild.getNameOfItem());
+                itemDescription.setText(currentChild.getDescription());
+                itemPrice.setText("Price: " + String.format("$%.02f", getChild(i, j).getPrice()));
+                calorieCount.setText("Calories: " + getChild(i, j).getCalories());
+
+                if(currentChild.getAllergens().length != 0) {
+                    String allergenMessage = "Allergens: ";
+                    String[] allergensArray = currentChild.getAllergens();
+                    for(int i = 0; i < allergensArray.length; i++) {
+                        allergenMessage = allergenMessage + allergensArray[i] + " ";
+                    }
+                    itemAllergens.setText(allergenMessage);
+                }
+
+                //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
+                if(currentChild.getAmountInStock() == 0) {
+                    outOfStock.setText("Out of Stock");
+                    addToCart.setVisibility(View.GONE);
+                    customize.setVisibility(View.GONE);
+                }
+
+                if(currentChild.getAmountInStock() > 0) {
                     outOfStock.setVisibility(View.GONE);
                     outOfStockBackground.setVisibility(View.GONE);
 
@@ -217,12 +239,12 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                             customizationPopup.show();
 
                             final EditText customization = customizationPopup.findViewById(R.id.text_menu_item_edit);
-                            customization.setText(getChild(i, j).getCustomization());
+                            customization.setText(currentChild.getCustomization());
 
                             customizationPopup.findViewById(R.id.menu_item_edit_submit).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    getChild(i, j).setCustomization(customization.getText().toString().trim() + "; ");
+                                    currentChild.setCustomization(customization.getText().toString().trim() + "; ");
                                     customizationPopup.dismiss();
                                 }
                             });
@@ -243,10 +265,10 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                                 shoppingCart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
 
-                                MenuItem itemToBeAdded = getChild(i, j);
+                                MenuItem itemToBeAdded = currentChild;
                                 itemToBeAdded.setItemImage(itemImageByteArray);
 
-                                getChild(i, j).setCustomization("");
+                                currentChild.setCustomization("");
 
 
                                 shoppingCart.addToCart(itemToBeAdded);
@@ -259,15 +281,15 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                             else if(pref.getShoppingCart().getRestaurantID() == restaurantID) {
                                 shoppingCart = pref.getShoppingCart();
 
-                                if(shoppingCart.cartContainsItem(getChild(i, j)) != null) {
-                                    shoppingCart.cartContainsItem(getChild(i, j)).incrementQuantity();
-                                    shoppingCart.cartContainsItem(getChild(i, j)).setCustomization(shoppingCart.cartContainsItem(getChild(i, j)).getCustomization() + getChild(i, j).getCustomization());
+                                if(shoppingCart.cartContainsItem(currentChild) != null) {
+                                    shoppingCart.cartContainsItem(currentChild).incrementQuantity();
+                                    shoppingCart.cartContainsItem(currentChild).setCustomization(shoppingCart.cartContainsItem(currentChild).getCustomization() + currentChild.getCustomization());
                                 }
                                 else {
-                                    MenuItem itemToBeAdded = getChild(i, j);
+                                    MenuItem itemToBeAdded = currentChild;
                                     itemToBeAdded.setItemImage(itemImageByteArray);
 
-                                    getChild(i, j).setCustomization("");
+                                    currentChild.setCustomization("");
 
                                     shoppingCart.addToCart(itemToBeAdded);
                                 }
@@ -298,10 +320,10 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
                                         shoppingCart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
 
-                                        MenuItem itemToBeAdded = getChild(i, j);
+                                        MenuItem itemToBeAdded = currentChild;
                                         itemToBeAdded.setItemImage(itemImageByteArray);
 
-                                        getChild(i, j).setCustomization("");
+                                        currentChild.setCustomization("");
 
                                         shoppingCart.addToCart(itemToBeAdded);
 
@@ -328,7 +350,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 }
 
                 final ImageView imageOfItem = addToCartPopup.findViewById(R.id.item_image_menu_popup);
-                StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/menu/image/" + getChild(i, j).getItemID(),
+                StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/menu/image/" + currentChild.getItemID(),
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -358,32 +380,6 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 );
 
                 VolleySingleton.getInstance(context).addToRequestQueue(getItemImageRequest);
-
-                calorieCount.setText("Calories: " + getChild(i, j).getCalories());
-                calorieCount.setTextColor(Color.WHITE);
-                itemName.setText(getChild(i, j).getNameOfItem());
-                itemName.setTextColor(Color.WHITE);
-                itemPrice.setText("Price: " + String.format("$%.02f", getChild(i, j).getPrice()));
-                itemPrice.setTextColor(Color.WHITE);
-                if(getChild(i, j).getDescription() != "null") {
-                    itemDescription.setText(getChild(i, j).getDescription());
-                }
-                if(getChild(i, j).getAllergens().length!=0) {
-                    String allergenMessage = "Allergens: ";
-                    String[] allergensArray = getChild(i, j).getAllergens();
-                    for(int i = 0; i < allergensArray.length; i++) {
-                        allergenMessage = allergenMessage + allergensArray[i] + " ";
-                    }
-                    itemAllergens.setText(allergenMessage);
-                    itemPrice.setTextColor(Color.WHITE);
-                }
-
-                //If item Out of Stock sets message to alert customer & make it so customer cannot add it to the cart.
-                if(getChild(i, j).getAmountInStock() == 0) {
-                    outOfStock.setText("Out of Stock");
-                    addToCart.setVisibility(View.GONE);
-                  //  calorieCount.setVisibility(View.GONE);
-                }
 
                 addToCartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 addToCartPopup.show();
