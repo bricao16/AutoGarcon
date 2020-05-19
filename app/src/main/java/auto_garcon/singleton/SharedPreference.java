@@ -190,11 +190,10 @@ public class SharedPreference {
 
     }
 
-    public void SetTimeStamp(Calendar calendar){
+    public void SetTimeStamp(){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String stringJson = gson.toJson(calendar);
-
+        String stringJson = gson.toJson(Calendar.getInstance());
         editor.putString("timeStamp",stringJson);
         editor.apply();
     }

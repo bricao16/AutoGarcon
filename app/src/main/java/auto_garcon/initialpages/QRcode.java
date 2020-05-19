@@ -136,7 +136,7 @@ public class QRcode extends AppCompatActivity {
                 txt_result.post(new Runnable() {
                     @Override
                     public void run() {
-
+                        pref.SetTimeStamp();
                         UserSingleton user = pref.getUser();
                         user.setRestaurantID(Integer.parseInt(data.split(",")[0]));
                         user.setTableID(Integer.parseInt(data.split(",")[1]));
