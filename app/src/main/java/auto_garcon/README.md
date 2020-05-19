@@ -14,8 +14,8 @@ SendErrorEmail.java
 
 VolleyMultipartRequest
 * Custom request to make multipart header and uplaod file.
-
-
+<br />
+<br />
 
 
 Folders:
@@ -43,8 +43,8 @@ Folders:
 
 -Terms.java
 * Displays the Terms and Conditions of the app.
-
-
+<br />
+<br />
 
 +cartorderhistory
 
@@ -70,7 +70,8 @@ Folders:
 -ShoppingCartAdapter.java
 * The class represents the format for how are our shopping list will act and work
 * The class also lets the user allow change in quantity of each menu item, and remove each menu item.
-
+<br />
+<br />
 
 
 +homestuff
@@ -84,7 +85,8 @@ Folders:
 
 -RestaurantItem.java
 * This is an object of restaurant page.
-
+<br />
+<br />
 
 
 +initialpages
@@ -113,7 +115,8 @@ Folders:
 
 -TwoButtonPage.java
 * activity which gives option for QR Code or restaurant main page list.
-
+<br />
+<br />
 
 
 +menustuff
@@ -126,7 +129,8 @@ Folders:
 
 -MenuItem.java
 * activity which handles menu items
-
+<br />
+<br />
 
 
 +singelton
