@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -262,14 +263,13 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 shoppingCart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
 
                                 MenuItem itemToBeAdded = currentChild;
+
                                 itemToBeAdded.setItemImage(itemImageByteArray);
 
+                                shoppingCart.addToCart(itemToBeAdded);
+                                pref.setShoppingCart(shoppingCart);
                                 currentChild.setCustomization("");
 
-
-                                shoppingCart.addToCart(itemToBeAdded);
-
-                                pref.setShoppingCart(shoppingCart);
                                 badge.setNumber(shoppingCart.getCart().size());
                                 badge.setVisible(false);
                                 badge.setVisible(true);
@@ -278,13 +278,17 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                 shoppingCart = pref.getShoppingCart();
 
                                 if (shoppingCart.cartContainsItem(currentChild) != null) {
+                                    Toast.makeText(context, shoppingCart.cartContainsItem(currentChild).getCustomization(), Toast.LENGTH_LONG).show();
+
                                     shoppingCart.cartContainsItem(currentChild).incrementQuantity();
                                     shoppingCart.cartContainsItem(currentChild).setCustomization(shoppingCart.cartContainsItem(currentChild).getCustomization() + currentChild.getCustomization());
+                                    currentChild.setCustomization("");
+
                                 } else {
                                     MenuItem itemToBeAdded = currentChild;
-                                    itemToBeAdded.setItemImage(itemImageByteArray);
-
                                     currentChild.setCustomization("");
+
+                                    itemToBeAdded.setItemImage(itemImageByteArray);
 
                                     shoppingCart.addToCart(itemToBeAdded);
                                 }
@@ -315,9 +319,9 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                                         shoppingCart = new ShoppingCartSingleton(restaurantID, primaryColor, secondaryColor, tertiaryColor, font, fontColor, opening, closing);
 
                                         MenuItem itemToBeAdded = currentChild;
-                                        itemToBeAdded.setItemImage(itemImageByteArray);
-
                                         currentChild.setCustomization("");
+
+                                        itemToBeAdded.setItemImage(itemImageByteArray);
 
                                         shoppingCart.addToCart(itemToBeAdded);
 

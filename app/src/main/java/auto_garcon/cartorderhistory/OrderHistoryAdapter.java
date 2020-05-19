@@ -118,7 +118,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderHistoryViewHolder holder, final int position) {
         Typeface typeface = ResourcesCompat.getFont(this.ct, carts.get(position).getFont());
 
-        holder.orderTile.setCardBackgroundColor(Color.parseColor(carts.get(position).getPrimaryColor()));
+        holder.orderTile.setCardBackgroundColor(Color.parseColor(carts.get(position).getSecondaryColor()));
         holder.order_num.setText(restaurantName.get(position));// set the text for the order tile
         holder.order_num.setTypeface(typeface);//setting font
         holder.order_num.setTextColor(Color.parseColor(carts.get(position).getFontColor()));//setting color
@@ -126,7 +126,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         holder.items.setTextColor(Color.parseColor(carts.get(position).getFontColor()));
         holder.reOrder.setTypeface(typeface);
         holder.reOrder.setTextColor(Color.parseColor(carts.get(position).getFontColor()));
-        holder.reOrder.setBackgroundColor(Color.parseColor(carts.get(position).getTertiaryColor()));
+        holder.reOrder.setBackgroundColor(Color.parseColor(carts.get(position).getPrimaryColor()));
 
 
         int datePosition = date.get(position).indexOf("T");

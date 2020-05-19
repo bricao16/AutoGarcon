@@ -10,9 +10,18 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+/**
+ * Class that is run at start of app to allow all certificates to be accepted
+ * */
+
+
 public class NukeSSLCerts {
     protected static final String TAG = "NukeSSLCerts";
 
+    /**
+     * Creates a new TrustManager that will take in all certificates
+     * @return array of trusted anchors
+     */
     public static void nuke() {
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{
