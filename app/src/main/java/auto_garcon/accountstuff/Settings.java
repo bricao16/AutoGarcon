@@ -181,22 +181,10 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     /**
-     * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
-     * the activity had been stopped, but is now again being displayed to the
-     * user. It will usually be followed by {@link #onResume}. This is a good place to begin
-     * drawing visual elements, running animations, etc.
+     *  Checks to see if use needs to update password.
+     *  If so sends them back to PassWordChange page.
      *
-     * <p>You can call {@link #finish} from within this function, in
-     * which case {@link #onStop} will be immediately called after {@link #onStart} without the
-     * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
-     *
-     * <p><em>Derived classes must call through to the super class's
-     * implementation of this method.  If they do not, an exception will be
-     * thrown.</em></p>
-     *
-     * @see #onCreate
-     * @see #onStop
-     * @see #onResume
+     *  @return void
      */
     @Override
     protected void onStart() {
