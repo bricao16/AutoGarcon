@@ -1,11 +1,10 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Switch, Route, Redirect} from "react-router-dom";
-import {makeStyles, ThemeProvider, useTheme} from '@material-ui/core/styles';
+import {createMuiTheme, makeStyles, ThemeProvider, useTheme} from '@material-ui/core/styles';
 import Cookies from 'universal-cookie';
 //import clsx from 'clsx';
 import axios from "axios";
 import https from "https";
-
 
 import Header from "./Header";
 import Footer from "./Footer";
@@ -13,13 +12,15 @@ import Orders from "./Orders/Orders";
 //import Menu1 from "./Menu/Menu1";
 import Menu from "./Menu/Menu";
 import ServiceRequests from "./Service/ServiceRequests";
+import useDeepCompareEffect from "use-deep-compare-effect";
+import MuiAlert from "@material-ui/lab/Alert";
+import {Snackbar} from "@material-ui/core";
 
 const useStyles = makeStyles({
   main: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     // background: '#fafafa'
   },
   content: {
@@ -27,12 +28,16 @@ const useStyles = makeStyles({
   }
 });
 
-
 const universalCookies = new Cookies();
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 function Cook() {
-  const theme = useTheme();
-  const classes = useStyles(theme);
+
+  const theme = useRef();
+  const classes = useStyles();
 
   const cookies = {
     token: universalCookies.get('mytoken'),
@@ -46,6 +51,11 @@ function Cook() {
   const [restaurantData, setRestaurantData] = useState({});
 
   const [serviceData, setServiceData] = useState({});
+  const [updatedServiceData, setUpdatedServiceData] = useState({});
+  const getServiceDataInterval = useRef();
+
+  const [showNotification, setShowNotification] = useState(false);
+  const vertical = 'bottom', horizontal = 'left';
 
   // Verify user is a manager or cook
   useEffect(() => {
@@ -58,8 +68,16 @@ function Cook() {
   useEffect(() => {
     if(verified.current){
       getRestaurantData();
+      getServiceData();
     }
   }, [verificationComplete]);
+
+
+  useEffect(() => {
+    if(restaurantData.restaurant) {
+      setupTheme();
+    }
+  }, [restaurantData]);
 
   function getRestaurantData(){
     const url = process.env.REACT_APP_DB + '/restaurant/' + cookies.staff.restaurant_id;
@@ -78,11 +96,58 @@ function Cook() {
       });
   }
 
+  function setupTheme(){
+    const data = restaurantData.restaurant;
+    theme.current = createMuiTheme({
+      palette: {
+        primary: {
+          main: data.primary_color
+        },
+        secondary: {
+          main: data.secondary_color
+        },
+        text: {
+          primary: data.font_color
+        }
+          /*
+            tertiary_color: "#f6d55c"
+          */
+
+      },
+      typography: {
+        fontFamily: data.font,
+      }
+    });
+  }
+
   useEffect(() => {
-    if(!loading){
-      getServiceData();
+    // updates orders every 10 seconds
+    // start interval after mounting
+    getServiceDataInterval.current = setInterval(getServiceData, 5000);
+    // While unmounting do this
+    return () => {
+      clearInterval(getServiceDataInterval.current); // clear interval after unmounting
     }
-  }, [loading]);
+  }, []);
+
+  function requestsCount(data){
+    let count = 0;
+    Object.values(data).forEach(value => {
+      if(value.status !== 'Good'){
+        count ++;
+      }
+    });
+    return count;
+  }
+
+  useDeepCompareEffect(() => {
+    if(updatedServiceData !== serviceData){
+      if(Object.keys(serviceData).length > 0 && requestsCount(updatedServiceData) > requestsCount(serviceData)){
+        setShowNotification(true);
+      }
+      setServiceData(updatedServiceData);
+    }
+  }, [updatedServiceData]);
 
   function getServiceData(){
     const url = process.env.REACT_APP_DB + '/services/' + cookies.staff.restaurant_id;
@@ -97,7 +162,7 @@ function Cook() {
     })
       .then(res => res.data)
       .then(data => {
-        setServiceData(data);
+        setUpdatedServiceData(data);
       })
       .catch(error =>{
         console.error(error);
@@ -107,6 +172,9 @@ function Cook() {
   function changeStatus(status, table_num){
     const url = process.env.REACT_APP_DB + '/services/update';
     const data = 'restaurant_id=' + cookies.staff.restaurant_id + '&table_num=' + table_num + '&status=' + status;
+    console.log(url);
+    console.log(data);
+    console.log('Bearer ' + cookies.token);
     axios.post(url,
       data,
       {
@@ -127,6 +195,10 @@ function Cook() {
         console.log('post request error');
         console.error(error);
       });
+  }
+
+  function handlePopupClose(){
+    setShowNotification(false);
   }
 
   // Check if user is logged in
@@ -153,8 +225,15 @@ function Cook() {
   // After being verified and loading restaurant info is done
   // Render Cook view
   return (
-    <ThemeProvider theme={theme}>
-      <div className={classes.main}>
+    <ThemeProvider theme={theme.current}>
+
+      <Snackbar open={showNotification} autoHideDuration={60000} onClose={handlePopupClose} anchorOrigin={{ vertical, horizontal }}>
+        <Alert severity={'error'}>
+          New customer service request
+        </Alert>
+      </Snackbar>
+
+      <div className={classes.main} style={{fontFamily: restaurantData.restaurant.font}}>
         {/* Header with navigation and account drop down*/}
         <div className={classes.content}>
           <Switch>

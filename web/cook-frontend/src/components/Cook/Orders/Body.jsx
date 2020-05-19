@@ -4,7 +4,7 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 // Material UI
-import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
+import {createMuiTheme, ThemeProvider, useTheme} from "@material-ui/core/styles";
 import {makeStyles, Button, Snackbar} from "@material-ui/core";
 import MuiAlert from '@material-ui/lab/Alert';
 
@@ -23,7 +23,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   main: {
     margin: theme.spacing(3)
   },
@@ -37,18 +37,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#0b658a',
-    }
-  },
-});
+// const theme = createMuiTheme({
+//   palette: {
+//     primary: {
+//       main: '#fff111',
+//     }
+//   },
+// });
 
 const universalCookies = new Cookies();
 
 function Body(props){
-
+  const theme = useTheme();
   const classes = useStyles(theme);
 
   // Cookies for getting user info
@@ -97,7 +97,6 @@ function Body(props){
   // Set up things for componentDidMount() componentWillUnmount()
   // Creates method to re-pull orders from database every 10 seconds
   useEffect(() => {
-    // setupKeyPresses(); <- This will be added in the future
     // updates orders every 10 seconds
     // start interval after mounting
     getOrdersInterval.current = setInterval(() => getDatabaseOrders(), 10000);
@@ -290,7 +289,7 @@ function Body(props){
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <div>
 
       <Snackbar open={showNotification} autoHideDuration={3000} onClose={handlePopupClose}>
         <Alert severity={notificationSeverity}>
@@ -310,7 +309,8 @@ function Body(props){
           <OrderCards orders={orders} handleOrderClick={orderClicked} expandedOrders={expandedOrders} selectedCard={selectedCard} isCompleted={completedTab.current}/>
         </div>
       </div>
-    </ThemeProvider>
+
+    </div>
   )
 }
 

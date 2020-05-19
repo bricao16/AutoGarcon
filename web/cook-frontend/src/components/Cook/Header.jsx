@@ -38,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
     color: 'black',
     marginLeft: theme.spacing(2),
     borderRadius: "5px"
+  },
+  badge: {
+    paddingRight: '7px',
   }
 }));
 
@@ -87,10 +90,10 @@ function Header(props){
             <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
             {/*<Tab label="Edit Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />*/}
             <Tab label={
-                <Badge badgeContent={updateRequestCount()} color="primary">
+                <Badge badgeContent={updateRequestCount()} color="primary" className={classes.badge}>
                   <span>Service Requests</span>
                 </Badge>
-              } color="primary" className={classes.tab} component={Link} to={'/cook/service'}
+              } color="primary" className={classes.tab + " px-3"} component={Link} to={'/cook/service'}
             />
             {/*<Tab label="Messages" color="primary" className={classes.tab} component={Link} to={'/cook/messages'} />*/}
           </StyledTabs>

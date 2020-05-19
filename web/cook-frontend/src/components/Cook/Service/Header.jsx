@@ -1,12 +1,13 @@
 import React, {useState} from "react";
 import {makeStyles, AppBar, Toolbar} from "@material-ui/core";
-import {ThemeProvider, createMuiTheme, withStyles} from "@material-ui/core/styles";
+import {ThemeProvider, createMuiTheme, withStyles, useTheme} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   appbar: {
-    background: '#0b658a',
+    background: theme.palette.primary,
     minHeight: 0,
-    boxShadow: 'none'
+    boxShadow: 'none',
+    color: theme.palette.text.primary
   },
   toolbar: {
     // alignItems: 'flex-start',
@@ -20,17 +21,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#ffffff',
-    }
-  },
-});
+// const theme = createMuiTheme({
+//   palette: {
+//     primary: {
+//       main: '#ffffff',
+//     }
+//   },
+// });
 
 function Header(props){
 
-  // const theme = useTheme();
+  const theme = useTheme();
   const classes = useStyles(theme);
 
   return(

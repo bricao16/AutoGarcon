@@ -1,13 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Switch, Route, Redirect} from "react-router-dom";
 import {makeStyles, ThemeProvider, useTheme} from '@material-ui/core/styles';
-import Cookies from 'universal-cookie';
-//import clsx from 'clsx';
-import axios from "axios";
-import https from "https";
 import Header from "./Header";
 import Card from "./Card";
-import {Container} from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -23,9 +17,6 @@ const useStyles = makeStyles(theme => ({
     fontSize: '1.1em'
   }
 }));
-
-
-const universalCookies = new Cookies();
 
 function ServiceRequests(props) {
   const theme = useTheme();
@@ -48,7 +39,6 @@ function ServiceRequests(props) {
   function renderTableCards(){
     let tables = [];
     if(Object.keys(serviceData).length) {
-      console.log(serviceData);
       let index = 0;
       Object.values(serviceData).forEach(table => {
         if(table.status !== 'Good'){
@@ -65,17 +55,20 @@ function ServiceRequests(props) {
   // After being verified and loading restaurant info is done
   // Render Cook view
   return (
-    <ThemeProvider theme={theme}>
+    <div>
       <Header title={"Table Service Requests"}/>
       <div className={classes.main}>
         <p className={classes.note}>
           {updateRequestCount()} Pending Service Requests
         </p>
+        {/*<Card table={21} status={'Bill'} onClick={changeStatus}/>*/}
+        {/*<Card table={22} status={'Bill'} onClick={changeStatus}/>*/}
+        {/*<Card table={23} status={'Bill'} onClick={changeStatus}/>*/}
         <div className={classes.cardsContainer}>
           {renderTableCards()}
         </div>
       </div>
-    </ThemeProvider>
+    </div>
   )
 }
 

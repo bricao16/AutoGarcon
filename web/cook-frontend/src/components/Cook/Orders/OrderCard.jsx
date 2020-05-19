@@ -19,8 +19,8 @@ const useStyles = makeStyles(theme => ({
     }
   },
   cardHeader: {
-    backgroundColor: '#0b658a',
-    color: '#ffffff',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.text.primary,
     borderBottom: 'none'
   },
   cardId: {
@@ -39,9 +39,9 @@ const useStyles = makeStyles(theme => ({
     color: 'grey'
   },
   cardFooter: {
-    color: '#ffffff',
+    color: theme.palette.text.primary,
     justifyContent: 'space-between',
-    backgroundColor: '#0b658a',
+    backgroundColor: theme.palette.primary.main,
   },
   selected: {
     background: '#00000070'
@@ -57,6 +57,7 @@ const useStyles = makeStyles(theme => ({
 function OrderCard(props) {
 
   const theme = useTheme();
+  // console.log(theme.palette.primary);
   const classes = useStyles(theme);
 
   const {order, isSelected, isExpanded, isCompleted} = props;

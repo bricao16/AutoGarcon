@@ -10,8 +10,8 @@ const useStyles = makeStyles(theme => ({
     minWidth: '160px'
   },
   cardHeader: {
-    backgroundColor: '#0b658a',
-    color: '#ffffff',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.text.primary,
     borderBottom: 'none',
   },
   headerText: {
@@ -30,11 +30,12 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     textTransform: 'initial',
-    background: theme.primary
+    background: theme.primary,
+    color: theme.palette.text.primary
   }
 }));
 
-function OrderCard(props) {
+function ServiceCard(props) {
 
   const theme = useTheme();
   const classes = useStyles(theme);
@@ -60,7 +61,7 @@ function OrderCard(props) {
           <p className={'m-0 p-0'}>{getStatus()}</p>
         </div>
         <div className={'p-2 ' + classes.container + ' ' + classes.border}>
-          <Button variant="contained" color="primary" className={'m-0 ' + classes.button} onClick={() => onClick("Bill", table)}>
+          <Button variant="contained" color="primary" className={'m-0 ' + classes.button} onClick={() => onClick("Good", table)}>
             Request Fulfilled
           </Button>
         </div>
@@ -69,4 +70,4 @@ function OrderCard(props) {
   )
 }
 
-export default OrderCard;
+export default ServiceCard;
