@@ -2,7 +2,6 @@ package auto_garcon.homestuff;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;

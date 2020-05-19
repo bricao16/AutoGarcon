@@ -199,8 +199,8 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
      * sets the accountImage picture on the activity when returns from camera or gallery
      *
      * @param requestCode if user chose take photo or choose from gallery
-     * @param resultCode if user canceled request
-     * @param data data that will be used to set new user image
+     * @param resultCode  if user canceled request
+     * @param data        data that will be used to set new user image
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

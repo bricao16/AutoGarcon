@@ -455,6 +455,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      * The method is what filters the restaurant items that are displayed on the menu. If the
      * current menu does not have a category for the item being added it will add that category.
      * It then adds the actual item to the category it belongs in.
+     *
      * @param menuItemCategories JSONObject to get the data for our MenuItem
      */
 

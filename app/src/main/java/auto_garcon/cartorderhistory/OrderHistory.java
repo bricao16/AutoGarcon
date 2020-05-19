@@ -311,7 +311,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
      * <p>You can call {@link #finish} from within this function, in
      * which case {@link #onStop} will be immediately called after {@link #onStart} without the
      * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
-     *
+     * <p>
      * This is used to force the user to change their password when they open up this activity
      *
      * <p><em>Derived classes must call through to the super class's

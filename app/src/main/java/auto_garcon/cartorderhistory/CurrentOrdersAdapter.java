@@ -39,11 +39,10 @@ public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdap
     private ArrayList<Integer> orderNumbers;
 
     /**
-     *
-     * @param context Context gets set to instance variable context
-     * @param orders HashMap<Integer, ShoppingCartSingleton> gets set to instance variable orders used to tie order number to order
-     * @param logos HashMap<Integer, byte[]> gets set to instance variable logos used to tie restaurant id to logo
-     * @param orderNumbers ArrayList<Integer> gets set to instance variable orderNumbers used to help get values from hashmaps
+     * @param context         Context gets set to instance variable context
+     * @param orders          HashMap<Integer, ShoppingCartSingleton> gets set to instance variable orders used to tie order number to order
+     * @param logos           HashMap<Integer, byte[]> gets set to instance variable logos used to tie restaurant id to logo
+     * @param orderNumbers    ArrayList<Integer> gets set to instance variable orderNumbers used to help get values from hashmaps
      * @param restaurantNames HashMap<Integer, String> gets set to instance variable restaurantNames used to tie restaurant id to name
      */
     CurrentOrdersAdapter(Context context, HashMap<Integer, ShoppingCartSingleton> orders, HashMap<Integer, byte[]> logos, ArrayList<Integer> orderNumbers, HashMap<Integer, String> restaurantNames) {
@@ -68,10 +67,9 @@ public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdap
      * different items in the data set, it is a good idea to cache references to sub views of
      * the View to avoid unnecessary {@link View#findViewById(int)} calls.
      *
-     * @param parent The ViewGroup into which the new View will be added after it is bound to
-     *               an adapter position.
+     * @param parent   The ViewGroup into which the new View will be added after it is bound to
+     *                 an adapter position.
      * @param viewType The view type of the new View.
-     *
      * @return A new ViewHolder that holds a View of the given view type.
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(CurrentOrdersViewHolder, int)
@@ -86,7 +84,7 @@ public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdap
     /**
      * Used for tile on CurrentOrders activity
      * Sets xml elements to data pulled from database
-     *
+     * <p>
      * Called by RecyclerView to display the data at the specified position. This method should
      * update the contents of the {@link RecyclerView.ViewHolder#itemView} to reflect the item at the given
      * position.
@@ -98,12 +96,12 @@ public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdap
      * this method and should not keep a copy of it. If you need the position of an item later
      * on (e.g. in a click listener), use {@link RecyclerView.ViewHolder#getAdapterPosition()} which will
      * have the updated adapter position.
-     *
+     * <p>
      * Override {@link #onBindViewHolder(CurrentOrdersViewHolder, int)}  instead if Adapter can
      * handle efficient partial bind.
      *
-     * @param holder The ViewHolder which should be updated to represent the contents of the
-     *        item at the given position in the data set.
+     * @param holder   The ViewHolder which should be updated to represent the contents of the
+     *                 item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
      */
     @Override
@@ -239,6 +237,7 @@ public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdap
 
         /**
          * binds xml elements to Java objects
+         *
          * @param itemView view to be used for xml elements
          */
         public CurrentOrdersViewHolder(@NonNull View itemView) {

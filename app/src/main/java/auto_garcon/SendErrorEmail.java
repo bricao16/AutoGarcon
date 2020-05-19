@@ -90,6 +90,5 @@ public class SendErrorEmail extends AppCompatActivity {
         } catch (Throwable t) {
             Toast.makeText(this, "Email failed to send try again" + t.toString(), Toast.LENGTH_LONG).show();
         }
-
     }
 }

@@ -99,6 +99,7 @@ public class SharedPreference {
 
     /**
      * this method takes in a string value and stores it within the sharedPreference file
+     *
      * @param authToken the token represents the value that will be stored
      */
     public void setAuthToken(String authToken) {
@@ -127,6 +128,7 @@ public class SharedPreference {
 
     /**
      * this method stores the shopping cart object passed in our sharedPreference file
+     *
      * @param shoppingCart this represents the shoppingCartSingleton that will be stored
      */
     public void setShoppingCart(ShoppingCartSingleton shoppingCart) {
@@ -145,6 +147,7 @@ public class SharedPreference {
 
     /**
      * This returns an arraylist of all the favorite restaurants id
+     *
      * @return
      */
     public List<Integer> getFavorites() {
@@ -163,6 +166,7 @@ public class SharedPreference {
 
     /**
      * this method removes the restaurant id from the arraylist of favorite restaurants ids
+     *
      * @param oldFavorite the resturant id to be removed
      */
     public void removeFromFavorites(int oldFavorite) {
@@ -186,6 +190,7 @@ public class SharedPreference {
 
     /**
      * this method adds the resturant id of the users favorites restaurant into an arraylist in sharedPreference
+     *
      * @param newFavorite this represents the resutrant of id of the favorite restaurant
      */
     public void addToFavorites(int newFavorite) {

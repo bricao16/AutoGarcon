@@ -100,8 +100,8 @@ public class PasswordChange extends AppCompatActivity {
                     newPassword.requestFocus();
 
                 } else if(passwordNumber!=true){
-                    confirmPassword.setError("Password Must contain at least one Number");
-                    confirmPassword.requestFocus();
+                    newPassword.setError("Password Must contain at least one Number");
+                    newPassword.requestFocus();
                 } else {
                     StringRequest postRequestForPasswordUpdate = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/password/update",
                             new Response.Listener<String>() {
@@ -139,7 +139,6 @@ public class PasswordChange extends AppCompatActivity {
                             params.put("current_password", oldPasswordString);
                             params.put("new_password", newPasswordString);
 
-                            Log.d("SDSDFIO", params.toString());
                             return params;
                         }
 

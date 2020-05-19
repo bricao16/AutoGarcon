@@ -143,13 +143,11 @@ public class Services extends AppCompatActivity implements NavigationView.OnNavi
         buttonBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pref.getUser().getRestaurantID() == -1|| pref.getUser().getTableID() == -1) {
-                    Toast.makeText(Services.this, "Please scan QR code",Toast.LENGTH_LONG).show();
-                }
-                else if(Calendar.getInstance().getTimeInMillis()-pref.getTimeStamp().getTimeInMillis()>60000){
-                    Toast.makeText(Services.this,"QR code has timed out please Scan the QR code Again",Toast.LENGTH_LONG).show();
-                }
-                else {
+                if (pref.getUser().getRestaurantID() == -1 || pref.getUser().getTableID() == -1) {
+                    Toast.makeText(Services.this, "Please scan QR code", Toast.LENGTH_LONG).show();
+                } else if (Calendar.getInstance().getTimeInMillis() - pref.getTimeStamp().getTimeInMillis() > 60000) {
+                    Toast.makeText(Services.this, "QR code has timed out please Scan the QR code Again", Toast.LENGTH_LONG).show();
+                } else {
                     StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -182,13 +180,11 @@ public class Services extends AppCompatActivity implements NavigationView.OnNavi
         buttonHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pref.getUser().getRestaurantID() == -1|| pref.getUser().getTableID() == -1) {
-                    Toast.makeText(Services.this, "Please scan QR code",Toast.LENGTH_LONG).show();
-                }
-                else if(Calendar.getInstance().getTimeInMillis()-pref.getTimeStamp().getTimeInMillis()>60000){
-                    Toast.makeText(Services.this,"QR code has timed out please Scan the QR code Again",Toast.LENGTH_LONG).show();
-                }
-                else {
+                if (pref.getUser().getRestaurantID() == -1 || pref.getUser().getTableID() == -1) {
+                    Toast.makeText(Services.this, "Please scan QR code", Toast.LENGTH_LONG).show();
+                } else if (Calendar.getInstance().getTimeInMillis() - pref.getTimeStamp().getTimeInMillis() > 60000) {
+                    Toast.makeText(Services.this, "QR code has timed out please Scan the QR code Again", Toast.LENGTH_LONG).show();
+                } else {
                     StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {

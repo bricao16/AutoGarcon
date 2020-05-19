@@ -16,6 +16,7 @@ public class VolleySingleton {
 
     /**
      * assigns instance variable mRequestQueue to the current Volley request queue
+     *
      * @param context Context gets assigned to instance variable mCtx, used to specify what context the request is coming from
      */
     private VolleySingleton(Context context) {
@@ -24,7 +25,6 @@ public class VolleySingleton {
     }
 
     /**
-     *
      * @param context used to know what context to create the new VolleySingleton in
      * @return instance mInstance
      */
@@ -36,7 +36,6 @@ public class VolleySingleton {
     }
 
     /**
-     *
      * returns instance variable mRequestQueue if null creates a new one and assigns to instance variable
      */
     public RequestQueue getRequestQueue() {

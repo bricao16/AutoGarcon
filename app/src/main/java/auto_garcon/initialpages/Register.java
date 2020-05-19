@@ -74,12 +74,12 @@ public class Register extends AppCompatActivity {
                 final String email = emailId.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String passwd = password.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String username = userID.getText().toString().trim();//extracted data from xml object and converted into a string
-                boolean passwordNumber =false;
+                boolean passwordNumber = false;
 
-                for(int i = 0 ; i<passwd.length();i++){
-                       if(Character.isDigit(passwd.charAt(i))){
-                           passwordNumber=true;
-                       }
+                for (int i = 0; i < passwd.length(); i++) {
+                    if (Character.isDigit(passwd.charAt(i))) {
+                        passwordNumber = true;
+                    }
                 }
                 boolean validInputs = true;
 
@@ -124,20 +124,20 @@ public class Register extends AppCompatActivity {
                     password.requestFocus();
                     validInputs = false;
                 }
-                if(passwordNumber!=true){
+                if (passwordNumber != true) {
                     password.setError("Password Must contain at least one Number");
                     password.requestFocus();
-                    validInputs =false;
+                    validInputs = false;
                 }
                 if (TextUtils.isEmpty(username)) {
                     userID.setError("Please enter a username");
                     userID.requestFocus();
                     validInputs = false;
                 }
-                if(android.text.TextUtils.isDigitsOnly(username)){
+                if (android.text.TextUtils.isDigitsOnly(username)) {
                     userID.setError("Please enter a username that is not only numbers");
                     userID.requestFocus();
-                    validInputs =false;
+                    validInputs = false;
                 }
                 if (validInputs == true) {// if all the requirments are met than we can send our put request to the database
                     Intent imageSelection = new Intent(Register.this, AccountImageSelectionRegister.class);
