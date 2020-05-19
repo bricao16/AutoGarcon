@@ -12,7 +12,8 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'start',
-    padding: theme.spacing(0)
+    padding: theme.spacing(0),
+    // fontSize: '1.1em'
   }
 }));
 
@@ -21,14 +22,14 @@ function OrderCards(props){
   const theme = useTheme();
   const classes = useStyles(theme);
 
-  const {orders, selectedCard} = props;
+  const {orders, expandedOrders, selectedCard} = props;
 
   let orderCards = [];
   if(Object.keys(orders).length) {
     let index = 0;
     Object.values(orders).forEach(order => {
       let isSelected = false;
-      let isExpanded = order.expand;
+      let isExpanded = expandedOrders[order.order_num];
       if(index === selectedCard){
         isSelected = true;
       }

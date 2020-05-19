@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {makeStyles, createMuiTheme, ThemeProvider, withStyles} from '@material-ui/core/styles';
-import {AppBar, Toolbar, Tabs, Tab} from '@material-ui/core'
+import {AppBar, Toolbar, Tabs, Tab, Badge} from '@material-ui/core'
 import {Link} from 'react-router-dom'
 import AccountDropdown from "../AccountDropdown";
+import axios from "axios";
+import https from "https";
 
 const StyledTabs = withStyles({
   indicator: {
@@ -56,12 +58,38 @@ function Header(props){
   const buffer = Buffer.from(logoData).toString('base64');
   const companyLogo = "data:image/png;base64,"+buffer;
 
+  const [requestCount, setRequestCount] = useState(0);
+
 
   // Changes which tab is highlighted
   const [tab, setTab] = React.useState(props.tab);
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
   };
+
+  useEffect(() => {
+    getServiceData();
+  }, []);
+
+  function getServiceData(){
+    const url = process.env.REACT_APP_DB + '/services/' + cookies.staff.restaurant_id;
+    axios.get(url, {
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false,
+      }),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + cookies.token
+      },
+    })
+      .then(res => res.data)
+      .then(data => {
+        setRequestCount(Object.keys(data).length);
+      })
+      .catch(error =>{
+        console.error(error);
+      });
+  }
 
   return(
     <ThemeProvider theme={theme}>
@@ -70,7 +98,13 @@ function Header(props){
           <img src={companyLogo}  width="auto" height="45px" alt="company logo" className={classes.logo}/>
           <StyledTabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
             <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
-            <Tab label="Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />
+            <Tab label="Edit Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />
+            <Tab label={
+                <Badge badgeContent={requestCount} color="primary">
+                  <span>Service Requests</span>
+                </Badge>
+              } color="primary" className={classes.tab} component={Link} to={'/cook/service'}
+            />
             {/*<Tab label="Messages" color="primary" className={classes.tab} component={Link} to={'/cook/messages'} />*/}
           </StyledTabs>
           <div className={classes.account}>

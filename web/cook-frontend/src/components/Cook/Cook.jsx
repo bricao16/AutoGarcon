@@ -12,6 +12,7 @@ import Footer from "./Footer";
 import Orders from "./Orders/Orders";
 //import Menu1 from "./Menu/Menu1";
 import Menu from "./Menu/Menu";
+import ServiceRequests from "./Service/ServiceRequests";
 
 const useStyles = makeStyles({
   main: {
@@ -112,12 +113,15 @@ function Cook() {
             {/* Render cook menu page when on /cook/menu */}
             <Route exact path="/cook/menu">
               <Header cookies={cookies} restaurantData={restaurantData} tab={1}/>
-              <p>Editing stock of menu items (work in progress)</p>
               <Menu menu={restaurantData.menu} primary={restaurantData.restaurant.primary_color}
                     secondary={restaurantData.restaurant.secondary_color}
                     tertiary={restaurantData.restaurant.tertiary_color}
                     font={restaurantData.restaurant.font}
                     font_color={restaurantData.restaurant.font_color} />
+            </Route>
+            <Route exact path="/cook/service">
+              <Header cookies={cookies} restaurantData={restaurantData} tab={2}/>
+              <ServiceRequests cookies={cookies} />
             </Route>
           </Switch>
         </div>
