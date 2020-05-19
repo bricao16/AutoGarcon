@@ -1,34 +1,21 @@
 package auto_garcon.initialpages;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.auto_garcon.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Iterator;
-
-import auto_garcon.homestuff.Home;
-import auto_garcon.homestuff.HomeAdapter;
-import auto_garcon.homestuff.RestaurantItem;
+import auto_garcon.ExceptionHandler;
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.singleton.SharedPreference;
-import auto_garcon.singleton.ShoppingCartSingleton;
-import auto_garcon.singleton.VolleySingleton;
 
-/** Initial loading screen. */
+/**
+ * Initial loading screen.
+ */
 public class LoadingScreen extends AppCompatActivity {
     private SharedPreference pref;
 
@@ -42,9 +29,8 @@ public class LoadingScreen extends AppCompatActivity {
      * thrown.</em></p>
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see #onStart
      * @see #onSaveInstanceState
      * @see #onRestoreInstanceState
@@ -52,8 +38,16 @@ public class LoadingScreen extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        NukeSSLCerts.nuke();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_screen);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
+
+        ProgressBar pb = findViewById(R.id.pbLoading);
+        pb.setVisibility(ProgressBar.VISIBLE);
+
 
         /** Waits for 3000 milliseconds then goes to login activity*/
         new Handler().postDelayed(new Runnable() {

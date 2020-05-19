@@ -58,13 +58,13 @@ export default function CustomDialog(props) {
   };
 
   return (
-    <div>
+    <div >
       <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={openDialog}>
-        <DialogTitle id="customized-dialog-title" onClose={() => handleClose(this, false)}>
+        <DialogTitle id="customized-dialog-title" onClose={() => handleClose(this, false)} style={{color: 'black'}}>
           Restore Order?
         </DialogTitle>
         <DialogContent dividers>
-          <Typography gutterBottom>
+          <Typography gutterBottom style={{color: 'black'}}>
             Are you sure you want to restore order #{orderNum}?
           </Typography>
         </DialogContent>

@@ -1,19 +1,21 @@
 import React, {useState} from "react";
 import {makeStyles, AppBar, Tab, Tabs, Toolbar} from "@material-ui/core";
 import {Link} from "react-router-dom";
-import { ThemeProvider, createMuiTheme, withStyles} from "@material-ui/core/styles";
+import { ThemeProvider, createMuiTheme, withStyles, useTheme} from "@material-ui/core/styles";
 
 const StyledTabs = withStyles({
   indicator: {
-    height: '5px'
+    height: '5px',
+    background: 'white'
   }
 })(props => <Tabs {...props} />);
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   appbar: {
-    background: '#0b658a',
+    background: theme.palette.primary,
     minHeight: 0,
-    boxShadow: 'none'
+    boxShadow: 'none',
+    color: theme.palette.text.primary
   },
   toolbar: {
     // alignItems: 'flex-start',
@@ -26,15 +28,14 @@ const useStyles = makeStyles((theme) => ({
     // margin: theme.spacing(5)
   },
   tabs: {
-    margin: theme.spacing(0,3)
+    margin: theme.spacing(0,3),
   },
   tab: {
     outline: 'none!important',
-    textDecoration: 'none!important',
-    color: '#d8d8d8',
-    '&:hover': {
-      color: '#b7b7b7'
-    }
+    textDecoration: 'none!important'
+  },
+  tabLabel: {
+    color: theme.palette.text.primary,
   },
   indicator: {
     height: '5px'
@@ -47,17 +48,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#ffffff',
-    }
-  },
-});
-
 function Header(props){
 
-  // const theme = useTheme();
+  const theme = useTheme();
   const classes = useStyles(theme);
 
   const [tab, setTab] = useState(props.tab);
@@ -66,23 +59,21 @@ function Header(props){
   };
 
   return(
-    <ThemeProvider theme={theme}>
-      <AppBar className={classes.appbar} position="static">
-        <Toolbar className={classes.toolbar}>
-          <h3 className={classes.title}>Orders</h3>
-          <StyledTabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" className={classes.tabs}>
-            <Tab label="Active" color="primary" className={classes.tab} classes={{selected: classes.selected}}
-                 component={Link}
-                 to={'/cook/orders/active'}
-            />
-            <Tab label="Completed" color="primary" className={classes.tab} classes={{selected: classes.selected}}
-                 component={Link}
-                 to={'/cook/orders/completed'}
-            />
-          </StyledTabs>
-        </Toolbar>
-      </AppBar>
-    </ThemeProvider>
+    <AppBar className={classes.appbar} position="static">
+      <Toolbar className={classes.toolbar}>
+        <h3 className={classes.title}>Orders</h3>
+        <StyledTabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" className={classes.tabs}>
+          <Tab label={<span className={classes.tabLabel}>Active</span>} color="primary" className={classes.tab} classes={{selected: classes.selected}}
+               component={Link}
+               to={'/cook/orders/active'}
+          />
+          <Tab label={<span className={classes.tabLabel}>Completed</span>} color="primary" className={classes.tab} classes={{selected: classes.selected}}
+               component={Link}
+               to={'/cook/orders/completed'}
+          />
+        </StyledTabs>
+      </Toolbar>
+    </AppBar>
   )
 }
 

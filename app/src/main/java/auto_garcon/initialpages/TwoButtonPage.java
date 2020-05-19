@@ -1,13 +1,12 @@
 package auto_garcon.initialpages;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -23,7 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import auto_garcon.NukeSSLCerts;
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.homestuff.Home;
 import auto_garcon.singleton.SharedPreference;
@@ -31,13 +30,12 @@ import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
 
 /**
-*This class handles the main functions of the two button page
+ * This class handles the main functions of the two button page
  * its tied two the TwoButton xml layout
  * This class is also capable of linking the user to the Home page and the QrCode page
-*/
+ */
 public class TwoButtonPage extends AppCompatActivity {
     private SharedPreference pref;//saving user transaction data such as food item chosen by the user.
-    private ShoppingCartSingleton shoppingCart;//keeping food item chosen by the user.
 
     /**
      * Called when the activity is starting.  This is where most initialization
@@ -48,9 +46,8 @@ public class TwoButtonPage extends AppCompatActivity {
      * thrown.</em></p>
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see #onStart
      * @see #onSaveInstanceState
      * @see #onRestoreInstanceState
@@ -59,14 +56,15 @@ public class TwoButtonPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NukeSSLCerts.nuke();
-       // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
-
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         setContentView(R.layout.activity_two_button_page);
         pref = new SharedPreference(this);//file for keeping track of cart
         pref.setShoppingCart(new ShoppingCartSingleton());
-        
+
+        /**
+         * volley request to get user favorites so we can store their IDs in SharedPreference
+         */
         StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/favorites/" + pref.getUser().getUsername(),
                 new Response.Listener<String>() {
                     @Override
@@ -75,7 +73,7 @@ public class TwoButtonPage extends AppCompatActivity {
                             JSONObject favoritesJSONObject = new JSONObject(response);
                             //parsing through json from get request to add them to menu
                             Iterator<String> keys = favoritesJSONObject.keys();
-                            while(keys.hasNext()) {
+                            while (keys.hasNext()) {
                                 String key = keys.next();
 
                                 if (favoritesJSONObject.get(key) instanceof JSONObject) {
@@ -92,23 +90,33 @@ public class TwoButtonPage extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if(error.networkResponse!= null && error.networkResponse.statusCode == 500) {
-                            Log.d("Error in loading screen", "Error retrieving favorites");
+                        if (error.networkResponse != null && error.networkResponse.statusCode == 500) {
+                            if (error.networkResponse.statusCode == 401) {
+                                pref.changeLogStatus(false);
+
+                                startActivity(new Intent(getBaseContext(), Login.class));
+                                Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                            }
+                            if (error.networkResponse.statusCode == 500) {
+                                Toast.makeText(getBaseContext(), "Error retrieving restaurants", Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 }
-        )
-        {
+        ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
-                HashMap<String,String> headers = new HashMap<String,String>();
-                headers.put("Authorization","Bearer " + pref.getAuth());
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + pref.getAuth());
                 return headers;
             }
         };
 
         VolleySingleton.getInstance(TwoButtonPage.this).addToRequestQueue(getRequestForFavorites);
 
+        /**
+         * buttons to go to QRcode activity or Home activity
+         */
         Button scannerButton = findViewById(R.id.scanner_button);// associating xml objects with the java Object equivalent
         Button favButton = findViewById(R.id.fav_button);// associating xml objects with the java Object equivalent
 
@@ -130,6 +138,7 @@ public class TwoButtonPage extends AppCompatActivity {
         });
 
     }
+
     /**
      * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
      * the activity had been stopped, but is now again being displayed to the
@@ -151,11 +160,11 @@ public class TwoButtonPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(pref.getUser().getChangePassword() == 1){//check if they have updated their password
+        if (pref.getUser().getChangePassword() == 1) {//check if they have updated their password
             //if not send them back to PasswordChange page and force them to update their password
             Intent intent = new Intent(TwoButtonPage.this, PasswordChange.class);
             startActivity(intent);
-            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Update your Password", Toast.LENGTH_LONG).show();
         }
     }
 }

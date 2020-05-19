@@ -3,12 +3,14 @@ package auto_garcon.singleton;
 import java.util.ArrayList;
 
 import auto_garcon.menustuff.MenuItem;
+
 /**
- * Class for viewing and modifying shopping cart.
- *
+ * Class is a representation of an actual shopping cart stores all items user has added
+ * as well as the restaurants information
  */
 public class ShoppingCartSingleton {
-    private  ArrayList<MenuItem> items;
+    private ArrayList<MenuItem> items;
+    private String restaurantName;
     private int restaurantID;
     private int startingHour;
     private int endingHour;
@@ -18,7 +20,10 @@ public class ShoppingCartSingleton {
     private String secondaryColor;
     private String tertiaryColor;
 
-    public ShoppingCartSingleton(){
+    /**
+     * Sets default colors for shopping cart and initializes items ArrayList.
+     */
+    public ShoppingCartSingleton() {
         this.primaryColor = "#0B658A";
         this.secondaryColor = "#102644";
         this.tertiaryColor = "#FFFFFF";
@@ -26,7 +31,10 @@ public class ShoppingCartSingleton {
         this.items = new ArrayList<>();
     }
 
-    public ShoppingCartSingleton(int restaurantID){
+    /**
+     * Sets default colors for shopping cart and initializes items ArrayList given a restaurant ID.
+     */
+    public ShoppingCartSingleton(int restaurantID) {
         this.restaurantID = restaurantID;
 
         this.primaryColor = "#0B658A";
@@ -36,9 +44,11 @@ public class ShoppingCartSingleton {
         this.items = new ArrayList<MenuItem>();
     }
 
-    public ShoppingCartSingleton(int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor, int font, String fontColor, int startingHour, int endingHour){
+    /**
+     * Sets font, colors, hours for a restaurant given a restaurant ID and information.
+     */
+    public ShoppingCartSingleton(int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor, int font, String fontColor, int startingHour, int endingHour) {
         this.restaurantID = restaurantID;
-
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
         this.tertiaryColor = tertiaryColor;
@@ -50,103 +60,189 @@ public class ShoppingCartSingleton {
         this.items = new ArrayList<MenuItem>();
     }
 
-    public ArrayList<MenuItem> getCart(){
+    /**
+     * Sets font, colors, and restaurant name given a restaurant ID.
+     */
+    public ShoppingCartSingleton(String restaurantName, int restaurantID, int font, String fontColor, String primaryColor, String secondaryColor, String tertiaryColor) {
+        this.restaurantName = restaurantName;
+        this.restaurantID = restaurantID;
+        this.font = font;
+        this.fontColor = fontColor;
+        this.primaryColor = primaryColor;
+        this.secondaryColor = secondaryColor;
+        this.tertiaryColor = tertiaryColor;
+
+        this.items = new ArrayList<>();
+    }
+
+    /**
+     * Returns items in cart.
+     */
+    public ArrayList<MenuItem> getCart() {
         return items;
     }
 
-    public MenuItem cartContainsItem(MenuItem item){
-        for(int i = 0; i < getCart().size(); i++) {
-            if(item.getNameOfItem().equals(getCart().get(i).getNameOfItem())) {
+    /**
+     * Returns the Menu item of item in cart.
+     */
+    public MenuItem cartContainsItem(MenuItem item) {
+        for (int i = 0; i < getCart().size(); i++) {
+            if (item.getNameOfItem().equals(getCart().get(i).getNameOfItem())) {
                 return getCart().get(i);
             }
         }
 
         return null;
     }
-    public void setItems(ArrayList<MenuItem> items){
+
+    /**
+     * Sets items in cart.
+     */
+    public void setItems(ArrayList<MenuItem> items) {
         this.items = items;
     }
-    public void addToCart(MenuItem menuItem){
+
+    /**
+     * Adds item to cart.
+     */
+    public void addToCart(MenuItem menuItem) {
         this.items.add(menuItem);
     }
 
-    public void removeFromCart(int i){
+    /**
+     * Removes item from cart.
+     */
+    public void removeFromCart(int i) {
         this.items.remove(i);
     }
 
-    public double getCostOfItems(){
+    /**
+     * Returns cost of item.
+     */
+    public double getCostOfItems() {
         double cost = 0;
 
-        for(int i = 0; i < items.size(); i++) {
+        for (int i = 0; i < items.size(); i++) {
             cost = cost + items.get(i).getCost();
         }
 
         return cost;
     }
 
-    public double getCaloriesOfItems(){
-        double calories = 0;
-
-        for(int i = 0; i < items.size(); i++) {
-            calories = calories + items.get(i).getPrice();
-        }
-
-        return calories;
-    }
-
+    /**
+     * Returns Restaurant ID.
+     */
     public int getRestaurantID() {
         return this.restaurantID;
     }
-    public void setStartingHour(int time){ this.startingHour = time; }
-    public int  getStartingHour(){return this.startingHour;}
-    public void setEndingHour(int time){this.endingHour = time;}
-    public int  getEndingHour(){return this.endingHour;}
-    public String toString(){
-        String toReturn ="";
 
-        for(int i = 0; i < items.size(); i++) {
+    /**
+     * Returns Opening Time.
+     */
+    public int getStartingHour() {
+        return this.startingHour;
+    }
+
+    /**
+     * Sets Opening Time.
+     */
+    public void setStartingHour(int time) {
+        this.startingHour = time;
+    }
+
+    /**
+     * Returns Closing Time.
+     */
+    public int getEndingHour() {
+        return this.endingHour;
+    }
+
+    /**
+     * Sets Closing Time.
+     */
+    public void setEndingHour(int time) {
+        this.endingHour = time;
+    }
+
+    /**
+     * Returns String of the Names of the items plus their quantity
+     */
+    public String toString() {
+        String toReturn = "";
+
+        for (int i = 0; i < items.size(); i++) {
             toReturn = toReturn + items.get(i).getNameOfItem() + " Qty(" + items.get(i).getQuantity() + ")\n";
         }
         return toReturn;
     }
 
-    public void setFont(int font) {
-        this.font = font;
-    }
-
+    /**
+     * Returns the font.
+     */
     public int getFont() {
         return this.font;
     }
 
-    public void setFontColor(String fontColor) {
-        this.fontColor = fontColor;
+    /**
+     * Sets the font.
+     */
+    public void setFont(int font) {
+        this.font = font;
     }
 
+    /**
+     * Gets the font color.
+     */
     public String getFontColor() {
         return this.fontColor;
     }
 
-    public void setPrimaryColor(String primaryColor) {
-        this.primaryColor = primaryColor;
+    /**
+     * Sets the font color.
+     */
+    public void setFontColor(String fontColor) {
+        this.fontColor = fontColor;
     }
 
+    /**
+     * Gets the Primary Color.
+     */
     public String getPrimaryColor() {
         return this.primaryColor;
     }
 
-    public void setSecondaryColor(String secondaryColor) {
-        this.secondaryColor = secondaryColor;
+    /**
+     * Sets the Primary Color.
+     */
+    public void setPrimaryColor(String primaryColor) {
+        this.primaryColor = primaryColor;
     }
 
+    /**
+     * Gets the Secondary Color.
+     */
     public String getSecondaryColor() {
         return this.secondaryColor;
     }
 
-    public void setTertiaryColor(String tertiaryColor) {
-        this.tertiaryColor = tertiaryColor;
+    /**
+     * Sets the Secondary Color.
+     */
+    public void setSecondaryColor(String secondaryColor) {
+        this.secondaryColor = secondaryColor;
     }
 
+    /**
+     * Gets the Tertiary Color.
+     */
     public String getTertiaryColor() {
         return this.tertiaryColor;
+    }
+
+    /**
+     * Sets the Tertiary Color.
+     */
+    public void setTertiaryColor(String tertiaryColor) {
+        this.tertiaryColor = tertiaryColor;
     }
 }

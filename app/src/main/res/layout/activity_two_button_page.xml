@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- xml layout that appears after logging in/loading screen where the user can
-     choose to navigate to the QR code activity or home activity -->
+     choose to navigate to the QR code activity or home activity. This page is the first
+     page that the user will see after signing in to the application.-->
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,32 +12,30 @@
     tools:context="auto_garcon.initialpages.TwoButtonPage">
 
     <!-- image of logo for auto-garcon -->
-
-    <!-- scanner button -->
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/sanchez"
-        android:text="AutoGarçon"
+        android:text="AutoGarcon"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="32sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.15" />
 
+    <!-- scanner button -->
     <Button
         android:id="@+id/scanner_button"
         android:layout_width="255dp"
         android:layout_height="100dp"
         android:layout_marginBottom="28dp"
         android:background="@drawable/oval_button"
+        android:drawableLeft="@drawable/qrcode"
         android:text="QR Code Scanner"
         android:textColor="@color/white"
-        android:drawableLeft="@drawable/qrcode"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,12 +51,11 @@
         android:background="@drawable/oval_button"
         android:text="Favorites Page"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.85"/>
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.85" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

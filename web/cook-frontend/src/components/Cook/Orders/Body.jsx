@@ -4,7 +4,7 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 // Material UI
-import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
+import {createMuiTheme, ThemeProvider, useTheme} from "@material-ui/core/styles";
 import {makeStyles, Button, Snackbar} from "@material-ui/core";
 import MuiAlert from '@material-ui/lab/Alert';
 
@@ -12,25 +12,17 @@ import Toolbar from "./Toolbar";
 import OrderCards from "./OrderCards";
 import CustomDialog from "./CustomDialog";
 // Icons
-//import DoneIcon from '@material-ui/icons/Done';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import RestoreIcon from '@material-ui/icons/Restore';
-// import $ from "jquery"; will be used in future
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   main: {
     margin: theme.spacing(3)
-  },
-  cardsContainer: {
-
-  },
-  toolbarContainer:{
-
   },
   button: {
     marginLeft: theme.spacing(1),
@@ -42,28 +34,19 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#0b658a',
-    }
-  },
-});
-
+const universalCookies = new Cookies();
 
 function Body(props){
-
+  const theme = useTheme();
   const classes = useStyles(theme);
 
-  // says where react is in lifecycle, mounted or not
-  // const isMounted = useRef(true);
-  // For canceling server request
-  // const CancelToken = axios.CancelToken;
-  // const source = CancelToken.source();
   // Cookies for getting user info
-  const cookies = new Cookies();
+  const cookies = {
+    token: universalCookies.get('mytoken'),
+    staff: universalCookies.get('mystaff'),
+  };
   // restaurant id obtained from logged in user's cookies
-  const restaurant_id = cookies.get('mystaff').restaurant_id;
+  const restaurant_id = universalCookies.get('mystaff').restaurant_id;
   // Switch between HTTP and HTTPS
   const serverUrl = process.env.REACT_APP_DB;
   // either /orders/ or /orders/complete/
@@ -74,6 +57,7 @@ function Body(props){
   // Holds orders from database in object
   const [orders, setOrders] = useState({});
   const [updatedOrders, setUpdatedOrders] = useState({});
+  const [expandedOrders, setExpandedOrders] = useState({});
 
   const [selectedCard, setSelectedCard] = useState(0);
 
@@ -87,41 +71,21 @@ function Body(props){
   // Holds time interval for updating orders from database
   const getOrdersInterval = useRef();
 
-  // When ordersEndpoint prop changes, update ordersEndpoint state variable
-  // useEffect(() => {
-  //   setOrdersEndpoint(serverUrl + props.ordersEndpoint + restaurant_id);
-  // }, [props.ordersEndpoint]);
+  const completedTab = useRef(false);
 
-  // When ordersEndpoint state changes, get orders from database using changed endpoint
+
+  // When ordersEndpoint props changes, get orders from database using changed endpoint
   useEffect(() => {
+    completedTab.current = props.tab === 'completed';
+
     const ordersEndpoint = serverUrl + props.ordersEndpoint + restaurant_id;
     ordersEndpointRef.current = ordersEndpoint;
     getDatabaseOrders();
   }, [props.ordersEndpoint]);
 
-
-  // If path changes (because of switching tabs: active or complete)
-  // or restaurant_id updates for some reason, the correct orders will be pulled from database
-  // useEffect(() => {
-  //   if(props.path === '/active'){
-  //     ordersPath.current = '/orders/' + restaurant_id;
-  //     setCompleted(false);
-  //   } else if (props.path === '/completed'){
-  //     ordersPath.current = '/orders/complete/' + restaurant_id;
-  //     setCompleted(true);
-  //   }
-  // }, [props.path, restaurant_id]);
-
-  // When orders database url changes, pull orders
-  // Will happen when switching tabs
-  // useEffect(() => {
-  //   getDatabaseOrders();
-  // }, []);
-
   // Set up things for componentDidMount() componentWillUnmount()
   // Creates method to re-pull orders from database every 10 seconds
   useEffect(() => {
-    // setupKeyPresses(); <- This will be added in the future
     // updates orders every 10 seconds
     // start interval after mounting
     getOrdersInterval.current = setInterval(() => getDatabaseOrders(), 10000);
@@ -141,7 +105,11 @@ function Body(props){
       axios.get(ordersEndpointRef.current, {
         httpsAgent: new https.Agent({
           rejectUnauthorized: false,
-        })
+        }),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Bearer ' + cookies.token
+        },
       })
         .then(res => res.data)
         .then(orders => {
@@ -163,22 +131,32 @@ function Body(props){
         // Check if that order_num exists
         if(!(order.order_num in newOrders)){
           // Create new order with empty items
-          newOrders[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}, expand: false};
+          newOrders[order.order_num] = {order_num: order.order_num, table: order.table, order_date: order.order_date, items: {}};
         }
         // If no category provided
         if(!order.category) {
           order.category = 'Category';
         }
-        // if(order.customization) {
-        //   order.customization = order.customization.split(";").filter(string => {
-        //     return string.trim() !== '';
-        //   });
-        // }
+        if(order.customization) {
+          order.customization = order.customization.split(";").filter(string => {
+            return string.trim() !== '';
+          });
+        }
         if(!(order.category in newOrders[order.order_num].items)){
           newOrders[order.order_num].items[order.category] = [];
         }
         // Add item to order
-        newOrders[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name, customization: order.customization});
+        if(order.customization){
+          let i;
+          for(i = 0; i < order.customization.length; i++){
+            newOrders[order.order_num].items[order.category].push({quantity: 1, title: order.item_name, customization: order.customization[i]});
+          }
+          if(order.quantity - i > 0){
+            newOrders[order.order_num].items[order.category].push({quantity: order.quantity - i, title: order.item_name});
+          }
+        } else {
+          newOrders[order.order_num].items[order.category].push({quantity: order.quantity, title: order.item_name, customization: order.customization});
+        }
       });
     }
     setUpdatedOrders(newOrders);
@@ -186,6 +164,7 @@ function Body(props){
 
   useDeepCompareEffect(() => {
     if(updatedOrders !== orders){
+      setOrders({});
       setOrders(updatedOrders);
       changeSelectedOrder(0);
     }
@@ -194,7 +173,6 @@ function Body(props){
   function orderClicked(cardId){
     changeSelectedOrder(cardId);
   }
-
 
   function changeSelectedOrder(cardId){
     // Check if cardId exists, 0 cards will result in cardId of null
@@ -205,16 +183,19 @@ function Body(props){
     }
   }
 
-  function orderNum(){
-    if(selectedCard !== null) {
+  function getOrderNum(){
+    if(Object.keys(orders).length > 0) {
       return Object.keys(orders)[selectedCard];
     }
     return null;
   }
 
   function changeOrderStatus(status){
-    if(selectedCard !== null){
-      const orderNum = Object.keys(orders)[selectedCard];
+    const orderNum = getOrderNum();
+    if(orderNum !== null){
+      const newExpandedOrders = {...expandedOrders};
+      newExpandedOrders[orderNum] = false;
+      setExpandedOrders(newExpandedOrders);
       const data = 'order_num=' + orderNum + '&order_status=' + status;
       axios.post(markCompletedEndpoint,
       data,
@@ -240,13 +221,15 @@ function Body(props){
   }
 
   function restoreOrder(){
-    setShowDialog(true);
-    dialogCallback.current = (confirm) => {
-      setShowDialog(false);
-      if(confirm) {
-        changeOrderStatus('In Progress')
-      }
-    };
+    if(Object.keys(orders).length > 0){
+      setShowDialog(true);
+      dialogCallback.current = (confirm) => {
+        setShowDialog(false);
+        if(confirm === true) {
+          changeOrderStatus('In Progress');
+        }
+      };
+    }
   }
 
   function showNotificationNow(orderNum, status){
@@ -259,71 +242,24 @@ function Body(props){
   function handlePopupClose(){
     setShowNotification(false);
   }
-  // The following features will be added in the future
-  /*
-  function setupKeyPresses(){
-    $(document).keydown(key => {
-      // Arrow keys right and left
-      // for changing selected order
-      if(key.which === 37 || key.which === 39){
-        handleArrowKeyPress(key);
-      // c - marking order complete
-      } else if(key.which === 67){
-        // If on active orders tab
-        if(!completed){
-          changeOrderStatus('Complete');
-        }
-      // r - restore order to status 'In Progress'
-      } else if(key.which === 82){
-        // If on completed orders tab
-        if(completed){
-          changeOrderStatus('In Progress');
-        }
-      // e - this will be added back later
-      // } else if(key.which === 69){
-      //   this.toggleExpandOrder();
-      // 0 - 9 - pressing number to change selected order
-      } else if(key.which >= 49 && key.which <= 57){
-        handleNumberKeyPress(key);
-      }
-    });
-  }
-
-  function handleArrowKeyPress(key){
-    // get current selected order
-    let newSelectedOrder = selectedOrder;
-    // console.log(newSelectedOrder);
-    if (key.which === 37) {
-      newSelectedOrder -= 1;
-    } else if (key.which === 39) {
-      newSelectedOrder += 1;
-    }
-    const ordersLength = Object.keys(orders).length;
-    if (newSelectedOrder >= ordersLength) {
-      newSelectedOrder = 0;
-    } else if (newSelectedOrder < 0) {
-      newSelectedOrder = ordersLength - 1;
-    }
-    changeSelectedOrder(newSelectedOrder);
-  }
-
-  function handleNumberKeyPress(key){
-    const newSelectedOrder = key.which - 49;
-    changeSelectedOrder(newSelectedOrder);
-  }
-*/
 
   function toggleExpandOrder(){
-    const newOrders = {...orders};
-    const orderNum = Object.keys(newOrders)[selectedCard];
-    newOrders[orderNum].expand = !newOrders[orderNum].expand;
-    setOrders(newOrders);
+    const newExpandedOrders = {...expandedOrders};
+    const orderNumber = getOrderNum();
+    if(orderNumber){
+      if(newExpandedOrders[orderNumber]){
+        newExpandedOrders[orderNumber] = false;
+      } else {
+        newExpandedOrders[orderNumber] = true;
+      }
+      setExpandedOrders(newExpandedOrders);
+      console.log(newExpandedOrders);
+    }
   }
-
 
   function toolbarButtons(){
     let buttons = [];
-    if(props.tab === "completed"){
+    if(completedTab.current){
       buttons.push(
         <Button key={2} variant="contained" color="primary" className={classes.button}
                 onClick={restoreOrder} startIcon={<RestoreIcon/>}>Restore</Button>
@@ -342,7 +278,7 @@ function Body(props){
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <div>
 
       <Snackbar open={showNotification} autoHideDuration={3000} onClose={handlePopupClose}>
         <Alert severity={notificationSeverity}>
@@ -350,7 +286,7 @@ function Body(props){
         </Alert>
       </Snackbar>
 
-      <CustomDialog orderNum={orderNum()} openDialog={showDialog} callback={dialogCallback.current}/>
+      <CustomDialog orderNum={getOrderNum()} openDialog={showDialog} callback={dialogCallback.current}/>
 
 
       <div className={classes.main}>
@@ -358,11 +294,12 @@ function Body(props){
           <Toolbar buttons={toolbarButtons()}/>
         </div>
         <div className={classes.separator}/>
-        <div className={classes.cardsContainer} >
-          <OrderCards orders={orders} handleOrderClick={orderClicked} selectedCard={selectedCard} isCompleted={props.tab === "completed"}/>
+        <div>
+          <OrderCards orders={orders} handleOrderClick={orderClicked} expandedOrders={expandedOrders} selectedCard={selectedCard} isCompleted={completedTab.current}/>
         </div>
       </div>
-    </ThemeProvider>
+
+    </div>
   )
 }
 

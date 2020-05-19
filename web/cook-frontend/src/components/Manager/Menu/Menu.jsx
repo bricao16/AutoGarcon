@@ -256,7 +256,7 @@ class Menu extends React.Component {
   handleModalShow = () => this.setState({ModalShow: true});
 
   handleSubmit = (event) => {
-    const form = event.currentTarget;
+
     event.preventDefault();
     event.stopPropagation();
     this.setState({

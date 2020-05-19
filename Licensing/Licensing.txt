@@ -1,0 +1,36 @@
+Generally:
+Among opensource licenses, we should look out for “copyleft” licenses. They force any software that uses them to release with the same license. Which might be okay, honestly. The most popular copyleft opensource license is GNU GPL (Linux kernel uses it). I think the standard permissive (non-copyleft) open source license is the Apache 2.0. 
+
+MIT = very limited restriction, permissive, free 
+ 
+“MIT licensed software can be re-licensed as GPL software, and integrated with other GPL software, but not the other way around. The MIT license also permits reuse within proprietary software, provided that either all copies of the licensed software include a copy of the MIT License terms and the copyright notice, or the software is re-licensed to remove this requirement. MIT-licensed software can also be re-licensed as proprietary software, which distinguishes it from copyleft software licenses.” (Wikipedia) 
+
+Amazon :
+Products the Amazon team will definitely use: Node.js which uses the MIT license and AWS Lambda which uses Apache 2.0 License. Both are very good news for us.
+Apache 2.0 = very limited restriction, permissive, free 
+“allows users to use the software for any purpose, to distribute it, to modify it, and to distribute modified versions of the software under the terms of the license, without concern for royalties.” (Wikipedia) 
+This is a free software license, compatible with version 3 of the GNU GPL. It is not compatible with GPL version 2
+
+Database :
+The Database team plans to use MySQL which is an open-source software. MySQL has the Affero General Public License (AGPL). This license is a copyleft license for software that is designed for cooperation with the community. Copyleft offers people the right to freely distribute copies and modified version of- in this case- the software. This guarantees the freedom to share and change all version of a program.
+Open-source only refers to freedom to share and distribute and does not refer to price. So although it doesn’t guarantee free, MySQL does have a free option that we will use to fit our budget of $0.
+MySQL will need an API to connect to android. Android has its own API to connect to MySQL that uses the Apache license which give the API the freedom to use in our project.
+Web:
+Frameworks-
+React- open source. MIT license.
+Bootstrap – MIT license
+ requirements : https://getbootstrap.com/docs/4.0/about/license/
+
+Packages-
+npm packages:
+Should be fine- just make sure all are open source
+https://www.npmjs.com/policies/open-source-terms
+
+Server-  make sure hosting and domain service we use has acceptable licensing
+
+Android:
+	Android Studio- https://developer.android.com/studio/terms
+	Accessing camera (com.karumi:dexter:5.0.0)- MIT License
+	QR reader (com.github.nisrulz:qreader:2.1.2)- Apache 2.0
+	Circle image view (de.hdodenhof:circleimageview:3.0.1)- Apache 2.0
+

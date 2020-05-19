@@ -1,46 +1,54 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--This XMl file is the layout for the QR code scanner page. This page accesses the camera of the user's device
+ and allows them to scan a QR code. Once the application detects the QR code it will take in that information
+ and populate the application with the information as to which restaurant the user is at and which table they are at.
+ It also allows the user to place an order, because in order to place an order they must scan a QR code.-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF"
     android:gravity="center">
 
     <FrameLayout
-        android:layout_above="@+id/info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/info">
 
+        <!--This surface view displays the user's camera image. -->
         <SurfaceView
             android:id="@+id/camera_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
+        <!--This view shows the outline of where to scan the QR code. -->
         <View
-            android:layout_gravity="center"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:background="@drawable/rectangle"/>
+            android:layout_gravity="center"
+            android:background="@drawable/rectangle" />
 
+        <!--This image view shows the user an example of a qr code and places it in the correct
+        area where it needs to be scanned.-->
         <ImageView
             android:id="@+id/imageView5"
-            android:layout_gravity="center"
             android:layout_width="200dp"
             android:layout_height="200dp"
+            android:layout_gravity="center"
             android:alpha=".5"
             app:srcCompat="@drawable/qr_code_example" />
     </FrameLayout>
 
+    <!--This  is the layout at the bottom of the page.-->
     <LinearLayout
-        android:padding="20dp"
         android:id="@+id/info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="45dp"
+        android:orientation="vertical"
+        android:padding="20dp">
 
-        android:orientation="vertical">
-
+        <!--This text view displays the text at the bottom of the page. -->
         <TextView
             android:id="@+id/code_info"
             android:layout_width="match_parent"
@@ -49,16 +57,7 @@
             android:padding="10dp"
             android:text="Scan QR Code on Restaurant Table"
             android:textColor="#000000"
-            android:textSize="20sp"/>
-<!--
-        <ToggleButton
-            android:id="@+id/btn_enable_disable"
-            android:textOff="Stop Scanning"
-            android:textOn="Start Scanning"
-            android:checked="false"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
--->
+            android:textSize="20sp" />
     </LinearLayout>
 
     <!-- bottom nav bar -->

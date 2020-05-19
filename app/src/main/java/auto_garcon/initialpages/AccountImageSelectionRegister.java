@@ -1,7 +1,5 @@
 package auto_garcon.initialpages;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,16 +11,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.auto_garcon.R;
 
 import org.json.JSONException;
@@ -32,26 +28,51 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.VolleyMultipartRequest;
-import auto_garcon.accountstuff.Account;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * finalizes user registration by allowing them to select account image(optional)
+ * and sends rest of data from Register page to database with volley request
+ */
+
 public class AccountImageSelectionRegister extends AppCompatActivity {
     private CircleImageView accountImage;
-
     private SharedPreference pref;
 
+    /**
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_image_selection_register);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
         pref = new SharedPreference(AccountImageSelectionRegister.this);
 
         accountImage = findViewById(R.id.account_image_setup);
 
+        /**
+         * onClick to set user image if desired
+         */
         accountImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,6 +82,9 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
 
                 selectImagePopup.show();
 
+                /**
+                 * onClick to take photo
+                 */
                 selectImagePopup.findViewById(R.id.take_photo_button).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -69,6 +93,9 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
                     }
                 });
 
+                /**
+                 * onClick to choose from gallery
+                 */
                 selectImagePopup.findViewById(R.id.choose_from_gallery_button).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -77,6 +104,9 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
                     }
                 });
 
+                /**
+                 * onClick to dismiss popup
+                 */
                 selectImagePopup.findViewById(R.id.account_image_close).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -86,7 +116,9 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
             }
         });
 
-
+        /**
+         * onClick that sends the actual volley request with image and data from Register activity
+         */
         findViewById(R.id.sign_up_button_register).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +132,7 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
 
                                     byte[] itemImageByteArray = new byte[userData.getJSONObject("image").getJSONArray("data").length()];
 
-                                    for(int i = 0; i < itemImageByteArray.length; i++) {
+                                    for (int i = 0; i < itemImageByteArray.length; i++) {
                                         itemImageByteArray[i] = (byte) (((int) userData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
                                     }
 
@@ -120,7 +152,15 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        if (error.networkResponse.statusCode == 400) {
+                            Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                        }
+                        if (error.networkResponse.statusCode == 409) {
+                            Toast.makeText(getBaseContext(), "username and/or email already exists or invalid image type", Toast.LENGTH_LONG).show();
+                        }
+                        if (error.networkResponse.statusCode == 500) {
+                            Toast.makeText(getBaseContext(), "Error creating new customer", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }) {
                     @Override
@@ -155,6 +195,13 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
         });
     }
 
+    /**
+     * sets the accountImage picture on the activity when returns from camera or gallery
+     *
+     * @param requestCode if user chose take photo or choose from gallery
+     * @param resultCode  if user canceled request
+     * @param data        data that will be used to set new user image
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

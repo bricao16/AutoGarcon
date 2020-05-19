@@ -3,7 +3,6 @@ package auto_garcon.initialpages;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.widget.TextView;
@@ -22,6 +21,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.homestuff.Home;
@@ -30,11 +30,11 @@ import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
+
 /**
  * Class for Using QR code
  * Gets permission for using camera
  * Reads QR code and handles the request
- *
  */
 public class QRcode extends AppCompatActivity {
     private TextView txt_result;
@@ -52,9 +52,8 @@ public class QRcode extends AppCompatActivity {
      * thrown.</em></p>
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see #onStart
      * @see #onSaveInstanceState
      * @see #onRestoreInstanceState
@@ -65,28 +64,29 @@ public class QRcode extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qr_code_page);
         pref = new SharedPreference(this);
-       // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
 
         //request permission
-    Dexter.withActivity(this)
-            .withPermission(Manifest.permission.CAMERA)
-            .withListener(new PermissionListener() {
-                @Override
-                public void onPermissionGranted(PermissionGrantedResponse response) {
-                    setupCamera();
-                }
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.CAMERA)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        setupCamera();
+                    }
 
-                @Override
-                public void onPermissionDenied(PermissionDeniedResponse response) {
-                    Toast.makeText(QRcode.this, "You must enable this permission", Toast.LENGTH_SHORT).show();
-                }
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        Toast.makeText(QRcode.this, "You must enable this permission", Toast.LENGTH_SHORT).show();
+                    }
 
-                @Override
-                public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
 
-                }
-            }).check();
+                    }
+                }).check();
 
         /**
          * It ties the bottom navigation bar xml element to a Java object and provides it with its
@@ -95,16 +95,19 @@ public class QRcode extends AppCompatActivity {
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
-        if(pref.getShoppingCart()!=null) {
-            if(pref.getShoppingCart().getCart().size()!=0){
+        if (pref.getShoppingCart() != null) {
+            if (pref.getShoppingCart().getCart().size() != 0) {
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
 
-
+        /**
+         * onClick for bottom navbar
+         */
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
                                 startActivity(new Intent(QRcode.this, QRcode.class));
@@ -123,31 +126,38 @@ public class QRcode extends AppCompatActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
 
+    /**
+     * sets up camera and calls setupQReader so it can take in QR codes
+     */
     private void setupCamera() {
         txt_result = findViewById(R.id.code_info);
         surfaceView = findViewById(R.id.camera_view);
-        setupQREader();
+        setupQReader();
     }
 
-    private void setupQREader() {
+    /**
+     * allows camera to read QR codes and how to handle the QR code
+     * such as going to the correct menu page and setting the correct SharedPreference data
+     */
+    private void setupQReader() {
         QReader = new QREader.Builder(this, surfaceView, new QRDataListener() {
             @Override
             public void onDetected(final String data) {
                 txt_result.post(new Runnable() {
                     @Override
                     public void run() {
-
+                        pref.SetTimeStamp();
                         UserSingleton user = pref.getUser();
                         user.setRestaurantID(Integer.parseInt(data.split(",")[0]));
+                        user.setTableID(Integer.parseInt(data.split(",")[1]));
                         pref.setUser(user);
-                        pref.getUser().setTableID(Integer.parseInt(data.split(",")[1]));
 
-                        if(getIntent().getBooleanExtra("is from cart activity", false)) {
+                        if (getIntent().getIntExtra("is from cart activity", 0) == 1) {
                             startActivity(new Intent(QRcode.this, ShoppingCart.class));
                         }
 
                         Intent menu = new Intent(QRcode.this, Menu.class);
-                        menu.putExtra("restaurant id", Integer.parseInt(data));
+                        menu.putExtra("restaurant id", user.getRestaurantID());
                         startActivity(menu);
                     }
                 });
@@ -183,7 +193,7 @@ public class QRcode extends AppCompatActivity {
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
-                        if(QReader != null) {
+                        if (QReader != null) {
                             QReader.initAndStart(surfaceView);
                         }
                     }
@@ -239,7 +249,7 @@ public class QRcode extends AppCompatActivity {
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
-                        if(QReader != null) {
+                        if (QReader != null) {
                             QReader.releaseAndCleanup();
                         }
                     }
@@ -255,6 +265,7 @@ public class QRcode extends AppCompatActivity {
                     }
                 }).check();
     }
+
     /**
      * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
      * the activity had been stopped, but is now again being displayed to the
@@ -276,11 +287,11 @@ public class QRcode extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+        if (pref.getUser().getChangePassword() == 1) {//check if they have updated their password
             //if not send them back to PasswordChange page and force them to update their password
             Intent intent = new Intent(QRcode.this, PasswordChange.class);
             startActivity(intent);
-            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Update your Password", Toast.LENGTH_LONG).show();
         }
     }
 }

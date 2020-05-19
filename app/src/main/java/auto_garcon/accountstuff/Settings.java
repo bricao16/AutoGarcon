@@ -1,11 +1,5 @@
 package auto_garcon.accountstuff;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -16,23 +10,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.example.auto_garcon.R;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.cartorderhistory.CurrentOrders;
+import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
-import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.initialpages.QRcode;
-import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 
 /**
- * This class handles all settings related to the User
- * This class allows the user to custiomize certian features of there account
+ * This class displays a menu for a user to see the privacy policy, the faq, and the terms and conditions
  * This class is linked to settings xml which also has a navigationBar that allows it to navigate to other pages
  */
 public class Settings extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -48,9 +47,8 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
      * thrown.</em></p>
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see #onStart
      * @see #onSaveInstanceState
      * @see #onRestoreInstanceState
@@ -60,6 +58,9 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
         pref = new SharedPreference(this);
 
 
@@ -87,15 +88,16 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
-        if(pref.getShoppingCart()!=null) {
-            if(pref.getShoppingCart().getCart().size()!=0){
+        if (pref.getShoppingCart() != null) {
+            if (pref.getShoppingCart().getCart().size() != 0) {
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
 
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
                                 startActivity(new Intent(Settings.this, QRcode.class));
@@ -113,6 +115,9 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
+        /**
+         * buttons used to navigate to FAQ, Privacy, Terms activities
+         */
         Button faqButton = findViewById(R.id.faqButton);// associating xml objects with the java Object equivalent
         Button privacyLegalButton = findViewById(R.id.privacyLegalButton);// associating xml objects with the java Object equivalent
         Button termsLegalButton = findViewById(R.id.termsLegalButton);// associating xml objects with the java Object equivalent
@@ -121,7 +126,7 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
             @Override
             public void onClick(View v) {//when the faq button is clicked this will send the user to the faq page page
 
-                Intent privacy = new Intent(getBaseContext(),   Faq.class);
+                Intent privacy = new Intent(getBaseContext(), Faq.class);
                 startActivity(privacy);
             }
         });
@@ -129,7 +134,7 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         privacyLegalButton.setOnClickListener(new View.OnClickListener() {// when the legal button is clicked user is sent to the legal page
             @Override
             public void onClick(View v) {
-                Intent privacy = new Intent(getBaseContext(),   Privacy.class);
+                Intent privacy = new Intent(getBaseContext(), Privacy.class);
                 startActivity(privacy);
 
             }
@@ -138,7 +143,7 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
         termsLegalButton.setOnClickListener(new View.OnClickListener() {// when the legal button is clicked user is sent to the legal page
             @Override
             public void onClick(View v) {
-                Intent privacy = new Intent(getBaseContext(),   Terms.class);
+                Intent privacy = new Intent(getBaseContext(), Terms.class);
                 startActivity(privacy);
 
             }
@@ -154,8 +159,8 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
      * @return true to display the item as the selected item
      */
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
-        switch(nav_item.getItemId()){
+    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item) {
+        switch (nav_item.getItemId()) {
             case R.id.account:
                 startActivity(new Intent(getBaseContext(), Account.class));
                 break;
@@ -169,7 +174,7 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
                 startActivity(new Intent(getBaseContext(), Settings.class));
                 break;
             case R.id.services:
-                startActivity(new Intent(getBaseContext(),Services.class));
+                startActivity(new Intent(getBaseContext(), Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
@@ -182,31 +187,19 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     /**
-     * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
-     * the activity had been stopped, but is now again being displayed to the
-     * user. It will usually be followed by {@link #onResume}. This is a good place to begin
-     * drawing visual elements, running animations, etc.
+     * Checks to see if use needs to update password.
+     * If so sends them back to PassWordChange page.
      *
-     * <p>You can call {@link #finish} from within this function, in
-     * which case {@link #onStop} will be immediately called after {@link #onStart} without the
-     * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
-     *
-     * <p><em>Derived classes must call through to the super class's
-     * implementation of this method.  If they do not, an exception will be
-     * thrown.</em></p>
-     *
-     * @see #onCreate
-     * @see #onStop
-     * @see #onResume
+     * @return void
      */
     @Override
     protected void onStart() {
         super.onStart();
-        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+        if (pref.getUser().getChangePassword() == 1) {//check if they have updated their password
             //if not send them back to PasswordChange page and force them to update their password
             Intent intent = new Intent(Settings.this, PasswordChange.class);
             startActivity(intent);
-            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Update your Password", Toast.LENGTH_LONG).show();
         }
     }
 

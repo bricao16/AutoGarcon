@@ -1,6 +1,6 @@
-import React from 'react';
-import {makeStyles, createMuiTheme, ThemeProvider, withStyles} from '@material-ui/core/styles';
-import {AppBar, Toolbar, Tabs, Tab} from '@material-ui/core'
+import React, {useEffect, useState} from 'react';
+import {makeStyles, createMuiTheme, ThemeProvider, withStyles, useTheme} from '@material-ui/core/styles';
+import {AppBar, Toolbar, Tabs, Tab, Badge} from '@material-ui/core'
 import {Link} from 'react-router-dom'
 import AccountDropdown from "../AccountDropdown";
 
@@ -33,35 +33,42 @@ const useStyles = makeStyles((theme) => ({
   },
   logo: {
     color: 'black',
-    marginLeft: theme.spacing(2)
+    marginLeft: theme.spacing(2),
+    borderRadius: "5px"
+  },
+  badge: {
+    paddingRight: '7px',
   }
 }));
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#0b658a'
-    }
-  },
-});
-
 function Header(props){
 
-  // const theme = useTheme();
+  const theme = useTheme();
   const classes = useStyles(theme);
 
-  const {cookies, restaurantData} = props;
+  const {cookies, restaurantData, serviceData} = props;
 
   const logoData = restaurantData.restaurant.logo.data;
   const buffer = Buffer.from(logoData).toString('base64');
   const companyLogo = "data:image/png;base64,"+buffer;
-
 
   // Changes which tab is highlighted
   const [tab, setTab] = React.useState(props.tab);
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
   };
+
+  function updateRequestCount(){
+    let count = 0;
+    if(Object.keys(serviceData).length > 0){
+      Object.values(serviceData).forEach(table => {
+        if(table.status !== 'Good'){
+          count++;
+        }
+      });
+    }
+    return <span style={{color: theme.palette.text.primary}}>{count}</span>;
+  }
 
   return(
     <ThemeProvider theme={theme}>
@@ -70,7 +77,13 @@ function Header(props){
           <img src={companyLogo}  width="auto" height="45px" alt="company logo" className={classes.logo}/>
           <StyledTabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
             <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
-            <Tab label="Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />
+            {/*<Tab label="Edit Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />*/}
+            <Tab label={
+                <Badge badgeContent={updateRequestCount()} color="secondary" className={classes.badge}>
+                  <span>Service Requests</span>
+                </Badge>
+              } color="primary" className={classes.tab + " px-3"} component={Link} to={'/cook/service'}
+            />
             {/*<Tab label="Messages" color="primary" className={classes.tab} component={Link} to={'/cook/messages'} />*/}
           </StyledTabs>
           <div className={classes.account}>

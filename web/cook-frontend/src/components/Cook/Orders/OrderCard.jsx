@@ -9,12 +9,6 @@ import {makeStyles} from "@material-ui/core";
 import {useTheme} from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
-  main: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'start',
-    padding: theme.spacing(0)
-  },
   order: {
     borderRadius: '0.25rem',
     cursor: 'pointer',
@@ -25,8 +19,8 @@ const useStyles = makeStyles(theme => ({
     }
   },
   cardHeader: {
-    backgroundColor: '#0b658a',
-    color: '#ffffff',
+    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.text.primary,
     borderBottom: 'none'
   },
   cardId: {
@@ -45,9 +39,9 @@ const useStyles = makeStyles(theme => ({
     color: 'grey'
   },
   cardFooter: {
-    color: '#ffffff',
+    color: theme.palette.text.primary,
     justifyContent: 'space-between',
-    backgroundColor: '#0b658a',
+    backgroundColor: theme.palette.secondary.main,
   },
   selected: {
     background: '#00000070'
@@ -56,21 +50,29 @@ const useStyles = makeStyles(theme => ({
     fontSize: '1.5em'
   },
   completed: {
-    background: '#17af29!important'
+    background: 'rgb(76, 175, 80)!important',
+    color: '#fff'
   }
 }));
 
 function OrderCard(props) {
 
   const theme = useTheme();
+  // console.log(theme.palette.primary);
   const classes = useStyles(theme);
 
   const {order, isSelected, isExpanded, isCompleted} = props;
 
-  const orderTime = moment(order.order_date, 'YYYY-MM-DD HH:mm:ss');
-  const orderTimeString = orderTime.format('LT');
+  const orderTime = useRef(moment(order.order_date, 'YYYY-MM-DD HH:mm:ss'));
+  const orderTimeString = useRef(orderTime.current.format('LT'));
   const [timeSinceOrder, setTimeSinceOrder] = useState(null);
   const timeInterval = useRef(null);
+
+  useEffect(() => {
+    orderTime.current = moment(order.order_date, 'YYYY-MM-DD HH:mm:ss');
+    orderTimeString.current = orderTime.current.format('LT');
+    updateTime();
+  }, [order]);
 
   function renderItems() {
     let allItems = [];
@@ -122,7 +124,7 @@ function OrderCard(props) {
     // Time right now as Moment object
     let now = moment();
     // Seconds between now and order placed time
-    const secondsSinceOrder = now.diff(orderTime, 's');
+    const secondsSinceOrder = now.diff(orderTime.current, 's');
     // Formatted time between order placed time and now as hours:minute:seconds
     const momentTimeSinceOrder = moment.duration(secondsSinceOrder, 's').format('hh:*mm:ss');
     setTimeSinceOrder(momentTimeSinceOrder);
@@ -135,7 +137,7 @@ function OrderCard(props) {
       footerClasses += classes.completed;
       footer.push(<span key={0} className="pr-3">Completed</span>);
     }
-    footer.push(<span key={1}>{orderTimeString}</span>);
+    footer.push(<span key={1}>{orderTimeString.current}</span>);
     if(!isCompleted){
       footer.push(renderTime());
     }

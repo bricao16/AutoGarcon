@@ -1,20 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?><!--This XML file is the layout of the popup from pressing reorder in the order history. This
+ shows the user what can be added to the cart and give them the option to add it to the cart.-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/light_gray">
 
+    <!--This text view shows the name of the restaurant. -->
     <TextView
         android:id="@+id/Restaurant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -23,20 +23,23 @@
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!--This text view shows the user the items in the order history.-->
     <TextView
         android:id="@+id/order_items"
         android:layout_width="217dp"
         android:layout_height="177dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
+        android:scrollbars="vertical"
         android:textColor="@color/black"
-        android:scrollbars = "vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--This item is the close button for the pop up.-->
     <ImageButton
         android:id="@+id/add_to_cart_popup_close"
         android:layout_width="30dp"
@@ -48,7 +51,6 @@
         android:tint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

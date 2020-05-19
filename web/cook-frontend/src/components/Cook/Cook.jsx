@@ -1,24 +1,23 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Switch, Route, Redirect} from "react-router-dom";
-import {makeStyles, ThemeProvider, useTheme} from '@material-ui/core/styles';
+import {createMuiTheme, makeStyles, ThemeProvider, useTheme} from '@material-ui/core/styles';
 import Cookies from 'universal-cookie';
-//import clsx from 'clsx';
 import axios from "axios";
 import https from "https";
-
 
 import Header from "./Header";
 import Footer from "./Footer";
 import Orders from "./Orders/Orders";
-//import Menu1 from "./Menu/Menu1";
-import Menu from "./Menu/Menu";
+import ServiceRequests from "./Service/ServiceRequests";
+import useDeepCompareEffect from "use-deep-compare-effect";
+import MuiAlert from "@material-ui/lab/Alert";
+import {Snackbar} from "@material-ui/core";
 
 const useStyles = makeStyles({
   main: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     // background: '#fafafa'
   },
   content: {
@@ -26,12 +25,16 @@ const useStyles = makeStyles({
   }
 });
 
-
 const universalCookies = new Cookies();
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 function Cook() {
-  const theme = useTheme();
-  const classes = useStyles(theme);
+
+  const theme = useRef();
+  const classes = useStyles();
 
   const cookies = {
     token: universalCookies.get('mytoken'),
@@ -44,6 +47,13 @@ function Cook() {
   const [loading, setLoading] = useState(true);
   const [restaurantData, setRestaurantData] = useState({});
 
+  const [serviceData, setServiceData] = useState({});
+  const [updatedServiceData, setUpdatedServiceData] = useState({});
+  const getServiceDataInterval = useRef();
+
+  const [showNotification, setShowNotification] = useState(false);
+  const vertical = 'bottom', horizontal = 'left';
+
   // Verify user is a manager or cook
   useEffect(() => {
     verifyCook(cookies.token).then(res => {
@@ -55,8 +65,16 @@ function Cook() {
   useEffect(() => {
     if(verified.current){
       getRestaurantData();
+      getServiceData();
     }
   }, [verificationComplete]);
+
+
+  useEffect(() => {
+    if(restaurantData.restaurant) {
+      setupTheme();
+    }
+  }, [restaurantData]);
 
   function getRestaurantData(){
     const url = process.env.REACT_APP_DB + '/restaurant/' + cookies.staff.restaurant_id;
@@ -75,6 +93,111 @@ function Cook() {
       });
   }
 
+  function setupTheme(){
+    const data = restaurantData.restaurant;
+    theme.current = createMuiTheme({
+      palette: {
+        primary: {
+          main: data.primary_color
+        },
+        secondary: {
+          main: data.secondary_color
+        },
+        text: {
+          primary: data.font_color
+        }
+          /*
+            tertiary_color: "#f6d55c"
+          */
+
+      },
+      typography: {
+        fontFamily: data.font,
+      }
+    });
+  }
+
+  useEffect(() => {
+    // updates orders every 10 seconds
+    // start interval after mounting
+    getServiceDataInterval.current = setInterval(getServiceData, 5000);
+    // While unmounting do this
+    return () => {
+      clearInterval(getServiceDataInterval.current); // clear interval after unmounting
+    }
+  }, []);
+
+  function requestsCount(data){
+    let count = 0;
+    Object.values(data).forEach(value => {
+      if(value.status !== 'Good'){
+        count ++;
+      }
+    });
+    return count;
+  }
+
+  useDeepCompareEffect(() => {
+    if(updatedServiceData !== serviceData){
+      if(Object.keys(serviceData).length > 0 && requestsCount(updatedServiceData) > requestsCount(serviceData)){
+        setShowNotification(true);
+      }
+      setServiceData(updatedServiceData);
+    }
+  }, [updatedServiceData]);
+
+  function getServiceData(){
+    const url = process.env.REACT_APP_DB + '/services/' + cookies.staff.restaurant_id;
+    axios.get(url, {
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false,
+      }),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + cookies.token
+      },
+    })
+      .then(res => res.data)
+      .then(data => {
+        setUpdatedServiceData(data);
+      })
+      .catch(error =>{
+        console.error(error);
+      });
+  }
+
+  function changeStatus(status, table_num){
+    const url = process.env.REACT_APP_DB + '/services/update';
+    const data = 'restaurant_id=' + cookies.staff.restaurant_id + '&table_num=' + table_num + '&status=' + status;
+    console.log(url);
+    console.log(data);
+    console.log('Bearer ' + cookies.token);
+    axios.post(url,
+      data,
+      {
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false
+        }),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Bearer ' + cookies.token
+        },
+      })
+      .then((r) => {
+        if(r.status === 200){
+          getServiceData();
+        }
+      })
+      .catch(error =>{
+        console.log('post request error');
+        console.error(error);
+      });
+  }
+
+  function handlePopupClose(){
+    setShowNotification(false);
+  }
+
   // Check if user is logged in
   // If they aren't then send them to log in page
   if (verificationComplete && !verified.current) {
@@ -86,8 +209,12 @@ function Cook() {
   // While loading, display loading message
   if(loading){
     return(
-      <div className="spinner-border" role="status">
-        <span className="sr-only">Loading...</span>
+      <div className="d-flex flex-column justify-content-center" style={{"height": "100vh", "width": "100vw"}}>
+        <div className="d-flex justify-content-center" style={{"width": "100vw"}}>
+          <div className="spinner-border" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </div>
       </div>
     );
   }
@@ -95,8 +222,15 @@ function Cook() {
   // After being verified and loading restaurant info is done
   // Render Cook view
   return (
-    <ThemeProvider theme={theme}>
-      <div className={classes.main}>
+    <ThemeProvider theme={theme.current}>
+
+      <Snackbar open={showNotification} autoHideDuration={60000} onClose={handlePopupClose} anchorOrigin={{ vertical, horizontal }}>
+        <Alert severity={'error'}>
+          New customer service request
+        </Alert>
+      </Snackbar>
+
+      <div className={classes.main} style={{fontFamily: restaurantData.restaurant.font}}>
         {/* Header with navigation and account drop down*/}
         <div className={classes.content}>
           <Switch>
@@ -106,18 +240,21 @@ function Cook() {
             </Route>
             {/* Render cook order page when on /cook/orders */}
             <Route path="/cook/orders">
-              <Header cookies={cookies} restaurantData={restaurantData} tab={0}/>
+              <Header cookies={cookies} restaurantData={restaurantData} tab={0} serviceData={serviceData}/>
               <Orders/>
             </Route>
             {/* Render cook menu page when on /cook/menu */}
-            <Route exact path="/cook/menu">
-              <Header cookies={cookies} restaurantData={restaurantData} tab={1}/>
-              <p>Editing stock of menu items (work in progress)</p>
-              <Menu menu={restaurantData.menu} primary={restaurantData.restaurant.primary_color}
-                    secondary={restaurantData.restaurant.secondary_color}
-                    tertiary={restaurantData.restaurant.tertiary_color}
-                    font={restaurantData.restaurant.font}
-                    font_color={restaurantData.restaurant.font_color} />
+            {/*<Route exact path="/cook/menu">*/}
+            {/*  <Header cookies={cookies} restaurantData={restaurantData} tab={1} serviceData={serviceData}/>*/}
+            {/*  <Menu menu={restaurantData.menu} primary={restaurantData.restaurant.primary_color}*/}
+            {/*        secondary={restaurantData.restaurant.secondary_color}*/}
+            {/*        tertiary={restaurantData.restaurant.tertiary_color}*/}
+            {/*        font={restaurantData.restaurant.font}*/}
+            {/*        font_color={restaurantData.restaurant.font_color} />*/}
+            {/*</Route>*/}
+            <Route exact path="/cook/service">
+              <Header cookies={cookies} restaurantData={restaurantData} tab={1} serviceData={serviceData}/>
+              <ServiceRequests cookies={cookies} serviceData={serviceData} changeStatus={changeStatus}/>
             </Route>
           </Switch>
         </div>

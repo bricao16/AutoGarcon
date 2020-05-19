@@ -1,13 +1,5 @@
 package auto_garcon.cartorderhistory;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -16,6 +8,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -33,10 +33,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import auto_garcon.NukeSSLCerts;
-import auto_garcon.accountstuff.*;
-import auto_garcon.homestuff.*;
+import auto_garcon.ExceptionHandler;
+import auto_garcon.accountstuff.Account;
+import auto_garcon.accountstuff.PasswordChange;
+import auto_garcon.accountstuff.Services;
 import auto_garcon.accountstuff.Settings;
+import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
@@ -58,7 +60,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
     private ArrayList<String> restaurantName;
     private ArrayList<byte[]> logos;
 
-
     /**
      * Called when the activity is starting.  This is where most initialization
      * should go
@@ -68,9 +69,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
      * thrown.</em></p>
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see #onStart
      * @see #onSaveInstanceState
      * @see #onRestoreInstanceState
@@ -86,7 +86,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         logos = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
-        NukeSSLCerts.nuke();
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         pref = new SharedPreference(this);
         //creating side nav drawer
@@ -111,14 +111,15 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
-        if(pref.getShoppingCart() != null) {
-            if(pref.getShoppingCart().getCart().size() != 0){
+        if (pref.getShoppingCart() != null) {
+            if (pref.getShoppingCart().getCart().size() != 0) {
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
                                 startActivity(new Intent(OrderHistory.this, QRcode.class));
@@ -156,12 +157,12 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                     //parsing through json from get request to add them to menu
                     int tracker = 0;
 
-                    for(int i = 0;i < json.size(); i++){
+                    for (int i = 0; i < json.size(); i++) {
                         String indexAsString = Integer.toString(i);
                         JsonObject individualItem = json.getAsJsonObject(indexAsString);
 
-                        if(i != 0){//first item check
-                            if(order.get(tracker-1).equals(json.getAsJsonObject(indexAsString).get("order_num").getAsString())){//if there is an order that has the same id
+                        if (i != 0) {//first item check
+                            if (order.get(tracker - 1).equals(json.getAsJsonObject(indexAsString).get("order_num").getAsString())) {//if there is an order that has the same id
 
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();// get the item for that order
                                 item.setNameOfItem(individualItem.get("item_name").getAsString());//set the item name
@@ -169,9 +170,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 item.setImage(OrderHistory.this);
                                 item.setQuantity(individualItem.get("quantity").getAsInt());//set the new item quantity
                                 item.setPrice(individualItem.get("price").getAsDouble());
-                                carts.get(tracker-1).addToCart(item);
-                            }
-                            else{
+                                carts.get(tracker - 1).addToCart(item);
+                            } else {
                                 auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();//create the new item
                                 item.setNameOfItem(individualItem.get("item_name").getAsString());//set the item name
                                 item.setItemID(individualItem.get("item_id").getAsInt());
@@ -184,7 +184,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 carts.add(new ShoppingCartSingleton(individualItem.get("restaurant_id").getAsInt()));//get the new restaurant id and create a new shopping cart
                                 carts.get(tracker).addToCart(item);//ad the new item to the cart
 
-                                int font = OrderHistory.this.getResources().getIdentifier(individualItem.get("font").getAsString().toLowerCase().replaceAll("\\s","") + "_regular",
+                                int font = OrderHistory.this.getResources().getIdentifier(individualItem.get("font").getAsString().toLowerCase().replaceAll("\\s", "") + "_regular",
                                         "font", OrderHistory.this.getPackageName());
                                 carts.get(tracker).setFont(font);
 
@@ -197,14 +197,13 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                                 restaurantName.add(individualItem.get("restaurant_name").getAsString());
                                 byte[] temp = new byte[individualItem.getAsJsonObject("logo").getAsJsonArray("data").size()];
 
-                                for(int j = 0; j < temp.length; j++) {
+                                for (int j = 0; j < temp.length; j++) {
                                     temp[j] = (byte) ((individualItem.getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
                                 }
                                 logos.add(temp);
-                                tracker=tracker+1;
+                                tracker = tracker + 1;
                             }
-                        }
-                        else {
+                        } else {
                             auto_garcon.menustuff.MenuItem item = new auto_garcon.menustuff.MenuItem();
                             item.setNameOfItem(individualItem.get("item_name").getAsString());
                             item.setItemID(individualItem.get("item_id").getAsInt());
@@ -216,7 +215,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             carts.add(new ShoppingCartSingleton(individualItem.get("restaurant_id").getAsInt()));
                             carts.get(i).addToCart(item);
 
-                            int font = OrderHistory.this.getResources().getIdentifier(individualItem.get("font").getAsString().toLowerCase().replaceAll("\\s","") + "_regular",
+                            int font = OrderHistory.this.getResources().getIdentifier(individualItem.get("font").getAsString().toLowerCase().replaceAll("\\s", "") + "_regular",
                                     "font", OrderHistory.this.getPackageName());
                             carts.get(tracker).setFont(font);
 
@@ -229,7 +228,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                             restaurantName.add(individualItem.get("restaurant_name").getAsString());
                             byte[] temp = new byte[individualItem.getAsJsonObject("logo").getAsJsonArray("data").size()];
 
-                            for(int j = 0; j < temp.length; j++) {
+                            for (int j = 0; j < temp.length; j++) {
                                 temp[j] = (byte) ((individualItem.getAsJsonObject("logo").getAsJsonArray("data").get(j).getAsInt()) & 0xFF);
                             }
 
@@ -239,25 +238,31 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                         }
                     }
 
-                    recyclerView.setAdapter(new OrderHistoryAdapter(OrderHistory.this, pref ,order, carts, date, restaurantName, logos));
+                    recyclerView.setAdapter(new OrderHistoryAdapter(OrderHistory.this, pref, order, carts, date, restaurantName, logos));
                 }
             }
         },
-                new Response.ErrorListener()
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse.statusCode == 401) {
+                            pref.changeLogStatus(false);
 
-                {
-                    @Override
-                    public void onErrorResponse (VolleyError error){
-                        Toast.makeText(OrderHistory.this, "An Error has Occured", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(getBaseContext(), Login.class));
+                            Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                        }
+                        if (error.networkResponse.statusCode == 500) {
+                            Toast.makeText(getBaseContext(), "Error retrieving order history", Toast.LENGTH_LONG).show();
+                        }
                     }
-                }){
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
-                        HashMap<String,String> headers = new HashMap<String,String>();
-                        headers.put("Authorization","Bearer " + pref.getAuth());
-                        return headers;
-                    }
-            };
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + pref.getAuth());
+                return headers;
+            }
+        };
 
 
         VolleySingleton.getInstance(OrderHistory.this).addToRequestQueue(getRequest);// sending the request to the database
@@ -270,8 +275,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
      * @return true to display the item as the selected item
      */
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
-        switch(nav_item.getItemId()){
+    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item) {
+        switch (nav_item.getItemId()) {
             case R.id.account:
                 startActivity(new Intent(getBaseContext(), Account.class));
                 break;
@@ -285,7 +290,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(getBaseContext(), Settings.class));
                 break;
             case R.id.services:
-                startActivity(new Intent(getBaseContext(),Services.class));
+                startActivity(new Intent(getBaseContext(), Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
@@ -296,6 +301,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         }
         return false;
     }
+
     /**
      * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
      * the activity had been stopped, but is now again being displayed to the
@@ -305,6 +311,8 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
      * <p>You can call {@link #finish} from within this function, in
      * which case {@link #onStop} will be immediately called after {@link #onStart} without the
      * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
+     * <p>
+     * This is used to force the user to change their password when they open up this activity
      *
      * <p><em>Derived classes must call through to the super class's
      * implementation of this method.  If they do not, an exception will be
@@ -317,11 +325,11 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+        if (pref.getUser().getChangePassword() == 1) {//check if they have updated their password
             //if not send them back to PasswordChange page and force them to update their password
             Intent intent = new Intent(OrderHistory.this, PasswordChange.class);
             startActivity(intent);
-            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Update your Password", Toast.LENGTH_LONG).show();
         }
     }
 }

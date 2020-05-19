@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?><!--This XML file is used as the pop up when the user presses an item in the menu page.
+ This pop up will come up in order to shwo the image of the item, the item name, the price of the item,
+ and the amount of calories of the item. This pop up will allow the user to customize and add the order
+ to their cart.-->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="15dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="400dp">
 
+        <!--This text view contains the name of the item -->
         <TextView
             android:id="@+id/item_name_menu_popup"
             android:layout_width="wrap_content"
@@ -24,6 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--This image view shows the image of the item. -->
         <ImageView
             android:id="@+id/item_image_menu_popup"
             android:layout_width="230dp"
@@ -33,81 +36,88 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--This image is the image that is shown over the item image, if the restaurant is out of stock for this item. -->
         <ImageView
             android:id="@+id/out_of_stock_background"
             android:layout_width="230dp"
             android:layout_height="230dp"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="70dp"
             android:background="@color/transparent_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!--This text view contains a message saying the restaurant is out of stock, and will display if the kitchen is out of stock. -->
         <TextView
             android:id="@+id/out_of_stock"
             android:layout_width="230dp"
             android:layout_height="230dp"
             android:layout_marginTop="70dp"
+            android:gravity="center"
+            android:rotation="-45"
             android:text="@string/out_of_stock_string"
             android:textSize="36sp"
-            android:rotation="-45"
-            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--This text view contains the price of the item -->
         <TextView
             android:id="@+id/item_price_menu_popup"
             android:layout_width="196dp"
             android:layout_height="25dp"
+            android:layout_marginStart="5dp"
             android:text="price"
             android:textAlignment="center"
             android:textSize="14sp"
-            android:layout_marginStart="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_image_menu_popup" />
 
+        <!--This text view contains the amount of calories of the item -->
         <TextView
             android:id="@+id/item_calories_menu_popup"
             android:layout_width="195dp"
             android:layout_height="25dp"
+            android:layout_marginStart="5dp"
             android:text="calories"
             android:textAlignment="center"
-            android:layout_marginStart="5dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_price_menu_popup" />
 
+        <!--This text view contains the description of the item -->
         <TextView
             android:id="@+id/item_description_menu_popup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:gravity="left"
             android:text=""
             android:textSize="11dp"
-            android:layout_marginTop="5dp"
             app:layout_constraintBottom_toTopOf="@+id/item_allergens_menu_popup"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_name_menu_popup"
             app:layout_constraintVertical_bias="0.09" />
 
+        <!--This text view contains the allergen type of the item -->
         <TextView
             android:id="@+id/item_allergens_menu_popup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:gravity="left"
             android:text=""
             android:textSize="11dp"
-            android:layout_marginTop="5dp"
             app:layout_constraintBottom_toTopOf="@+id/item_image_menu_popup"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_description_menu_popup"
             app:layout_constraintVertical_bias="0.606" />
 
+        <!--This button is used to customize the order. -->
         <Button
             android:id="@+id/customize_item_menu_popup"
             style="?android:attr/borderlessButtonStyle"
@@ -115,38 +125,40 @@
             android:layout_height="40dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="7dp"
-            android:text="@string/Customize"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="12sp"
             android:autoSizeMaxTextSize="100sp"
+            android:autoSizeMinTextSize="12sp"
             android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:text="@string/Customize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_calories_menu_popup"
-            app:layout_constraintVertical_bias="1.5"
-            app:layout_constraintHorizontal_bias="0.0"/>
+            app:layout_constraintVertical_bias="1.5" />
 
+        <!--This button is used to add the item to the users cart. -->
         <Button
             android:id="@+id/add_to_cart_menu_popup"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="105dp"
             android:layout_height="40dp"
-            android:layout_marginEnd="5dp"
             android:layout_marginTop="7dp"
-            android:textSize="12sp"
-            android:text="@string/add_to_cart"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="12sp"
+            android:layout_marginEnd="5dp"
             android:autoSizeMaxTextSize="100sp"
+            android:autoSizeMinTextSize="12sp"
             android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:text="@string/add_to_cart"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_calories_menu_popup"
-            app:layout_constraintVertical_bias="1.5"
-            app:layout_constraintHorizontal_bias="1.0"/>
+            app:layout_constraintVertical_bias="1.5" />
 
+        <!--This button is used to close the pop up window. -->
         <ImageButton
             android:id="@+id/add_to_cart_popup_close"
             android:layout_width="16dp"

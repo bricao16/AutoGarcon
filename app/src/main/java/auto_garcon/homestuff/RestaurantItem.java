@@ -1,16 +1,16 @@
 package auto_garcon.homestuff;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import java.io.Serializable;
-/*
-This is an object of restaurant page.
+
+/**
+ * This class represent information of a specific resturant that has been pulled from the databse
  */
 public class RestaurantItem implements Serializable {
     private int ID;//restaurant id
-    private String openingTime;//restaurant opening hour
-    private String closingTime;//restaurant closing hour
+    private int openingTime;//restaurant opening hour
+    private int closingTime;//restaurant closing hour
     private Bitmap image;//restaurant image for the page
     private String address;//restaurant address
     private String name;//restaurant name
@@ -19,124 +19,198 @@ public class RestaurantItem implements Serializable {
     private String fontColor;
     private String secondaryColor;
 
-    public RestaurantItem(){}
-    //set restaurant id
-    public void setID(int ID){
-        this.ID = ID;
+    public RestaurantItem() {
     }
-    //get restaurant id
-    public int getID(){
+
+    /**
+     * This method returns the restaurant ID
+     */
+    public int getID() {
         return this.ID;
     }
-    //set restaurant opening hour
-    public void setOpeningTime(int openingTime){
-        String openingTimeFinished = Integer.toString(openingTime);
 
-        Log.d("asdgadsgas", openingTime+"");
-
-        if(openingTimeFinished.length() > 2) {
-            openingTimeFinished = openingTime % 1200 + ":" + openingTimeFinished.substring(openingTimeFinished.length() - 2);
-        }
-        else {
-            openingTimeFinished = openingTime + ":00";
-        }
-
-
-        if(openingTime > 1200) {
-            openingTimeFinished = openingTimeFinished + "pm";
-        }
-        else {
-            openingTimeFinished = openingTimeFinished + "am";
-        }
-
-        this.openingTime = openingTimeFinished;
+    /**
+     * This method sets our restaurant ID
+     *
+     * @param ID the id that we will be setting our instance variable to
+     */
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
-    //get restaurant opening hour
-    public String getOpeningTime(){
+    /**
+     * This method takes in a time as int and converts into a displayable string
+     *
+     * @param time this represents the current time and is converted into a string
+     * @return returns a String based off the integer time passed
+     */
+    public String timeIntToString(int time) {
+        String finishedTime = Integer.toString(time % 1200);
+
+        if (finishedTime.length() == 3) {
+            finishedTime = finishedTime.substring(0, 1) + ":" + finishedTime.substring(1, 3);
+        } else {
+            finishedTime = finishedTime.substring(0, 2) + ":" + finishedTime.substring(2, 4);
+        }
+
+        if (time >= 1200) {
+            finishedTime = finishedTime + "pm";
+        } else {
+            finishedTime = finishedTime + "am";
+        }
+
+        return finishedTime;
+    }
+
+    /**
+     * This method returns the opening Time instance variable
+     */
+    public int getOpeningTime() {
         return this.openingTime;
     }
-    //get restaurant opening hour day
-    //set restaurant closing hour
-    public void setClosingTime(int closingTime){
-        String closingTimeFinished = Integer.toString(closingTime);
 
-        closingTimeFinished = closingTimeFinished.substring(closingTimeFinished.length() - 2);
-        closingTimeFinished = closingTime % 12 + closingTimeFinished;
-
-        if(closingTime > 12) {
-            closingTimeFinished = closingTimeFinished + "pm";
-        }
-        else {
-            closingTimeFinished = closingTimeFinished + "am";
-        }
-
-        this.closingTime = closingTimeFinished;
+    /**
+     * This method sets the instance vairbale openeing Time variable
+     *
+     * @param openingTime the time that our opening variable will be set too
+     */
+    public void setOpeningTime(int openingTime) {
+        this.openingTime = openingTime;
     }
 
-    //get restaurant closing hour
-    public String getClosingTime(){
+
+    /**
+     * This method returns the closing time instance variable
+     */
+    public int getClosingTime() {
         return this.closingTime;
     }
-    //get restaurant closing hour day
 
-    //set restaurant image
-    public void setImageBitmap(Bitmap image){
-        this.image = image;
+    /**
+     * This method sets the closing time instance variable
+     *
+     * @param closingTime this variable represents the closing time we will set our instance variable to
+     */
+    public void setClosingTime(int closingTime) {
+        this.closingTime = closingTime;
     }
-    //get Bitmap object of restaurant image
-    public Bitmap getImageBitmap(){
+
+    /**
+     * This method will return our bitmap Instance Variable
+     */
+    public Bitmap getImageBitmap() {
         return this.image;
     }
-    //set restaurant address
-    public void setAddress(String address){
-        this.address = address;
+
+    /**
+     * This method sets the bitmapImage instance variable
+     *
+     * @param image this represents the value we will set our instance variable too
+     */
+    public void setImageBitmap(Bitmap image) {
+        this.image = image;
     }
-    //get restaurant address
-    public String getAddress(){
+
+    /**
+     * This method returns the instance variable with the address
+     */
+    public String getAddress() {
         return this.address;
     }
-    //set restaurant name
-    public void setName(String name){
-        this.name = name;
+
+    /**
+     * This method sets the address instance variable
+     *
+     * @param address this represents the value we will set our address instance variable too.
+     */
+    public void setAddress(String address) {
+        this.address = address;
     }
-    //get restaurant name
-    public String getName(){
+
+    /**
+     * This method returns the name of the restaurant.
+     */
+    public String getName() {
         return this.name;
     }
-    //set restaurant phone number
-    public void setPhoneNumber(long phoneNumber){
-        if(Long.toString(phoneNumber).length() == 10){
-            String fullNumber = Long.toString(phoneNumber);
-            this.phoneNumber = "(" + fullNumber.substring(0, 3) + ") " + fullNumber.substring(3, 6) + "-" + fullNumber.substring(6);
-        }
 
+    /**
+     * This method sets the restaurant name instance variable
+     *
+     * @param name this represents the name we will be setting our instance variable too
+     */
+    public void setName(String name) {
+        this.name = name;
     }
-    //get restaurant phone number
-    public String getPhoneNumber(){
+
+    /**
+     * This method returns the phone number instance variable
+     */
+    public String getPhoneNumber() {
         return this.phoneNumber;
     }
 
-    public void setFont(int font){
-        this.font = font;
+
+    /**
+     * This method sets the phoneNumber instance variable
+     *
+     * @param phoneNumber this represents the phone number that will be set too
+     */
+    public void setPhoneNumber(long phoneNumber) {
+        if (Long.toString(phoneNumber).length() == 10) {
+            String fullNumber = Long.toString(phoneNumber);
+            this.phoneNumber = "(" + fullNumber.substring(0, 3) + ") " + fullNumber.substring(3, 6) + "-" + fullNumber.substring(6);
+        } else {
+            this.phoneNumber = "Invalid phone number";
+        }
+
     }
 
-    public int getFont(){
+    /**
+     * This method returns the font instance variable
+     */
+    public int getFont() {
         return this.font;
     }
 
-    public void setFontColor(String fontColor){
-        this.fontColor = fontColor;
+    /**
+     * this method sets the value for the font instance variable
+     *
+     * @param font this variable represents the value that the font instance variable will be set too
+     */
+    public void setFont(int font) {
+        this.font = font;
     }
 
-    public String getFontColor(){
+    /**
+     * This returns the font color instance variable
+     */
+    public String getFontColor() {
         return this.fontColor;
     }
 
-    public void setSecondaryColor(String secondaryColor){
-        this.secondaryColor = secondaryColor;
+    /**
+     * this method sets the font color instance variable
+     *
+     * @param fontColor this represents the value the font color will be set too
+     */
+    public void setFontColor(String fontColor) {
+        this.fontColor = fontColor;
     }
-    public String getSecondaryColor(){
+
+    /**
+     * this method gets the secondoryColor instance variable
+     */
+    public String getSecondaryColor() {
         return this.secondaryColor;
+    }
+
+    /**
+     * this method sets the instance variable for secondaryColor
+     *
+     * @param secondaryColor this represents the value that secondaryValue will be set too
+     */
+    public void setSecondaryColor(String secondaryColor) {
+        this.secondaryColor = secondaryColor;
     }
 }

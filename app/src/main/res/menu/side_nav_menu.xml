@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--This file is  side navigation bar. This will be usd to give the user more options.
+The option that it will contain are, the account page, the order history page, the current
+orders page, the settings page and logging out.-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--Button directing you the the account page.-->
     <item
         android:id="@+id/account"
         android:title="@string/account"/>
 
+    <!--Button directing you the the order history page.-->
     <item
         android:id="@+id/order_history"
         android:title="@string/order_history"/>
 
+    <!--Button directing you the the current orders page.-->
     <item
         android:id="@+id/current_orders"
         android:title="@string/current_orders"/>
 
+    <!--Button directing you the the settings page.-->
     <item
         android:id="@+id/services"
         android:title="@string/services" />
@@ -19,6 +27,7 @@
         android:id="@+id/settings"
         android:title="@string/settings"/>
 
+    <!--Button directing you to log out of your account.-->
     <item
         android:id="@+id/log_out"
         android:title="@string/log_out"/>

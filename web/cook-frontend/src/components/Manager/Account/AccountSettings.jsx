@@ -16,7 +16,7 @@ change their first and last name, email, and phone number
 The token is checked before changes. Position is unable to be
 updated.
 
-
+Data is taken from cookies and refreshed and reset on changes.
 */
 
 class AccountSettings extends React.Component{
@@ -207,7 +207,7 @@ class AccountSettings extends React.Component{
     let text = this.cookies.get("mystaff")[snakeCaseField];
 
     // Format for phone number
-    if (field == "ContactNum") text = this.phoneFormat(text);
+    if (field === "ContactNum") text = this.phoneFormat(text);
 
     if (!this.state['show'+field]) {
       return (
