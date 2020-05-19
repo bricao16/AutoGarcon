@@ -74,7 +74,7 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
         Spanned htmlTermsAsSpanned = Html.fromHtml(htmlTermsAsString); // used by TextView
 
         // set the html content on the TextView
-        TextView textView = findViewById(R.id.textView);
+        TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText(htmlTermsAsSpanned);
         textView.setMovementMethod(new ScrollingMovementMethod());
 
@@ -139,7 +139,7 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
      * Checks to see if use needs to update password.
      * If so sends them back to PassWordChange page.
      *
-     * @return void
+     *  @return void
      */
     @Override
     protected void onStart() {
