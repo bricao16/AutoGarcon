@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
         android:background="#FFFFFF"
-        android:hint="@string/errorBody"
+        android:hint="@string/subject"
         android:singleLine="true"
         app:layout_constraintBottom_toTopOf="@+id/et_message"
         app:layout_constraintTop_toBottomOf="@+id/ErrorText"
@@ -32,7 +32,7 @@
         android:layout_marginBottom="20dp"
         android:background="#FFFFFF"
         android:gravity="top|left"
-        android:hint="A short description of what happend"
+        android:hint="@string/errorBody"
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toTopOf="@+id/bt_send"
         tools:layout_editor_absoluteX="0dp" />
