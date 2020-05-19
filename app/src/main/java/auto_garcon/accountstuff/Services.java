@@ -39,6 +39,11 @@ import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
 
+/**
+ * This class is a java class that is tied to the service xml.
+ * This class allows a user to clcik two buttons that will either request for the bill or help from the resturant
+ * This class also allows the user navigate using the side nav bar and the bottom nav bar
+ */
 
 public class Services extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
 

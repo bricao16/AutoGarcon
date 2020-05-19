@@ -67,11 +67,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private ExpandableListView listView;
     private ExpandableListAdapter listAdapter;
     private ArrayList<String> listDataHeader;
-    private List<auto_garcon.menustuff.MenuItem> appetizer_list;
-    private List<auto_garcon.menustuff.MenuItem> entree_list;
-    private List<auto_garcon.menustuff.MenuItem> dessert_list;
-    private List<auto_garcon.menustuff.MenuItem> drink_list;
-    private List<auto_garcon.menustuff.MenuItem> alcohol_list;
     private HashMap<String, ArrayList<auto_garcon.menustuff.MenuItem>> listHash;
     private Button addOrRemoveFavorite;
     private ImageView restaurantLogo;
@@ -139,11 +134,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         restaurantLogo = findViewById(R.id.restaurant_logo);
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
-        appetizer_list = new ArrayList<>();
-        entree_list = new ArrayList<>();
-        dessert_list = new ArrayList<>();
-        drink_list = new ArrayList<>();
-        alcohol_list = new ArrayList<>();
         addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
         if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {

@@ -235,7 +235,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
             }
         };
 
-        StringRequest getRequestForSearch = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/restaurants",
+        StringRequest getRequestForSearch = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/restaurants",
             new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
