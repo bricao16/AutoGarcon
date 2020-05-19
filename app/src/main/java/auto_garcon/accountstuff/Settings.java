@@ -111,6 +111,9 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
+        /**
+         * buttons used to navigate to FAQ, Privacy, Terms activities
+         */
         Button faqButton = findViewById(R.id.faqButton);// associating xml objects with the java Object equivalent
         Button privacyLegalButton = findViewById(R.id.privacyLegalButton);// associating xml objects with the java Object equivalent
         Button termsLegalButton = findViewById(R.id.termsLegalButton);// associating xml objects with the java Object equivalent

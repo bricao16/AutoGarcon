@@ -63,6 +63,9 @@ public class TwoButtonPage extends AppCompatActivity {
         pref = new SharedPreference(this);//file for keeping track of cart
         pref.setShoppingCart(new ShoppingCartSingleton());
 
+        /**
+         * volley request to get user favorites so we can store their IDs in SharedPreference
+         */
         StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/favorites/" + pref.getUser().getUsername(),
                 new Response.Listener<String>() {
                     @Override
@@ -104,6 +107,9 @@ public class TwoButtonPage extends AppCompatActivity {
 
         VolleySingleton.getInstance(TwoButtonPage.this).addToRequestQueue(getRequestForFavorites);
 
+        /**
+         * buttons to go to QRcode activity or Home activity
+         */
         Button scannerButton = findViewById(R.id.scanner_button);// associating xml objects with the java Object equivalent
         Button favButton = findViewById(R.id.fav_button);// associating xml objects with the java Object equivalent
 

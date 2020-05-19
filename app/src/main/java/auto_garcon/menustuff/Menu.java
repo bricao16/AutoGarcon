@@ -97,7 +97,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-
         /**
          * Ties the side navigation bar xml elements to Java objects and setting listeners for the
          * side navigation drawer as well as the elements within it.
@@ -128,7 +127,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
-
+        /**
+         * Ties certain xml elements to Java objects and sets up things needed for expandable list
+         */
         restaurantName = findViewById(R.id.restaurant_name);
         restaurantLogo = findViewById(R.id.restaurant_logo);
         listDataHeader = new ArrayList<>();
@@ -141,6 +142,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             addOrRemoveFavorite.setText("Add to Favorites");
         }
 
+        /**
+         * request for adding or removing the restaurant from their favorites list
+         */
         addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,11 +164,15 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     Button removeFromFavorites = removeFromFavoritesPopup.findViewById(R.id.popup_yes);
                     ImageButton confirmClose = removeFromFavoritesPopup.findViewById(R.id.confirm_close);
 
+
                     removeFromFavorites.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             addOrRemoveFavorite.setText("Add to favorites");
 
+                            /**
+                             * remove from favorites request
+                             */
                             StringRequest deleteRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/favorites/delete",
                                     new Response.Listener<String>() {
                                         @Override
@@ -221,6 +229,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                         }
                     });
                 } else {
+                    /**
+                     * add to favorites request
+                     */
                     addOrRemoveFavorite.setText("Remove from favorites");
                     pref.addToFavorites(getIntent().getIntExtra("restaurant id", 0));
 
@@ -276,6 +287,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
             }
         });
 
+        /**
+         * request to get restaurant data and its menu
+         */
         StringRequest getRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/restaurant/" + getIntent().getIntExtra("restaurant id", 0),
                 new Response.Listener<String>() {
                     @Override
@@ -376,6 +390,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
         VolleySingleton.getInstance(Menu.this).addToRequestQueue(getRequest);
 
+        /**
+         * setting up onClick events for bottom navbar
+         */
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -437,6 +454,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      * The method is what filters the restaurant items that are displayed on the menu. If the
      * current menu does not have a category for the item being added it will add that category.
      * It then adds the actual item to the category it belongs in.
+     * @param menuItemCategories JSONObject to get the data for our MenuItem
      */
 
     private auto_garcon.menustuff.MenuItem creatingToBeAddedItem(JSONObject menuItemCategories) {

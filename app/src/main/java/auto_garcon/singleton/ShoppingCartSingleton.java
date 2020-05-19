@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import auto_garcon.menustuff.MenuItem;
 
 /**
- * Class for viewing and modifying shopping cart.
+ * Class is a representation of an actual shopping cart stores all items user has added
+ * as well as the restaurants information
  */
 public class ShoppingCartSingleton {
     private ArrayList<MenuItem> items;

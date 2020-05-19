@@ -60,7 +60,9 @@ public class Terms extends AppCompatActivity implements NavigationView.OnNavigat
         pref = new SharedPreference(this);
 
 
-        //creating side nav drawer
+        /**
+         * ties xml elemnts to Java objects and sets some properties from SharePreferences
+         */
         DrawerLayout drawerLayout = findViewById(R.id.terms_main);// associating xml objects with the java Object equivalent
         Toolbar toolbar = findViewById(R.id.xml_toolbar);// associating xml objects with the java Object equivalent
         NavigationView navigationView = findViewById(R.id.navigationView);// associating xml objects with the java Object equivalent
@@ -99,6 +101,10 @@ public class Terms extends AppCompatActivity implements NavigationView.OnNavigat
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
+
+        /**
+         * onClick for bottom navbar
+         */
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override

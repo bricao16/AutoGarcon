@@ -91,6 +91,9 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
             }
         }
 
+        /**
+         * ties xml elements to Java objects and dynamically sets them
+         */
         TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
         usernameSideNavBar.setText(pref.getUser().getUsername());
 
@@ -101,6 +104,9 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(CurrentOrders.this);
 
+        /**
+         * onClick for bottom navbar
+         */
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -121,6 +127,9 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
+        /**
+         * volley request to get current orders for specified user
+         */
         StringRequest getRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/customer/inprogress/" + pref.getUser().getUsername(),
                 new Response.Listener<String>()
                 {

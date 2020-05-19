@@ -98,6 +98,9 @@ public class Account extends AppCompatActivity {
         accountImage = findViewById(R.id.account_image_change);
         accountImage.setImageBitmap(BitmapFactory.decodeByteArray(pref.getUser().getImageBitmap(), 0, pref.getUser().getImageBitmap().length));
 
+        /**
+         * onClick that will show popup to prompt user to take photo or choose from gallery
+         */
         accountImage.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +110,9 @@ public class Account extends AppCompatActivity {
 
                 changeImagePopup.show();
 
+                /**
+                 * onClick take photo
+                 */
                 changeImagePopup.findViewById(R.id.take_photo_button).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -115,6 +121,9 @@ public class Account extends AppCompatActivity {
                     }
                 });
 
+                /**
+                 * onClick choose from gallery
+                 */
                 changeImagePopup.findViewById(R.id.choose_from_gallery_button).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -123,6 +132,9 @@ public class Account extends AppCompatActivity {
                     }
                 });
 
+                /**
+                 * onClick dismiss popup
+                 */
                 changeImagePopup.findViewById(R.id.account_image_close).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -132,10 +144,9 @@ public class Account extends AppCompatActivity {
             }
         });
 
-        /*
-         * If user selects the save account changes buttons
-         * users information will update in database given inputs
-         * */
+        /**
+         * onClick makes sure valid inputs and sends volley request for account changes
+         */
         saveAccountChanges.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -274,6 +285,9 @@ public class Account extends AppCompatActivity {
             }
         });
 
+        /**
+         * onClick to go to PasswordChange activity
+         */
         changePassword.setOnClickListener(new View.OnClickListener() {// when the user clicks on this link we change to xml to the log in layout
             @Override
             public void onClick(View view) {//will change password
@@ -283,6 +297,13 @@ public class Account extends AppCompatActivity {
         });
     }
 
+    /**
+     * sets the accountImage picture on the activity when returns from camera or gallery
+     *
+     * @param requestCode if user chose take photo or choose from gallery
+     * @param resultCode if user canceled request
+     * @param data data that will be used to set new user image
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
