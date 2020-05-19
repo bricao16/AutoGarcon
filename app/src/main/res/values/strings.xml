@@ -64,7 +64,7 @@
     <string name="Help">I need Assistance</string>
     <string name="Bill">Bill please</string>
     <string name="services">Services</string>
-    <string name="customization_hint">Sauce on the side, no pickels, extra spicy... \nFor multiple items separate with a semicolon</string>
+    <string name="customization_hint">Sauce on the side, no pickels, extra spicy... \nFor multiple items separate with a semicolon (100 characters max)</string>
     <string name="next">Next</string>
     <string name="no_current_orders">You do not have any current orders. Order something!!!</string>
     <string name="choose_account_image">Choose Account Image (optional)</string>
