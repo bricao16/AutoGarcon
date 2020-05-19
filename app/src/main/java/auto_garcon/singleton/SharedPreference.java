@@ -9,21 +9,30 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
- * Holds users current state
- *
+ * This class Holds users current state and all information about the user
+ * The class uses shared prefrence and writes the data into the app's memory as key value pair
  */
 public class SharedPreference {
     private SharedPreferences sharedPreferences;
     private Context context;
 
+    /**
+     * This constructor intializes the sharedPrefrence object using the context passed
+     * @param context the context represents the current state of the object
+     */
     public SharedPreference(Context context){
         this.context = context;
         sharedPreferences = context.getSharedPreferences(context.getString(R.string.pref_file),Context.MODE_PRIVATE);
     }
 
+    /**
+     * This method sets our users log status to true or false based on the boolean passed in
+     * @param status this represents weather the user is logged in or not as either a true or false
+     */
     public void changeLogStatus(boolean status){
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -33,17 +42,27 @@ public class SharedPreference {
         editor.apply();
     }
 
-    //logs out user
+    /**
+     * This methods will represent logging out a user by clearing the sharedPrefrence file and all info we store from the users interaction on the app
+     */
     public void logOut(){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear().apply();
     }
 
+    /**
+     * This method gets the users Login status using the key com.example_preference_login_status
+     * @return
+     */
     public  boolean getLoginStatus(){
         // gets the login status from preference file
         return sharedPreferences.getBoolean(context.getString(R.string.pref_login_status), false);
     }
 
+    /**
+     * This method stores the users inoformation which is passed in as user Object in our sharedPrefrence file
+     * @param user represents a user info and data
+     */
     public void setUser(UserSingleton user){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         //this gson object is used to convert our java object into a json String
@@ -155,6 +174,28 @@ public class SharedPreference {
         String returnJSONString = gson.toJson(converter);
 
         editor.putString("favorite restaurants", returnJSONString);
+        editor.apply();
+    }
+
+    public Calendar getTimeStamp(){
+        Gson gson = new Gson();
+        String stringJson = sharedPreferences.getString("timeStamp", null);
+
+        if(stringJson == null){
+            return Calendar.getInstance();
+        }
+        else{
+            return  gson.fromJson(stringJson,Calendar.class);
+        }
+
+    }
+
+    public void SetTimeStamp(Calendar calendar){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String stringJson = gson.toJson(calendar);
+
+        editor.putString("timeStamp",stringJson);
         editor.apply();
     }
 }
