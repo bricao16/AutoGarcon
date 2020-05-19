@@ -234,18 +234,18 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                 ) {
                                     @Override
                                     protected Map<String, String> getParams() {// inserting parameters for the put request
-                                        Map<String, String> params = new HashMap<>();
+                                        Map<String, String> params = new HashMap<String, String>();
 
                                         /** Creates and builds the JSON object that will eventually be sent to the database. */
                                         JSONObject order = new JSONObject();
 
                                         try {
-                                            for (int i = 0; i < shoppingCart.getCart().size(); i++) {
+                                            for (int i = 0; i < pref.getShoppingCart().getCart().size(); i++) {
                                                 JSONObject item = new JSONObject();
 
-                                                item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
-                                                item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
-                                                item.put("customization", shoppingCart.getCart().get(i).getCustomization());
+                                                item.put("item", Integer.toString(pref.getShoppingCart().getCart().get(i).getItemID()));
+                                                item.put("quantity", Integer.toString(pref.getShoppingCart().getCart().get(i).getQuantity()));
+                                                item.put("customization", pref.getShoppingCart().getCart().get(i).getCustomization());
                                                 order.put(Integer.toString(i), item);
                                             }
                                         } catch (JSONException e) {
@@ -255,9 +255,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                         }
 
                                         params.put("restaurant_id", "124");
-                                        params.put("customer_id", "AutomaticBoy");
-                                        params.put("table_num", "3");
+                                        params.put("customer_id", "testing777");
+                                        params.put("table_num", "6");
                                         params.put("order", order.toString());
+                                        Log.d("hello", "getParams: "+order.toString());
+
 
                                         return params;
                                     }
@@ -265,9 +267,19 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                     @Override
                                     public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
                                         HashMap<String, String> headers = new HashMap<>();
+                                        Log.d("string1",pref.getAuth());
                                         headers.put("Authorization","Bearer " + pref.getAuth());
-
                                         return headers;
+                                    }
+
+                                    @Override
+                                    public byte[] getBody() throws AuthFailureError {
+                                        Map<String, String> params = new HashMap<String, String>();
+                                        params.put("restaurant_id", "124");
+                                        params.put("customer_id", "testing777");
+                                        params.put("table_num", "6");
+                                        params.put("order", order.toString());
+                                        return super.getBody();
                                     }
                                 };
 

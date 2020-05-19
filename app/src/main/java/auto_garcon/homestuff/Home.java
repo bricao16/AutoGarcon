@@ -276,7 +276,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(error.networkResponse.statusCode == 500) {
+                    if(error.networkResponse!= null && error.networkResponse.statusCode == 500) {
                         Toast.makeText(Home.this, "Error retrieving restaurants",Toast.LENGTH_LONG).show();
                     }
                 }
