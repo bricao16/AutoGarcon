@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.auto_garcon.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
@@ -30,6 +28,8 @@ import auto_garcon.singleton.ShoppingCartSingleton;
 This is a container for history pages that the user can see.
  */
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.OrderHistoryViewHolder> {
+    Dialog popUp;
+    Dialog confirmPopup;
     private SharedPreference pref;// used to reference user information
     private ArrayList<String> order;// used to capture user order number
     private ArrayList<ShoppingCartSingleton> carts;// used to handle items returned from the recent order history
@@ -37,18 +37,17 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     private ArrayList<byte[]> logos;
     private Context ct;
     private ArrayList<String> restaurantName;
-    Dialog popUp;
-    Dialog confirmPopup;
 
     /**
      * This constructor initializes our variables passed in from the shopping cart page
+     *
      * @param ctx
      * @param preference
      * @param order
      * @param carts
      * @param date
      */
-    public  OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date,ArrayList<String> restaurantName,ArrayList<byte[]> logos){
+    public OrderHistoryAdapter(Context ctx, SharedPreference preference, ArrayList<String> order, ArrayList<ShoppingCartSingleton> carts, ArrayList<String> date, ArrayList<String> restaurantName, ArrayList<byte[]> logos) {
         ct = ctx;
         this.logos = logos;
         this.pref = preference;
@@ -73,10 +72,9 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
      * different items in the data set, it is a good idea to cache references to sub views of
      * the View to avoid unnecessary {@link View#findViewById(int)} calls.
      *
-     * @param parent The ViewGroup into which the new View will be added after it is bound to
-     *               an adapter position.
+     * @param parent   The ViewGroup into which the new View will be added after it is bound to
+     *                 an adapter position.
      * @param viewType The view type of the new View.
-     *
      * @return A new ViewHolder that holds a View of the given view type.
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(OrderHistoryViewHolder, int)
@@ -85,7 +83,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     @Override
     public OrderHistoryAdapter.OrderHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(ct);//this allows the list expand dynamically
-        View view = inflater.inflate(R.layout.order_history_tile,parent,false);//make the list visible
+        View view = inflater.inflate(R.layout.order_history_tile, parent, false);//make the list visible
 
         return new OrderHistoryViewHolder(view);
     }
@@ -103,12 +101,12 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
      * this method and should not keep a copy of it. If you need the position of an item later
      * on (e.g. in a click listener), use {@link RecyclerView.ViewHolder#getAdapterPosition()} which will
      * have the updated adapter position.
-     *
+     * <p>
      * Override {@link #onBindViewHolder(OrderHistoryViewHolder, int)}  instead if Adapter can
      * handle efficient partial bind.
      *
-     * @param holder The ViewHolder which should be updated to represent the contents of the
-     *        item at the given position in the data set.
+     * @param holder   The ViewHolder which should be updated to represent the contents of the
+     *                 item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
      */
 
@@ -116,13 +114,12 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     public void onBindViewHolder(@NonNull OrderHistoryAdapter.OrderHistoryViewHolder holder, final int position) {
         holder.order_num.setText(restaurantName.get(position));// set the text for the order tile
         int datePosition = date.get(position).indexOf("T");
-        if(datePosition==-1){
+        if (datePosition == -1) {
             holder.date.setText(date.get(position));// set the date in the order tile card
+        } else {
+            holder.date.setText(date.get(position).substring(0, datePosition));// set the date in the order tile card
         }
-        else {
-            holder.date.setText(date.get(position).substring(0,datePosition));// set the date in the order tile card
-        }
-        holder.restaurant.setImageBitmap(BitmapFactory.decodeByteArray(logos.get(position),0,logos.get(position).length));// set the image of the resturant to the image view on the order_tile card
+        holder.restaurant.setImageBitmap(BitmapFactory.decodeByteArray(logos.get(position), 0, logos.get(position).length));// set the image of the resturant to the image view on the order_tile card
 
         holder.items.setOnClickListener(new View.OnClickListener() {// when they user clicks on view items text view on the order tile card
             @Override
@@ -149,7 +146,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         holder.reOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pref.getShoppingCart().getCart().size() > 0) {
+                if (pref.getShoppingCart().getCart().size() > 0) {
                     confirmPopup = new Dialog(ct);
                     confirmPopup.setContentView(R.layout.confirm_popup);
                     confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -158,12 +155,12 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                     ImageButton confirmClose = confirmPopup.findViewById(R.id.confirm_close);
 
                     confirmYes.setText("Confirm");
-                    TextView dynamicPopupText= confirmPopup.findViewById(R.id.text_confirm_popup);
+                    TextView dynamicPopupText = confirmPopup.findViewById(R.id.text_confirm_popup);
                     dynamicPopupText.setText("Adding this item will remove the other items currently in cart.");
 
                     confirmYes.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
-                            Toast.makeText(ct, "Successfully added to cart.",Toast.LENGTH_LONG).show();
+                            Toast.makeText(ct, "Successfully added to cart.", Toast.LENGTH_LONG).show();
                             //Clear the order if the item's are available during the correct time
 
                             pref.setShoppingCart(carts.get(position));
@@ -175,9 +172,8 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                             confirmPopup.dismiss();
                         }
                     });
-                }
-                else {
-                    Toast.makeText(ct, "Successfully added to cart.",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ct, "Successfully added to cart.", Toast.LENGTH_LONG).show();
                     pref.setShoppingCart(carts.get(position));
                 }
             }
@@ -195,18 +191,19 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         return order.size();
     }
 
-    public class OrderHistoryViewHolder extends RecyclerView.ViewHolder{
+    public class OrderHistoryViewHolder extends RecyclerView.ViewHolder {
 
         TextView order_num;
         TextView date;
         TextView items;
         Button reOrder;
         ImageView restaurant;
+
         public OrderHistoryViewHolder(@NonNull View v) {
             super(v);
-            order_num= v.findViewById(R.id.order_num2);
+            order_num = v.findViewById(R.id.order_num2);
             date = v.findViewById(R.id.date);
-            items= v.findViewById(R.id.order_items);
+            items = v.findViewById(R.id.order_items);
             reOrder = v.findViewById(R.id.ReOrderButton);
             restaurant = v.findViewById(R.id.resturant);
         }

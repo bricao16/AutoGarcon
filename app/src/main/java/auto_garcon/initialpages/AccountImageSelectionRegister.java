@@ -1,7 +1,5 @@
 package auto_garcon.initialpages;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,16 +11,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.auto_garcon.R;
 
 import org.json.JSONException;
@@ -33,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import auto_garcon.VolleyMultipartRequest;
-import auto_garcon.accountstuff.Account;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
@@ -100,7 +94,7 @@ public class AccountImageSelectionRegister extends AppCompatActivity {
 
                                     byte[] itemImageByteArray = new byte[userData.getJSONObject("image").getJSONArray("data").length()];
 
-                                    for(int i = 0; i < itemImageByteArray.length; i++) {
+                                    for (int i = 0; i < itemImageByteArray.length; i++) {
                                         itemImageByteArray[i] = (byte) (((int) userData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
                                     }
 

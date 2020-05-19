@@ -1,38 +1,24 @@
 package auto_garcon.initialpages;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.auto_garcon.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import auto_garcon.NukeSSLCerts;
 import auto_garcon.singleton.SharedPreference;
-import auto_garcon.singleton.UserSingleton;
-import auto_garcon.singleton.VolleySingleton;
 
 /**
  * Main class for registering users and handling a user when the want to register a new account
  * This classes main purpose is for registering users only
  * This class is also tied with the Register xml
- *
  */
 public class Register extends AppCompatActivity {
     EditText emailId;//used to extract data from xml page of the Registration Activity
@@ -43,6 +29,7 @@ public class Register extends AppCompatActivity {
     TextView textViewLogin;//used to send user into Sign in Activity
     EditText userID;//used to extract data from xml page of the Registration Activity
     private SharedPreference pref;//This object is used to store information about the user that can be used outside of this page
+
     /**
      * Called when the activity is starting.  This is where most initialization
      * should go
@@ -52,9 +39,8 @@ public class Register extends AppCompatActivity {
      * thrown.</em></p>
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see #onStart
      * @see #onSaveInstanceState
      * @see #onRestoreInstanceState
@@ -76,8 +62,8 @@ public class Register extends AppCompatActivity {
         textViewLogin = findViewById(R.id.yes_account_register);// associating xml objects with the java Object equivalent
 
         /**/
-        nextButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 final String firstName = userFirst.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String lastName = userLast.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String email = emailId.getText().toString().trim();//extracted data from xml object and converted into a string
@@ -86,52 +72,52 @@ public class Register extends AppCompatActivity {
 
                 boolean validInputs = true;
 
-                if(TextUtils.isEmpty(firstName)){//checking if user entered there firstName
+                if (TextUtils.isEmpty(firstName)) {//checking if user entered there firstName
                     userFirst.setError("Please enter first name");
                     userFirst.requestFocus();
                     validInputs = false;
                 }
-                if (TextUtils.isEmpty(lastName)){//checking if user entered there lastName
+                if (TextUtils.isEmpty(lastName)) {//checking if user entered there lastName
                     userLast.setError("Please enter last name");
                     userLast.requestFocus();
                     validInputs = false;
                 }
-                if(TextUtils.isEmpty(email)){//checking if user entered their email
+                if (TextUtils.isEmpty(email)) {//checking if user entered their email
                     emailId.setError("Please enter email id");
                     emailId.requestFocus();
                     validInputs = false;
                 }
-                if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){// use android built patterns function to test if the email matches
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {// use android built patterns function to test if the email matches
                     emailId.setError("Please enter a valid email");
                     emailId.requestFocus();
                     validInputs = false;
                 }
-                if(TextUtils.isEmpty(passwd)){//checking if user entered their password
+                if (TextUtils.isEmpty(passwd)) {//checking if user entered their password
                     password.setError("Please enter your password");
                     password.requestFocus();
                     validInputs = false;
                 }
-                if(passwd.length() < 6){//checks if the user entered a password lass than 6 characters
+                if (passwd.length() < 6) {//checks if the user entered a password lass than 6 characters
                     password.setError("Password Must be Greater than 6 Characters");
                     password.requestFocus();
                     validInputs = false;
                 }
-                if(passwd.equals(passwd.toLowerCase())){//checks if the password contains one uppercase
+                if (passwd.equals(passwd.toLowerCase())) {//checks if the password contains one uppercase
                     password.setError("Password Must contain at least one uppercase");
                     password.requestFocus();
                     validInputs = false;
                 }
-                if(passwd.equals(passwd.toUpperCase())){//checkis if password contains one lowercase
+                if (passwd.equals(passwd.toUpperCase())) {//checkis if password contains one lowercase
                     password.setError("Password Must contain at least one lowercase");
                     password.requestFocus();
                     validInputs = false;
                 }
-                if(TextUtils.isEmpty(username)){
+                if (TextUtils.isEmpty(username)) {
                     userID.setError("Please enter a username");
                     userID.requestFocus();
                     validInputs = false;
                 }
-                if(validInputs == true) {// if all the requirments are met than we can send our put request to the database
+                if (validInputs == true) {// if all the requirments are met than we can send our put request to the database
                     Intent imageSelection = new Intent(Register.this, AccountImageSelectionRegister.class);
 
                     imageSelection.putExtra("first_name", firstName);

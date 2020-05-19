@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Refrenced from stackoverflow: https://stackoverflow.com/questions/43194243/notification-badge-on-action-item-android -->
+<?xml version="1.0" encoding="utf-8"?><!-- Refrenced from stackoverflow: https://stackoverflow.com/questions/43194243/notification-badge-on-action-item-android -->
 <!-- This file is used to show the amount of items that are in the cart. It places a red circle
 above the cart icon in the bottom navigation bar, that contains the number of items that are in the cart. The
 purpose of this is to show the user how many items they have added to the cart.-->
-<FrameLayout
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="?attr/actionButtonStyle"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
@@ -16,7 +14,7 @@ purpose of this is to show the user how many items they have added to the cart.-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_cart"/>
+        android:src="@drawable/ic_cart" />
 
     <!--This text view is the number of items in the cart, it is red and placed in the top right of the cart icon. -->
     <TextView

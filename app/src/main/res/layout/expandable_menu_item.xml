@@ -2,33 +2,32 @@
 
 <!-- xml layout for menu items on the menu activity -->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <!-- text that gets updated at runtime to display name of the menu item -->
     <TextView
+        android:id="@+id/list_item"
         android:layout_width="245dp"
         android:layout_height="wrap_content"
-        android:id="@+id/list_item"
+        android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
-        android:textSize="14sp"/>
+        android:textSize="14sp" />
 
     <!-- text that gets updated at runtime to display price of the menu item -->
     <TextView
+        android:id="@+id/list_item_price"
         android:layout_width="155dp"
         android:layout_height="wrap_content"
-        android:id="@+id/list_item_price"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
         android:layout_marginLeft="245dp"
-        android:paddingEnd="10dp"
-        android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
         android:gravity="right"
-        android:textSize="14sp"/>
+        android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
+        android:paddingTop="2dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="2dp"
+        android:textSize="14sp" />
 
 </RelativeLayout>

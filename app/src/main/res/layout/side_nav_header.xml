@@ -1,43 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--This XML file is the layout for the side navigation bar. This gives the user a little more menu
+<?xml version="1.0" encoding="utf-8"?><!--This XML file is the layout for the side navigation bar. This gives the user a little more menu
  options. This also displays the users's profile photo and shows the users name. The user can view this page
  by pressing on the side navigation icon in the top left of the menu.-->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="220dp"
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical">
 
-        <!--This is the circular container that will hold the profile picture of the user. -->
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/side_nav_account_picture"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/icons8_customer_64"
-            app:civ_circle_background_color="@color/colorPrimary"
-            app:civ_border_color="@color/white"
-            app:civ_border_width="4dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.2"/>
+    <!--This is the circular container that will hold the profile picture of the user. -->
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/side_nav_account_picture"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/icons8_customer_64"
+        app:civ_border_color="@color/white"
+        app:civ_border_width="4dp"
+        app:civ_circle_background_color="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2" />
 
-        <!--This text view will display the name of the user. -->
-        <TextView
-            android:id="@+id/side_nav_bar_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/placeholder_account_name"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.8" />
+    <!--This text view will display the name of the user. -->
+    <TextView
+        android:id="@+id/side_nav_bar_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/placeholder_account_name"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

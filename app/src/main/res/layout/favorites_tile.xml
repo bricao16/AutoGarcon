@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--This file displays the favorite restaurant tiles. This will display each restaurant to the user and
+<?xml version="1.0" encoding="utf-8"?><!--This file displays the favorite restaurant tiles. This will display each restaurant to the user and
  help them identify the name of the restaurant, the location, the hours the restaurant is open, the restaurant
  phone number and also the restaurant logo.-->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,12 +11,12 @@
         android:id="@+id/favorites_tile_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="5dp"
+        app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:cardElevation="5dp"
-        app:cardCornerRadius="8dp"
-        app:cardUseCompatPadding="true">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

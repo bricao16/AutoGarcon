@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * Custom request to make multipart header and upload file.
- *
+ * <p>
  * Sketch Project Studio
  * Created by Angga on 27/04/2016 12.05.
  */
