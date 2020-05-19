@@ -254,6 +254,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                         params.put("restaurant_id", "124");
                                         params.put("customer_id", "AutomaticBoy");
                                         params.put("table_num", "3");
+                                        params.put("table_num", "3");
                                         params.put("order", order.toString());
 
                                         return params;

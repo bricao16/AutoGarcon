@@ -59,7 +59,7 @@ public class ShoppingCartSingleton {
         this.secondaryColor = secondaryColor;
         this.tertiaryColor = tertiaryColor;
 
-        this.items = new ArrayList<MenuItem>();
+        this.items = new ArrayList<>();
     }
 
     public ArrayList<MenuItem> getCart(){

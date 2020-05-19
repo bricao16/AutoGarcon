@@ -111,7 +111,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/password"
         android:maxLength="50"
-        android:inputType="textVisiblePassword"
+        android:inputType="textPassword"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
