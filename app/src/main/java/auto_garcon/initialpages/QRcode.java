@@ -139,8 +139,8 @@ public class QRcode extends AppCompatActivity {
 
                         UserSingleton user = pref.getUser();
                         user.setRestaurantID(Integer.parseInt(data.split(",")[0]));
+                        user.setTableID(Integer.parseInt(data.split(",")[1]));
                         pref.setUser(user);
-                        pref.getUser().setTableID(Integer.parseInt(data.split(",")[1]));
 
                         if(getIntent().getBooleanExtra("is from cart activity", false)) {
                             startActivity(new Intent(QRcode.this, ShoppingCart.class));
