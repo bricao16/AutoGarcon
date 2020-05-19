@@ -58,6 +58,11 @@ public class LoadingScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_screen);
 
+
+        ProgressBar pb = findViewById(R.id.pbLoading);
+        pb.setVisibility(ProgressBar.VISIBLE);
+
+
         /** Waits for 3000 milliseconds then goes to login activity*/
         new Handler().postDelayed(new Runnable() {
             @Override
