@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- xml layout for the header of menu sections on the menu activity -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <!-- text that gets updated at runtime to display the headers of the section -->
     <TextView
+        android:id="@+id/list_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/list_header"
-        android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:textSize="16sp"/>
+        android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
+        android:textSize="16sp" />
 
 </LinearLayout>

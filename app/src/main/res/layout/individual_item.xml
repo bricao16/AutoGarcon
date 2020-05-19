@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--This XML is used for the current orders page. This page is going to display each item
+<?xml version="1.0" encoding="utf-8"?><!--This XML is used for the current orders page. This page is going to display each item
 of current order. They will be able to see the item name, the cost, and the customization text.-->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -14,7 +12,7 @@ of current order. They will be able to see the item name, the cost, and the cust
         android:layout_height="wrap_content"
         android:textSize="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--This text view displays the item cost. -->
     <TextView
@@ -24,7 +22,7 @@ of current order. They will be able to see the item name, the cost, and the cust
         android:layout_marginRight="5dp"
         android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--This text view displays the item customization text. -->
     <TextView
@@ -33,6 +31,6 @@ of current order. They will be able to see the item name, the cost, and the cust
         android:layout_height="wrap_content"
         android:textSize="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_of_item"/>
+        app:layout_constraintTop_toBottomOf="@+id/name_of_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

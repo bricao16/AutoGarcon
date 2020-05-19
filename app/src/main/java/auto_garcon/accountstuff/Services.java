@@ -1,15 +1,8 @@
 package auto_garcon.accountstuff;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -30,7 +28,6 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.HashMap;
 import java.util.Map;
 
-import auto_garcon.NukeSSLCerts;
 import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
@@ -46,7 +43,7 @@ import auto_garcon.singleton.VolleySingleton;
  * This class also allows the user navigate using the side nav bar and the bottom nav bar
  */
 
-public class Services extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
+public class Services extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private SharedPreference pref;// allows the app to reference the user information that has been stored
 
@@ -59,9 +56,8 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
      * thrown.</em></p>
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see #onStart
      * @see #onSaveInstanceState
      * @see #onRestoreInstanceState
@@ -75,8 +71,6 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_services);
-
-
 
 
         //creating side nav drawer
@@ -103,8 +97,8 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);//setting badge for shopping cart
         badge.setVisible(true);//set the badge to visible
-        if(pref.getShoppingCart()!=null) {//check if the shopping cart is null
-            if(pref.getShoppingCart().getCart().size()!=0){
+        if (pref.getShoppingCart() != null) {//check if the shopping cart is null
+            if (pref.getShoppingCart().getCart().size() != 0) {
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
@@ -112,7 +106,8 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
         //if a bottom navbar item is clicked send them to the respected activity
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
                                 startActivity(new Intent(Services.this, QRcode.class));
@@ -140,26 +135,26 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
         buttonBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pref.getUser().getRestaurantID() == -1|| pref.getUser().getTableID() == -1) {
-                    Toast.makeText(Services.this, "Please scan QR code",Toast.LENGTH_LONG).show();
-                }
-                else {
+                if (pref.getUser().getRestaurantID() == -1 || pref.getUser().getTableID() == -1) {
+                    Toast.makeText(Services.this, "Please scan QR code", Toast.LENGTH_LONG).show();
+                } else {
                     StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Toast.makeText(Services.this,"A service member will be with you shortly",Toast.LENGTH_LONG).show();
+                            Toast.makeText(Services.this, "A service member will be with you shortly", Toast.LENGTH_LONG).show();
 
                         }
                     }, new Response.ErrorListener() {
                         @Override
-                        public void onErrorResponse(VolleyError error) { }
-                    }){
+                        public void onErrorResponse(VolleyError error) {
+                        }
+                    }) {
                         @Override
                         protected Map<String, String> getParams() {// inserting parameters for the put request
                             Map<String, String> params = new HashMap<>();
-                            params.put("restaurant_id",""+ pref.getUser().getRestaurantID());
-                            params.put("table_num","" + pref.getUser().getTableID());
-                            params.put("status","Good");
+                            params.put("restaurant_id", "" + pref.getUser().getRestaurantID());
+                            params.put("table_num", "" + pref.getUser().getTableID());
+                            params.put("status", "Good");
                             return params;
                         }
                     };
@@ -172,25 +167,25 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
         buttonHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pref.getUser().getRestaurantID() == -1|| pref.getUser().getTableID() == -1) {
-                    Toast.makeText(Services.this, "Please scan QR code",Toast.LENGTH_LONG).show();
-                }
-                else {
+                if (pref.getUser().getRestaurantID() == -1 || pref.getUser().getTableID() == -1) {
+                    Toast.makeText(Services.this, "Please scan QR code", Toast.LENGTH_LONG).show();
+                } else {
                     StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Toast.makeText(Services.this,"Help is on the way",Toast.LENGTH_LONG).show();
+                            Toast.makeText(Services.this, "Help is on the way", Toast.LENGTH_LONG).show();
                         }
                     }, new Response.ErrorListener() {
                         @Override
-                        public void onErrorResponse(VolleyError error) { }
-                    }){
+                        public void onErrorResponse(VolleyError error) {
+                        }
+                    }) {
                         @Override
                         protected Map<String, String> getParams() {// inserting parameters for the put request
                             Map<String, String> params = new HashMap<String, String>();
-                            params.put("restaurant_id",""+pref.getUser().getRestaurantID());
-                            params.put("table_num",""+pref.getUser().getTableID());
-                            params.put("status","Help");
+                            params.put("restaurant_id", "" + pref.getUser().getRestaurantID());
+                            params.put("table_num", "" + pref.getUser().getTableID());
+                            params.put("status", "Help");
                             return params;
                         }
                     };
@@ -201,6 +196,7 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
         });
 
     }
+
     /**
      * Called when an item in the navigation menu is selected.
      *
@@ -208,8 +204,8 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
      * @return true to display the item as the selected item
      */
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
-        switch(nav_item.getItemId()){
+    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item) {
+        switch (nav_item.getItemId()) {
             case R.id.account:
                 startActivity(new Intent(Services.this, Account.class));
                 break;
@@ -223,7 +219,7 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
                 startActivity(new Intent(Services.this, Settings.class));
                 break;
             case R.id.services:
-                startActivity(new Intent(Services.this,Services.class));
+                startActivity(new Intent(Services.this, Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
@@ -256,11 +252,11 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
     @Override
     protected void onStart() {
         super.onStart();
-        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+        if (pref.getUser().getChangePassword() == 1) {//check if they have updated their password
             //if not send them back to PasswordChange page and force them to update their password
             Intent intent = new Intent(Services.this, PasswordChange.class);
             startActivity(intent);
-            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Update your Password", Toast.LENGTH_LONG).show();
         }
     }
 

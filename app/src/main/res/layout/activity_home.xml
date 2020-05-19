@@ -3,16 +3,15 @@
 <!--This is xml file is used for the layout of the home page. This is where the user can
  view all of their favorite restaurant and also search for other restaurant.-->
 
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray"
-    tools:openDrawer="end"
-    android:id="@+id/home_main"
-    tools:context="auto_garcon.homestuff.Home">
+    tools:context="auto_garcon.homestuff.Home"
+    tools:openDrawer="end">
 
     <!-- contains all xml elements except for the side nav bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,7 +30,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0"/>
+            app:layout_constraintVertical_bias="0" />
 
         <!--This text box is used to search for any restaurants that aren't already listed as a favorite. -->
         <AutoCompleteTextView
@@ -46,10 +45,10 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias=".98"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.025"
-            app:layout_constraintHorizontal_bias=".98"/>
+            app:layout_constraintVertical_bias="0.025" />
 
         <!--this is the text view that will show any restaurants that the user is typing in. -->
         <TextView
@@ -58,10 +57,10 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias=".98"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.04"
-            app:layout_constraintHorizontal_bias=".98"/>
+            app:layout_constraintVertical_bias="0.04" />
 
         <!-- This is the container that will list the favorite restaurants -->
         <androidx.recyclerview.widget.RecyclerView
@@ -73,7 +72,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.1"/>
+            app:layout_constraintVertical_bias="0.1" />
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -125,12 +124,12 @@
 
     <!-- side nav bar -->
     <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/navigationView"
-        app:menu="@menu/side_nav_menu"
-        app:headerLayout="@layout/side_nav_header"
         android:layout_gravity="start"
-        android:background="@color/white"/>
+        android:background="@color/white"
+        app:headerLayout="@layout/side_nav_header"
+        app:menu="@menu/side_nav_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

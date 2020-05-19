@@ -20,6 +20,7 @@ import com.example.auto_garcon.R;
 import java.util.List;
 
 import auto_garcon.menustuff.Menu;
+
 /*
 This is a container for restaurant pages that the user can see.
  */
@@ -50,10 +51,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
      * different items in the data set, it is a good idea to cache references to sub views of
      * the View to avoid unnecessary {@link View#findViewById(int)} calls.
      *
-     * @param parent The ViewGroup into which the new View will be added after it is bound to
-     *               an adapter position.
+     * @param parent   The ViewGroup into which the new View will be added after it is bound to
+     *                 an adapter position.
      * @param viewType The view type of the new View.
-     *
      * @return A new ViewHolder that holds a View of the given view type.
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(ViewHolder, int)
@@ -77,18 +77,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
      * this method and should not keep a copy of it. If you need the position of an item later
      * on (e.g. in a click listener), use {@link RecyclerView.ViewHolder#getAdapterPosition()} which will
      * have the updated adapter position.
-     *
+     * <p>
      * Override {@link #onBindViewHolder(ViewHolder, int)} instead if Adapter can
      * handle efficient partial bind.
      *
-     * @param holder The ViewHolder which should be updated to represent the contents of the
-     *        item at the given position in the data set.
+     * @param holder   The ViewHolder which should be updated to represent the contents of the
+     *                 item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
      */
     @Override
     public void onBindViewHolder(@NonNull HomeAdapter.ViewHolder holder, int position) {
         //bind the textview with data received
-        Typeface typeface =  ResourcesCompat.getFont(context, data.get(position).getFont());
+        Typeface typeface = ResourcesCompat.getFont(context, data.get(position).getFont());
 
         holder.favoritesTileBackground.setCardBackgroundColor(Color.parseColor(data.get(position).getSecondaryColor()));
 
@@ -122,7 +122,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         return data.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView textTitle;//restaurant name
         TextView textDescription;//restaurant description
         TextView textPhoneNumber;//restaurant phone number

@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--This XML file is the layout for the pop up, when clicking on customizing order for one
+<?xml version="1.0" encoding="utf-8"?><!--This XML file is the layout for the pop up, when clicking on customizing order for one
  of the items in the menu. This pop up shows a text box that you can add comments to send to the
 kitchen. The use of this would be for customizations like no pickles or no cheese.-->
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,15 +17,15 @@ kitchen. The use of this would be for customizations like no pickles or no chees
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
+            android:background="@color/light_gray"
+            android:hint="@string/customization_hint_on_menu"
+            android:maxLines="6"
             android:padding="20dp"
             android:scrollbars="vertical"
-            android:maxLines="6"
             android:textSize="12sp"
-            android:hint="@string/customization_hint_on_menu"
-            android:background="@color/light_gray"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- confirm button -->
         <Button
@@ -35,9 +33,9 @@ kitchen. The use of this would be for customizations like no pickles or no chees
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/submit"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_menu_item_edit"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_menu_item_edit" />
 
         <!--This is the submit button, that the user will press when they are done with the message. -->
         <ImageButton
@@ -47,7 +45,7 @@ kitchen. The use of this would be for customizations like no pickles or no chees
             android:layout_margin="10dp"
             android:background="@drawable/ic_close_black_24_newdp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

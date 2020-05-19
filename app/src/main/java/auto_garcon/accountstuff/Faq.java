@@ -7,8 +7,6 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,13 +22,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import auto_garcon.cartorderhistory.CurrentOrders;
+import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
+import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
-import auto_garcon.homestuff.Home;
-import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
-import auto_garcon.cartorderhistory.OrderHistory;
 
 /**
  * This class will display the FAQ to the user.
@@ -77,7 +74,7 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
         Spanned htmlTermsAsSpanned = Html.fromHtml(htmlTermsAsString); // used by TextView
 
         // set the html content on the TextView
-        TextView textView = (TextView) findViewById(R.id.textView);
+        TextView textView = findViewById(R.id.textView);
         textView.setText(htmlTermsAsSpanned);
         textView.setMovementMethod(new ScrollingMovementMethod());
 
@@ -111,8 +108,8 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
      * @return true to display the item as the selected item
      */
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
-        switch(nav_item.getItemId()){
+    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item) {
+        switch (nav_item.getItemId()) {
             case R.id.account:
                 startActivity(new Intent(getBaseContext(), Account.class));
                 break;
@@ -126,7 +123,7 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
                 startActivity(new Intent(getBaseContext(), Settings.class));
                 break;
             case R.id.services:
-                startActivity(new Intent(getBaseContext(),Services.class));
+                startActivity(new Intent(getBaseContext(), Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
@@ -139,19 +136,19 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
     }
 
     /**
-     *  Checks to see if use needs to update password.
-     *  If so sends them back to PassWordChange page.
+     * Checks to see if use needs to update password.
+     * If so sends them back to PassWordChange page.
      *
-     *  @return void
+     * @return void
      */
     @Override
     protected void onStart() {
         super.onStart();
-        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+        if (pref.getUser().getChangePassword() == 1) {//check if they have updated their password
             //if not send them back to PasswordChange page and force them to update their password
             Intent intent = new Intent(Faq.this, PasswordChange.class);
             startActivity(intent);
-            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Update your Password", Toast.LENGTH_LONG).show();
         }
     }
 }

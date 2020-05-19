@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +24,13 @@ import java.util.HashMap;
 import auto_garcon.menustuff.MenuItem;
 import auto_garcon.singleton.ShoppingCartSingleton;
 
-public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdapter.CurrentOrdersViewHolder>  {
+public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdapter.CurrentOrdersViewHolder> {
+    HashMap<Integer, String> restaurantNames;
     private LayoutInflater layoutInflater;//Instantiates a layout XML file into its corresponding View objects
     private Context context;//It allows access to application-specific resources and classes
     private HashMap<Integer, ShoppingCartSingleton> orders;
     private HashMap<Integer, byte[]> logos;
     private ArrayList<Integer> orderNumbers;
-    HashMap<Integer, String> restaurantNames;
 
     CurrentOrdersAdapter(Context context, HashMap<Integer, ShoppingCartSingleton> orders, HashMap<Integer, byte[]> logos, ArrayList<Integer> orderNumbers, HashMap<Integer, String> restaurantNames) {
         this.layoutInflater = LayoutInflater.from(context);
@@ -54,7 +53,7 @@ public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdap
         holder.restaurantLogo.setImageBitmap(BitmapFactory.decodeByteArray(logos.get(orderNumbers.get(position)), 0, logos.get(orderNumbers.get(position)).length));
 
         final ShoppingCartSingleton currentOrder = orders.get(orderNumbers.get(position));
-        final Typeface typeface =  ResourcesCompat.getFont(context, currentOrder.getFont());
+        final Typeface typeface = ResourcesCompat.getFont(context, currentOrder.getFont());
 
         holder.currentOrdersTileBackground.setCardBackgroundColor(Color.parseColor(currentOrder.getSecondaryColor()));
 
@@ -100,7 +99,7 @@ public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdap
                 costOfItem.setTextColor(Color.parseColor(currentOrder.getFontColor()));
                 customizationOfItem.setTextColor(Color.parseColor(currentOrder.getFontColor()));
 
-                if(!(itemBeingDisplayed.getCustomization().trim().length() > 1)) {
+                if (!(itemBeingDisplayed.getCustomization().trim().length() > 1)) {
                     customizationOfItem.setVisibility(View.GONE);
                 }
             }
@@ -117,7 +116,7 @@ public class CurrentOrdersAdapter extends RecyclerView.Adapter<CurrentOrdersAdap
         return orders.size();
     }
 
-    public class CurrentOrdersViewHolder extends RecyclerView.ViewHolder{
+    public class CurrentOrdersViewHolder extends RecyclerView.ViewHolder {
         ImageView restaurantLogo; //a image of restaurant
         TextView textTitle; //restaurant name
         TextView totalCost;

@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -41,9 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
-
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Services;
 import auto_garcon.accountstuff.Settings;
@@ -55,27 +52,25 @@ import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
 
 /**
-    * This class is the Java code for activity_shopping_cart.xml. It displays the users
-    * current shopping cart and allows them to submit the order or make any modifications
-    * to what is currently in the cart
-    */
+ * This class is the Java code for activity_shopping_cart.xml. It displays the users
+ * current shopping cart and allows them to submit the order or make any modifications
+ * to what is currently in the cart
+ */
 
 public class ShoppingCart extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private JSONObject obj;
-    private SharedPreference pref;//saving user transaction data such as food item chosen by the user.
-    private RecyclerView recyclerView;//generating a list of restaurant
-
-    private ShoppingCartAdapter adapter;
-    private StringRequest putRequest;
-    private Dialog confirmPopup;
-    private Dialog goToQRScannerPopup;
-    private Dialog clearCartPopup;
-    private ShoppingCartSingleton shoppingCart;
     DrawerLayout drawerLayout;
     Toolbar toolbar;
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
+    private SharedPreference pref;//saving user transaction data such as food item chosen by the user.
+    private RecyclerView recyclerView;//generating a list of restaurant
+    private ShoppingCartAdapter adapter;
+    private StringRequest putRequest;
+    private Dialog confirmPopup;
+    private Dialog clearCartPopup;
+    private ShoppingCartSingleton shoppingCart;
+
     /**
      * Called when the activity is starting.  This is where most initialization
      * should go
@@ -85,9 +80,8 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
      * thrown.</em></p>
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see #onStart
      * @see #onSaveInstanceState
      * @see #onRestoreInstanceState
@@ -114,12 +108,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
          * Ties the side navigation bar xml elements to Java objects and setting listeners for the
          * side navigation drawer as well as the elements within it.
          */
-        if(shoppingCart.getCart() == null || shoppingCart.getCart().size() == 0) {
+        if (shoppingCart.getCart() == null || shoppingCart.getCart().size() == 0) {
             recyclerView.setVisibility(View.GONE);
             findViewById(R.id.place_order).setVisibility(View.GONE);
             findViewById(R.id.cancel_order).setVisibility(View.GONE);
-        }
-        else{
+        } else {
             findViewById(R.id.no_items_in_cart).setVisibility(View.GONE);
 
             /**
@@ -149,30 +142,25 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                 public void onClick(View v) {
                     int time = Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR);
 
-                    if(time < 12) {
+                    if (time < 12) {
                         time = time + 12;
                     }
 
                     String minute = Integer.toString(Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
 
-                    if(minute.length() < 2) {
+                    if (minute.length() < 2) {
                         time = Integer.parseInt(time + "0" + Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
-                    }
-                    else {
+                    } else {
                         time = Integer.parseInt(Integer.toString(time) + Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
                     }
 
-
-                   // Log.d("SDFSDF",  Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).getTime());
-
-                    if(pref.getShoppingCart().getStartingHour() > time || pref.getShoppingCart().getEndingHour() < time){
-                        Toast.makeText(ShoppingCart.this,"The restaurant is currently closed.",Toast.LENGTH_LONG).show();
+                    if (pref.getShoppingCart().getStartingHour() > time || pref.getShoppingCart().getEndingHour() < time) {
+                        Toast.makeText(ShoppingCart.this, "The restaurant is currently closed.", Toast.LENGTH_LONG).show();
                     }
-                    if(Calendar.getInstance().getTimeInMillis()-pref.getTimeStamp().getTimeInMillis()>5000){
-                        Toast.makeText(ShoppingCart.this,"QR code has timed out please Scan the QR code Again",Toast.LENGTH_LONG).show();
-                    }
-                   /** else if(pref.getUser().getRestaurantID() != shoppingCart.getRestaurantID()){
-                        goToQRScannerPopup = new Dialog(ShoppingCart.this);
+                    if (Calendar.getInstance().getTimeInMillis() - pref.getTimeStamp().getTimeInMillis() > 5000) {
+                        Toast.makeText(ShoppingCart.this, "QR code has timed out please Scan the QR code Again", Toast.LENGTH_LONG).show();
+                    } else if (pref.getUser().getRestaurantID() != shoppingCart.getRestaurantID()) {
+                        final Dialog goToQRScannerPopup = new Dialog(ShoppingCart.this);
                         goToQRScannerPopup.setContentView(R.layout.confirm_popup);
                         goToQRScannerPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         goToQRScannerPopup.show();
@@ -200,8 +188,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                 goToQRScannerPopup.dismiss();
                             }
                         });
-                    }*/
-                    else {
+                    } else {
                         confirmPopup = new Dialog(ShoppingCart.this);
                         confirmPopup.setContentView(R.layout.confirm_popup);
                         confirmPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -214,7 +201,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                         confirmPopup.findViewById(R.id.popup_yes).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                obj = new JSONObject();
+                                final JSONObject obj = new JSONObject();
 
                                 /** Creates and builds the JSON object that will eventually be sent to the database. */
                                 try {
@@ -224,7 +211,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                                         item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
                                         item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
-                                        item.put("customization", "FFF");
+                                        item.put("customization", shoppingCart.getCart().get(i).getCustomization());
 
                                         order.put(Integer.toString(i), item);
                                     }
@@ -267,13 +254,13 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                                     @Override
                                     public byte[] getBody() {
-                                            return  obj.toString().getBytes();
+                                        return obj.toString().getBytes();
                                     }
 
                                     @Override
                                     public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
                                         HashMap<String, String> headers = new HashMap<>();
-                                        headers.put("Authorization","Bearer " + pref.getAuth());
+                                        headers.put("Authorization", "Bearer " + pref.getAuth());
 
                                         return headers;
                                     }
@@ -316,7 +303,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                     clearCartPopup.findViewById(R.id.popup_yes).setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
-                            Toast.makeText(ShoppingCart.this, "Cart has been cleared",Toast.LENGTH_LONG).show();
+                            Toast.makeText(ShoppingCart.this, "Cart has been cleared", Toast.LENGTH_LONG).show();
                             //Clear the order
                             shoppingCart = new ShoppingCartSingleton();
                             pref.setShoppingCart(shoppingCart);
@@ -362,8 +349,8 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
-        if(shoppingCart != null) {
-            if(shoppingCart.getCart().size()!= 0){
+        if (shoppingCart != null) {
+            if (shoppingCart.getCart().size() != 0) {
                 badge.setNumber(shoppingCart.getCart().size());
             }
         }
@@ -375,7 +362,8 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
                                 Intent QRcode = new Intent(getBaseContext(), QRcode.class);
@@ -405,8 +393,8 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
      * @return true to display the item as the selected item
      */
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
-        switch(nav_item.getItemId()){
+    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item) {
+        switch (nav_item.getItemId()) {
             case R.id.account:
                 startActivity(new Intent(getBaseContext(), Account.class));
                 break;
@@ -431,6 +419,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
         }
         return false;
     }
+
     /**
      * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
      * the activity had been stopped, but is now again being displayed to the
@@ -452,11 +441,11 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        if(pref.getUser().getChangePassword() == 1){//check if they have updated their password
+        if (pref.getUser().getChangePassword() == 1) {//check if they have updated their password
             //if not send them back to PasswordChange page and force them to update their password
             Intent intent = new Intent(ShoppingCart.this, PasswordChange.class);
             startActivity(intent);
-            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Update your Password", Toast.LENGTH_LONG).show();
         }
     }
 }

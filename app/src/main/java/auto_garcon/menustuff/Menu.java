@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -41,10 +40,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Services;
@@ -57,12 +54,14 @@ import auto_garcon.initialpages.Login;
 import auto_garcon.initialpages.QRcode;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.VolleySingleton;
+
 /**
  * Class setting up the menu
  * Also sets up favorites
  */
 public class Menu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    Dialog removeFromFavoritesPopup;
     private SharedPreference pref;
     private ExpandableListView listView;
     private ExpandableListAdapter listAdapter;
@@ -70,7 +69,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private HashMap<String, ArrayList<auto_garcon.menustuff.MenuItem>> listHash;
     private Button addOrRemoveFavorite;
     private ImageView restaurantLogo;
-    Dialog removeFromFavoritesPopup;
     private TextView restaurantName;
 
     /**
@@ -82,9 +80,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      * thrown.</em></p>
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see #onStart
      * @see #onSaveInstanceState
      * @see #onRestoreInstanceState
@@ -125,8 +122,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         final BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
-        if(pref.getShoppingCart() != null) {
-            if(pref.getShoppingCart().getCart().size() != 0){
+        if (pref.getShoppingCart() != null) {
+            if (pref.getShoppingCart().getCart().size() != 0) {
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
@@ -137,17 +134,16 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         listHash = new HashMap<>();
         addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
-        if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
+        if (pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
             addOrRemoveFavorite.setText("Remove from Favorites");
-        }
-        else {
+        } else {
             addOrRemoveFavorite.setText("Add to Favorites");
         }
 
         addOrRemoveFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
+                if (pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
                     pref.removeFromFavorites(getIntent().getIntExtra("restaurant id", 0));
 
                     removeFromFavoritesPopup = new Dialog(Menu.this);
@@ -188,13 +184,13 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 protected Map<String, String> getParams() {// inserting parameters for the put request
                                     Map<String, String> params = new HashMap<String, String>();
                                     params.put("customer_id", pref.getUser().getUsername());
-                                    params.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0)+"");
+                                    params.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0) + "");
                                     return params;
                                 }
 
                                 @Override
                                 public Map<String, String> getHeaders() throws AuthFailureError {
-                                    HashMap<String,String> headers = new HashMap<String,String>();
+                                    HashMap<String, String> headers = new HashMap<String, String>();
                                     headers.put("Authorization", "Bearer " + pref.getAuth());
                                     return headers;
                                 }
@@ -208,18 +204,16 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             removeFromFavoritesPopup.dismiss();
                         }
                     });
-                }
-                else {
+                } else {
                     addOrRemoveFavorite.setText("Remove from favorites");
                     pref.addToFavorites(getIntent().getIntExtra("restaurant id", 0));
 
                     StringRequest putRequest = new StringRequest(Request.Method.PUT, "https://50.19.176.137:8001/favorites/add",
-                            new Response.Listener<String>()
-                            {
+                            new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
                                     // response
-                                    Toast.makeText(Menu.this,response,Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Menu.this, response, Toast.LENGTH_LONG).show();
                                 }
                             },
                             new Response.ErrorListener() {
@@ -227,7 +221,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
                                     error.printStackTrace();
-                                    Toast.makeText(Menu.this,error.toString(),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Menu.this, error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             }
                     ) {
@@ -235,14 +229,14 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                         protected Map<String, String> getParams() {// inserting parameters for the put request
                             Map<String, String> params = new HashMap<String, String>();
                             params.put("customer_id", pref.getUser().getUsername());
-                            params.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0)+"");
+                            params.put("restaurant_id", getIntent().getIntExtra("restaurant id", 0) + "");
                             return params;
                         }
 
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
-                            HashMap<String,String> headers = new HashMap<String,String>();
-                            headers.put("Authorization","Bearer " + pref.getAuth());
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("Authorization", "Bearer " + pref.getAuth());
                             return headers;
                         }
                     };
@@ -262,9 +256,9 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             //parsing through json from get request to add them to menu
                             JSONObject restaurant = restaurantJSONObject.getJSONObject("restaurant");
 
-                            int font = Menu.this.getResources().getIdentifier(restaurant.getString("font").toLowerCase().replaceAll("\\s","") + "_regular", "font", Menu.this.getPackageName());
+                            int font = Menu.this.getResources().getIdentifier(restaurant.getString("font").toLowerCase().replaceAll("\\s", "") + "_regular", "font", Menu.this.getPackageName());
 
-                            Typeface typeface =  ResourcesCompat.getFont(Menu.this, font);
+                            Typeface typeface = ResourcesCompat.getFont(Menu.this, font);
 
                             String primaryColor = restaurant.getString("primary_color");
                             String secondaryColor = restaurant.getString("secondary_color");
@@ -292,7 +286,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
                             byte[] restaurantLogoByteArray = new byte[restaurant.getJSONObject("logo").getJSONArray("data").length()];
 
-                            for(int i = 0; i < restaurantLogoByteArray.length; i++) {
+                            for (int i = 0; i < restaurantLogoByteArray.length; i++) {
                                 restaurantLogoByteArray[i] = (byte) (((int) restaurant.getJSONObject("logo").getJSONArray("data").get(i)) & 0xFF);
                             }
 
@@ -301,7 +295,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             JSONObject menuItem = restaurantJSONObject.getJSONObject("menu");
 
                             Iterator<String> keys = menuItem.keys();
-                            while(keys.hasNext()) {
+                            while (keys.hasNext()) {
                                 String key = keys.next();
                                 if (menuItem.get(key) instanceof JSONObject) {
                                     JSONObject menuItemCategories = menuItem.getJSONObject(key);
@@ -310,13 +304,12 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                     itemToBeAdded.setNameOfItem(key);
                                     String whereToSendItem = menuItemCategories.getString("category");
 
-                                    if(listDataHeader.contains(whereToSendItem)) {
+                                    if (listDataHeader.contains(whereToSendItem)) {
                                         ArrayList<auto_garcon.menustuff.MenuItem> listOfItemsInCategory = listHash.get(whereToSendItem);
 
                                         listOfItemsInCategory.add(itemToBeAdded);
                                         listHash.put(whereToSendItem, listOfItemsInCategory);
-                                    }
-                                    else {
+                                    } else {
                                         ArrayList<auto_garcon.menustuff.MenuItem> listOfItemsInCategory = new ArrayList<>();
                                         listOfItemsInCategory.add(itemToBeAdded);
                                         listDataHeader.add(whereToSendItem);
@@ -326,7 +319,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                 }
                             }
 
-                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash,getIntent().getIntExtra("restaurant id", 0), font,  fontColor,
+                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash, getIntent().getIntExtra("restaurant id", 0), font, fontColor,
                                     primaryColor, secondaryColor, tertiaryColor, restaurant.getInt("opening"), restaurant.getInt("closing"), badge);
                             listView = findViewById(R.id.menu_list);
                             listView.setAdapter(listAdapter);
@@ -338,7 +331,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Menu.this,error.toString(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(Menu.this, error.toString(), Toast.LENGTH_LONG).show();
                     }
                 }
         );
@@ -347,7 +340,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_scan:
                                 startActivity(new Intent(Menu.this, QRcode.class));
@@ -373,8 +367,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      * @return true to display the item as the selected item
      */
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
-        switch(nav_item.getItemId()){
+    public boolean onNavigationItemSelected(@NonNull MenuItem nav_item) {
+        switch (nav_item.getItemId()) {
             case R.id.account:
                 startActivity(new Intent(getBaseContext(), Account.class));
                 break;
@@ -401,12 +395,11 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
 
-
     /**
      * The method is what filters the restaurant items that are displayed on the menu. If the
      * current menu does not have a category for the item being added it will add that category.
      * It then adds the actual item to the category it belongs in.
-     * */
+     */
 
     private auto_garcon.menustuff.MenuItem creatingToBeAddedItem(JSONObject menuItemCategories) {
         auto_garcon.menustuff.MenuItem itemToBeAdded = new auto_garcon.menustuff.MenuItem();
@@ -419,15 +412,14 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
 
             JSONArray arrJson = menuItemCategories.getJSONArray("allergens");
             String[] arr = new String[arrJson.length()];
-            for(int i = 0; i < arrJson.length(); i++) {
+            for (int i = 0; i < arrJson.length(); i++) {
                 arr[i] = arrJson.getString(i);
             }
             itemToBeAdded.setAllergens(arr);
 
             itemToBeAdded.setAmountInStock(menuItemCategories.getInt("in_stock"));
             itemToBeAdded.setDescription(menuItemCategories.getString("description"));
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -455,11 +447,11 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     @Override
     protected void onStart() {
         super.onStart();
-        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+        if (pref.getUser().getChangePassword() == 1) {//check if they have updated their password
             //if not send them back to PasswordChange page and force them to update their password
             Intent intent = new Intent(Menu.this, PasswordChange.class);
             startActivity(intent);
-            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Update your Password", Toast.LENGTH_LONG).show();
         }
     }
 }
