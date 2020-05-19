@@ -184,7 +184,10 @@ class Traffic extends React.Component {
     //render the line graph for the data data
     renderDay(){
         return(
+          <Container>
+            
             <XYPlot xType="time" width={800} height={400} margin={{bottom: 50}} >
+            <p style={{'float':'right', 'color': 'black'}}><i> Number of orders per day</i></p>
               <HorizontalGridLines />
               <VerticalGridLines />
               <XAxis title="Day"  tickTotal = {8} />
@@ -195,12 +198,16 @@ class Traffic extends React.Component {
               />
 
             </XYPlot>
+          </Container>
         );
     }
     // render the line graph for the hour data
     renderHour(){
         return(
+            <Container>
+           
             <XYPlot xType="time" width={800} height={400} margin={{bottom: 50}} >
+            <p style={{'float':'right', 'color': 'black'}}><i> Number of orders per hour - all time</i></p>
               <HorizontalGridLines />
               <VerticalGridLines />
               <XAxis title="Hour"  tickTotal = {8} />
@@ -211,16 +218,21 @@ class Traffic extends React.Component {
               />
 
             </XYPlot>
+
+            </Container>
         );
     }
     //render a bar graph for the month data
     renderMonth(){
         return(
+            <Container>
+            
              <FlexibleHeightXYPlot 
             xType="ordinal" 
             width={800} 
             height = {400}   
         >
+        <p style={{'float':'right', 'color': 'black'}}><i> Number of orders per month </i></p>
             <XAxis />
             <YAxis tickTotal = {8} />
             <VerticalBarSeries 
@@ -254,6 +266,7 @@ class Traffic extends React.Component {
                 labelAnchorY="text-before-edge"
             />
         </FlexibleHeightXYPlot>
+        </Container>
         );
     }
     render() {
