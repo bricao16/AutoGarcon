@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--This XML is the layout page for sending an error message to the database team. When the
+ application crashes without a known reason, this page will pop up and allow the user to
+ help out the developers and send them a message on what happened.-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +10,7 @@
     android:background="#C4596164"
     tools:context="auto_garcon.SendErrorEmail">
 
-
+    <!--This is the text box that allows the user to describe what happened. -->
     <EditText
         android:id="@+id/et_subject"
         android:layout_width="match_parent"
@@ -22,6 +24,7 @@
         app:layout_constraintVertical_bias="1.0"
         tools:layout_editor_absoluteX="0dp" />
 
+    <!--This is the text box that allows the users to give a longer description of what happened. -->
     <EditText
         android:id="@+id/et_message"
         android:layout_width="match_parent"
@@ -34,6 +37,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bt_send"
         tools:layout_editor_absoluteX="0dp" />
 
+    <!--This is the button to send the message to the data base.-->
     <Button
         android:id="@+id/bt_send"
         android:layout_width="198dp"
@@ -44,6 +48,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!--This is the text explaining to the user that something went wrong.-->
     <TextView
         android:id="@+id/ErrorText"
         android:layout_width="275dp"
@@ -56,6 +61,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
+    <!--This displays the image of the frowning face. -->
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="133dp"
@@ -67,6 +73,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/sad_face" />
 
+    <!--This message is displayed for the user to connect to the internet. -->
     <TextView
         android:id="@+id/wifi"
         android:layout_width="269dp"

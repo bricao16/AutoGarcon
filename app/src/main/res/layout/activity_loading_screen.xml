@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- xml layout for the initial loading screen activity of the app -->
+<!-- xml layout for the initial loading screen activity of the app. This is the first page
+ that the user will see. It will be used mainly to indicate the boot up of the application.-->
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,9 +11,8 @@
     android:background="@color/white"
     tools:context="auto_garcon.initialpages.LoadingScreen">
 
-    <!-- image of logo for auto-garcon -->
 
-    <!-- please wait text -->
+    <!-- This message view contains the name of AUtoGarcon.-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,12 +21,13 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="32sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.15" />
 
+    <!--This text view showing the please wait message. -->
     <TextView
         android:id="@+id/loading_text_loading_screen"
         android:layout_width="wrap_content"
@@ -40,6 +40,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.46" />
 
+    <!--This is the progress bar that shows the progress of the application loading. -->
     <ProgressBar
         android:id="@+id/pbLoading"
         android:layout_width="89dp"

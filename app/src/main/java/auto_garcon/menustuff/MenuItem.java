@@ -1,8 +1,6 @@
 package auto_garcon.menustuff;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -18,9 +16,8 @@ import auto_garcon.singleton.VolleySingleton;
 
 /**
  * Sorts out information for menu items
- *
  */
-public class MenuItem implements Serializable{
+public class MenuItem implements Serializable {
     private String category;
     private String itemName;
     private String description;
@@ -28,7 +25,6 @@ public class MenuItem implements Serializable{
     private int amountInStock;
     private int calories;
     private double price;
-    private double cost;
     private int quantity;
     private int itemID;
     private byte[] itemImage;
@@ -47,120 +43,118 @@ public class MenuItem implements Serializable{
         this.customization = customization;
     }
 
+    public String getCustomization() {
+        return this.customization;
+    }
+
     public void setCustomization(String customization) {
         this.customization = customization;
     }
 
-    public String getCustomization() {
-        return this.customization;
+    public String getNameOfItem() {
+        return this.itemName;
     }
 
     public void setNameOfItem(String nameOfItem) {
         this.itemName = nameOfItem;
     }
 
-    public String getNameOfItem(){
-        return this.itemName;
+    public int getCalories() {
+        return this.calories;
     }
 
     public void setCalories(int calories) {
         this.calories = calories;
     }
 
-    public int getCalories() {
-        return this.calories;
+    public double getPrice() {
+        return this.price;
     }
 
     public void setPrice(double price) {
 
         this.price = price;
     }
-    public void setQuantity(int quantity){
-        this.quantity=quantity;
-    }
-
-    public double getPrice() {
-        return this.price;
-    }
 
     public double getCost() {
         return getPrice() * getQuantity();
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public String getCategory() {
         return this.category;
     }
 
-    public void setAmountInStock(int amountInStock) {
-        this.amountInStock = amountInStock;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public int getAmountInStock() {
         return this.amountInStock;
     }
 
-    public void setItemID(int itemID) {
-        this.itemID = itemID;
+    public void setAmountInStock(int amountInStock) {
+        this.amountInStock = amountInStock;
     }
 
     public int getItemID() {
         return this.itemID;
     }
 
+    public void setItemID(int itemID) {
+        this.itemID = itemID;
+    }
+
     public int getQuantity() {
         return this.quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public void incrementQuantity() {
         this.quantity = this.quantity + 1;
     }
 
-    public void decrementQuantity(){
-        if(this.quantity > 0) {
+    public void decrementQuantity() {
+        if (this.quantity > 0) {
             this.quantity = this.quantity - 1;
         }
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getDescription() {
         return this.description;
     }
 
-    public void setAllergens(String[] allergens) { this.allergens = allergens;}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String[] getAllergens() {
         return this.allergens;
     }
 
-    public void setItemImage(byte[] itemImage){
-        this.itemImage = itemImage;
+    public void setAllergens(String[] allergens) {
+        this.allergens = allergens;
     }
 
-    public void setImage(Context context){
-        if(this.itemID!=-1){
+    public void setImage(Context context) {
+        if (this.itemID != -1) {
 
-            StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/menu/image/" + this.itemID, new Response.Listener<String>() {
+            StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/menu/image/" + this.itemID, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
                     try {
                         JSONObject imageData = new JSONObject(response);
 
-                        byte[]  itemImageByteArray = new byte[imageData.getJSONObject("image").getJSONArray("data").length()];
+                        byte[] itemImageByteArray = new byte[imageData.getJSONObject("image").getJSONArray("data").length()];
 
-                        for(int i = 0; i < itemImageByteArray.length; i++) {
+                        for (int i = 0; i < itemImageByteArray.length; i++) {
                             itemImageByteArray[i] = (byte) (((int) imageData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
                         }
                         itemImage = itemImageByteArray;
-                    }
-                    catch(JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
@@ -178,5 +172,9 @@ public class MenuItem implements Serializable{
 
     public byte[] getItemImage() {
         return this.itemImage;
+    }
+
+    public void setItemImage(byte[] itemImage) {
+        this.itemImage = itemImage;
     }
 }

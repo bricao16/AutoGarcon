@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- xml layout for the menu activity which contains the menu of the selected restaurant
-     from the get request in the Menu.java file -->
+     from the get request in the Menu.java file . This will be used to show the user the
+     menu of the restaurant. This page contains the logo of the image,, and the ability to add
+     the restaurant to the favorites page.-->
 
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/restaurant_main"
@@ -25,13 +26,7 @@
             android:layout_height="30dp"
             android:background="@color/colorAccent" />
 
-
-            <!-- logo of restaurant -->
-        <!-- name of restaurant -->
-
-
-        <!-- list of menu items -->
-
+        <!-- logo of restaurant -->
         <ImageView
             android:id="@+id/restaurant_logo"
             android:layout_width="119dp"
@@ -44,6 +39,7 @@
             android:layout_marginEnd="286dp"
             android:gravity="center" />
 
+        <!--This text view displays the restaurant name of the selected restaurant. -->
         <TextView
             android:id="@+id/restaurant_name"
             android:layout_width="195dp"
@@ -55,6 +51,7 @@
             android:gravity="center"
             android:textSize="20sp" />
 
+        <!--This button will be used to add the restaurant to the favorite restaurants page. -->
         <Button
             android:id="@+id/add_restaurant"
             android:layout_width="80dp"
@@ -63,15 +60,16 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="-3dp"
             android:layout_marginEnd="6dp"
-            android:textSize="8sp"/>
+            android:textSize="8sp" />
 
+        <!--This is the expandable list feature to show the food items. -->
         <ExpandableListView
             android:id="@+id/menu_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:animateLayoutChanges="true"
             android:layout_marginTop="105dp"
-            android:layout_marginBottom="70dp" />
+            android:layout_marginBottom="70dp"
+            android:animateLayoutChanges="true" />
 
         <!-- bottom nav bar -->
         <com.google.android.material.bottomnavigation.BottomNavigationView

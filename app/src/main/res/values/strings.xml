@@ -68,5 +68,6 @@
     <string name="customization_hint_on_shopping_cart">Sauce on the side, no pickels, extra spicy... \nFor multiple items separate with a semicolon</string>
     <string name="next">Next</string>
     <string name="no_current_orders">You do not have any current orders. Order something!!!</string>
+    <string name="choose_account_image">Choose Account Image (optional)</string>
 
 </resources>

@@ -1,17 +1,18 @@
 package auto_garcon.singleton;
 
 import android.content.Context;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+
 /**
  * Class for Request Queue
- *
  */
 public class VolleySingleton {
     private static VolleySingleton mInstance;
-    private RequestQueue mRequestQueue;
     private static Context mCtx;
+    private RequestQueue mRequestQueue;
 
     private VolleySingleton(Context context) {
         mCtx = context;

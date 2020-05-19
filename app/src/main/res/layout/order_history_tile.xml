@@ -1,30 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- xml layout that provides the layout for menu items that appear in the
-     shopping cart activity -->
+<!-- This XML file is used as the tile for the order history. It is used for the user to
+view all of the past orders that the user has made. It allows the user to view an image
+of the restaurant, view the order number, view the order date and the items in the order. They
+will be able to reorder the item and add them to the cart.-->
 
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardElevation="5dp"
     android:orientation="vertical"
     app:cardCornerRadius="8dp"
+    app:cardElevation="5dp"
     app:cardUseCompatPadding="true">
 
-    <!-- constraint layout to manage layout of shopping cart row -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <!-- image of menu item that gets updated to the actual menu item
-             image at runtime -->
-
-        <!-- item text that gets updated to the actual menu item name at runtime -->
-
+        <!--This button will reorder all of the items in this previous order.-->
         <Button
             android:id="@+id/ReOrderButton"
             android:layout_width="203dp"
@@ -37,6 +33,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
 
+        <!--This image view shows the logo of the restaurant. -->
         <ImageView
             android:id="@+id/resturant"
             android:layout_width="80dp"
@@ -48,6 +45,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/saleena" />
 
+        <!--This text view displays the order number. -->
         <TextView
             android:id="@+id/order_num2"
             android:layout_width="wrap_content"
@@ -62,6 +60,7 @@
             tools:text="Order_number"
             tools:visibility="visible" />
 
+        <!--This text view shows the date that the order was ordered on. -->
         <TextView
             android:id="@+id/date"
             android:layout_width="77dp"
@@ -73,6 +72,7 @@
             app:layout_constraintStart_toEndOf="@+id/resturant"
             tools:layout_editor_absoluteY="0dp" />
 
+        <!--This text view is a button that, if clicked on brings up a pop up of what this order contains. -->
         <TextView
             android:id="@+id/order_items"
             android:layout_width="85dp"
@@ -84,19 +84,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/date" />
-
-        <!-- '-' image button -->
-
-        <!-- Qty() text that gets updated to the amount of this menu item in the
-             cart at runtime -->
-
-        <!-- '+' image button -->
-
-        <!-- remove button -->
-
-        <!-- edit button -->
-
-        <!-- creates the background and holds the cost text -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
