@@ -44,7 +44,7 @@ const LaunchRequestHandler = {
     } catch(error) {
       handlerInput.responseBuilder
         .speak(`This Alexa isn't registered. Please add it by saying "register this device".`)
-        .withShouldEndSession(false)
+        //.withShouldEndSession(false)
         .getResponse();
     }
     return handlerInput.responseBuilder
