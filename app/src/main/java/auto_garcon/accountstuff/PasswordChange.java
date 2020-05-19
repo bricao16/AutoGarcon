@@ -87,8 +87,8 @@ public class PasswordChange extends AppCompatActivity {
                 } else if (!oldPassword.getText().toString().trim().equals(confirmPassword.getText().toString().trim())) {
                     Toast.makeText(PasswordChange.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                     confirmPassword.requestFocus();
-                } else if (newPassword.getText().toString().trim().length() < 6) {
-                    newPassword.setError("Password Must be Greater than 6 Characters");
+                } else if (newPassword.getText().toString().trim().length() < 8) {
+                    newPassword.setError("Password Must be Greater than 8 Characters");
                 } else {
                     StringRequest postRequestForPasswordUpdate = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/password/update",
                             new Response.Listener<String>() {
