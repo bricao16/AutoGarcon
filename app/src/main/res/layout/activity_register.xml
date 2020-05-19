@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- xml layout for the register activity that allows user to register with name,
-     username, email, and password and also can navigate to the login activity -->
+     username, email, and password and also can navigate to the login activity.
+      Once all of the boxes are filled out, the user will hit next and go the data will
+      be sent to the database.-->
 
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -28,8 +30,6 @@
         app:layout_constraintVertical_bias="0.06" />
 
     <!-- create new account text -->
-
-    <!-- first name input -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.15" />
 
-    <!-- last name input -->
+    <!-- first name input -->
     <EditText
         android:id="@+id/first_name_enter_register"
         android:layout_width="250dp"
@@ -59,6 +59,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.25" />
 
+    <!-- Last name input -->
     <EditText
         android:id="@+id/last_name_enter_register"
         android:layout_width="250dp"
@@ -67,7 +68,6 @@
         android:maxLength="50"
         android:inputType="textPersonName"
         android:textSize="16sp"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -120,8 +120,6 @@
         app:layout_constraintVertical_bias="0.65"/>
 
     <!-- sign up button -->
-
-    <!-- log in text that links to login activity -->
     <Button
         android:id="@+id/next_button_on_register"
         style="?android:attr/borderlessButtonStyle"
@@ -134,6 +132,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.8" />
 
+    <!-- log in text that links to login activity -->
     <TextView
         android:id="@+id/yes_account_register"
         android:layout_width="wrap_content"

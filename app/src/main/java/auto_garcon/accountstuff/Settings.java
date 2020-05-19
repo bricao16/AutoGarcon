@@ -31,8 +31,7 @@ import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 
 /**
- * This class handles all settings related to the User
- * This class allows the user to custiomize certian features of there account
+ * This class displays a menu for a user to see the privacy policy, the faq, and the terms and conditions
  * This class is linked to settings xml which also has a navigationBar that allows it to navigate to other pages
  */
 public class Settings extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -182,22 +181,10 @@ public class Settings extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     /**
-     * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
-     * the activity had been stopped, but is now again being displayed to the
-     * user. It will usually be followed by {@link #onResume}. This is a good place to begin
-     * drawing visual elements, running animations, etc.
+     *  Checks to see if use needs to update password.
+     *  If so sends them back to PassWordChange page.
      *
-     * <p>You can call {@link #finish} from within this function, in
-     * which case {@link #onStop} will be immediately called after {@link #onStart} without the
-     * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
-     *
-     * <p><em>Derived classes must call through to the super class's
-     * implementation of this method.  If they do not, an exception will be
-     * thrown.</em></p>
-     *
-     * @see #onCreate
-     * @see #onStop
-     * @see #onResume
+     *  @return void
      */
     @Override
     protected void onStart() {

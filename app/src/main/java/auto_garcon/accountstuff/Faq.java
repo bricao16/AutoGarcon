@@ -32,9 +32,13 @@ import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.cartorderhistory.OrderHistory;
 
+/**
+ * This class will display the FAQ to the user.
+ */
 public class Faq extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private SharedPreference pref;// allows the app to reference the user information that has been stored
+    // allows the app to reference the user information that has been stored
+    private SharedPreference pref;
 
     /**
      * This methods defines the functionality of xml objects when the xml is loaded
@@ -68,10 +72,11 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
         userImageSideNavBar.setImageBitmap(BitmapFactory.decodeByteArray(pref.getUser().getImageBitmap(), 0, pref.getUser().getImageBitmap().length));
 
         // get our html content
-        //Privacy Policy
-        String htmlTermsAsString = "<!DOCTYPE html> <html> <head> <meta charset='utf-8'> <meta name='viewport' content='width=device-width'> </head> <body> <strong> FAQ:<br><br> </strong> <strong> Forgot Password </strong> <p> If you happen to forget your password, you may select the forgot password button and you will be promted to reset your password through your email.<br> </p> <strong> Changing Account Information </strong> <p> Go to the side menu bar, select account, and fill in your information. Once you are done select save and your account information will be updated. <br> </p> <strong> Viewing a Menu </strong> <p> There are two ways of viewing a restaurants menu. 1) Scanning QR code of the restaurant. 2) On the Home page you may search for restaurants and add them to your favorites. Adding them to your favorites allows you to always have it on your homescreen unlessyou decide to remove it in which case you may remove it by selecting the remove from favorites button on the given menus page. <br> </p> <strong> How to Order </strong> <p> Scan QR code at participating restaurant, select item(s) from restaurant, in your cart review your order and submit. At any point before placing the order you may modify your cart. In your cart you may incresae and decrease the quantity of the number of a selected item you would like.<br> </p> <strong> Viewing Orders Placed </strong> <p> Select side menu bar, select Order History. If you have any past orders you may view what you ordered. You may also reorder past orders which means it will automatically fill your cart with those items. It will still require you to have scanned the restaurants QR code.<br> </p> <strong> Other </strong> <p> Any further questions do not hesitate to contact us at autoGarcon@gmail.com.<br> </p> </body> </html>";
+        //FAQ
+        String htmlTermsAsString = "<!DOCTYPE html> <html> <head> <meta charset='utf-8'> <meta name='viewport' content='width=device-width'> </head> <body> <strong> FAQ:<br><br> </strong> <strong> Forgot Password </strong> <p> If you happen to forget your password, you may select the forgot password button and you will be promted to reset your password through your email.<br> </p> <strong> Changing Account Information </strong> <p> Go to the side menu bar, select account, and fill in your information. Once you are done select save and your account information will be updated. <br> </p> <strong> Viewing a Menu </strong> <p> There are two ways of viewing a restaurants menu. 1) Scanning QR code of the restaurant. 2) On the Home page you may search for restaurants and add them to your favorites. Adding them to your favorites allows you to always have it on your homescreen unlessyou decide to remove it in which case you may remove it by selecting the remove from favorites button on the given menus page. <br> </p> <strong> How to Order </strong> <p> Scan QR code at participating restaurant, select item(s) from restaurant, in your cart review your order and submit. At any point before placing the order you may modify your cart. In your cart you may incresae and decrease the quantity of the number of a selected item you would like.<br> </p> <strong> Viewing Orders Placed </strong> <p> Select side menu bar, select Order History. If you have any past orders you may view what you ordered. You may also reorder past orders which means it will automatically fill your cart with those items. It will still require you to have scanned the restaurants QR code.<br> </p> <strong> Other </strong> <p> Any further questions do not hesitate to contact us at autoGarcon@gmail.com.<br> </p>  <p> Images & icons used in app found here at https://icons8.com/ </p> </body> </html>";
         Spanned htmlTermsAsSpanned = Html.fromHtml(htmlTermsAsString); // used by TextView
-// set the html content on the TextView
+
+        // set the html content on the TextView
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText(htmlTermsAsSpanned);
         textView.setMovementMethod(new ScrollingMovementMethod());
@@ -132,23 +137,12 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
         }
         return false;
     }
+
     /**
-     * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
-     * the activity had been stopped, but is now again being displayed to the
-     * user. It will usually be followed by {@link #onResume}. This is a good place to begin
-     * drawing visual elements, running animations, etc.
+     *  Checks to see if use needs to update password.
+     *  If so sends them back to PassWordChange page.
      *
-     * <p>You can call {@link #finish} from within this function, in
-     * which case {@link #onStop} will be immediately called after {@link #onStart} without the
-     * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
-     *
-     * <p><em>Derived classes must call through to the super class's
-     * implementation of this method.  If they do not, an exception will be
-     * thrown.</em></p>
-     *
-     * @see #onCreate
-     * @see #onStop
-     * @see #onResume
+     *  @return void
      */
     @Override
     protected void onStart() {

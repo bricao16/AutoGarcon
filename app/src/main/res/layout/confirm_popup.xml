@@ -39,6 +39,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_confirm_popup"/>
 
+        <!-- This is the close button in the top right.-->
         <ImageButton
             android:id="@+id/confirm_close"
             android:layout_width="25dp"
