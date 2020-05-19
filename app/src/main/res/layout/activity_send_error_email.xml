@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/errorEmal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#C4596164"
+    tools:context="auto_garcon.SendErrorEmail">
+
+
+    <EditText
+        android:id="@+id/et_subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:background="#FFFFFF"
+        android:hint="@string/errorBody"
+        android:singleLine="true"
+        app:layout_constraintBottom_toTopOf="@+id/et_message"
+        app:layout_constraintTop_toBottomOf="@+id/ErrorText"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <EditText
+        android:id="@+id/et_message"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="20dp"
+        android:background="#FFFFFF"
+        android:gravity="top|left"
+        android:hint="A short description of what happend"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toTopOf="@+id/bt_send"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <Button
+        android:id="@+id/bt_send"
+        android:layout_width="198dp"
+        android:layout_height="53dp"
+        android:layout_marginBottom="76dp"
+        android:text="Send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/ErrorText"
+        android:layout_width="275dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/error"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="133dp"
+        android:layout_height="106dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.462"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sad_face" />
+
+    <TextView
+        android:id="@+id/wifi"
+        android:layout_width="269dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="76dp"
+        android:text="@string/wifiError"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        tools:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,19 +25,19 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="current_orders">Current Orders</string>
-
+    <string name="password_requirements1">
+    -at least 8 characters</string>
+    <string name="password_requirements2">-contain an uppercase and lowercase letter</string>
+    <string name="password_requirements3">-contain number</string>
     <string name="change_name">Change Name</string>
     <string name="first_name">First Name</string>
     <string name="username">Username</string>
     <string name="confirm">Confirm</string>
     <string name="adding_item_confirmation_text">Adding this item will remove the other items currently in cart.</string>
-    <string name ="reOrder">This will replace all other items within the cart currently</string>
-
+    <string name="reOrder">This will replace all other items within the cart currently</string>
     <string name="cart_is_empty">The cart is currently empty. Add items to spend money.</string>
     <string name="no_Orders">You have no recent Orders</string>
-
     <string name="no_favorites">No favorite restaurants, add restaurants to fill this page.</string>
-
     <string name="last_name">Last Name</string>
     <string name="order_history_item">"Previous Ordered Item"</string>
     <string name="pref_file">com.example.preference_file</string>
@@ -50,5 +50,23 @@
     <string name="quantity">Qty(0)</string>
     <string name="item">Item</string>
     <string name="Remove">Remove</string>
+    <string name="privacy">privacy</string>
+    <string name="error">Oops! Something went wrong. </string>
+    <string name="wifiError">Please connect to the Internet.</string>
+    <string name="errorBody">Please enter a short description of what happened</string>
+    <string name="errorSubject">Please tell us what your problem relates too</string>
+    <string name="submit">Submit</string>
+    <string name="out_of_stock_string">Out of stock</string>
+    <string name="Customize">Customize</string>
+    <string name="change_image">Change Image</string>
+    <string name="choose_from_gallery">Choose From Gallery</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="Help">I need Assistance</string>
+    <string name="Bill">Bill please</string>
+    <string name="services">Services</string>
+    <string name="customization_hint_on_menu">Sauce on the side, no pickels, extra spicy...</string>
+    <string name="customization_hint_on_shopping_cart">Sauce on the side, no pickels, extra spicy... \nFor multiple items separate with a semicolon</string>
+    <string name="next">Next</string>
+    <string name="no_current_orders">You do not have any current orders. Order something!!!</string>
 
 </resources>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -8,15 +8,14 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {Redirect} from "react-router-dom";
 import https from 'https';
 import axios from 'axios';
 import Link from '@material-ui/core/Link';
 import Alert from 'react-bootstrap/Alert';
-import Home from './Home';
-
-
+import ManagerSignUp from './ManagerSignUp'
+import TimePicker from 'react-time-picker';
 import Cookies from 'universal-cookie';
+import Form from 'react-bootstrap/Form';
 
 /*this sign up will be used to create a 
 restuarant. 
@@ -49,18 +48,20 @@ class SignUp extends React.Component {
 
   constructor(props) {
     super(props);
-
+  
     this.state = {
-      staff_id: '',
-      first_name: '',
-      last_name: '',
+      restaurant_name: '',
+      restaurant_address: '',
       contact_num: '',
+      staff: '',
+      token: '',      
       email: '',
-      password: '',
-      confirm_password: '',
+      opening: '',
+      closing: '',
+      cuisine: '',
       redirect: false,
       show: false,
-      restaurant_id: cookies.get('mystaff').restaurant_id,
+      //restaurant_id: cookies.get('mystaff').restaurant_id,
       position: "manager",
       token: null
     };
@@ -68,6 +69,8 @@ class SignUp extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
+    this.onChangeOpen = this.onChangeOpen.bind(this);
+    this.onChangeClose = this.onChangeClose.bind(this);
 
   }
 
@@ -89,45 +92,44 @@ class SignUp extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
 
   }
+  onChangeOpen= (e) =>
+  {
+    var opening = e.replace(/\D/g,'');
+    this.setState({ opening: opening});
+  }
+  onChangeClose= (e) =>
+  {
+    var closing = e.replace(/\D/g,'');
+    this.setState({ closing: closing });
+  }
 
 
 
   handleSubmit(event) {
-    console.log(this.state);
 
     event.preventDefault();
 
     //if any of the values necessary are not filled out
-    if (this.state.staff_id === '' || this.state.restaurant_id === '' ||
-      this.state.first_name === '' || this.state.last_name === '' ||
-      this.state.contact_num === '' || this.state.email === '' ||
-      this.state.password === '' || this.state.confirm_password === '') {
+    if (this.state.restaurant_name === '' || this.state.restaurant_address === '' ||
+      this.state.contact_num === '' || this.state.email === '') {
       this.setState({ alertVariant: 'danger' });
       this.setState({ response: "All fields are required" });
       this.setState({ redirect: false });
       this.setState({ show: true });
       return null;
     }
-    //verify staff ID
-    if (this.state.staff_id.length < 6 || this.state.staff_id.length > 50) {
+    //verify restaurant name
+    if (this.state.restaurant_name.length > 50) {
       this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Staff ID must be between 6 and 50 characters" });
+      this.setState({ response: "Restaurant name cannot be greater than 50 characters" });
       this.setState({ redirect: false });
       this.setState({ show: true });
       return;
     }
-    //verify first name length / no non-letters
-    if (this.state.first_name.length > 50 || !/[a-z]/.test(this.state.first_name.toLowerCase())) {
+    //verify restaurant address
+    if (this.state.restaurant_address.length > 50) {
       this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Invalid first name" });
-      this.setState({ redirect: false });
-      this.setState({ show: true });
-      return;
-    }
-    //verify last name length / no non-letters
-    if (this.state.last_name.length > 50 || !/[a-z]/.test(this.state.last_name.toLowerCase())) {
-      this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Invalid last name" });
+      this.setState({ response: "Restaurant address cannot be greater than 50 characters" });
       this.setState({ redirect: false });
       this.setState({ show: true });
       return;
@@ -149,31 +151,36 @@ class SignUp extends React.Component {
       this.setState({ show: true });
       return;
     }
-    //verify password
-    if (this.state.password.length < 6 || !/[A-Z]/.test(this.state.password) || !/[0-9]/.test(this.state.password) || this.state.password.length > 50) {
-      this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Password must contain an uppercase letter, a digit and be between 6 and 50 characters" });
-      this.setState({ redirect: false });
-      this.setState({ show: true });
-      return;
-    }
 
-    //verify confirm password
-    if (!(this.state.password == this.state.confirm_password)) {
-      this.setState({ alertVariant: 'danger' });
-      this.setState({ response: "Passwords must match" });
-      this.setState({ redirect: false });
-      this.setState({ show: true });
-      return;
-    }
+   
+      /*Validation for opening field.*/
+     else if (Number(this.state.opening) < 0 || Number(this.state.opening) > 2400) {
+      this.handleValidation("Valid opening time not entered.  Please enter a time between 0 and 2400.");
+    } else if (isNaN((this.state.opening))) {
+      this.handleValidation("No number entered for opening time.  Please enter a time between 0 and 2400.");
+    } else if (!Number.isInteger(parseFloat(this.state.opening))) {
+      this.handleValidation("No integer entered for opening time.  Please enter a time between 0 and 2400.");
 
+      /*Validation for closing field.*/
+    } else if (Number(this.state.closing) < 0 || Number(this.state.closing) > 2400) {
+      this.handleValidation("Valid closing time not entered.  Please enter a time between 0 and 2400.");
+    } else if (isNaN((this.state.closing))) {
+      this.handleValidation("No number entered for closing time.  Please enter a time between 0 and 2400.");
+    } else if (!Number.isInteger(parseFloat(this.state.closing))) {
+      this.handleValidation("No integer entered for closing time.  Please enter a time between 0 and 2400.");
+    }
+    var phone_number = this.state.contact_num.replace(/\D/g,'');
     axios({
       method: 'put',
-      url: process.env.REACT_APP_DB + '/staff/register',
-      data: 'staff_id=' + this.state.staff_id + '&restaurant_id=' + this.state.restaurant_id
-        + '&first_name=' + this.state.first_name + '&last_name=' + this.state.last_name
-        + '&contact_num=' + this.state.contact_num + '&email=' + this.state.email
-        + '&position=' + this.state.position + '&password=' + this.state.password,
+      url: process.env.REACT_APP_DB + '/restaurant/new',
+      data: 
+        '&restaurant_name=' + this.state.restaurant_name +
+        '&restaurant_addr=' + this.state.restaurant_address + 
+        '&phone_number=' + phone_number +
+        '&email=' + this.state.email +
+        '&opening_time=' + this.state.opening + 
+        '&closing_time=' + this.state.closing + 
+        '&cuisine=' + this.state.cuisine,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
@@ -187,6 +194,7 @@ class SignUp extends React.Component {
         if (response.status !== 200) { this.handleShow(false, ""); }
         else {
           this.handleShow(true, "");
+          this.state.staff = response.data.substring(response.data.length-3);
           this.setState({
             redirect: true,
             show: true,
@@ -194,7 +202,7 @@ class SignUp extends React.Component {
         }
       })
       .catch(error => {
-        this.handleShow(false, error.response.data);
+        //this.handleShow(false, error.response.data);
         //this.setState({alertVariant: 'danger'});
         //this.setState({response: "Unknown error"});
         this.setState({ redirect: false });
@@ -205,7 +213,7 @@ class SignUp extends React.Component {
   /* Used to show the correct alert after hitting save item */
   handleShow(success, message) {
     if (success) {
-      this.setState({ response: "Successfully created staff member: " + this.state.first_name });
+      this.setState({ response: "Successfully created restaurant: " + this.state.restaurant_name });
       this.setState({ alertVariant: 'success' });
     }
     else {
@@ -221,178 +229,165 @@ class SignUp extends React.Component {
   render() {
     //if successful submit redirect to Home page
     if (this.state.redirect === true) {
-      return (
-        <div>
-          
-          <Alert show={this.state.show} variant={this.state.alertVariant}>
-            {this.state.response}
-          </Alert>
-          <Home section="" />
+     /*set the cookies and redirect to the manager sign up page*/
+     cookies.set('restaurant_id', this.state.staff, {path: '/'}, {maxAge: 3600});
 
-        </div>
-      );
-    }
-    if (cookies.get('mystaff').position === "manager") {
-      return (
+     return (
         <Container component="main" maxWidth="xs" className="p-3">
-          {/*alert if successful or unsuccessful*/}
+        {/*alert if successful or unsuccessful*/}
 
-          <Alert show={this.state.show} variant={this.state.alertVariant}>
-            {this.state.response}
-          </Alert>
-          <CssBaseline />
-          <div className={useStyles.paper}>
-            <div style={{ 'textAlign': 'center' }}>
-              {/* Lock icon on top */}
-              <div style={{ 'display': 'inline-block' }}>
-                <Avatar className={useStyles.avatar}>
-                  <LockOutlinedIcon />
-                </Avatar>
-              </div>
-              <Typography component="h1" variant="h5">
-                Sign up
+        <Alert show={this.state.show} variant={this.state.alertVariant}>
+          {this.state.response}
+        </Alert>
+        <CssBaseline />
+        <div className={useStyles.paper}>
+          <div style={{ 'textAlign': 'center' }}>
+            {/* Lock icon on top */}
+            <div style={{ 'display': 'inline-block' }}>
+              <ManagerSignUp section="" />
+            </div>
+            <br />
+          </div>
+        </div>
+      </Container>
+    );
+    }
+    return (
+      <Container component="main" maxWidth="xs" className="p-3">
+        {/*alert if successful or unsuccessful*/}
+
+        <Alert show={this.state.show} variant={this.state.alertVariant}>
+          {this.state.response}
+        </Alert>
+        <CssBaseline />
+        <div className={useStyles.paper}>
+          <div style={{ 'textAlign': 'center' }}>
+            {/* Lock icon on top */}
+            <div style={{ 'display': 'inline-block' }}>
+              <Avatar className={useStyles.avatar}>
+                <LockOutlinedIcon />
+              </Avatar>
+            </div>
+            <Typography component="h1" variant="h5">
+              Restaurant Sign Up
 
               </Typography>
-              <br />
-            </div>
-            <form className={useStyles.form} onSubmit={this.handleSubmit}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField onChange={this.onChange}
-                    autoComplete="fname"
-                    name="first_name"
-                    variant="outlined"
-                    fullWidth
-                    id="firstName"
-                    label="First Name"
-                    value={this.state.first_name}
-                    onChange={this.handleChange}
-                    autoFocus
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.firstNameError}
-                  </div>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField onChange={this.onChange}
-                    variant="outlined"
-                    fullWidth
-                    id="lastName"
-                    label="Last Name"
-                    name="last_name"
-                    autoComplete="lname"
-                    value={this.state.last_name}
-                    onChange={this.handleChange}
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.lastNameError}
-                  </div>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField onChange={this.onChange}
-                    variant="outlined"
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    value={this.state.email}
-                    onChange={this.handleChange}
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.emailError}
-                  </div>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField onChange={this.onChange}
-                    variant="outlined"
-                    fullWidth
-                    id="phone"
-                    label="Contact Number"
-                    name="contact_num"
-                    value={this.state.contact_numb}
-                    onChange={this.handleChange}
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.contactError}
-                  </div>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField onChange={this.onChange}
-                    variant="outlined"
-                    fullWidth
-                    id="staffid"
-                    label="Staff ID"
-                    name="staff_id"
-                    value={this.state.staff_id}
-                    onChange={this.handleChange}
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.staffIDError}
-                  </div>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField onChange={this.onChange}
-                    variant="outlined"
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    value={this.state.password}
-                    onChange={this.handleChange}
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.passwordError}
-                  </div>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField onChange={this.onChange}
-                    variant="outlined"
-                    fullWidth
-                    name="confirm_password"
-                    label="Confirm Password"
-                    type="password"
-                    id="confirm_password"
-                    value={this.state.confirm_password}
-                    onChange={this.handleChange}
-                  />
-                  <div style={{ fontSize: 12, color: "red" }}>
-                    {this.state.confirmPasswordError}
-                  </div>
-                </Grid>
-
-              </Grid>
-              <br />
-
-              <Button onClick={this.handleSubmit}
-                type="submit"
-                fullWidth
-                variant="contained"
-                style={{ backgroundColor: '#0B658A', color: "#FFFFFF" }}
-                className={useStyles.submit}
-              >
-                Sign Up
-              </Button>
-              <Grid container>
-                <Grid item xs>
-                  {/* Create an account link */}
-                  <Link href="/" variant="body2" style={{ color: '#0B658A' }}>
-                    {"Already have an account? Sign In"}
-                  </Link>
-                </Grid>
-                <Grid item >
-                  {/* Forgot password link*/}
-                  <Link href="/forgot_password" variant="body2" style={{ color: '#0B658A' }}>
-                    {"Forgot password?"}
-                  </Link>
-                </Grid>
-              </Grid>
-            </form>
-
+            <br />
           </div>
-        </Container>
-      );
-    }
+          <form className={useStyles.form} onSubmit={this.handleSubmit}>
+            <Grid container spacing={2}>
+
+              <Grid item xs={12}>
+                <TextField onChange={this.onChange}
+                  variant="outlined"
+                  fullWidth
+                  id="restaurant_name"
+                  label="Restaurant Name"
+                  name="restaurant_name"
+                  value={this.state.restaurant_name}
+                  onChange={this.handleChange}
+                />
+                <div style={{ fontSize: 12, color: "red" }}>
+                  {this.state.staffIDError}
+                </div>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField onChange={this.onChange}
+                  variant="outlined"
+                  fullWidth
+                  id="restaurant_address"
+                  label="Restaurant Address"
+                  name="restaurant_address"
+                  value={this.state.restaurant_address}
+                  onChange={this.handleChange}
+                />
+
+              </Grid>
+              <Grid item xs={12}>
+                <TextField onChange={this.onChange}
+                  variant="outlined"
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  value={this.state.email}
+                  onChange={this.handleChange}
+                />
+
+              </Grid>
+              <Grid item xs={12}>
+                <TextField onChange={this.onChange}
+                  variant="outlined"
+                  fullWidth
+                  id="phone"
+                  label="Contact Number"
+                  name="contact_num"
+                  value={this.state.contact_numb}
+                  onChange={this.handleChange}
+                />
+
+              </Grid>
+              <Grid item xs={12}>
+                <TextField onChange={this.onChange}
+                  variant="outlined"
+                  fullWidth
+                  id="cuisine"
+                  label="Cuisine"
+                  name="cuisine"
+                  value={this.state.cuisine}
+                  onChange={this.handleChange}
+                />
+              </Grid>
+
+              <Form.Group controlId="formBasicEmail" className = "p-3">
+                <Form.Label className = "p-2">Opening </Form.Label>
+                <TimePicker
+                onChange={this.onChangeOpen}
+                value={this.state.openTimePicker}
+                disableClock ={ true}
+                clearIcon = {null}
+                style = {{float: 'right'}}
+              />
+              </Form.Group>
+              <br/>
+              <Form.Group controlId="formBasicEmail" className = "p-3">
+                <Form.Label className = "p-2">Closing </Form.Label>
+                <TimePicker
+                onChange={this.onChangeClose}
+                value={this.state.openTimePicker}
+                disableClock ={ true}
+                clearIcon = {null}
+                style = {{float: 'right'}}
+              />
+              </Form.Group>
+ 
+            <br />
+            </Grid>
+            <Button onClick={this.handleSubmit}
+              type="submit"
+              fullWidth
+              variant="contained"
+              style={{ backgroundColor: '#0B658A', color: "#FFFFFF" }}
+              className={useStyles.submit}
+            >
+              Sign Up
+              </Button>
+          </form>
+          <br></br>
+          <br></br>
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid item>
+              {/* Link Back Home*/}
+
+              <Link href="/" variant="body2" style={{ color: '#0B658A' }}>
+                {"Return to Home"}
+              </Link>
+            </Grid>
+          </Grid>
+        </div>
+      </Container>
+    );
+
   }
 }
 export default SignUp;

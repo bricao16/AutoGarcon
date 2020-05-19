@@ -5,6 +5,7 @@ import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import { ChromePicker } from 'react-color';
 import Modal from 'react-bootstrap/Modal';
 import Alert from 'react-bootstrap/Alert';
@@ -22,7 +23,7 @@ section or renders what is there from the database.*/
 class Customize extends React.Component{
     constructor(props) {     
         super(props);
-        
+        //get all the state given from nav items
         const cookies = new Cookies();
         this.state = {
           customizeInfo: [],
@@ -37,18 +38,22 @@ class Customize extends React.Component{
           temp_secondary: this.props.info.secondary_color,
           temp_tertiary:this.props.info.tertiary_color,
           temp_font : this.props.info.font,
-          font_color : '#111111',
-          temp_font_color: '#111111',
+          font_color : this.props.info.font_color,
+          temp_font_color: this.props.info.font_color,
           file: this.props.logo,
           temp_file:this.props.logo,
           fileName:"Choose file",
+          alexaGreeting: this.props.info.greeting,
+          temp_alexaGreeting: this.props.info.greeting,
           restaurant_id :cookies.get("mystaff").restaurant_id,
           token:cookies.get('mytoken')
         };
 
     this.onChange = this.onChange.bind(this);
+    this.onChangeFile = this.onChangeFile.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
+		this.handleValidation = this.handleValidation.bind(this);
 
   }
     /*
@@ -63,7 +68,6 @@ class Customize extends React.Component{
       }
       else if(this.state.sectionEdit ==="Secondary")
       {
-        console.log("here");
         this.setState({ 'temp_secondary':  e.hex});
       }
       else if(this.state.sectionEdit ==="Tertiary")
@@ -78,40 +82,54 @@ class Customize extends React.Component{
       {
         this.setState({ 'temp_font_color':  e.hex});
       }
+      else if(this.state.sectionEdit ==="Alexa Greeting")
+      {
+        this.setState({ 'temp_alexaGreeting':  e.target.value});
+      }
       
     }
-
-      onChangeFile = (e) => {
-        console.log(e.target.files[0]);
+    //specifcally change the image 
+    onChangeFile(e) {
+      const target = e.target;
         //https://riptutorial.com/javascript/example/14207/getting-binary-representation-of-an-image-file
-        // preliminary code to handle getting local file and finally printing to console
+        // preliminary code to handle getting local file 
         // the results of our function ArrayBufferToBinary().
-        //change the file name
-        this.setState({ fileName: e.target.files[0].name });
-        var file = e.target.files[0];// get handle to local file.
+        this.setState({ fileName: target.files[0].name });
+
+        var file = target.files[0]; /* get handle to local file. */
         var reader = new FileReader();
         reader.onload = function(event) {
-            var data = event.target.result;
-             const finaldata = new Uint8Array(data);
-              //set our file to the correct data
-            this.setState({ temp_file:  {'type': 'Bufferz', 'data': finaldata} });
+          var data = event.target.result;
+          var finaldata = new Uint8Array(data);
+
+          /* set our file to the correct data */
+          file.buffer = finaldata;
+          this.setState({file:  file});
         }.bind(this);
-        reader.readAsArrayBuffer(file); //gets an ArrayBuffer of the file
+        reader.readAsArrayBuffer(file); /* gets an ArrayBuffer of the file */
 
       }
+
   /* Used for connecting to Customization in database */
   submitToDB(){
     /*https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples is where I'm pulling this formatting from.*/
 
+    var bodyFormData = new FormData();
+    bodyFormData.set('restaurant_id', this.state.restaurant_id);
+    bodyFormData.set('primary_color', this.state.primary);
+    bodyFormData.set('secondary_color', this.state.secondary);
+    bodyFormData.set('tertiary_color', this.state.tertiary);
+    bodyFormData.set('font', this.state.font);
+    bodyFormData.set('font_color', this.state.font_color);
+    bodyFormData.set('greeting', this.state.alexaGreeting);
+    bodyFormData.append('logo', this.state.file);
+
     axios({
       method: 'POST',
       url:  process.env.REACT_APP_DB +'/restaurant/customization',
-      //+'&logo='+this.state.file
-      data: 'restaurant_id='+this.state.restaurant_id+'&primary_color='+this.state.primary+
-      '&secondary_color='+this.state.secondary+'&tertiary_color='+this.state.tertiary+
-      '&font='+this.state.font+'&font_color='+this.state.font_color+'&logo='+this.state.file,
+      data: bodyFormData,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'multipart/form-data',
         'Authorization': 'Bearer ' + this.state.token
       },
       httpsAgent: new https.Agent({  
@@ -163,12 +181,34 @@ class Customize extends React.Component{
       }
       else if(this.state.sectionEdit ==="Logo")
       {
-         this.setState({ 'file': this.state.temp_file},
-          this.submitToDB);
+        this.submitToDB();
       }
-    console.log(this.state);
+      else if(this.state.sectionEdit ==="Alexa Greeting")
+      {
+
+				if(this.state.temp_alexaGreeting.length > 100){
+					this.handleValidation("Greeting is too long.  Please limit to 100 characters or less.");	
+					this.setState({'temp_alexaGreeting':'alexaGreeting'}); //revert temp gretting back to current greeting
+				} else {
+					 this.setState({ 'alexaGreeting': this.state.temp_alexaGreeting},
+						this.submitToDB);
+				}
+      }
     this.editForm("");
-}
+	}
+	
+	/* Used to validate input for alexa greeting */
+	handleValidation(message){ 
+		this.setState({response: message});
+		this.setState({alertVariant: 'danger'});
+		this.setState({show: true});
+		
+		setTimeout(() => {
+			this.setState({
+			  show:false
+			});
+		}, 3000)
+  }
 
   /* Used to show the correct alert after hitting save item */
   handleShow(success, message) {
@@ -176,6 +216,7 @@ class Customize extends React.Component{
       this.setState({response: "Successfully "+message+"!"});
       this.setState({alertVariant: 'success'});
       this.handleModalClose();
+      this.forceUpdate();
     }
     else {
       this.setState({response: 'Failed to update'})
@@ -185,10 +226,11 @@ class Customize extends React.Component{
     this.setState({show: true});
     
     setTimeout(() => {
+      window.location.reload();
       this.setState({
       show:false
       });
-    }, 2500)
+    }, 3000)
   }
 
 //change the category of which is being edited
@@ -198,9 +240,6 @@ editForm = (category) => {
   });
 }
 
-change(event){
-  this.setState({value: event.target.value});
-}
 //convert image to blob from https://stackoverflow.com/questions/42471755/convert-image-into-blob-using-javascript
 loadXHR(url) {
     return new Promise(function(resolve, reject) {
@@ -218,12 +257,15 @@ loadXHR(url) {
         catch(err) {reject(err.message)}
     });
 }
-  handleModalClose = () => this.setState({ModalShow: false});
-  handleModalShow = () => this.setState({ModalShow: true});
+//show or hide the popups to edit fields
+handleModalClose = () => this.setState({ModalShow: false});
+handleModalShow = () => this.setState({ModalShow: true});
 
 renderInfo(){
+  const font = this.state.font;
     return (
           <>
+            {/*popup boxes for editing fields*/}
             <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
               <Modal.Header closeButton>
                 <Modal.Title>{this.state.sectionEdit}</Modal.Title>
@@ -308,140 +350,171 @@ renderInfo(){
                         </div>
                       </Modal.Body>
                     }
-
-            </Modal>
-           <Container >
-            <Row>
-            <Card className="text-center m-2 w-50" style={itemStyle}>
-                <Card.Header >Font 
-                <button onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                </Card.Header>
-                    <Card.Body>
-                        {/* if Font is not the section to edit render the database info and a button to edit*/}
-
-                        {this.state.sectionEdit !== "Font" ?
-                          <p style={{margin: "0", padding: "0.8em"}}>{this.state.font}</p>
-                            :   
-                            <form className="form-inline" >
-                            {/* choose font and submit to change font */}
-                            <div style= {{float: 'left'}}>
-                                <select id="lang" onChange={this.onChange} >
-                                    {/* <option value="Selected">{this.state.customizeInfo[5][1]}</option> */}
-                                    
-                                    {/* dropdown menu options */}
-                                    <option value="Oswald">{this.state.fonts[0]}</option>
-                                    <option value="Raleway">{this.state.fonts[1]}</option>
-                                    <option value="Open Sans">{this.state.fonts[2]}</option>
-                                    <option value="Lato">{this.state.fonts[3]}</option>
-                                    <option value="Pt Sans">{this.state.fonts[4]}</option>
-                                    <option value="Lora">{this.state.fonts[5]}</option>
-                                    <option value="Montserrat">{this.state.fonts[6]}</option>
-                                    <option value="Playfair Display">{this.state.fonts[7]}</option>
-                                    <option value="Benchnine">{this.state.fonts[8]}</option>
-                                    <option value="Merriweather">{this.state.fonts[9]}</option>
-
-
-                                </select>     
-                            </div>
-                            <br></br>
-                            <div className="row m-2">
-                                <button onClick = {this.handleSubmit} type="button" className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
-                            </div>
-                            <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
-                                </form>
-                        }
-                    </Card.Body>
-                </Card>
-                  <Card className="text-center m-2 w-45" style={itemStyle}>
-                    <Card.Header >Logo
-                      <button  onClick={() => this.editForm("Logo") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
-                    </Card.Header>
-                    <Card.Body >
-                      <div className = "p-3">
-                        {this.state.sectionEdit !== "Logo" ? 
-                            <img src={this.state.file}  width="auto" height="45px" alt="waiter" /> 
-                             :
-                             <Container>
+                   {/*Alexa Greeting*/}
+                    {this.state.sectionEdit === "Alexa Greeting" && 
+                    <Modal.Body>
+                      <div className="container">
+                          <form onSubmit = {this.handleSubmit}>
+                            <input  className="form-control" type="text" name = "address" defaultValue={this.state.alexaGreeting} onChange={this.onChange}></input>
+                              <div className="row m-2">
+                                  <button  className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                              </div>
+                          </form>
+                        </div>
+                      </Modal.Body>
+                    }
+                    {/*Logo*/}
+                    {this.state.sectionEdit === "Logo" && 
+                    <Modal.Body>
+                        <Container>
                             <div className="input-group">
                               <div className="custom-file">
-                                <input
-                                  onChange={this.onChangeFile}
-                                  type="file"
-                                  className="custom-file-input"
-                                  id="inputGroupFile01"
-                                  aria-describedby="inputGroupFileAddon01"
-                                  multiple = {false}
-                                />
-                                <label className="custom-file-label" htmlFor="inputGroupFile01">
-                                  {this.state.fileName}
-                                </label>
-
+                                <input type="file" className="custom-file-input" id="customFile" name="image" accept="image/png, image/jpg, image/jpeg" onChange={this.onChangeFile}></input>
+                                <label className="custom-file-label" htmlFor="customFile">{this.state.fileName}</label>
                               </div>
-                            </div>
+                              <label className="custom-file-label" htmlFor="inputGroupFile01">
+                                {this.state.fileName}
+                              </label>
+                              </div>
+                 
                             <br/>
                             <div className="row m-2">
                                <button  onClick = {this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
                             <button onClick={() => this.editForm("")} type="button" className="btn btn-outline-danger ml-4" >Cancel</button>
                              </div>
                          </Container>
-                        }
-                    </div> 
+                      </Modal.Body>
+                    }
+            </Modal>
+           <Container >
+            {/* render the fields when they are not being edited */}
+            <Row className = "align-items-start">
+            <Col>
+              <Card className="text-center m-2" style ={{'fontFamily' :font}}>
+                  <Card.Header  >Font 
+                  <button onClick={() => this.editForm("Font") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                  </Card.Header>
+                      <Card.Body style = {{minHeight:'20vh'}}>
+                          {/* if Font is not the section to edit render the database info and a button to edit*/}
+                          {this.state.sectionEdit !== "Font" ?
+                            <p style={{margin: "0", padding: "0.8em"}}>{this.state.font}</p>
+                              :   
+                              <form className="form-inline" >
+                              {/* choose font and submit to change font */}
+                              <div style= {{float: 'left'}}>
+                                  <select id="lang" onChange={this.onChange} >
+                                      {/* dropdown font options */}
+                                      <option value="Oswald" style ={{'fontFamily' :'Oswald'}}>{this.state.fonts[0]}</option>
+                                      <option value="Raleway" style ={{'fontFamily' :'Raleway'}}>{this.state.fonts[1]}</option>
+                                      <option value="Open Sans" style ={{'fontFamily' :'Open Sans'}}>{this.state.fonts[2]}</option>
+                                      <option value="Lato" style ={{'fontFamily' :'Lato'}}>{this.state.fonts[3]}</option>
+                                      <option value="Pt Sans" style ={{'fontFamily' :'Pt Sans'}}>{this.state.fonts[4]}</option>
+                                      <option value="Lora" style ={{'fontFamily' :'Lora'}}>{this.state.fonts[5]}</option>
+                                      <option value="Montserrat" style ={{'fontFamily' :'Montserrat'}}>{this.state.fonts[6]}</option>
+                                      <option value="Playfair Display" style ={{'fontFamily' :'Playfair Display'}}>{this.state.fonts[7]}</option>
+                                      <option value="Benchnine" style ={{'fontFamily' :'Benchnine'}}>{this.state.fonts[8]}</option>
+                                      <option value="Merriweather" style ={{'fontFamily' :'Merriweather'}}>{this.state.fonts[9]}</option>
+                                  </select>     
+                              </div>
+                              <br></br>
+                              <div className="row m-2">
+                                  <button onClick = {this.handleSubmit} type="button" className="btn btn-primary m-1" style = {{backgroundColor: '#0B658A', border: '#0B658A'}}>Submit</button>
+                                  <button onClick={() => this.editForm("") }  type="button" className="btn btn-outline-danger m-1" >Cancel</button>
+                              </div>
+                           </form>
+                          }
+                      </Card.Body>
+                  </Card>
+                  </Col>
+                  <Col>
+                {/* display logo */}
+                  <Card className="text-center  m-2" style ={{'fontFamily' :font}}>
+                    <Card.Header onClick={this.handleModalShow} >Logo
+                      <button  onClick={() => this.editForm("Logo") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                    </Card.Header>
+                    <Card.Body style = {{minHeight:'20vh'}}>
+                      <div className = "p-3">
+                            <img src={this.state.file}  width="auto" height="40vh" alt="waiter" /> 
+                      </div> 
                     </Card.Body>
                    </Card>
+                  </Col>
+                   <Col>
+                 {/* display alexa greeting */}
+                   <Card className="text-center m-2" style ={{'fontFamily' :font}}>
+                    <Card.Header onClick={this.handleModalShow}>Alexa Greeting
+                      <button  onClick={() => this.editForm("Alexa Greeting") } className="btn btn-outline-dark btn-sm float-right"> <i className='fas fa-edit'></i> </button>
+                    </Card.Header>
+                    <Card.Body style = {{minHeight:'20vh'}}>
+                      <p> {this.state.alexaGreeting} </p>
+                    </Card.Body>
+                    </Card>
+                  </Col>
                 </Row>
-
-                <Row>
-                  <Card className="text-center m-2 w-20" style={itemStyle} >
+                 <Row className = "align-items-start">
+                  {/* display primary color */}
+                  <Col>
+                  <Card className="text-center m-2" style ={{'fontFamily' :font}} >
                     <Card.Header onClick={this.handleModalShow}>Primary
                       <button onClick={() => this.editForm("Primary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
-                    <Card.Body style={{backgroundColor:this.state.primary}}>
-
+                    <Card.Body style={{backgroundColor:this.state.primary,minHeight:'10vh'}}>
                     </Card.Body>
                    </Card>
-
-                  <Card className="text-center m-2 w-20" style={itemStyle}>
+                  </Col>
+                  <Col>
+                  <Card className="text-center m-2" style ={{'fontFamily' :font}}>
+                    {/* display secondary color */}
                     <Card.Header onClick={this.handleModalShow}>Secondary
                       <button onClick={() => this.editForm("Secondary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
                     <Card.Body style={{backgroundColor:this.state.secondary, minHeight:'10vh'}}>
-
                     </Card.Body>
                    </Card>
-    
-                   <Card className="text-center m-2 w-20" style={itemStyle}>
+                  </Col>
+                   <Col>
+                   <Card className="text-center m-2" style ={{'fontFamily' :font}}>
+                      {/* display tertiary color */}
                     <Card.Header onClick={this.handleModalShow}>Tertiary
                       <button  onClick={() => this.editForm("Tertiary") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
-                    <Card.Body style={{backgroundColor:this.state.tertiary }}>
-
+                    <Card.Body style={{backgroundColor:this.state.tertiary,minHeight:'10vh' }}>
                     </Card.Body>
                    </Card>
-                   <Card className="text-center m-2 w-20" style={itemStyle}>
+                   </Col>
+                  <Col>
+                   <Card className="text-center m-2" style ={{'fontFamily' :font}}>
+                    {/* display font color */}
                     <Card.Header onClick={this.handleModalShow}>Font Color
                       <button  onClick={() => this.editForm("Font Color") } className="btn btn-outline-dark btn-sm float-right ml-4"> <i className='fas fa-edit'></i> </button>
                     </Card.Header>
                     <Card.Body style={{backgroundColor:this.state.font_color, minHeight:'10vh'}}>
-
                     </Card.Body>
                    </Card>
+                   </Col>
                   </Row>
                 </Container>
             </>
         )
 
 }
+
     render() {
         const {customizeInfo } = this.state;
         const resturantInfo = this.props.info;
+        //get the styles we need
+        const primary = this.props.primary;
+        const font = this.state.font;
+        const font_color = this.props.font_color
         //put resturant info into an array
         Object.keys(resturantInfo).forEach(function(key) {
             customizeInfo.push([key ,resturantInfo[key]]);
         });
+        //call render info which renders fields pulled from db
         return (
             <Container>
                 <div style={backgroundStyle}>
-                <h2 style ={menuHeaderStyle}>
+                <h2 style ={{'fontFamily' :font, 'backgroundColor': primary, 'color': font_color, 'textAlign' : 'center','height':'54px', 'paddingTop':'8px'}}>
                   Customize
                 </h2>
                 <Alert show={this.state.show} variant={this.state.alertVariant}>
@@ -457,23 +530,10 @@ renderInfo(){
         );
     }
 }
-
-
 const backgroundStyle = {
   'backgroundColor': '#f1f1f1',
-  'minWidth': '70vw'
+  'minWidth': '75vw',
+  'fontFamily' :'Open Sans'
 }
-
-const itemStyle = {
-    'borderBottom': 'grey solid 1px',
-
-};
-const menuHeaderStyle = {
-  'backgroundColor': '#102644',
-  'color': '#ffffff',
-  'fontFamily': 'Kefa',
-  'textAlign' : 'center',
-  'height':'54px'
-};
 
 export default Customize;

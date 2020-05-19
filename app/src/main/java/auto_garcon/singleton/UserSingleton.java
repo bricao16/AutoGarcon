@@ -1,4 +1,8 @@
 package auto_garcon.singleton;
+
+import android.graphics.Bitmap;
+import android.util.Log;
+
 /**
  * Class for holding user information
  *
@@ -8,53 +12,52 @@ public class UserSingleton {
     private String lastName;
     private String username;
     private String email;
+    private int tableID;
+    private byte[] image;
     private int restaurantID;
+    private int changePassword;
 
-    public UserSingleton(String firstName, String lastName, String username, String email){
+    public UserSingleton(String firstName, String lastName, String username, String email, byte[] image){
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
-        this.restaurantID = -1;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.restaurantID = 124;
+        this.changePassword = 0;
+        this.tableID=1;
+        this.image = image;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getEmail() {
         return email;
     }
 
+    public  int getChangePassword(){return this.changePassword;}
+
+    public void setChangePassword(int changePassword){this.changePassword=changePassword;}
     public void setRestaurantID(int restaurantID) {
         this.restaurantID = restaurantID;
     }
-
+    public void setTableID(int tableID){this.tableID=tableID;}
+    public int getTableID(){return this.tableID;}
     public int getRestaurantID() {
         return this.restaurantID;
     }
+
+    public byte[] getImageBitmap() {
+        return this.image;
+    }
+
 }

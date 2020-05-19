@@ -1,12 +1,16 @@
 import React from 'react';
-import { makeStyles, useTheme, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import red from '@material-ui/core/colors/red';
+import {makeStyles, createMuiTheme, ThemeProvider, withStyles} from '@material-ui/core/styles';
 import {AppBar, Toolbar, Tabs, Tab} from '@material-ui/core'
 import {Link} from 'react-router-dom'
-
-import exampleCompanyLogo from '../../assets/exampleCompanyLogo.png'
-
 import AccountDropdown from "../AccountDropdown";
+
+const StyledTabs = withStyles({
+  indicator: {
+    height: '100%',
+    backgroundColor: '#0b658a33',
+    pointerEvents: 'none'
+  },
+})(props => <Tabs {...props} />);
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -26,6 +30,10 @@ const useStyles = makeStyles((theme) => ({
   },
   account: {
     marginLeft: 'auto'
+  },
+  logo: {
+    color: 'black',
+    marginLeft: theme.spacing(2)
   }
 }));
 
@@ -42,22 +50,29 @@ function Header(props){
   // const theme = useTheme();
   const classes = useStyles(theme);
 
-  const {cookies} = props;
+  const {cookies, restaurantData} = props;
 
-  const [value, setValue] = React.useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const logoData = restaurantData.restaurant.logo.data;
+  const buffer = Buffer.from(logoData).toString('base64');
+  const companyLogo = "data:image/png;base64,"+buffer;
+
+
+  // Changes which tab is highlighted
+  const [tab, setTab] = React.useState(props.tab);
+  const handleTabChange = (event, newTab) => {
+    setTab(newTab);
   };
 
   return(
     <ThemeProvider theme={theme}>
       <AppBar className={classes.appBar} position="sticky">
         <Toolbar className={classes.toolbar}>
-          <img src={exampleCompanyLogo}  width="auto" height="40px" alt="waiter" />
-          <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
+          <img src={companyLogo}  width="auto" height="45px" alt="company logo" className={classes.logo}/>
+          <StyledTabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" className={classes.tabs} >
             <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
             <Tab label="Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />
-          </Tabs>
+            {/*<Tab label="Messages" color="primary" className={classes.tab} component={Link} to={'/cook/messages'} />*/}
+          </StyledTabs>
           <div className={classes.account}>
             <AccountDropdown firstName={cookies.staff.first_name} lastName={cookies.staff.last_name} />
           </div>

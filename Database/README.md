@@ -1,13 +1,14 @@
-Last Updated:2020-03-20 10:40:00  
+Last Updated: 2020-05-18 15:21:00  
 
 Group: Database  
 
 Files:    
 -CurrentEndpoints.txt: Live endpoints  
 -DatabaseSchema.txt: Schema and variable types of attributes  
--Queries: Temporary file for potential queries we will have
+-Queries: Temporary file for potential queries we will have  
 -package.json: required packages to run server.js  
--Server.js: API created by Tucker  
+-Server.js: HTTP version of API created by Tucker  
+-Server2.js: HTTPS version of API
 
 Folders:  
 +documentation  

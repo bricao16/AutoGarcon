@@ -16,9 +16,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="auto_garcon.cartorderhistory.CurrentOrders"></activity>
+        <activity android:name="auto_garcon.initialpages.AccountImageSelectionRegister"></activity>
+        <activity android:name="auto_garcon.accountstuff.Services" />
+        <activity android:name="auto_garcon.SendErrorEmail" />
+        <activity android:name="auto_garcon.ExceptionHandler" />
+        <activity android:name="auto_garcon.cartorderhistory.CurrentOrders" />
         <activity android:name="auto_garcon.accountstuff.PasswordChange" />
         <activity android:name="auto_garcon.initialpages.TwoButtonPage" />
+        <activity android:name="auto_garcon.accountstuff.Privacy" />
+        <activity android:name="auto_garcon.accountstuff.Terms" />
+        <activity android:name="auto_garcon.accountstuff.Faq" />
         <activity android:name="auto_garcon.initialpages.LoadingScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,6 +50,9 @@
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity android:name="auto_garcon.initialpages.QRcode" />
     </application>

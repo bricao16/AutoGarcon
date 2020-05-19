@@ -3,12 +3,11 @@ package auto_garcon.initialpages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,15 +43,28 @@ public class Login extends AppCompatActivity {
 
 
     /**
-     * This method instantiates and constraints the xml object assoiciated to the login java class.
+     * Called when the activity is starting.  This is where most initialization
+     * should go
      *
-     * @param savedInstanceState  contains the data that has been most recently supplied on the register xml after the creation of the app
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NukeSSLCerts.nuke();
         setContentView(R.layout.activity_login);
+        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         pref = new SharedPreference(this);// creating a sharedPrefrence object that access the same file of all other shared prefrences on the app
 
@@ -75,20 +87,20 @@ public class Login extends AppCompatActivity {
                 final String username = usernameId.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String passwd = password.getText().toString().trim();//extracted data from xml object and converted into a string
 
+                boolean validInputs = true;
+
                 if(username.isEmpty()){//checks if the username they are trying to submit is empty
                     usernameId.setError("Please enter your username");
                     usernameId.requestFocus();
+                    validInputs = false;
                 }
-                else if (passwd.isEmpty()){//checks if the password the user is trying to submit is empty
+                if(passwd.isEmpty()){//checks if the password the user is trying to submit is empty
                     password.setError("Please enter your password");
                     password.requestFocus();
-                }
-                else if(username.length()>50){
-                    usernameId.setError("Please enter a username with less than 50 characters");
-                    usernameId.requestFocus();
+                    validInputs = false;
                 }
 
-                else if (!(username.isEmpty() && passwd.isEmpty())) {//if everything is good we proceed with the get request
+                 if(validInputs == true) {//if everything is good we proceed with the get request
 
                     //post request for logging in
                     JSONObject obj = new JSONObject();//json object that will be sent as the request parameter
@@ -100,19 +112,26 @@ public class Login extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, "http://50.19.176.137:8000/customer/login", obj,
+                    JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/login", obj,
                             new Response.Listener<JSONObject>()
                             {
                                 @Override
                                 public void onResponse(JSONObject response) {
                                     // response
                                     try {
-                                        JSONObject object = response.getJSONObject("customer");
-                                        String token = response.getString("token");
+                                        JSONObject userData = response.getJSONObject("customer");
 
-                                        pref.setUser(new UserSingleton(object.get("first_name").toString(),  object.get("last_name").toString(),
-                                                object.get("customer_id").toString(), object.get("email").toString()));
-                                        pref.setAuthToken(token);
+                                        byte[] itemImageByteArray = new byte[userData.getJSONObject("image").getJSONArray("data").length()];
+
+                                        for (int i = 0; i < itemImageByteArray.length; i++) {
+                                            itemImageByteArray[i] = (byte) (((int) userData.getJSONObject("image").getJSONArray("data").get(i)) & 0xFF);
+                                        }
+
+                                        pref.setUser(new UserSingleton(userData.get("first_name").toString(),  userData.get("last_name").toString(),
+                                                userData.get("customer_id").toString(), userData.get("email").toString(), itemImageByteArray));
+
+                                        pref.setAuthToken(response.getString("token"));
+                                        pref.getUser().setChangePassword(userData.getInt("temp_password"));
                                         pref.changeLogStatus(true);
 
                                         startActivity(new Intent(Login.this, TwoButtonPage.class));
@@ -127,22 +146,18 @@ public class Login extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     // error if the request fails
-                                    Log.d("asdff", String.valueOf(error.networkResponse.statusCode));
                                     error.printStackTrace();
                                     if(error.networkResponse.statusCode == 401){
-                                        Toast.makeText(Login.this,"Could not Sign in",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(Login.this,"Invalid username or password",Toast.LENGTH_LONG).show();
                                     }
                                     else{
-                                        Toast.makeText(Login.this,"Invalid username or password",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(Login.this,"Could not Sign in",Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }
                     );
 
                     VolleySingleton.getInstance(Login.this).addToRequestQueue(postRequest);// making the actual request
-                }
-                else{
-                    Toast.makeText(Login.this, "Error Occurred", Toast.LENGTH_SHORT).show();// if something fails with our request display error
                 }
             }
         });

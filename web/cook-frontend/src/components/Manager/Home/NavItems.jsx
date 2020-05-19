@@ -35,6 +35,12 @@ import {
   } from "react-router-dom";
 
 const drawerWidth = 270;
+/*
+  This prop is used to render the Header for the manager view. The logo of 
+  the company will be rendered at the top of the page along with the name of the company.
+  The person who is logged in will have their name along with a dropdown that will
+  take them to their personal settings.
+*/
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,7 +83,6 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   drawerClose: {
-    
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -107,10 +112,8 @@ const useStyles = makeStyles((theme) => ({
   paddingRight: '12px',
   paddingTop: '12px',
   textAlign: 'right',
-  fontFamily: 'Kefa',
   height: '67px'
   },
-
 }));
 
 
@@ -119,6 +122,13 @@ export default function NavItems(props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
 
+  /* get the styles for the current restuarant */
+  const primary = props.restaurantInfo[1][1].primary_color;
+  const secondary = props.restaurantInfo[1][1].secondary_color;
+  const tertiary = props.restaurantInfo[1][1].tertiary_color;
+  const font = props.restaurantInfo[1][1].font;
+  const font_color = props.restaurantInfo[1][1].font_color
+  console.log(props.imageBlob);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -126,10 +136,9 @@ export default function NavItems(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  console.log(font);
   return (
-
-    <div className={classes.root}>
+    <div className={classes.root} style={{'fontFamily' :font}}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -137,25 +146,25 @@ export default function NavItems(props) {
           [classes.appBarShift]: open,
         })}
       >
-        <Toolbar>
-        <div className="col">
-          <IconButton
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
-          >
-            <MenuIcon />
-          </IconButton>
-          </div>
-          <div className="col text-right">
-          {/* this.props.loggedIn */ true && <AccountDropdown firstName={props.firstName} lastName={props.lastName} className="pl-5 align-right"></AccountDropdown>}
-          </div>
-        </Toolbar>
-        
-      </AppBar>
+				<Toolbar >
+					<div className="col">
+						<IconButton
+							aria-label="open drawer"
+							onClick={handleDrawerOpen}
+							edge="start"
+							className={clsx(classes.menuButton, {
+								[classes.hide]: open,
+							})}
+						>
+							<MenuIcon />
+						</IconButton>
+					</div>
+
+					<div className="col text-right" style={{'fontFamily' :font}}>
+						<AccountDropdown firstName={props.firstName} lastName={props.lastName} className="pl-5 align-right"></AccountDropdown>
+					</div>
+				</Toolbar>   
+      </AppBar >
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -168,87 +177,83 @@ export default function NavItems(props) {
             [classes.drawerClose]: !open,
           }),
         }}
+
       >
-        <div className={classes.toolbar} style={{'backgroundColor':'#f1f1f1'}}>
-        <Typography variant="h6" className ='pr-4' noWrap >
-        <img src={props.imageBlob}  width="auto" height="45px" alt="waiter" /> 
-           {/*<i>{props.restName}</i>*/}
-          </Typography>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <MenuIcon /> : <MenuIcon />}
-          </IconButton>
+        <div className={classes.toolbar} style={{'backgroundColor' :'#f1f1f1' }}>
+					<Typography variant="h6" className ='pr-4' noWrap >
+					<img src={props.imageBlob}  width="auto" height="45px" style={{"borderRadius": "5px"}} alt="logo" /> 
+						 {/*<i>{props.restName}</i>*/}
+						</Typography>
+						<IconButton onClick={handleDrawerClose}>
+							{theme.direction === 'rtl' ? <MenuIcon /> : <MenuIcon />}
+						</IconButton>
         </div>
         <Divider />
         <List >
-          <ListItem button component="a" href ='/manager'>
+          <ListItem button component="a" href ='/manager' >
 						<ListItemIcon><StatsIcon/></ListItemIcon>
-						<ListItemText primary="Statistics" />
+						<ListItemText disableTypography primary="Statistics" style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
         </List>
         <Divider />
         <List>
           <ListItem button component="a" href ='/menu'>
 						<ListItemIcon><RestaurantMenuIcon/></ListItemIcon>
-						<ListItemText primary="Menu" />
+						<ListItemText disableTypography primary="Menu"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
         </List>
         <Divider />
         <List>
           <ListItem button component="a" href ='/general' >
             <ListItemIcon><GeneralIcon/></ListItemIcon>
-            <ListItemText primary="General" />
+            <ListItemText disableTypography primary="General"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
+        </List>
 				<Divider />
-        <List>
-          <ListItem button component="a" href ='/QRCode'>
-            <ListItemIcon><CropFreeIcon/></ListItemIcon>
-            <ListItemText primary="QR Code Generator" />
-          </ListItem>
-        </List>
-          <ListItem button component="a" href ='/general' >
-            <ListItemText primary="Alexa" />
-          </ListItem>
-        </List>
-        <Divider />
         <List>
           <ListItem button component="a" href ='/customize'>
             <ListItemIcon><CustomIcon/></ListItemIcon>
-            <ListItemText primary="Customize" />
+            <ListItemText disableTypography primary="Customize"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
           </ListItem>
         </List>
         <Divider />
         <List>
-          {['Staff'].map((text, index) => (
-            <ListItem button key={text} component="a" href ='/cookview'>
-              <ListItemIcon>{index % 2 === 0 ? <StaffIcon /> : <StaffIcon />  }</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          <ListItem button component="a" href ='/QRCode'>
+            <ListItemIcon><CropFreeIcon/></ListItemIcon>
+            <ListItemText disableTypography primary="QR Code Generator"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem button component="a" href ='/cookview'>
+            <ListItemIcon><StaffIcon/></ListItemIcon>
+            <ListItemText disableTypography primary="Staff"  style={{'fontFamily' :font, 'fontSize': '1.5em'}}/>
+          </ListItem>
         </List>
       </Drawer>
       <main className={classes.content} style={{'backgroundColor':'#fffffff'}}>
         <div className={classes.toolbar} />
         <Switch>
           <Route exact path="/manager">
-            <Stats/>
+            <Stats primary ={primary} font_color = {font_color} font ={font} />
           </Route>
           <Route path="/menu">
-            <Menu menu = {props.restaurantInfo[0][1]}/>
+            <Menu name = {props.restaurantInfo[1][1]} menu = {props.restaurantInfo[0][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
           </Route>
           <Route path="/general">
-            <StoreInfo info = {props.restaurantInfo[1][1]} />
+            <StoreInfo info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font}  />
           </Route>
           <Route path="/customize">
-            <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} />
+            <Customize info = {props.restaurantInfo[1][1]} logo = {props.imageBlob} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
           </Route>
           <Route path="/cookview">
-            <CookView/>
+            <CookView primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
           </Route>
 				  <Route path="/QRCode">
-					  <QRCode info = {props.restaurantInfo[1][1]} />
+					  <QRCode info = {props.restaurantInfo[1][1]} primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font} />
 				  </Route>
           <Route path="/account">
-            <AccountSettings/>
+            <AccountSettings primary ={primary}  secondary ={secondary}  tertiary ={tertiary}  font_color = {font_color} font ={font}/>
           </Route>
         </Switch>
         <footer className={classes.footerStyle}>

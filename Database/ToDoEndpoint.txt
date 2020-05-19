@@ -1,45 +1,52 @@
-Last Updated: 05/06/2020
-
-RECENTLY FINISHED:
-Web:
--PUT  /restaurant/new add a new restaurant
--EDIT update menu to include images
--EDIT update information to include cuisine
--EDIT update restaurant to include logo
--GET stats has been added (please check CurrentEndpoints.txt for information)
-
-Android:
--Edits to endpoints as requested
-
-Alexa:
-
-Database Redesign Test (Ignore as we will not pursue at this current time)
--GET  /test/restaurant/:restaurant_id gives restaurant information and full item information (with menu)
--GET  /test/menu/:id  gives list of items in a menu
--POST /test/menu/update update a menu
--PUT  /test/menu/add
--PUT  /test/menu/item/add add a item to a menu
-
-##################################################
+Last Updated: 05/12/2020
 
 TODO:
 Web
--POST allergen
--POST change position
--GET  services
--EDIT customization of order
--EDIT emails must be unique
--POST send message to customer
+-Update menu/update and menu/add to include optional image
 
 Android
--POST forget password endpoint | create temp password
--POST image for user
--PUT  customizations for orders
+-POST image for user profile
 
 Alexa
--POST assistance
--GET  allergens
--EDIT GET/alexa/restaurant_id to include greeting
+
+##################################################
+FINISHED Up to 5/12/2020:
+
+Web:
+-EDIT /restaurant/update to include cuisine
+-PUT /restaurant/new
+-EDIT /restaurant/customization to include alexa greeting and logo
+-POST /services/update - Updates service status for table
+-GET /services/:id - Retrieves service status for all tables
+-PUT /services/new - Creates a new table in the services table
+-PUT  /menu/allergens/add
+-EDIT /orders/:id and /orders/complete/:id to return customization
+-EDIT /staff/register and /staff/update to make sure email and staff_id are unique
+-POST /staff/password/forgot (Create temp password)
+-POST /staff/password/update --> Flag is set to false
+-EDIT defaults for registering new restaurant to ease requirements
+-EDIT /restaurant/new to include email for restaurant  
+  
+Android:
+-POST /services/update - Updates service status for table
+-EDIT /customer/inprogress/:id to include table number
+-EDIT /restaurant/:id to include alexa greeting
+-GET  /menu/image/:id for retrieving images
+-EDIT /menu/:id and /restaurant/:id endpoints to include allergens 
+-EDIT /restaurant/:id and /menu/:id to not return menu images
+-EDIT /favorites/add to make sure the favorite doesn't exist and add JWT verification
+-EDIT /orders/place to add allergens and JWT verification
+-EDIT /customer/inprogress/:id and /customer/history/:id to include customization
+-EDIT /customer/register and /customer/update to make sure email and customer_id are unique
+-POST /customer/password/forgot (Create temp password)
+-POST /customer/password/update --> Flag is set to false
+
+Alexa:
+-POST /services/update - Updates service status for table
+-EDIT /alexa/:id to include alexa greeting
+-EDIT /menu/:id and /restaurant/:id endpoints to add allergens 
+-EDIT /alexa/order/update to add allergens 
+
 
 ##################################################
 

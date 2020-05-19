@@ -12,22 +12,42 @@ public class ShoppingCartSingleton {
     private int restaurantID;
     private int startingHour;
     private int endingHour;
-    private String font;
+    private int font;
+    private String fontColor;
     private String primaryColor;
     private String secondaryColor;
     private String tertiaryColor;
 
     public ShoppingCartSingleton(){
-        this.items = new ArrayList<MenuItem>();
-        this.startingHour=0;
-        this.endingHour=0;
+        this.primaryColor = "#0B658A";
+        this.secondaryColor = "#102644";
+        this.tertiaryColor = "#FFFFFF";
+
+        this.items = new ArrayList<>();
     }
 
     public ShoppingCartSingleton(int restaurantID){
-        this.items = new ArrayList<MenuItem>();
         this.restaurantID = restaurantID;
-        this.startingHour=0;
-        this.endingHour=0;
+
+        this.primaryColor = "#0B658A";
+        this.secondaryColor = "#102644";
+        this.tertiaryColor = "#FFFFFF";
+
+        this.items = new ArrayList<MenuItem>();
+    }
+
+    public ShoppingCartSingleton(int restaurantID, String primaryColor, String secondaryColor, String tertiaryColor, int font, String fontColor, int startingHour, int endingHour){
+        this.restaurantID = restaurantID;
+
+        this.primaryColor = primaryColor;
+        this.secondaryColor = secondaryColor;
+        this.tertiaryColor = tertiaryColor;
+        this.font = font;
+        this.fontColor = fontColor;
+        this.startingHour = startingHour;
+        this.endingHour = endingHour;
+
+        this.items = new ArrayList<MenuItem>();
     }
 
     public ArrayList<MenuItem> getCart(){
@@ -74,31 +94,36 @@ public class ShoppingCartSingleton {
         return calories;
     }
 
-    public void setRestaurantID(int restaurantID) {
-        this.restaurantID = restaurantID;
-    }
-
     public int getRestaurantID() {
         return this.restaurantID;
     }
-    public void setStartingHour(int time){ this.startingHour=time; }
+    public void setStartingHour(int time){ this.startingHour = time; }
     public int  getStartingHour(){return this.startingHour;}
-    public void setEndingHour(int time){this.endingHour=time;}
+    public void setEndingHour(int time){this.endingHour = time;}
     public int  getEndingHour(){return this.endingHour;}
     public String toString(){
         String toReturn ="";
-        for(int i= 0; i<items.size();i++){
-            toReturn= toReturn+items.get(i).getNameOfItem()+ " Qty("+items.get(i).getQuantity()+")"+"\n";
+
+        for(int i = 0; i < items.size(); i++) {
+            toReturn = toReturn + items.get(i).getNameOfItem() + " Qty(" + items.get(i).getQuantity() + ")\n";
         }
         return toReturn;
     }
 
-    public void setFont(String font) {
+    public void setFont(int font) {
         this.font = font;
     }
 
-    public String getFont() {
+    public int getFont() {
         return this.font;
+    }
+
+    public void setFontColor(String fontColor) {
+        this.fontColor = fontColor;
+    }
+
+    public String getFontColor() {
+        return this.fontColor;
     }
 
     public void setPrimaryColor(String primaryColor) {

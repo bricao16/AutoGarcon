@@ -7,6 +7,7 @@ import Modal from 'react-bootstrap/Modal';
 import https from 'https';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import sizeOf from 'image-size';
 
 /* 
   This component is to allow the manager to 
@@ -21,14 +22,17 @@ class NewItem extends React.Component {
     this.state.type = props.prefill.type
     this.state.item_id = props.prefill.item_id
     this.state.show = false
+    this.state.imageName = "Choose file"
+    this.state.init = true
+    this.state.categories = []
     this.state.cookies = new Cookies();
-    this.state.user = this.state.cookies.get("mystaff")
-    this.parseStock(props.prefill.in_stock)
+    this.state.user = this.state.cookies.get("mystaff");
+    this.parseStock(props.prefill.in_stock);
     this.handleShow = this.handleShow.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-	this.handleValidation = this.handleValidation.bind(this);
+	  this.handleValidation = this.handleValidation.bind(this);
   }
 
   /* Used for handling changes to the input field */
@@ -42,8 +46,29 @@ class NewItem extends React.Component {
       this.setState({
         [name]: val
       });
-    }
-    else {
+    } else if (name === "image") {
+      /* https://riptutorial.com/javascript/example/14207/getting-binary-representation-of-an-image-file
+         preliminary code to handle getting local file and finally printing to console
+         the results of our function ArrayBufferToBinary().
+         change the file name 
+			*/
+
+      if (target.files[0]) {
+        this.setState({ imageName: target.files[0].name });
+
+        var file = target.files[0]; /* get handle to local file. */
+        var reader = new FileReader();
+        reader.onload = function(event) {
+          var data = event.target.result;
+          var finaldata = new Uint8Array(data);
+
+          /* set our file to the correct data */
+          file.buffer = finaldata;
+          this.setState({image:  file});
+        }.bind(this);
+        reader.readAsArrayBuffer(file); /* gets an ArrayBuffer of the file */
+      }
+    } else {
       this.setState({
         [name]: value
       });
@@ -56,10 +81,16 @@ class NewItem extends React.Component {
     
     let requestMethod;
     let endpoint;
-    let body;
     let message;
-	
-		if(this.state.name.length > 40){
+    
+    if (this.state.image) {
+      var bufImg = Buffer.from(this.state.image.buffer);
+      var dimensions = sizeOf(bufImg);
+    }
+
+    if(dimensions && Math.abs(dimensions.width - dimensions.height) > 100) {
+      this.handleValidation("Image dimensions need to be a square (Width equals height).");
+    } else if(this.state.name.length > 40){
 			this.handleValidation("Name field is too large. Please reduce to 40 characters or less.");
 		} else if(this.state.category.length > 40) {
 			this.handleValidation("Category field is too large.  Please reduce to 40 characters or less.");
@@ -78,46 +109,41 @@ class NewItem extends React.Component {
     } else if(this.state.description.length < 1){
       this.handleValidation("Description field is required.");
     } else {
-			
-			this.state.price = Number(this.state.price).toFixed(2);
-
-
-			// Non existent so need to add item
+      this.setState({
+        price: Number(this.state.price).toFixed(2)
+      })
+			/* Non existent so need to add item */
 			if (this.state.type === "default") {
 				message = "added"
 				requestMethod = "PUT"
 				endpoint = process.env.REACT_APP_DB + "/menu/add"
-				body = 'restaurant_id='+this.state.user.restaurant_id
-					+'&item_name='+this.state.name
-					+'&calorie_num='+this.state.calories
-					+'&category='+this.state.category
-					+'&price='+this.state.price
-          +'&in_stock='+this.state.in_stock
-          +'&description='+this.state.description
 			}
-			// Item needs to be edited
+			/* Item needs to be edited */
 			else {
 				message = "updated"
 				requestMethod = "POST"
 				endpoint = process.env.REACT_APP_DB + "/menu/update"
-				body = 'restaurant_id='+this.state.user.restaurant_id
-					+'&item_id='+this.state.item_id
-					+'&item_name='+this.state.name
-					+'&calorie_num='+this.state.calories
-					+'&category='+this.state.category
-					+'&price='+this.state.price
-          +'&in_stock='+this.state.in_stock
-          +'&description='+this.state.description
-			}
-			
+      }  
+      var bodyFormData = new FormData();
+      bodyFormData.set('restaurant_id', this.state.user.restaurant_id);
+      bodyFormData.set('item_id', this.state.item_id);
+      bodyFormData.set('item_name', this.state.name);
+      bodyFormData.set('calorie_num', this.state.calories);
+      bodyFormData.set('category', this.state.category);
+      bodyFormData.set('price', this.state.price);
+      bodyFormData.set('in_stock', this.state.in_stock);
+      bodyFormData.set('description', this.state.description);
+      bodyFormData.append('image', this.state.image);
+
 			axios({
 				method: requestMethod,
 				url: endpoint,
-				data: body,
+        data: bodyFormData,
 				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
+					'Content-Type': 'multipart/form-data',
 					'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
-				},
+        },
+        timeout: 8000,
 				httpsAgent: new https.Agent({  
 					rejectUnauthorized: false,
 				}),
@@ -130,18 +156,52 @@ class NewItem extends React.Component {
 				else {this.handleShow(true, message);}
 			})
 			.catch(error => {
-				this.handleShow(false, error.response.data);
+				if (error.response) {this.handleShow(false, error.response.data);}
+        else {this.handleShow(false, "Unknown error!");}
 				console.error("There was an error!", error);
 			});
 		}
   }
 
-  getCategories() {
-    return (
-      this.state.cookies.get('categories').map(category => 
-        <option value={category}>{category}</option>
-      )
-    )
+  /* For initializing the category options on the form */
+  async getCategories() {
+    let result = []
+    /* No longer first initialization */
+    this.setState({
+      init: false
+    });
+
+    await axios({
+      method: 'GET',
+      url: process.env.REACT_APP_DB + "/categories",
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
+      },
+      timeout: 8000,
+      httpsAgent: new https.Agent({  
+        rejectUnauthorized: false,
+      }),
+    })
+    /* fetch(endpoint, requestOptions) and await response */
+    .then(async response => {
+      await response;
+
+      if (response.status !== 200) {console.error("There was an error!");}
+      else {
+        for (let category in response.data) {
+          result.push(response.data[category].category_name);
+        }
+      }
+    })
+    .catch(error => {
+      console.error("There was an error!", error);
+    });
+
+    /* Set categories of internal state */
+    this.setState({
+      categories: result.map(category => <option key={category} value={category}>{category}</option>)
+    })
   }
 
   /* item needs to be deleted */
@@ -167,6 +227,7 @@ class NewItem extends React.Component {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer ' + this.state.cookies.get('mytoken')
       },
+      timeout: 8000,
       httpsAgent: new https.Agent({  
         rejectUnauthorized: false,
       }),
@@ -197,12 +258,12 @@ class NewItem extends React.Component {
     }
 
     this.setState({show: true});
-		console.log("here")
 		setTimeout(() => {
 			if (this.state.show) this.setState({show:false});
 		}, 5000)
   }
-	
+  
+  /* Handling of validation alerts */
   handleValidation(message){
 	  this.setState({response: message});
 	  this.setState({alertVariant: 'danger'});
@@ -213,8 +274,8 @@ class NewItem extends React.Component {
 			if (this.state.show) this.setState({show:false});
 		}, 5000)
   }
-  
 
+  /* Show and close modal methods */
   handleModalClose = () => this.setState({ModalShow: false});
   handleModalShow = () => this.setState({ModalShow: true});
 
@@ -231,19 +292,21 @@ class NewItem extends React.Component {
   }
 
   render(){
-    // Make sure stock is correctly represented as true or false in the component's state
+    /* Make sure stock is correctly represented as true or false in the component's state */
     this.parseStock(this.state.in_stock)
 
-    if(this.state.type === "default")
-    {
+    /* Update categories on load */
+    if (this.state.init) {
+      this.getCategories()
+    }
+
+    if(this.state.type === "default"){
       return ( 
         <Col className="pt-3 px-3">
           <Container>
-
             <Alert show={this.state.show} variant={this.state.alertVariant}>
               {this.state.response}
             </Alert>
-
             <Modal show={this.state.ModalShow} onHide={this.handleModalClose} centered>
               <Modal.Header closeButton>
                 <Modal.Title>Delete Item</Modal.Title>
@@ -258,59 +321,49 @@ class NewItem extends React.Component {
                 </Button>
               </Modal.Footer>
             </Modal>
-
             <div>
               <form className="pb-1">
-
                 <div className="form-group row">
                   <label className="col ">Name </label>
                     <input className="form-control col" type="text" name="name" onChange={this.handleInputChange} placeholder={this.state.name}>
-                    </input>
+                  </input>
                 </div>
-
                 <div className="form-group row">
                   <label className="col">Category </label>
                   <select name="category" className="form-control col" onChange={this.handleInputChange} placeholder={this.state.category}>
-                    {this.getCategories()}
-                    <option value="New Category">New Category</option>
+                    {this.state.categories}
                   </select>
                 </div>
-
-                  <div className="form-group row">
-                    <label className="col">Calories</label>
-                    <input className="form-control col" type="text" name="calories" onChange={this.handleInputChange} placeholder={this.state.calories}>
-                    </input>
+                 <div className="form-group row">
+									<label className="col">Calories</label>
+									<input className="form-control col" type="text" name="calories" onChange={this.handleInputChange} placeholder={this.state.calories}>
+									</input>
                 </div>
-
                 <div className="form-group row">
-                <label className="col">Price</label>
-                    <div className="col input-group mb-2 mr-sm-2">
-                      <div className="input-group-prepend">
-                        <div className="input-group-text">$</div>
-                      </div>
-                      <input type="text" className="form-control" name="price" onChange={this.handleInputChange} placeholder={this.state.price}>
-                      </input>
-                    </div>
+									<label className="col">Price</label>
+									<div className="col input-group mb-2 mr-sm-2">
+										<div className="input-group-prepend">
+											<div className="input-group-text">$</div>
+										</div>
+										<input type="text" className="form-control" name="price" onChange={this.handleInputChange} placeholder={this.state.price}>
+										</input>
+									</div>
                 </div>
-
                 <div className="pretty p-switch p-fill d-flex flex-row-reverse">
                   <div>
                     <input type="checkbox" id="in_stock" name="in_stock" onChange={this.handleInputChange} checked={this.state.in_stock}/> 
                     <label className="pl-2" htmlFor="in_stock">In stock</label>
                   </div>
-                </div>
-                
+                </div>         
                 <div className="form-group">
                   <label htmlFor="itemDescription">Description</label>
                   <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} placeholder="300 Character limit"></textarea>
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="exampleFormControlFile1">Picture</label>
-                  <input type="file" className="form-control-file" id="exampleFormControlFile1">
-                  </input>
+                <label htmlFor="customFile">Picture (Optional)</label>
+                <div className="custom-file">
+                  <input type="file" className="custom-file-input" id="customFile" name="image" accept="image/png, image/jpg, image/jpeg" onChange={this.handleInputChange}></input>
+                  <label className="custom-file-label" htmlFor="customFile">{this.state.imageName}</label>
                 </div>
-
                 <div className="d-flex justify-content-center row p-2">
                   <button onClick={this.handleSubmit} className="btn btn-primary" style = {{backgroundColor: '#0B658A', border: '#0B658A', width: '200px'}}>Submit</button>
                 </div>
@@ -354,21 +407,20 @@ class NewItem extends React.Component {
 
                 <div className="form-group row">
                   <label className="col ">Name </label>
-                    <input className="form-control col" type="text" name="name" value={this.state.name} onChange={this.handleInputChange} defaultValue={this.state.name}>
+                    <input className="form-control col" type="text" name="name" value={this.state.name} onChange={this.handleInputChange}>
                     </input>
                 </div>
 
                 <div className="form-group row">
                   <label className="col">Category </label>
                   <select name="category" className="form-control col" value={this.state.category} onChange={this.handleInputChange} placeholder={this.state.category}>
-                    {this.getCategories()}
-                    <option value="New Category">New Category</option>
+                    {this.state.categories}
                   </select>
                 </div>
 
                   <div className="form-group row">
                     <label className="col">Calories</label>
-                    <input className="form-control col" type="text" name="calories" value={this.state.calories} onChange={this.handleInputChange} defaultValue={this.state.calories}>
+                    <input className="form-control col" type="text" name="calories" value={this.state.calories} onChange={this.handleInputChange}>
                     </input>
                 </div>
 
@@ -378,7 +430,7 @@ class NewItem extends React.Component {
                       <div className="input-group-prepend">
                         <div className="input-group-text">$</div>
                       </div>
-                      <input type="text" className="form-control" name="price" value={this.state.price} onChange={this.handleInputChange} defaultValue={this.state.price}>
+                      <input type="text" className="form-control" name="price" value={this.state.price} onChange={this.handleInputChange}>
                       </input>
                     </div>
                 </div>
@@ -392,13 +444,13 @@ class NewItem extends React.Component {
                 
                 <div className="form-group">
                   <label htmlFor="itemDescription">Description</label>
-                  <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} defaultValue={this.state.description} placeholder="300 Character limit"></textarea>
+                  <textarea className="form-control" id="itemDescription" rows="3" name="description" onChange={this.handleInputChange} defaultValue={this.state.description}></textarea>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="exampleFormControlFile1">Picture</label>
-                  <input type="file" className="form-control-file" id="exampleFormControlFile1">
-                  </input>
+                <label htmlFor="customFile">Picture (Optional)</label>
+                <div className="custom-file">
+                  <input type="file" className="custom-file-input" id="customFile" name="image" accept="image/png, image/jpg, image/jpeg" onChange={this.handleInputChange}></input>
+                  <label className="custom-file-label" htmlFor="customFile">{this.state.imageName}</label>
                 </div>
 
                 <div className="d-flex justify-content-center row p-2">
@@ -411,7 +463,6 @@ class NewItem extends React.Component {
       ); 
     }
   }
-
 }
 
 export default NewItem;

@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {Container} from 'react-bootstrap';
 
-import Order from "./Order";
+import OrderCard from "./OrderCard";
 
 import '../../assets/orders/order.css'
 
@@ -40,7 +40,7 @@ function OrdersContainer(){
       if(i === this.props.selectedOrder){
         isSelected = true;
       }
-      orderComponents.push(<Order key={i} cardId={i} order={order} isSelected={isSelected} handleCardClick={this.props.handleCardClick} isCompleted={this.props.completed} />);
+      orderComponents.push(<OrderCard key={i} cardId={i} order={order} isSelected={isSelected} handleCardClick={this.props.handleCardClick} isCompleted={this.props.completed} />);
       i++;
     });
     return orderComponents;

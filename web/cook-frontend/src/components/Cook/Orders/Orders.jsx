@@ -3,22 +3,30 @@ import React from "react";
 import Header from './Header'
 import {Redirect, Route, Switch} from "react-router-dom";
 
-import DisplayOrders from "./DisplayOrders";
+// import ActiveOrders from "./ActiveOrders";
+// import CompletedOrders from "./CompletedOrders";
+import Body from "./Body";
 
 function Orders(){
 
+  const activeOrdersEndpoint = "/orders/";
+  const completedOrdersEndpoint = "/orders/complete/";
+
   return(
     <div>
-      <Header/>
       <Switch>
         <Route exact path="/cook/orders">
           <Redirect to="/cook/orders/active" />
         </Route>
         <Route exact path="/cook/orders/active">
-          <DisplayOrders />
+          {/*<ActiveOrders />*/}
+          <Header tab={0}/>
+          <Body ordersEndpoint={activeOrdersEndpoint} tab={'active'}/>
         </Route>
         <Route exact path="/cook/orders/completed">
-          <DisplayOrders />
+          {/*<CompletedOrders />*/}
+          <Header tab={1}/>
+          <Body ordersEndpoint={completedOrdersEndpoint} tab={'completed'}/>
         </Route>
       </Switch>
     </div>

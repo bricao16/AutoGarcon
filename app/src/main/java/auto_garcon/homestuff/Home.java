@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.SearchView;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,12 +22,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.auto_garcon.R;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.seismic.ShakeDetector;
@@ -35,7 +36,6 @@ import com.squareup.seismic.ShakeDetector;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,7 +43,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.accountstuff.Account;
+import auto_garcon.accountstuff.PasswordChange;
+import auto_garcon.accountstuff.Services;
 import auto_garcon.accountstuff.Settings;
 import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
@@ -61,9 +64,6 @@ This retrieve data of restaurant pages from database by using JASON with https c
 public class Home extends AppCompatActivity implements ShakeDetector.Listener, NavigationView.OnNavigationItemSelectedListener {
     //data fields
     private SharedPreference pref;//a file to keep track of user data as long as it's logged in.
-    RecyclerView favoritesRecyclerView;//showing a list of restaurant pages
-    HomeAdapter homeAdapter;//generating a list of restaurant pages
-    private ArrayList<RestaurantItem> items;//RestaurantItem generated through the database connection.
     //Here is for Search box
     //End of Search Box
     private List<String> allRestaurantNames;
@@ -71,33 +71,71 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
     AutoCompleteTextView searchBar;
     Random randomGenerator;
 
+    /**
+     * Called when the activity is starting.  This is where most initialization
+     * should go
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     * @see #onStart
+     * @see #onSaveInstanceState
+     * @see #onRestoreInstanceState
+     * @see #onPostCreate
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         pref = new SharedPreference(Home.this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        NukeSSLCerts.nuke();
+       // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);
         Toolbar toolbar = findViewById(R.id.xml_toolbar);
         NavigationView navigationView = findViewById(R.id.navigationView);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(Home.this, drawerLayout, toolbar, R.string.drawerOpen, R.string.drawerClose);
         searchBar = findViewById(R.id.search_bar);
+
+        TextView usernameSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_bar_name);
+        usernameSideNavBar.setText(pref.getUser().getUsername());
+
+        ImageView userImageSideNavBar = navigationView.getHeaderView(0).findViewById(R.id.side_nav_account_picture);
+        userImageSideNavBar.setImageBitmap(BitmapFactory.decodeByteArray(pref.getUser().getImageBitmap(), 0, pref.getUser().getImageBitmap().length));
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(Home.this);
 
+
+
+        /**
+         * It ties the bottom navigation bar xml element to a Java object and provides it with its
+         * onClick functionality to other activities and sets the listener.
+         */
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
+        badge.setVisible(true);
+        if(pref.getShoppingCart()!=null) {
+            if(pref.getShoppingCart().getCart().size()!=0){
+                badge.setNumber(pref.getShoppingCart().getCart().size());
+            }
+        }
+
 
         //shake feature
         randomGenerator = new Random();
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector shakeDetector = new ShakeDetector(this);
         shakeDetector.start(sensorManager);
-
-        items = new ArrayList<>();
-        favoritesRecyclerView = findViewById(R.id.favorites_list);
 
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -119,55 +157,63 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-        StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/favorites/" + pref.getUser().getUsername(),
+        StringRequest getRequestForFavorites = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/favorites/" + pref.getUser().getUsername(),
             new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    try {
-                        JSONObject favoritesJSONObject = new JSONObject(response);
-                        //parsing through json from get request to add them to menu
-                        Iterator<String> keys = favoritesJSONObject.keys();
-                        while(keys.hasNext()) {
-                            String key = keys.next();
+                    if(response.contains("Customer has no favorites")) {
+                        findViewById(R.id.no_favorites).setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        RecyclerView favoritesRecyclerView = findViewById(R.id.favorites_list);
 
-                            if (favoritesJSONObject.get(key) instanceof JSONObject) {
-                                RestaurantItem itemToBeAdded = new RestaurantItem();
-                                JSONObject item = favoritesJSONObject.getJSONObject(key);
+                        favoritesRecyclerView.setVisibility(View.VISIBLE);
+                        favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
 
-                                itemToBeAdded.setID(Integer.parseInt(item.get("restaurant_id").toString()));
-                                pref.addToFavorites(Integer.parseInt(item.get("restaurant_id").toString()));
+                        try {
+                            ArrayList<RestaurantItem> favoritesList = new ArrayList<RestaurantItem>();
+                            JSONObject favoritesJSONObject = new JSONObject(response);
+                            //parsing through json from get request to add them to menu
+                            Iterator<String> keys = favoritesJSONObject.keys();
+                            while(keys.hasNext()) {
+                                String key = keys.next();
 
-                                itemToBeAdded.setName(item.get("restaurant_name").toString());
-                                itemToBeAdded.setAddress(item.get("address").toString());
-                                itemToBeAdded.setPhoneNumber(Long.parseLong(item.get("phone_number").toString()));
-                                itemToBeAdded.setOpeningTime(Integer.parseInt(item.get("opening_time").toString()));
-                                itemToBeAdded.setClosingTime(Integer.parseInt(item.get("closing_time").toString()));
+                                if (favoritesJSONObject.get(key) instanceof JSONObject) {
+                                    RestaurantItem itemToBeAdded = new RestaurantItem();
+                                    JSONObject item = favoritesJSONObject.getJSONObject(key);
 
-                                JSONObject obj = item.getJSONObject("logo");
-                                byte[] temp = new byte[obj.getJSONArray("data").length()];
+                                    itemToBeAdded.setID(Integer.parseInt(item.get("restaurant_id").toString()));
+                                    pref.addToFavorites(Integer.parseInt(item.get("restaurant_id").toString()));
 
-                                for(int i = 0; i < obj.getJSONArray("data").length(); i++) {
-                                    temp[i] = (byte) (((int) obj.getJSONArray("data").get(i)) & 0xFF);
+                                    itemToBeAdded.setName(item.get("restaurant_name").toString());
+                                    itemToBeAdded.setAddress(item.get("address").toString());
+                                    itemToBeAdded.setPhoneNumber(Long.parseLong(item.get("phone_number").toString()));
+                                    itemToBeAdded.setOpeningTime(Integer.parseInt(item.get("opening_time").toString()));
+                                    itemToBeAdded.setClosingTime(Integer.parseInt(item.get("closing_time").toString()));
+
+                                    int font = Home.this.getResources().getIdentifier(item.get("font").toString().toLowerCase().replaceAll("\\s","") + "_regular",
+                                            "font", Home.this.getPackageName());
+
+                                    itemToBeAdded.setFont(font);
+                                    itemToBeAdded.setFontColor(item.get("font_color").toString());
+                                    itemToBeAdded.setSecondaryColor(item.get("secondary_color").toString());
+
+                                    JSONObject obj = item.getJSONObject("logo");
+                                    byte[] temp = new byte[obj.getJSONArray("data").length()];
+
+                                    for(int i = 0; i < obj.getJSONArray("data").length(); i++) {
+                                        temp[i] = (byte) (((int) obj.getJSONArray("data").get(i)) & 0xFF);
+                                    }
+
+                                    itemToBeAdded.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
+                                    favoritesList.add(itemToBeAdded);
                                 }
-
-                                itemToBeAdded.setImageBitmap(BitmapFactory.decodeByteArray(temp, 0, temp.length));
-                                items.add(itemToBeAdded);
                             }
-                        }
 
-                        if(response.contains("Customer has no favorites")) {
-                            favoritesRecyclerView.setVisibility(View.GONE);
+                            favoritesRecyclerView.setAdapter(new HomeAdapter(Home.this, favoritesList));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        else {
-                            ConstraintLayout constraintLayout = findViewById(R.id.no_favorites);
-                            constraintLayout.setVisibility(View.GONE);
-                            Toast.makeText(Home.this, items.toString(),Toast.LENGTH_LONG).show();
-                            favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((Home.this)));
-                            homeAdapter = new HomeAdapter(Home.this, items);
-                            favoritesRecyclerView.setAdapter(homeAdapter);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }
             },
@@ -179,7 +225,15 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
                     }
                 }
             }
-        );
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                HashMap<String,String> headers = new HashMap<String,String>();
+                headers.put("Authorization","Bearer " + pref.getAuth());
+                return headers;
+            }
+        };
 
         StringRequest getRequestForSearch = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/restaurants",
             new Response.Listener<String>() {
@@ -234,34 +288,70 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         VolleySingleton.getInstance(Home.this).addToRequestQueue(getRequestForSearch);
     }
 
+    /** Called on the main thread when the device is shaken. */
     @Override
     public void hearShake(){
         allRestaurantIDs.get(randomGenerator.nextInt(allRestaurantNames.size()));
     }
-
-    //onClick for side nav bar
+    /**
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param nav_item The selected item
+     * @return true to display the item as the selected item
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem nav_item){
         switch(nav_item.getItemId()){
             case R.id.account:
-                startActivity(new Intent(Home.this, Account.class));
+                startActivity(new Intent(getBaseContext(), Account.class));
                 break;
             case R.id.order_history:
-                startActivity(new Intent(Home.this, OrderHistory.class));
+                startActivity(new Intent(getBaseContext(), OrderHistory.class));
                 break;
             case R.id.current_orders:
-                startActivity(new Intent(Home.this, CurrentOrders.class));
+                startActivity(new Intent(getBaseContext(), CurrentOrders.class));
                 break;
             case R.id.settings:
-                startActivity(new Intent(Home.this, Settings.class));
+                startActivity(new Intent(getBaseContext(), Settings.class));
+                break;
+            case R.id.services:
+                startActivity(new Intent(getBaseContext(),Services.class));
                 break;
             case R.id.log_out:
                 pref.changeLogStatus(false);
                 pref.logOut();
 
-                startActivity(new Intent(Home.this, Login.class));
+                startActivity(new Intent(getBaseContext(), Login.class));
                 break;
         }
         return false;
+    }
+    /**
+     * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
+     * the activity had been stopped, but is now again being displayed to the
+     * user. It will usually be followed by {@link #onResume}. This is a good place to begin
+     * drawing visual elements, running animations, etc.
+     *
+     * <p>You can call {@link #finish} from within this function, in
+     * which case {@link #onStop} will be immediately called after {@link #onStart} without the
+     * lifecycle transitions in-between ({@link #onResume}, {@link #onPause}, etc) executing.
+     *
+     * <p><em>Derived classes must call through to the super class's
+     * implementation of this method.  If they do not, an exception will be
+     * thrown.</em></p>
+     *
+     * @see #onCreate
+     * @see #onStop
+     * @see #onResume
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(pref.getUser().getChangePassword()==1){//check if they have updated their password
+            //if not send them back to PasswordChange page and force them to update their password
+            Intent intent = new Intent(Home.this, PasswordChange.class);
+            startActivity(intent);
+            Toast.makeText(this,"Please Update your Password",Toast.LENGTH_LONG).show();
+        }
     }
 }
