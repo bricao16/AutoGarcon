@@ -153,7 +153,20 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                         time = time + 12;
                     }
 
-                     time = Integer.parseInt(Integer.toString(time) + Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
+                    String minute = Integer.toString(Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
+
+                    if(minute.length() < 2) {
+                        time = Integer.parseInt(time + "0" + Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
+                    }
+                    else {
+                        time = Integer.parseInt(Integer.toString(time) + Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
+                    }
+
+
+                    Log.d("asdfa", time+"");
+                    Log.d("asdfa", pref.getShoppingCart().getStartingHour()+"");
+                    Log.d("asdfa", pref.getShoppingCart().getEndingHour()+"");
+
 
                     if(pref.getShoppingCart().getStartingHour() > time || pref.getShoppingCart().getEndingHour() < time){
                         Toast.makeText(ShoppingCart.this,"The restaurant is currently closed.",Toast.LENGTH_LONG).show();
