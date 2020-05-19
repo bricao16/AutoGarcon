@@ -1,5 +1,5 @@
 /*
-	AutoGarcon API
+	AutoGarcon HTTPS API
 	Tucker Urbanski
 	Contributors: PJ Cappitelli, Emma Sinn, Brandon Tran
 	Date Created: 3/2/2020
@@ -72,6 +72,7 @@ db.connect((err) => {
 }); //db.connect
 
 //Start server
+//var server = app.listen(8000);
 https.createServer(options, app).listen(8000);
 console.log('Now listening on port 8000');
 
@@ -838,7 +839,7 @@ app.get('/services/:id', verifyToken, (req, res) => {
 		On success:
 			Successfully updated status!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, order_num, order_status
+			Error: Missing parameter. Required parameters: restaurant_id, order_num, status
 		If the restaurant/table doesn't exist:
 			Error: table does not exist at restaurant
 		If invalid status is entered:
