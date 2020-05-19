@@ -10,11 +10,11 @@ will be able to reorder the item and add them to the cart.-->
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/gray">
+
 <androidx.cardview.widget.CardView
     android:id="@+id/order_tile"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     app:cardCornerRadius="8dp"
     app:cardElevation="5dp"
     app:cardUseCompatPadding="true"
@@ -24,8 +24,7 @@ will be able to reorder the item and add them to the cart.-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:layout_height="wrap_content">
 
         <!--This button will reorder all of the items in this previous order.-->
         <Button
