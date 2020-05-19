@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- xml layout for the login activity that allows user to login with username and
-     password and also can navigate to the register activity -->
+     password and also can navigate to the register activity. This page is used for the user
+     to sign in to the application. This also allows the user to sign up and go to the forgot
+     password page.-->
 
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -12,6 +14,7 @@
     android:background="@color/white"
     tools:context="auto_garcon.initialpages.Login">
 
+    <!--This text view shows the AutoGarcon title. -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,12 +45,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.3" />
 
+
     <!-- password input -->
-
-    <!-- sign in button -->
-
-    <!-- sign up text that links to register activity -->
-
     <EditText
         android:id="@+id/password_enter_login"
         android:layout_width="250dp"
@@ -63,8 +62,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.4" />
 
-    <!-- image of logo for auto-garcon -->
 
+    <!-- This is the sign in button that leads to signing in if the credentials are correct.-->
     <Button
         android:id="@+id/sign_in_button_login"
         style="?android:attr/borderlessButtonStyle"
@@ -77,6 +76,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.6" />
 
+    <!--this text view is used to show the sign up option. -->
     <TextView
         android:id="@+id/no_account_login"
         android:layout_width="wrap_content"
@@ -92,6 +92,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.7" />
 
+    <!--This text view is used to direct to the forgot password link. -->
     <TextView
         android:id="@+id/forgot_password_login"
         android:layout_width="wrap_content"

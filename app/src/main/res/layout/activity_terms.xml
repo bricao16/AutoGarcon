@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This XML file is used for the layout of the terms and conditions. This page will
+load in a document with text of all of the terms and conditions for the user to read about it.-->
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -13,12 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!--This is the top bar-->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/xml_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent" />
 
+        <!--This is the text view displaying the title of the page. -->
         <TextView
             android:id="@+id/userTermText"
             android:layout_width="243dp"
@@ -45,6 +49,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:menu="@menu/bottom_nav_menu" />
 
+        <!--This text view will contain the terms and conditions.-->
         <TextView
             android:id="@+id/textView"
             android:layout_width="318dp"

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--This XML file is the layout of the popup from pressing reorder in the order history. This
+ shows the user what can be added to the cart and give them the option to add it to the cart.-->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,6 +9,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/light_gray">
 
+    <!--This text view shows the name of the restaurant. -->
     <TextView
         android:id="@+id/Restaurant"
         android:layout_width="wrap_content"
@@ -23,6 +26,8 @@
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!--This text view shows the user the items in the order history.-->
     <TextView
         android:id="@+id/order_items"
         android:layout_width="217dp"
@@ -37,6 +42,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--This item is the close button for the pop up.-->
     <ImageButton
         android:id="@+id/add_to_cart_popup_close"
         android:layout_width="30dp"

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- xml layout for the order history activity which contains the user's most
-     recent orders from all restaurants -->
+<!-- xml layout for the current order of the user. This will show the current order
+ that the kitchen is working on. This allows the user to view the order that they just
+ placed and be able to tell if the order has been processed.-->
 
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -36,6 +37,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:menu="@menu/bottom_nav_menu" />
 
+        <!--This is a container that will hold and display the list of current ordered items-->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/current_orders_list"
             android:layout_width="match_parent"
@@ -56,6 +58,7 @@
             android:layout_height="match_parent"
             android:visibility="gone">
 
+            <!--This is an image that will be displayed when there are no items in the cart. -->
             <ImageView
                 android:layout_width="155dp"
                 android:layout_height="155dp"
@@ -66,6 +69,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.4" />
 
+            <!--This is the message that will be displayed when there are no items in the cart. -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

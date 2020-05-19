@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -110,6 +111,8 @@ public class PasswordChange extends AppCompatActivity {
                                 params.put("customer_id", pref.getUser().getUsername());
                                 params.put("current_password", oldPasswordString);
                                 params.put("new_password", newPasswordString);
+
+                                Log.d("SDSDFIO", params.toString());
                                 return params;
                             }
 

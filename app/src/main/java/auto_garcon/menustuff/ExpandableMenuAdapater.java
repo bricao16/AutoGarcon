@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -272,6 +273,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
 
 
                                 shoppingCart.addToCart(itemToBeAdded);
+
                                 pref.setShoppingCart(shoppingCart);
                                 badge.setNumber(shoppingCart.getCart().size());
                                 badge.setVisible(false);

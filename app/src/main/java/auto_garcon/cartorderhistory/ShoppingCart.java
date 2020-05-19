@@ -211,6 +211,31 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                         confirmPopup.findViewById(R.id.popup_yes).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                obj = new JSONObject();
+
+                                /** Creates and builds the JSON object that will eventually be sent to the database. */
+                                try {
+                                    JSONObject order = new JSONObject();
+                                    for (int i = 0; i < shoppingCart.getCart().size(); i++) {
+                                        JSONObject item = new JSONObject();
+
+                                        item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
+                                        item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
+                                        item.put("customization", "FFF");
+
+                                        order.put(Integer.toString(i), item);
+                                    }
+
+                                    obj.put("restaurant_id", Integer.toString(shoppingCart.getRestaurantID()));
+                                    obj.put("customer_id", pref.getUser().getUsername());
+                                    obj.put("table_num", 6);
+                                    obj.put("order", order);
+                                } catch (JSONException e) {
+                                    //TODO figure out how to handle this other than stack trace
+                                    e.printStackTrace();
+                                }
+
+
                                 /** Where the put request starts to get created. */
 
                                 /**
@@ -233,53 +258,21 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                         }
                                 ) {
                                     @Override
-                                    protected Map<String, String> getParams() {// inserting parameters for the put request
-                                        Map<String, String> params = new HashMap<String, String>();
+                                    public String getBodyContentType() {
+                                        return "application/json; charset=utf-8";
+                                    }
 
-                                        /** Creates and builds the JSON object that will eventually be sent to the database. */
-                                        JSONObject order = new JSONObject();
-
-                                        try {
-                                            for (int i = 0; i < pref.getShoppingCart().getCart().size(); i++) {
-                                                JSONObject item = new JSONObject();
-
-                                                item.put("item", Integer.toString(pref.getShoppingCart().getCart().get(i).getItemID()));
-                                                item.put("quantity", Integer.toString(pref.getShoppingCart().getCart().get(i).getQuantity()));
-                                                item.put("customization", pref.getShoppingCart().getCart().get(i).getCustomization());
-                                                order.put(Integer.toString(i), item);
-                                            }
-                                        } catch (JSONException e) {
-                                            //TODO figure out how to handle this other than stack trace
-                                            e.printStackTrace();
-                                            Toast.makeText(ShoppingCart.this, "Error occured", Toast.LENGTH_LONG).show();
-                                        }
-
-                                        params.put("restaurant_id", "124");
-                                        params.put("customer_id", "testing777");
-                                        params.put("table_num", "6");
-                                        params.put("order", order.toString());
-                                        Log.d("hello", "getParams: "+order.toString());
-
-
-                                        return params;
+                                    @Override
+                                    public byte[] getBody() {
+                                            return  obj.toString().getBytes();
                                     }
 
                                     @Override
                                     public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
                                         HashMap<String, String> headers = new HashMap<>();
-                                        Log.d("string1",pref.getAuth());
                                         headers.put("Authorization","Bearer " + pref.getAuth());
-                                        return headers;
-                                    }
 
-                                    @Override
-                                    public byte[] getBody() throws AuthFailureError {
-                                        Map<String, String> params = new HashMap<String, String>();
-                                        params.put("restaurant_id", "124");
-                                        params.put("customer_id", "testing777");
-                                        params.put("table_num", "6");
-                                        params.put("order", order.toString());
-                                        return super.getBody();
+                                        return headers;
                                     }
                                 };
 

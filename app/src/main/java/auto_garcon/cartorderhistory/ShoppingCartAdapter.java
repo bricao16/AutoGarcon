@@ -39,7 +39,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     //A constructor to listen the user actions (add, decrement, and remove)
     public boolean isPlaced;
     private boolean isChanged;
-    private Dialog menuItemEditPopup;
+    private EditText customization;
     /**
      * This constructor initializes our variables passed in from the shopping cart page
      * @param context
@@ -189,8 +189,10 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 customizationPopup.setContentView(R.layout.shopping_cart_edit_popup);
                 customizationPopup.show();
 
-                final EditText customization = customizationPopup.findViewById(R.id.text_menu_item_edit);
+                customization = customizationPopup.findViewById(R.id.text_menu_item_edit);
                 customization.setText(menuItemArrayList.get(position).getCustomization());
+
+                Log.d("SDasdfFSDF",menuItemArrayList.get(position).getCustomization());
 
                 customizationPopup.findViewById(R.id.menu_item_edit_submit).setOnClickListener(new View.OnClickListener() {
                     @Override

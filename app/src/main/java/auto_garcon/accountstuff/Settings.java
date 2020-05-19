@@ -31,8 +31,7 @@ import auto_garcon.menustuff.Menu;
 import auto_garcon.singleton.SharedPreference;
 
 /**
- * This class handles all settings related to the User
- * This class allows the user to custiomize certian features of there account
+ * This class displays a menu for a user to see the privacy policy, the faq, and the terms and conditions
  * This class is linked to settings xml which also has a navigationBar that allows it to navigate to other pages
  */
 public class Settings extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
