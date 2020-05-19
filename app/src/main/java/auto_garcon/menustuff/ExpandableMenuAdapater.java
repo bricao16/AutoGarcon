@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.singleton.SharedPreference;
 import auto_garcon.singleton.ShoppingCartSingleton;
 import auto_garcon.singleton.VolleySingleton;
@@ -80,7 +81,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
      */
     public ExpandableMenuAdapater(Context context, List<String> listDataHeader, HashMap<String, ArrayList<MenuItem>> listHashMap, int restaurantID, int font, String fontColor,
                                   String primaryColor, String secondaryColor, String tertiaryColor, int opening, int closing, BadgeDrawable drawable) {
-        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.context));//error handling for unexpected crashes
 
         this.context = context;
         this.badge = drawable;

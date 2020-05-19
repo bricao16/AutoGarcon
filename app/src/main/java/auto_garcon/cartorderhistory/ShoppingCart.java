@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Services;
@@ -90,7 +91,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         /**
          *  Get the current shopping cart from what is currently being stored in shared

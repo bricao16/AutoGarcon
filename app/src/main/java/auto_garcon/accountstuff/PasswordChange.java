@@ -21,6 +21,7 @@ import com.example.auto_garcon.R;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
 import auto_garcon.singleton.SharedPreference;
@@ -53,7 +54,7 @@ public class PasswordChange extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         pref = new SharedPreference(this);
 
@@ -74,6 +75,13 @@ public class PasswordChange extends AppCompatActivity {
                 final String oldPasswordString = oldPassword.getText().toString().trim();
                 String confirmPasswordString = confirmPassword.getText().toString().trim();
                 final String newPasswordString = newPassword.getText().toString().trim();
+                boolean passwordNumber =false;
+
+                for(int i = 0 ; i<newPasswordString.length();i++){
+                    if(Character.isDigit(newPasswordString.charAt(i))){
+                        passwordNumber=true;
+                    }
+                }
 
                 if (TextUtils.isEmpty(oldPasswordString)) {
                     oldPassword.setError("Please enter your old password");
@@ -87,8 +95,13 @@ public class PasswordChange extends AppCompatActivity {
                 } else if (!oldPassword.getText().toString().trim().equals(confirmPassword.getText().toString().trim())) {
                     Toast.makeText(PasswordChange.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                     confirmPassword.requestFocus();
-                } else if (newPassword.getText().toString().trim().length() < 6) {
-                    newPassword.setError("Password Must be Greater than 6 Characters");
+                } else if (newPassword.getText().toString().trim().length() < 8) {
+                    newPassword.setError("Password Must be Greater than 8 Characters");
+                    newPassword.requestFocus();
+
+                } else if(passwordNumber!=true){
+                    confirmPassword.setError("Password Must contain at least one Number");
+                    confirmPassword.requestFocus();
                 } else {
                     StringRequest postRequestForPasswordUpdate = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/customer/password/update",
                             new Response.Listener<String>() {

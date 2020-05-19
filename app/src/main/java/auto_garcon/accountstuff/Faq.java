@@ -21,6 +21,7 @@ import com.example.auto_garcon.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
@@ -44,7 +45,7 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         pref = new SharedPreference(this);
 

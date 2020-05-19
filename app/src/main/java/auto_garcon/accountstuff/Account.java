@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.VolleyMultipartRequest;
 import auto_garcon.homestuff.Home;
 import auto_garcon.initialpages.Login;
@@ -75,7 +76,7 @@ public class Account extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         pref = new SharedPreference(this);
 
@@ -189,6 +190,10 @@ public class Account extends AppCompatActivity {
                     changeEmail.requestFocus();
                     validInputs = false;
                 }
+                if(email.length()>50){
+                    changeEmail.setError("Please enter a email less than 50 characters");
+                    changeEmail.requestFocus();
+                }
                 if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {// use android built patterns function to test if the email matches
                     changeEmail.setError("Please enter a valid email");
                     changeEmail.requestFocus();
@@ -203,6 +208,11 @@ public class Account extends AppCompatActivity {
                     changeUsername.setError("Please enter a username with less than 50 characters");
                     changeUsername.requestFocus();
                     validInputs = false;
+                }
+                if(android.text.TextUtils.isDigitsOnly(username)){
+                    changeUsername.setError("Please enter a username that is not only numbers");
+                    changeUsername.requestFocus();
+                    validInputs =false;
                 }
 
                 if (validInputs == true) {// if all the requirements are met than we can send our put request to the database

@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Services;
@@ -85,6 +86,7 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         logos = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         pref = new SharedPreference(this);
         //creating side nav drawer

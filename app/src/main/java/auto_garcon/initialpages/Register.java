@@ -51,8 +51,8 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        pref = new SharedPreference(this);
 
+        pref = new SharedPreference(this);
         /**
          * ties xml elemnts to Java objects and sets some properties from SharePreferences
          */
@@ -74,7 +74,13 @@ public class Register extends AppCompatActivity {
                 final String email = emailId.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String passwd = password.getText().toString().trim();//extracted data from xml object and converted into a string
                 final String username = userID.getText().toString().trim();//extracted data from xml object and converted into a string
+                boolean passwordNumber =false;
 
+                for(int i = 0 ; i<passwd.length();i++){
+                       if(Character.isDigit(passwd.charAt(i))){
+                           passwordNumber=true;
+                       }
+                }
                 boolean validInputs = true;
 
                 if (TextUtils.isEmpty(firstName)) {//checking if user entered there firstName
@@ -82,6 +88,7 @@ public class Register extends AppCompatActivity {
                     userFirst.requestFocus();
                     validInputs = false;
                 }
+
                 if (TextUtils.isEmpty(lastName)) {//checking if user entered there lastName
                     userLast.setError("Please enter last name");
                     userLast.requestFocus();
@@ -117,10 +124,20 @@ public class Register extends AppCompatActivity {
                     password.requestFocus();
                     validInputs = false;
                 }
+                if(passwordNumber!=true){
+                    password.setError("Password Must contain at least one Number");
+                    password.requestFocus();
+                    validInputs =false;
+                }
                 if (TextUtils.isEmpty(username)) {
                     userID.setError("Please enter a username");
                     userID.requestFocus();
                     validInputs = false;
+                }
+                if(android.text.TextUtils.isDigitsOnly(username)){
+                    userID.setError("Please enter a username that is not only numbers");
+                    userID.requestFocus();
+                    validInputs =false;
                 }
                 if (validInputs == true) {// if all the requirments are met than we can send our put request to the database
                     Intent imageSelection = new Intent(Register.this, AccountImageSelectionRegister.class);

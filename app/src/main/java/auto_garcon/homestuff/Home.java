@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.Account;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.accountstuff.Services;
@@ -89,7 +90,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         pref = new SharedPreference(Home.this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.home_main);

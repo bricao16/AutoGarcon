@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.accountstuff.PasswordChange;
 import auto_garcon.homestuff.Home;
 import auto_garcon.singleton.SharedPreference;
@@ -57,7 +58,7 @@ public class TwoButtonPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         setContentView(R.layout.activity_two_button_page);
         pref = new SharedPreference(this);//file for keeping track of cart

@@ -22,6 +22,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import auto_garcon.ExceptionHandler;
 import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
 import auto_garcon.homestuff.Home;
@@ -57,6 +58,8 @@ public class Terms extends AppCompatActivity implements NavigationView.OnNavigat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conditions);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
         pref = new SharedPreference(this);
 
 
