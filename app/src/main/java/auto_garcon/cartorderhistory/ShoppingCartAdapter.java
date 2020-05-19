@@ -192,8 +192,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 customization = customizationPopup.findViewById(R.id.text_menu_item_edit);
                 customization.setText(menuItemArrayList.get(position).getCustomization());
 
-                Log.d("SDasdfFSDF", menuItemArrayList.get(position).getCustomization());
-
                 customizationPopup.findViewById(R.id.menu_item_edit_submit).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

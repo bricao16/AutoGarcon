@@ -196,7 +196,15 @@ public class CurrentOrders extends AppCompatActivity implements NavigationView.O
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {//if our put request is un-successful we want display that there was an error to the user
-                        // error
+                        if (error.networkResponse.statusCode == 401) {
+                            pref.changeLogStatus(false);
+
+                            startActivity(new Intent(getBaseContext(), Login.class));
+                            Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                        }
+                        if (error.networkResponse.statusCode == 500) {
+                            Toast.makeText(getBaseContext(), "Error retrieving current orders", Toast.LENGTH_LONG).show();
+                        }
                         error.printStackTrace();
                     }
                 }

@@ -140,11 +140,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
             PlaceOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int time = Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR);
-
-                    if (time < 12) {
-                        time = time + 12;
-                    }
+                    int time = Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.HOUR_OF_DAY);
 
                     String minute = Integer.toString(Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
 
@@ -153,7 +149,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                     } else {
                         time = Integer.parseInt(Integer.toString(time) + Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
                     }
-
                     if (pref.getShoppingCart().getStartingHour() > time || pref.getShoppingCart().getEndingHour() < time) {
                         Toast.makeText(ShoppingCart.this, "The restaurant is currently closed.", Toast.LENGTH_LONG).show();
                     }
@@ -243,7 +238,18 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                             @Override
                                             public void onErrorResponse(VolleyError error) {
                                                 error.printStackTrace();
-                                                Toast.makeText(ShoppingCart.this, error.toString(), Toast.LENGTH_LONG).show();
+                                                if (error.networkResponse.statusCode == 400) {
+                                                    Toast.makeText(getBaseContext(), "Missing parameter", Toast.LENGTH_LONG).show();
+                                                }
+                                                if (error.networkResponse.statusCode == 401) {
+                                                    pref.changeLogStatus(false);
+
+                                                    startActivity(new Intent(getBaseContext(), Login.class));
+                                                    Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                                                }
+                                                if (error.networkResponse.statusCode == 500) {
+                                                    Toast.makeText(getBaseContext(), "session expired", Toast.LENGTH_LONG).show();
+                                                }
                                             }
                                         }
                                 ) {
