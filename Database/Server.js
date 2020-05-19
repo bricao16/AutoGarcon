@@ -1,5 +1,5 @@
 /*
-	AutoGarcon API
+	AutoGarcon HTTP API
 	Tucker Urbanski
 	Contributors: PJ Cappitelli, Emma Sinn, Brandon Tran
 	Date Created: 3/2/2020
@@ -827,7 +827,7 @@ app.get('/services/:id', verifyToken, (req, res) => {
 		On success:
 			Successfully updated status!
 		If any inputs are missing:
-			Error: Missing parameter. Required parameters: restaurant_id, order_num, order_status
+			Error: Missing parameter. Required parameters: restaurant_id, order_num, status
 		If the restaurant/table doesn't exist:
 			Error: table does not exist at restaurant
 		If invalid status is entered:
@@ -856,7 +856,7 @@ app.post('/services/update', (req, res) => {
 				return;
 			}	//if
 
-			query = 'UPDATE sample.services SET service_status = ? WHERE restaurant_id = ? AND table_num = ?';
+			query = 'UPDATE sample.services SET service_status = ? WHERE restaurant_id = ? AND table_n	um = ?';
 			parameters = [req.body.status, req.body.restaurant_id, req.body.table_num];
 
 			//Edit status in db:
