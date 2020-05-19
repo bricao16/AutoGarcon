@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--This file displays the favorite restaurant tiles. This will display each restaurant to the user and
+ help them identify the name of the restaurant, the location, the hours the restaurant is open, the restaurant
+ phone number and also the restaurant logo.-->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -21,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!--This displays the restaurant logo. -->
             <ImageView
                 android:id="@+id/restaurant_picture"
                 android:layout_width="75dp"
@@ -30,6 +34,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_launcher_foreground" />
 
+            <!--This displays the restaurant title. -->
             <TextView
                 android:id="@+id/restaurant_title"
                 android:layout_width="0dp"
@@ -46,6 +51,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
 
+            <!--This displays the restaurant location. -->
             <TextView
                 android:id="@+id/restaurant_location"
                 android:layout_width="0dp"
@@ -60,6 +66,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/restaurant_title"
                 app:layout_constraintVertical_bias="0.0" />
 
+            <!--This displays the restaurant hours. -->
             <TextView
                 android:id="@+id/restaurant_hours"
                 android:layout_width="0dp"
@@ -74,6 +81,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/restaurant_location"
                 app:layout_constraintVertical_bias="0.0" />
 
+            <!--This displays the restaurant number. -->
             <TextView
                 android:id="@+id/restaurant_number"
                 android:layout_width="0dp"

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--This page is used for the current order. It is the layout of all of the items in current order
+ It will show all of the items and display the restaurant logo and the restaurant name.-->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -29,6 +31,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_launcher_foreground" />
 
+            <!--This displays the restaurant name. -->
             <TextView
                 android:id="@+id/restaurant_title"
                 android:layout_width="0dp"
@@ -43,6 +46,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/list_of_items"/>
 
+            <!--This is a container that holds the list of items. -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_of_items"
                 android:layout_width="0dp"
@@ -52,6 +56,7 @@
                 app:layout_constraintStart_toEndOf="@+id/restaurant_picture"
                 app:layout_constraintTop_toBottomOf="@id/restaurant_title"/>
 
+            <!--This text view shows the total cost of the whole cart.-->
             <TextView
                 android:id="@+id/total_cost"
                 android:layout_width="wrap_content"

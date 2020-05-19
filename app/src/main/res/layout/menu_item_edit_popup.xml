@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--This XML file is the layout for the pop up, when clicking on customizing order for one
+ of the items in the menu. This pop up shows a text box that you can add comments to send to the
+kitchen. The use of this would be for customizations like no pickles or no cheese.-->
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
@@ -10,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <!--This text box is the area for the message to be sent to the kitchen. -->
         <EditText
             android:id="@+id/text_menu_item_edit"
             android:layout_width="230dp"
@@ -35,6 +39,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_menu_item_edit"/>
 
+        <!--This is the submit button, that the user will press when they are done with the message. -->
         <ImageButton
             android:id="@+id/menu_item_edit_close"
             android:layout_width="25dp"

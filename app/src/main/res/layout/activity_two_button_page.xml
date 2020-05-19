@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- xml layout that appears after logging in/loading screen where the user can
-     choose to navigate to the QR code activity or home activity -->
+     choose to navigate to the QR code activity or home activity. This page is the first
+     page that the user will see after signing in to the application.-->
 
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -12,9 +13,6 @@
     tools:context="auto_garcon.initialpages.TwoButtonPage">
 
     <!-- image of logo for auto-garcon -->
-
-    <!-- scanner button -->
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,6 +27,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.15" />
 
+
+        <!-- scanner button -->
         <Button
             android:id="@+id/scanner_button"
             android:layout_width="255dp"
@@ -43,7 +43,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.55" />
-
 
     <!-- home button -->
     <Button

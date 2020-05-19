@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--This XML file is used as the pop up when the user presses an item in the menu page.
+ This pop up will come up in order to shwo the image of the item, the item name, the price of the item,
+ and the amount of calories of the item. This pop up will allow the user to customize and add the order
+ to their cart.-->
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="400dp">
 
+        <!--This text view contains the name of the item -->
         <TextView
             android:id="@+id/item_name_menu_popup"
             android:layout_width="wrap_content"
@@ -24,6 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--This image view shows the image of the item. -->
         <ImageView
             android:id="@+id/item_image_menu_popup"
             android:layout_width="230dp"
@@ -33,6 +39,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--This image is the image that is shown over the item image, if the restaurant is out of stock for this item. -->
         <ImageView
             android:id="@+id/out_of_stock_background"
             android:layout_width="230dp"
@@ -43,6 +50,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
+        <!--This text view contains a message saying the restaurant is out of stock, and will display if the kitchen is out of stock. -->
         <TextView
             android:id="@+id/out_of_stock"
             android:layout_width="230dp"
@@ -56,6 +64,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--This text view contains the price of the item -->
         <TextView
             android:id="@+id/item_price_menu_popup"
             android:layout_width="196dp"
@@ -68,6 +77,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_image_menu_popup" />
 
+        <!--This text view contains the amount of calories of the item -->
         <TextView
             android:id="@+id/item_calories_menu_popup"
             android:layout_width="195dp"
@@ -80,6 +90,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_price_menu_popup" />
 
+        <!--This text view contains the description of the item -->
         <TextView
             android:id="@+id/item_description_menu_popup"
             android:layout_width="match_parent"
@@ -94,6 +105,7 @@
             app:layout_constraintTop_toBottomOf="@+id/item_name_menu_popup"
             app:layout_constraintVertical_bias="0.09" />
 
+        <!--This text view contains the allergen type of the item -->
         <TextView
             android:id="@+id/item_allergens_menu_popup"
             android:layout_width="match_parent"
@@ -108,6 +120,7 @@
             app:layout_constraintTop_toBottomOf="@+id/item_description_menu_popup"
             app:layout_constraintVertical_bias="0.606" />
 
+        <!--This button is used to customize the order. -->
         <Button
             android:id="@+id/customize_item_menu_popup"
             style="?android:attr/borderlessButtonStyle"
@@ -127,6 +140,7 @@
             app:layout_constraintVertical_bias="1.5"
             app:layout_constraintHorizontal_bias="0.0"/>
 
+        <!--This button is used to add the item to the users cart. -->
         <Button
             android:id="@+id/add_to_cart_menu_popup"
             style="?android:attr/borderlessButtonStyle"
@@ -147,6 +161,7 @@
             app:layout_constraintVertical_bias="1.5"
             app:layout_constraintHorizontal_bias="1.0"/>
 
+        <!--This button is used to close the pop up window. -->
         <ImageButton
             android:id="@+id/add_to_cart_popup_close"
             android:layout_width="16dp"

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- xml layout for the header of menu sections on the menu activity -->
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"

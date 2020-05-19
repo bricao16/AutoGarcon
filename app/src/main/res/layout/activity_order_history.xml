@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- xml layout for the order history activity which contains the user's most
-     recent orders from all restaurants -->
+     recent orders from all restaurants. The intended goal of this page is to
+     allow the user to look back at their previous orders and be able to order those
+     items again. -->
 
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,6 +28,7 @@
             android:layout_marginBottom="135dp"
             android:visibility="gone">
 
+            <!--This contains the image of the cart. -->
             <ImageView
                 android:id="@+id/imageView4"
                 android:layout_width="135dp"
@@ -36,6 +39,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+                <!--This text view is shown when there is no recent orders -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
