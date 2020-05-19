@@ -232,7 +232,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                     @Override
                                     protected Map<String, String> getParams() {// inserting parameters for the put request
                                         Map<String, String> params = new HashMap<>();
-                                        
+
                                         /** Creates and builds the JSON object that will eventually be sent to the database. */
                                         JSONObject order = new JSONObject();
 
