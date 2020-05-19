@@ -59,7 +59,6 @@ public class TwoButtonPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NukeSSLCerts.nuke();
        // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         setContentView(R.layout.activity_two_button_page);

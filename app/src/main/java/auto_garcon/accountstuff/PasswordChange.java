@@ -50,14 +50,13 @@ public class PasswordChange extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        NukeSSLCerts.nuke();
         //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
+        pref = new SharedPreference(this);
+
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_change);
 
-        pref = new SharedPreference(this);
         final EditText oldPassword = findViewById(R.id.old_password);
         final EditText confirmPassword = findViewById(R.id.confirm_password);
         final EditText newPassword = findViewById(R.id.new_password);

@@ -126,10 +126,10 @@ public class QRcode extends AppCompatActivity {
     private void setupCamera() {
         txt_result = findViewById(R.id.code_info);
         surfaceView = findViewById(R.id.camera_view);
-        setupQREader();
+        setupQReader();
     }
 
-    private void setupQREader() {
+    private void setupQReader() {
         QReader = new QREader.Builder(this, surfaceView, new QRDataListener() {
             @Override
             public void onDetected(final String data) {

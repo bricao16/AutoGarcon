@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.homestuff.Home;
 import auto_garcon.homestuff.HomeAdapter;
 import auto_garcon.homestuff.RestaurantItem;
@@ -52,6 +53,8 @@ public class LoadingScreen extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        NukeSSLCerts.nuke();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_screen);
 

@@ -86,7 +86,6 @@ public class OrderHistory extends AppCompatActivity implements NavigationView.On
         logos = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
-        NukeSSLCerts.nuke();
 
         pref = new SharedPreference(this);
         //creating side nav drawer

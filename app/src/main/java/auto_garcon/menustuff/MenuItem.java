@@ -145,7 +145,7 @@ public class MenuItem implements Serializable{
     public void setImage(Context context){
         if(this.itemID!=-1){
 
-            StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/menu/image/" + this.itemID, new Response.Listener<String>() {
+            StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/menu/image/" + this.itemID, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 

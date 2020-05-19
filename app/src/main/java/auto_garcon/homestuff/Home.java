@@ -93,7 +93,6 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
         pref = new SharedPreference(Home.this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        NukeSSLCerts.nuke();
        // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
 
@@ -235,7 +234,7 @@ public class Home extends AppCompatActivity implements ShakeDetector.Listener, N
             }
         };
 
-        StringRequest getRequestForSearch = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/restaurants",
+        StringRequest getRequestForSearch = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/restaurants",
             new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

@@ -328,7 +328,7 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
                 }
 
                 final ImageView imageOfItem = addToCartPopup.findViewById(R.id.item_image_menu_popup);
-                StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "http://50.19.176.137:8000/menu/image/" + getChild(i, j).getItemID(),
+                StringRequest getItemImageRequest = new StringRequest(Request.Method.GET, "https://50.19.176.137:8001/menu/image/" + getChild(i, j).getItemID(),
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {

@@ -93,7 +93,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
-        NukeSSLCerts.nuke();
 
         /**
          *  Get the current shopping cart from what is currently being stored in shared

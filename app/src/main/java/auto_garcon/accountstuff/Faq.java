@@ -43,9 +43,12 @@ public class Faq extends AppCompatActivity implements NavigationView.OnNavigatio
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
+        pref = new SharedPreference(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_faq);
-        pref = new SharedPreference(this);
 
 
         //creating side nav drawer

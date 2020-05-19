@@ -30,6 +30,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.HashMap;
 import java.util.Map;
 
+import auto_garcon.NukeSSLCerts;
 import auto_garcon.cartorderhistory.CurrentOrders;
 import auto_garcon.cartorderhistory.OrderHistory;
 import auto_garcon.cartorderhistory.ShoppingCart;
@@ -63,11 +64,14 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
+        pref = new SharedPreference(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_services);
 
 
-        pref = new SharedPreference(this);
 
 
         //creating side nav drawer

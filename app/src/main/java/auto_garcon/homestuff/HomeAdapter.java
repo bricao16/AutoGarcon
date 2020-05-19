@@ -90,7 +90,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         //bind the textview with data received
         Typeface typeface =  ResourcesCompat.getFont(context, data.get(position).getFont());
 
-
         holder.favoritesTileBackground.setCardBackgroundColor(Color.parseColor(data.get(position).getSecondaryColor()));
 
         holder.textTitle.setText(data.get(position).getName());

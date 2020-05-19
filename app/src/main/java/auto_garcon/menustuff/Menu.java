@@ -67,11 +67,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
     private ExpandableListView listView;
     private ExpandableListAdapter listAdapter;
     private ArrayList<String> listDataHeader;
-    private List<auto_garcon.menustuff.MenuItem> appetizer_list;
-    private List<auto_garcon.menustuff.MenuItem> entree_list;
-    private List<auto_garcon.menustuff.MenuItem> dessert_list;
-    private List<auto_garcon.menustuff.MenuItem> drink_list;
-    private List<auto_garcon.menustuff.MenuItem> alcohol_list;
     private HashMap<String, ArrayList<auto_garcon.menustuff.MenuItem>> listHash;
     private Button addOrRemoveFavorite;
     private ImageView restaurantLogo;
@@ -97,12 +92,13 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-       // Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
-        setContentView(R.layout.activity_menu);
-        NukeSSLCerts.nuke();
+        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
         pref = new SharedPreference(this);
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_menu);
+
 
         /**
          * Ties the side navigation bar xml elements to Java objects and setting listeners for the
@@ -129,8 +125,8 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         final BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.action_cart);
         badge.setVisible(true);
-        if(pref.getShoppingCart()!=null) {
-            if(pref.getShoppingCart().getCart().size()!=0){
+        if(pref.getShoppingCart() != null) {
+            if(pref.getShoppingCart().getCart().size() != 0){
                 badge.setNumber(pref.getShoppingCart().getCart().size());
             }
         }
@@ -139,11 +135,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
         restaurantLogo = findViewById(R.id.restaurant_logo);
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
-        appetizer_list = new ArrayList<>();
-        entree_list = new ArrayList<>();
-        dessert_list = new ArrayList<>();
-        drink_list = new ArrayList<>();
-        alcohol_list = new ArrayList<>();
         addOrRemoveFavorite = findViewById(R.id.add_restaurant);
 
         if(pref.getFavorites().contains(getIntent().getIntExtra("restaurant id", 0))) {
@@ -177,7 +168,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                         public void onClick(View v) {
                             addOrRemoveFavorite.setText("Add to favorites");
 
-                            StringRequest deleteRequest = new StringRequest(Request.Method.POST, "http://50.19.176.137:8000/favorites/delete",
+                            StringRequest deleteRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/favorites/delete",
                                     new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String response) {
@@ -222,7 +213,7 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                     addOrRemoveFavorite.setText("Remove from favorites");
                     pref.addToFavorites(getIntent().getIntExtra("restaurant id", 0));
 
-                    StringRequest putRequest = new StringRequest(Request.Method.PUT, "http://50.19.176.137:8000/favorites/add",
+                    StringRequest putRequest = new StringRequest(Request.Method.PUT, "https://50.19.176.137:8001/favorites/add",
                             new Response.Listener<String>()
                             {
                                 @Override
@@ -271,6 +262,10 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             //parsing through json from get request to add them to menu
                             JSONObject restaurant = restaurantJSONObject.getJSONObject("restaurant");
 
+                            int font = Menu.this.getResources().getIdentifier(restaurant.getString("font").toLowerCase().replaceAll("\\s","") + "_regular", "font", Menu.this.getPackageName());
+
+                            Typeface typeface =  ResourcesCompat.getFont(Menu.this, font);
+
                             String primaryColor = restaurant.getString("primary_color");
                             String secondaryColor = restaurant.getString("secondary_color");
                             String tertiaryColor = restaurant.getString("tertiary_color");
@@ -279,11 +274,14 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             restaurantName.setText(restaurant.getString("name"));
                             restaurantName.setTextColor(Color.parseColor(fontColor));
 
-                            int font = Menu.this.getResources().getIdentifier(restaurant.getString("font").toLowerCase().replaceAll("\\s","") + "_regular", "font", Menu.this.getPackageName());
-
-                            Typeface typeface =  ResourcesCompat.getFont(Menu.this, font);
-                            addOrRemoveFavorite.setTypeface(typeface);
                             restaurantName.setTypeface(typeface);
+                            addOrRemoveFavorite.setTypeface(typeface);
+
+                            restaurantName.setTextColor(Color.parseColor(fontColor));
+                            addOrRemoveFavorite.setTextColor(Color.parseColor(fontColor));
+
+                            addOrRemoveFavorite.setBackgroundColor(Color.parseColor(secondaryColor));
+                            drawerLayout.setBackgroundColor(Color.parseColor(primaryColor));
 
                             restaurant.getString("cuisine");
 
@@ -291,15 +289,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                             restaurant.getInt("phone_number");
                             restaurant.getInt("opening");
                             restaurant.getInt("closing");
-
-                            addOrRemoveFavorite.setBackgroundColor(Color.parseColor(secondaryColor));
-
-                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash,getIntent().getIntExtra("restaurant id", 0), font,  fontColor,
-                                    primaryColor, secondaryColor, tertiaryColor, restaurant.getInt("opening"), restaurant.getInt("closing"), badge);
-                            listView = findViewById(R.id.menu_list);
-                            listView.setAdapter(listAdapter);
-
-                            drawerLayout.setBackgroundColor(Color.parseColor(primaryColor));
 
                             byte[] restaurantLogoByteArray = new byte[restaurant.getJSONObject("logo").getJSONArray("data").length()];
 
@@ -336,6 +325,11 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                                     }
                                 }
                             }
+
+                            listAdapter = new ExpandableMenuAdapater(Menu.this, listDataHeader, listHash,getIntent().getIntExtra("restaurant id", 0), font,  fontColor,
+                                    primaryColor, secondaryColor, tertiaryColor, restaurant.getInt("opening"), restaurant.getInt("closing"), badge);
+                            listView = findViewById(R.id.menu_list);
+                            listView.setAdapter(listAdapter);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -429,7 +423,6 @@ public class Menu extends AppCompatActivity implements NavigationView.OnNavigati
                 arr[i] = arrJson.getString(i);
             }
             itemToBeAdded.setAllergens(arr);
-
 
             itemToBeAdded.setAmountInStock(menuItemCategories.getInt("in_stock"));
             itemToBeAdded.setDescription(menuItemCategories.getString("description"));

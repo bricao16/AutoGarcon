@@ -56,10 +56,12 @@ public class Privacy extends AppCompatActivity implements NavigationView.OnNavig
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_terms);
+        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
+
         pref = new SharedPreference(this);
 
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_terms);
 
         //creating side nav drawer
         DrawerLayout drawerLayout = findViewById(R.id.terms_main);// associating xml objects with the java Object equivalent

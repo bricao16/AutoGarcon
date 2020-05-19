@@ -80,14 +80,14 @@ public class Account extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));//error handling for unexpected crashes
 
-        //sets display to account activity page
+        pref = new SharedPreference(this);
+
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
         //initializing new preference variable
-        pref = new SharedPreference(this);
-        NukeSSLCerts.nuke();
 
         //setting input container fields to variables
         changeFirstName = findViewById(R.id.first_name_change);
