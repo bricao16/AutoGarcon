@@ -23,6 +23,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -36,6 +37,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 import auto_garcon.NukeSSLCerts;
@@ -242,7 +245,15 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                                 Toast.makeText(ShoppingCart.this, error.toString(), Toast.LENGTH_LONG).show();
                                             }
                                         }
-                                );
+                                ) {
+                                    @Override
+                                    public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
+                                        HashMap<String, String> headers = new HashMap<>();
+                                        headers.put("Authorization","Bearer " + pref.getAuth());
+
+                                        return headers;
+                                    }
+                                };
 
                                 VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
 
