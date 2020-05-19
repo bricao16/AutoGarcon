@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {makeStyles, AppBar, Toolbar} from "@material-ui/core";
 import {ThemeProvider, createMuiTheme, withStyles, useTheme} from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   appbar: {
     background: theme.palette.primary,
     minHeight: 0,
@@ -20,14 +20,6 @@ const useStyles = makeStyles((theme) => ({
     // margin: theme.spacing(5)
   }
 }));
-
-// const theme = createMuiTheme({
-//   palette: {
-//     primary: {
-//       main: '#ffffff',
-//     }
-//   },
-// });
 
 function Header(props){
 

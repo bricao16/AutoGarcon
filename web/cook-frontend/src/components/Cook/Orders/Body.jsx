@@ -12,12 +12,9 @@ import Toolbar from "./Toolbar";
 import OrderCards from "./OrderCards";
 import CustomDialog from "./CustomDialog";
 // Icons
-//import DoneIcon from '@material-ui/icons/Done';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import RestoreIcon from '@material-ui/icons/Restore';
-import {forEach} from "react-bootstrap/cjs/ElementChildren";
-// import $ from "jquery"; will be used in future
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -36,14 +33,6 @@ const useStyles = makeStyles(theme => ({
     borderBottom: "solid 2px #7e7e7e66"
   }
 }));
-
-// const theme = createMuiTheme({
-//   palette: {
-//     primary: {
-//       main: '#fff111',
-//     }
-//   },
-// });
 
 const universalCookies = new Cookies();
 

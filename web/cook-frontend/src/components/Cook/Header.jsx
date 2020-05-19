@@ -1,11 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {makeStyles, createMuiTheme, ThemeProvider, withStyles} from '@material-ui/core/styles';
+import {makeStyles, createMuiTheme, ThemeProvider, withStyles, useTheme} from '@material-ui/core/styles';
 import {AppBar, Toolbar, Tabs, Tab, Badge} from '@material-ui/core'
 import {Link} from 'react-router-dom'
 import AccountDropdown from "../AccountDropdown";
-import axios from "axios";
-import https from "https";
-import Typography from "@material-ui/core/Typography";
 
 const StyledTabs = withStyles({
   indicator: {
@@ -44,17 +41,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#0b658a'
-    }
-  },
-});
-
 function Header(props){
 
-  // const theme = useTheme();
+  const theme = useTheme();
   const classes = useStyles(theme);
 
   const {cookies, restaurantData, serviceData} = props;
@@ -78,7 +67,7 @@ function Header(props){
         }
       });
     }
-    return count;
+    return <span style={{color: theme.palette.text.primary}}>{count}</span>;
   }
 
   return(
@@ -90,7 +79,7 @@ function Header(props){
             <Tab label="Orders" color="primary" className={classes.tab} component={Link} to={'/cook/orders'} />
             {/*<Tab label="Edit Menu" color="primary" className={classes.tab} component={Link} to={'/cook/menu'} />*/}
             <Tab label={
-                <Badge badgeContent={updateRequestCount()} color="primary" className={classes.badge}>
+                <Badge badgeContent={updateRequestCount()} color="secondary" className={classes.badge}>
                   <span>Service Requests</span>
                 </Badge>
               } color="primary" className={classes.tab + " px-3"} component={Link} to={'/cook/service'}

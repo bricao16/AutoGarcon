@@ -3,15 +3,9 @@ import React from "react";
 import Header from './Header'
 import {Redirect, Route, Switch} from "react-router-dom";
 
-// import ActiveOrders from "./ActiveOrders";
-// import CompletedOrders from "./CompletedOrders";
 import Body from "./Body";
-import {ThemeProvider, useTheme} from "@material-ui/core/styles";
 
 function Orders(){
-
-  // const theme = useTheme();
-
   const activeOrdersEndpoint = "/orders/";
   const completedOrdersEndpoint = "/orders/complete/";
 
