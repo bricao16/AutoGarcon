@@ -34,21 +34,24 @@ const LaunchRequestHandler = {
       const restaurantResponseJSON = JSON.parse(restaurantResponse);
       const restaurantName = restaurantResponseJSON['restaurant'].name;
     
-      speakOutput = "Hi, Welcome to " + restaurantName + "! Thank you for using AutoGarcon Alexa to place your order. How can I help you?";
+      speakOutput = restaurantResponseJSON['restaurant'].greeting;
 
       handlerInput.responseBuilder
         .speak(speakOutput)
+        .withShouldEndSession(false)
+        .getResponse();
         
     } catch(error) {
       handlerInput.responseBuilder
-        .speak(`This Alexa isn't registered. Please add it by saying "register this device".`);
+        .speak(`This Alexa isn't registered. Please add it by saying "register this device".`)
+        .withShouldEndSession(false)
+        .getResponse();
     }
     return handlerInput.responseBuilder
-      .reprompt(`speakOutput`)
+      .withShouldEndSession(false)
       .getResponse();
   }//handle
 };//LaunchRequestHandler
-
 
 // helper function for put http calls
 const putHttp = function(path, data){
@@ -133,6 +136,7 @@ const postHttp = function(path, data){
       if (res.statusCode < 200 || res.statusCode >= 300) {
         //return reject(new Error(`${res.statusCode}: ${res.req.getHeader('host')} ${res.req.path}`));
         resolve(res.statusCode);
+        //response += res.statusCode;
       }
       res.on('data', (d) => {
         response += d;
@@ -161,6 +165,8 @@ const getHttp = function(url) {
       let returnData = '';
       if (response.statusCode < 200 || response.statusCode >= 300) {
         return reject(new Error(`${response.statusCode}: ${response.req.getHeader('host')} ${response.req.path}`));
+        //resolve(response.statusCode);
+        //returnData += response.statusCode;
       }
           
       response.on('data', chunk => {
@@ -231,6 +237,7 @@ const addNewAlexaHandler = {
       if(await getHttp(api+'/alexa/'+AlexaID) !== "This alexa does not exist"){
         return handlerInput.responseBuilder
           .speak('This Alexa has already been added')
+          .withShouldEndSession(false)
           .getResponse();
       }
         
@@ -260,12 +267,14 @@ const addNewAlexaHandler = {
 
         return handlerInput.responseBuilder
           .speak(speakOutput)
-          .reprompt("Please enter the restaurant ID and table num.")
+          .withShouldEndSession(false)
           .getResponse();
         }
     }catch(error){
       handlerInput.responseBuilder
-        .speak(`There was an error while adding the Alexa. Please try again.`);
+        .speak(`There was an error while adding the Alexa. Please try again.`)
+        .withShouldEndSession(false)
+        .getResponse();
     }
   }//handle
 }//addNewAlexaHandler
@@ -294,22 +303,33 @@ const GetPendingOrderHandler = {
                 
         //loops through each item in the order and grabs the quantity and name of the item
         for(let key in responseJSON){
-          speakOutput += responseJSON[key].quantity + " " + responseJSON[key].item_name + ", ";
+          let item = responseJSON[key].item_name;
+          if(responseJSON[key].quantity > 1){
+              item = item + "s";
+          }
+          speakOutput += responseJSON[key].quantity + " " + item + "(" + responseJSON[key].customization + "), ";
         }
                 
-        speakOutput += "If you would like to add more items, please say 'add item'.";
+        speakOutput += "If you would like to add more items, please say 'add item'. If you would like to place your order, please say 'place order'";
                 
         handlerInput.responseBuilder
           .speak(speakOutput)
+          .withShouldEndSession(false)
+          .getResponse();
       }else{//no pending order
         handlerInput.responseBuilder
           .speak("There are no items in your order.")
+          .withShouldEndSession(false)
+          .getResponse();
       }
     }catch(error){
       handlerInput.responseBuilder
         .speak("There was an error while getting your order. Please try again.")
+        .withShouldEndSession(false)
+        .getResponse();
     }
     return handlerInput.responseBuilder
+      .withShouldEndSession(false)
       .getResponse();
   }//handle
 }//GetPendingOrderHandler
@@ -341,6 +361,17 @@ const AddItemToOrderHandler = {
         let orderNum = null;
         let menuItem = handlerInput.requestEnvelope.request.intent.slots.menuItem.value.toLowerCase();
         let quantityNum = handlerInput.requestEnvelope.request.intent.slots.quantity.value;
+        let customizeSlot = handlerInput.requestEnvelope.request.intent.slots.customizations.value;
+        let customize = "";
+        //if the customer doesn't want any customizations, it will set the variable to a blank string;
+        if(customizeSlot === 'no customizations')
+        {
+          customize = '';
+        }else{
+          for(let i = 0; i < quantityNum; i++){
+            customize = customize + customizeSlot + ";";      
+          }
+        }//else there are customizations
                 
         let menuItemValid = false;
         let quantityNumValid = true;
@@ -393,21 +424,35 @@ const AddItemToOrderHandler = {
           const body = JSON.stringify({
             order_num: orderNum,
             item_id: itemID,
-            quantity: quantityNum
+            quantity: quantityNum,
+            customization: customize
           });//body
 
           await putHttp('/alexa/order/update', body);
-          speakOutput = quantityNum + " " + menuItem + " has been added to your order."
+          
+          if(quantityNum > 1){
+            menuItem = menuItem + "s have";
+          }else{
+            menuItem = menuItem + "has"
+          }
+          
+          if(customize === ''){
+            speakOutput = quantityNum + " " + menuItem + " been added to your order.";
+          }else{
+            speakOutput = quantityNum + " " + menuItem + " been added to your order with customizations, " + customizeSlot;
+          }
         }//if valid
                 
         return handlerInput.responseBuilder
           .speak(speakOutput)
-          .reprompt(speakOutput)
-          .getResponse()
+          .withShouldEndSession(false)
+          .getResponse();
       }//else
     }catch(error){
       handlerInput.responseBuilder
-        .speak(`There was an error while adding the item to the order. Please try again.`);
+        .speak(`There was an error while adding the item to the order. Please try again.`)
+        .withShouldEndSession(false)
+        .getResponse();
     }
   }//handle
 }//AddItemToOrderHandler
@@ -453,7 +498,7 @@ const RemoveItemFromOrderHandler = {
         let quantityNum = 0;
       
         // creates body for post update http
-        const body = JSON.stringify({
+        let body = JSON.stringify({
           order_num: orderNum,
           item_id: itemID,
           quantity: quantityNum
@@ -461,14 +506,14 @@ const RemoveItemFromOrderHandler = {
       
         let submittingResponse = '';
         //speakOutput += orderNum +' '+itemID+' '+quantityNum;
-        speakOutput += body;
+        //speakOutput += body;
         try{
-          submittingResponse = await postHttp('alexa/order/remove', body);
+          submittingResponse = await postHttp('/alexa/order/remove', body);
         }catch(error){
-            submittingResponse = 'There was a problem connecting to the Database';
+          submittingResponse = 'There was a problem connecting to the Database';
           // submittingResponse will fail the success check 
         }
-        speakOutput += submittingResponse;
+        //speakOutput += submittingResponse;
   
         // could be revamped with the other status codes but this is the only one ive been able to receive. 
         if (submittingResponse !== 'Successfully updated order!'){
@@ -479,12 +524,14 @@ const RemoveItemFromOrderHandler = {
       
         return handlerInput.responseBuilder
           .speak(speakOutput)
-          .reprompt(speakOutput)
-          .getResponse()
+          .withShouldEndSession(false)
+          .getResponse();
       }//else
     }catch(error){
       handlerInput.responseBuilder
-        .speak(`There was an error while removing the item from the order. Please try again.`);
+        .speak(`There was an error while removing the item from the order. Please try again.`)
+        .withShouldEndSession(false)
+        .getResponse();
     }
   }//handle
 }//RemoveItemFromOrderHandler
@@ -498,8 +545,7 @@ const SubmitOrderIntentHandler = {
   async handle(handlerInput) {
     try{
       let speakOutput = '';
-      //AlexaID = '123456789';
-      
+
       // gathers information required to update order status
       let status = 'In Progress';
       let pendingResponse = await getHttp(api+'/alexa/pending/'+AlexaID);
@@ -529,11 +575,14 @@ const SubmitOrderIntentHandler = {
 
       return handlerInput.responseBuilder
         .speak(speakOutput)
-        .getResponse()
+        .withShouldEndSession(false)
+        .getResponse();
         
     }catch(error){
       handlerInput.responseBuilder
-        .speak(`There was an error while submitting the order. Please try again.`); 
+        .speak(`There was an error while submitting the order. Please try again.`)
+        .withShouldEndSession(false)
+        .getResponse();        
     }
   }
 };
@@ -548,13 +597,13 @@ const CancelOrderIntentHandler = {
     if (handlerInput.requestEnvelope.request.intent.confirmationStatus === "DENIED") {
       return handlerInput.responseBuilder
         .speak('Okay. We did not cancel your order.')
-        .getResponse()  
+        .withShouldEndSession(false)
+        .getResponse(); 
     }
       
     try{
       let speakOutput = '';
-      //AlexaID = '123456789';
-      
+
       // gathers information required to update order status
       let status = 'Cancelled';
       let pendingResponse = await getHttp(api+'/alexa/pending/'+AlexaID);
@@ -589,15 +638,64 @@ const CancelOrderIntentHandler = {
       
       return handlerInput.responseBuilder
         .speak(speakOutput)
-        .getResponse()  
+        .withShouldEndSession(false)
+        .getResponse(); 
       
         
     }catch(error){
       handlerInput.responseBuilder
-        .speak(`There was an error while cancelling the order. Please try again.`); 
+        .speak(`There was an error while cancelling the order. Please try again.`)
+        .withShouldEndSession(false)
+        .getResponse();        
     }
   }
 };
+
+//Intent that recites only requested allergens items (gluten, peanuts, etc.)
+const AllergensMenuHandler = {
+  canHandle(handlerInput){
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+      && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AllergensMenuIntent';
+  },
+  async handle(handlerInput) {
+    var speakOutput = "";
+    let allergensSlot = handlerInput.requestEnvelope.request.intent.slots.allergen.value.toLowerCase();
+    let count = 0;
+
+    try {
+      const response = await getHttp(api+'/menu/'+restaurantID);
+      const responseJSON = JSON.parse(response);
+      for (var key in responseJSON) {
+        var allAllergens = responseJSON[key].allergens;
+
+        for(var i = 0; i < allAllergens.length; i++){
+          if(allAllergens[i].toLowerCase() === allergensSlot){
+            if(responseJSON[key].in_stock > 0){
+              speakOutput += key +", ";
+            }//if in stock
+          }//if equal to selected allergen
+        }//for each items allergens
+      }//for each menu item
+
+      handlerInput.responseBuilder
+        .speak(speakOutput+" contain "+allergensSlot)
+        .withShouldEndSession(false)
+        .getResponse();
+                    
+    } catch(error) {
+      handlerInput.responseBuilder
+        .speak(`I wasn't able to get the data`)
+        //.speak(speakOutput)
+        .withShouldEndSession(false)
+        .getResponse();
+    }
+    
+    return handlerInput.responseBuilder
+      .withShouldEndSession(false)
+      .getResponse();
+      
+    }//handle
+};//AllergensMenuHandler
 
 //intent that gets the closing time using an http get request and converts it to a string
 const ClosingTimeIntentHandler = {
@@ -609,30 +707,33 @@ const ClosingTimeIntentHandler = {
     var speakOutput = '';
     var repromptOutput = 'reprompt';
     try {
-      const response = await getHttp(apissl+'/restaurant/'+restaurantID);
+      const response = await getHttp(api+'/restaurant/'+restaurantID);
       const responseJSON = JSON.parse(response);
-      const closingTimeJSON = responseJSON.restaurant.closing%12;
+      const closingTimeJSON = ((responseJSON['restaurant'].closing)+11)%12 +1;
       var ampm = "";
         
-      if (responseJSON.restaurant.closing < 12){
-        ampm = "am";
-      }else{
+      if (responseJSON['restaurant'].closing > 11){
         ampm = "pm";
+      }else{
+        ampm = "am";
       }
         
-      const closingTimeOutput = "The closing time is " + JSON.stringify(closingTimeJSON) + ampm;
+      const closingTimeOutput = "The closing time is " + closingTimeJSON + ampm;
       speakOutput = closingTimeOutput;
             
       handlerInput.responseBuilder
         .speak(speakOutput)
-        .reprompt(repromptOutput)
+        .withShouldEndSession(false)
+        .getResponse();
             
     } catch(error) {
       handlerInput.responseBuilder
         .speak(`I wasn't able to get the data`)
-        .reprompt(repromptOutput)
+        .withShouldEndSession(false)
+        .getResponse();
     }
     return handlerInput.responseBuilder
+      .withShouldEndSession(false)
       .getResponse();
   }//handle
 };//ClosingTimeIntentHandler
@@ -654,8 +755,7 @@ const MenuDialogHandler = {
           .addDelegateDirective(currentIntent)
           .getResponse();
       }else{
-        var repromptOutput = "What would you like?";
-        let categorySlot = handlerInput.requestEnvelope.request.intent.slots.category.resolutions.resolutionsPerAuthority[0].values[0].value.name.toString().toLowerCase();
+        let categorySlot = handlerInput.requestEnvelope.request.intent.slots.category.value.toString().toLowerCase();
         const response = await getHttp(api+'/menu/'+restaurantID);
         const responseJSON = JSON.parse(response);
         if(categorySlot === 'full menu'){
@@ -675,18 +775,23 @@ const MenuDialogHandler = {
         }//else
                 
         handlerInput.responseBuilder
-          .speak(speakOutput + repromptOutput)
-          .reprompt(repromptOutput)
+          .speak(speakOutput)
+          .withShouldEndSession(false)
+          .getResponse();
       }//else
     }catch(error){
       handlerInput.responseBuilder
         .speak("There was an error while getting the menu. Please try again.")
+        .withShouldEndSession(false)
+        .getResponse();
     }//catch
         
     return handlerInput.responseBuilder
+      .withShouldEndSession(false)
       .getResponse();
   }//handle
 }//MenuDialogHandler
+
 
 //Intent that recites only requested category of the menu (ie. appetizer, entree, refillible drink, alcohol)
 const MenuCategoryIntentHandler = {
@@ -697,9 +802,7 @@ const MenuCategoryIntentHandler = {
   async handle(handlerInput) {
     var speakOutput = "";
     var repromptOutput = "What would you like?";
-    //categorySlot grabs the name of the slot, not the synonyms, converts it to a string, and makes it all lowercase in order to compare to the key in the database
-    //////////////////MIGHT NEED TO CHANGE IF MORE CATEGORIES ARE ADDED TO MENU/////////////////////////////
-    let categorySlot = handlerInput.requestEnvelope.request.intent.slots.category.resolutions.resolutionsPerAuthority[0].values[0].value.name.toString().toLowerCase();
+    let categorySlot = handlerInput.requestEnvelope.request.intent.slots.category.value.toString().toLowerCase();
 
     try {
       const response = await getHttp(api+'/menu/'+restaurantID);
@@ -715,19 +818,73 @@ const MenuCategoryIntentHandler = {
                 
       handlerInput.responseBuilder
         .speak(speakOutput)
-        .reprompt(repromptOutput)
+        .withShouldEndSession(false)
+        .getResponse();
                     
     } catch(error) {
       handlerInput.responseBuilder
         .speak(`I wasn't able to get the data`)
-        .reprompt(repromptOutput)
+        .withShouldEndSession(false)
+        .getResponse();
     }
     
     return handlerInput.responseBuilder
+      .withShouldEndSession(false)
       .getResponse();
       
     }//handle
 };//MenuCategoryIntentHandler
+
+//Intent that gets the description of the requested menu item
+const GetDescriptionHandler = {
+  canHandle(handlerInput){
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+      && Alexa.getIntentName(handlerInput.requestEnvelope) === 'GetDescriptionIntent';
+  },
+  async handle(handlerInput) {
+    var speakOutput = "";
+    var repromptOutput = "Which item do you want the description of?";
+    //let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.resolutions.resolutionsPerAuthority[0].values[0].value.name.toString().toLowerCase();
+    let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.value.toString().toLowerCase();
+
+    try {
+      const response = await getHttp(api+'/menu/'+restaurantID);
+      const responseJSON = JSON.parse(response);
+      var isItem = false;
+      
+      for(var key in responseJSON){
+        if(key.toLowerCase() === menuItemSlot){
+          //Checks if the requested menu item is in stock. If it is, it will tell the description of the item. It it isn't, it tells the customer we're out            
+          if(responseJSON[key].in_stock > 0){
+            speakOutput = menuItemSlot + " description: " + responseJSON[key].description;
+          }else if(responseJSON[key].in_stock <= 0){
+            speakOutput = "Sorry, we are out of " + menuItemSlot;
+          }
+          isItem = true;
+        }//if equal to selected menu item  
+      }//for each menu item
+      
+      if(isItem === false){
+          speakOutput = "The item you requested isn't a valid item. Please try again."
+      }
+                
+      handlerInput.responseBuilder
+        .speak(speakOutput)
+        .withShouldEndSession(false)
+        .getResponse();
+                    
+    } catch(error) {
+      handlerInput.responseBuilder
+        .speak(`Sorry, I couldn't find ` + menuItemSlot + ` on the menu`)
+        .withShouldEndSession(false)
+        .getResponse();
+    }
+    
+    return handlerInput.responseBuilder
+      .withShouldEndSession(false)
+      .getResponse();
+  }//handle
+};//GetDescriptionHandler
 
 //Intent that gets the price of the requested menu item
 const GetPriceIntentHandler = {
@@ -740,6 +897,7 @@ const GetPriceIntentHandler = {
     var repromptOutput = "Which item do you want the price of?";
     //let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.resolutions.resolutionsPerAuthority[0].values[0].value.name.toString().toLowerCase();
     let menuItemSlot = handlerInput.requestEnvelope.request.intent.slots.menuItem.value.toString().toLowerCase();
+    var isItem = false;
 
     try {
       const response = await getHttp(api+'/menu/'+restaurantID);
@@ -753,20 +911,28 @@ const GetPriceIntentHandler = {
           }else if(responseJSON[key].in_stock <= 0){
             speakOutput = "Sorry, we are out of " + menuItemSlot;
           }
+          isItem = true;
         }//if equal to selected menu item  
       }//for each menu item
+               
+      if(isItem === false){
+          speakOutput = "The item you requested isn't a valid item. Please try again."
+      }               
                 
       handlerInput.responseBuilder
         .speak(speakOutput)
-        .reprompt(repromptOutput)
+        .withShouldEndSession(false)
+        .getResponse();
                     
     } catch(error) {
       handlerInput.responseBuilder
         .speak(`Sorry, I couldn't find ` + menuItemSlot + ` on the menu`)
-        .reprompt(repromptOutput)
+        .withShouldEndSession(false)
+        .getResponse();
     }
     
     return handlerInput.responseBuilder
+      .withShouldEndSession(false)
       .getResponse();
   }//handle
 };//GetPriceIntentHandler
@@ -784,6 +950,7 @@ const GetCaloriesIntentHandler = {
     try {
       const response = await getHttp(api+'/menu/'+restaurantID);
       const responseJSON = JSON.parse(response);
+      var isItem = false;
                 
       for(var key in responseJSON){
         if(key.toLowerCase() === menuItemSlot){
@@ -792,22 +959,116 @@ const GetCaloriesIntentHandler = {
           }else if(responseJSON[key].in_stock <= 0){
             speakOutput = "Sorry, we are out of " + menuItemSlot;
           }
+          isItem = true;
         }//if equal to selected menu item
       }//for each menu item
                 
+      if(isItem === false){
+          speakOutput = "The item you requested isn't a valid item. Please try again."
+      }                
+                
       handlerInput.responseBuilder
         .speak(speakOutput)
-        .reprompt(repromptOutput)
+        .withShouldEndSession(false)
+        .getResponse();
                     
     } catch(error) {
       handlerInput.responseBuilder
         .speak(`Sorry, I couldn't find ` + menuItemSlot + ` on the menu`)
-        .reprompt(repromptOutput)
+        .withShouldEndSession(false)
+        .getResponse();
     }
     return handlerInput.responseBuilder
+      .withShouldEndSession(false)
       .getResponse();
   }//handle
 };//GetCaloriesIntentHandler
+
+//Requests server assistance
+const ServerAssistanceIntentHandler = {
+  canHandle(handlerInput){
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+      && Alexa.getIntentName(handlerInput.requestEnvelope) === 'ServerAssistanceIntent';
+  },
+  async handle(handlerInput) {
+    var speakOutput = "";
+    try {
+      let body = JSON.stringify({
+        restaurant_id: restaurantID,
+        table_num: tableNum,
+        status: "Help"
+      });
+
+      let submittingResponse = '';
+      try{
+        submittingResponse = await postHttp('/services/update/', body);
+      }catch(error){
+        submittingResponse = 'There was a problem connecting to the Database';
+      }
+
+      // could be revamped with the other status codes but this is the only one ive been able to receive. 
+      if (submittingResponse !== 'Successfully updated status!'){
+        speakOutput = 'There was a problem while requesting for a server. Please try again.';
+      }else{
+        speakOutput = "The restaurant has been notified and a server will be with you shortly."
+      }
+
+      return handlerInput.responseBuilder
+        .speak(speakOutput)
+        .withShouldEndSession(false)
+        .getResponse();
+                
+    } catch(error) {
+      handlerInput.responseBuilder
+        .speak(`Sorry, I couldn't request assistance from a server.`)
+        .withShouldEndSession(false)
+        .getResponse();
+    }
+  }//handle
+};
+
+//Requests server assistance
+const RequestBillIntentHandler = {
+  canHandle(handlerInput){
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+      && Alexa.getIntentName(handlerInput.requestEnvelope) === 'RequestBillIntent';
+  },
+  async handle(handlerInput) {
+    var speakOutput = "";
+    try {
+      let body = JSON.stringify({
+        restaurant_id: restaurantID,
+        table_num: tableNum,
+        status: 'Bill'
+      });
+        
+      let submittingResponse = '';
+      try{
+        submittingResponse = await postHttp('/services/update/', body);
+      }catch(error){
+        submittingResponse = 'There was a problem connecting to the Database';
+      }
+
+      // could be revamped with the other status codes but this is the only one ive been able to receive. 
+      if (submittingResponse !== 'Successfully updated status!'){
+        speakOutput = 'There was a problem while requesting the bill. Please try again.';
+      }else{
+        speakOutput = "The restaurant has been notified and you will receive your bill shortly.";
+      }
+
+      return handlerInput.responseBuilder
+        .speak(speakOutput)
+        .withShouldEndSession(false)
+        .getResponse();
+                
+    } catch(error) {
+      handlerInput.responseBuilder
+        .speak(`Sorry, there was a problem while requesting the bill. Please try again.`)
+        .withShouldEndSession(false)
+        .getResponse();
+    }
+  }//handle
+};
 
 // An intent that lists off all the commands a customer can ask Alexa
 const HelpIntentHandler = {
@@ -816,11 +1077,11 @@ const HelpIntentHandler = {
     && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
-    const speakOutput = "Some commands you can ask me are: read menu, order, remove item from order, add item to order, start the order over, what's in my order, how many calories are in an item, what's the price of an item, and when is closing time";
+    const speakOutput = "Some commands you can ask me are: read menu, order, remove item from order, add item to order, start the order over, what's in my order, how many calories are in an item, what's the price of an item, decription of an item, allergen menu, and when is closing time";
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
-      .reprompt(speakOutput)
+      .withShouldEndSession(false)
       .getResponse();
   }
 };//HelpIntentHandler
@@ -836,6 +1097,7 @@ const CancelAndStopIntentHandler = {
     const speakOutput = 'Goodbye!';
     return handlerInput.responseBuilder
       .speak(speakOutput)
+      .withShouldEndSession(false)
       .getResponse();
   }
 };//CancelAndStopIntentHandler
@@ -847,7 +1109,9 @@ const SessionEndedRequestHandler = {
   },
   handle(handlerInput) {
     // Any cleanup logic goes here.
-    return handlerInput.responseBuilder.getResponse();
+    return handlerInput.responseBuilder
+      .withShouldEndSession(false)
+      .getResponse();
   }
 };//SessionEndedRequestHandler
 
@@ -865,7 +1129,7 @@ const IntentReflectorHandler = {
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
-    //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+      .withShouldEndSession(false)
       .getResponse();
   }
 };//IntentReflectorHandler
@@ -883,7 +1147,7 @@ const ErrorHandler = {
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
-      .reprompt(speakOutput)
+      .withShouldEndSession(false)
       .getResponse();
   }
 };//ErrorHandler
@@ -898,12 +1162,17 @@ exports.handler = Alexa.SkillBuilders.custom()
     MenuCategoryIntentHandler,
     GetPriceIntentHandler,
     GetCaloriesIntentHandler,
+    GetDescriptionHandler,
     addNewAlexaHandler,
     AddItemToOrderHandler,
     CancelOrderIntentHandler,
     ClosingTimeIntentHandler,
     SubmitOrderIntentHandler,
     RemoveItemFromOrderHandler,
+    GetPendingOrderHandler,
+    AllergensMenuHandler,
+    ServerAssistanceIntentHandler,
+    RequestBillIntentHandler,
 
     HelpIntentHandler,
     CancelAndStopIntentHandler,

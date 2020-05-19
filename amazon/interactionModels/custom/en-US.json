@@ -12,6 +12,7 @@
         {
           "name": "AMAZON.HelpIntent",
           "samples": [
+            "list commands ",
             "commands",
             "What can I say",
             "help",
@@ -128,9 +129,21 @@
                 "I would like {quantity}",
                 "{quantity}"
               ]
+            },
+            {
+              "name": "customizations",
+              "type": "customizationsSlot",
+              "samples": [
+                "{customizations}",
+                "no customizations"
+              ]
             }
           ],
           "samples": [
+            "start ordering",
+            "add {menuItem} to our order",
+            "add {menuItem} to the order",
+            "start order",
             "add {menuItem} to order",
             "add an item to my order",
             "add item",
@@ -142,6 +155,7 @@
           "name": "MakeOrderInProgressIntent",
           "slots": [],
           "samples": [
+            "place order",
             "Send my order to the kitchen",
             "Submit order"
           ]
@@ -190,6 +204,7 @@
           "name": "CancelOrderIntent",
           "slots": [],
           "samples": [
+            "Can I restart my order",
             "Cancel the order",
             "I would like to start the order over",
             "Start the order over"
@@ -205,6 +220,57 @@
             "get order",
             "What is in my current order",
             "What\u0027s in my current order"
+          ]
+        },
+        {
+          "name": "GetDescriptionIntent",
+          "slots": [
+            {
+              "name": "menuItem",
+              "type": "AMAZON.Food"
+            }
+          ],
+          "samples": [
+            "What is {menuItem}",
+            "description of {menuItem}"
+          ]
+        },
+        {
+          "name": "AllergensMenuIntent",
+          "slots": [
+            {
+              "name": "allergen",
+              "type": "allergenSlot"
+            }
+          ],
+          "samples": [
+            "I cant have {allergen}",
+            "I am {allergen} free",
+            "What items have {allergen} in them",
+            "{allergen}",
+            "{allergen} menu"
+          ]
+        },
+        {
+          "name": "ServerAssistanceIntent",
+          "slots": [],
+          "samples": [
+            "Can I speak to a server",
+            "server",
+            "can I see a server",
+            "I would like assistance from the staff"
+          ]
+        },
+        {
+          "name": "RequestBillIntent",
+          "slots": [],
+          "samples": [
+            "we would like the bill",
+            "can we pay now",
+            "check please",
+            "I would like my bill now",
+            "Bill",
+            "Could I get my bill"
           ]
         }
       ],
@@ -299,6 +365,61 @@
             }
           ],
           "name": "AMAZON.Food"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "value": "sauce on side"
+              }
+            },
+            {
+              "name": {
+                "value": "add barbeque sauce"
+              }
+            },
+            {
+              "name": {
+                "value": "add ranch"
+              }
+            },
+            {
+              "name": {
+                "value": "add mayo"
+              }
+            },
+            {
+              "name": {
+                "value": "extra sauce on side"
+              }
+            },
+            {
+              "name": {
+                "value": "no pickles, no ketchup, add mayo, add lettuce"
+              }
+            },
+            {
+              "name": {
+                "value": "no customizations"
+              }
+            }
+          ],
+          "name": "customizationsSlot"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "value": "peanuts"
+              }
+            },
+            {
+              "name": {
+                "value": "gluten"
+              }
+            }
+          ],
+          "name": "allergenSlot"
         }
       ]
     },
@@ -325,6 +446,15 @@
               "confirmationRequired": false,
               "prompts": {
                 "elicitation": "Elicit.Slot.236247120979.1466462808854"
+              }
+            },
+            {
+              "name": "customizations",
+              "type": "customizationsSlot",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.464882165409.811201204047"
               }
             }
           ],
@@ -490,7 +620,7 @@
         "variations": [
           {
             "type": "PlainText",
-            "value": "Would you like to remove the {menuItem} from the order"
+            "value": "Are you sure you want to remove {menuItem} from the order?"
           }
         ]
       },
@@ -502,8 +632,17 @@
             "value": "Are you sure you want to start the order over?"
           }
         ]
+      },
+      {
+        "id": "Elicit.Slot.464882165409.811201204047",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "If you would like to add customizations to this item, please list off the customizations or say no customizations"
+          }
+        ]
       }
     ]
   },
-  "version": "58"
+  "version": "76"
 }
