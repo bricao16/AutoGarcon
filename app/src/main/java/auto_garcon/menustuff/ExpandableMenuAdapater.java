@@ -81,6 +81,11 @@ public class ExpandableMenuAdapater extends BaseExpandableListAdapter {
         this.typeface = ResourcesCompat.getFont(context, font);
     }
 
+    /**
+     * Gets the number of groups.
+     *
+     * @return the number of groups
+     */
     @Override
     public int getGroupCount() {
         return listDataHeader.size();

@@ -42,6 +42,11 @@ import auto_garcon.singleton.UserSingleton;
 import auto_garcon.singleton.VolleySingleton;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * This class represents the object of an Account page
+ * It allows the user to customize their account information
+ * it also allows the user access to the forgotPassword function
+ */
 public class Account extends AppCompatActivity {
     EditText changeFirstName;//used to extract data from xml page of the Account Activity
     EditText changeLastName;//used to extract data from xml page of the Account Activity
@@ -132,7 +137,7 @@ public class Account extends AppCompatActivity {
             }
         });
 
-        /*
+        /**
          * If user selects the save account changes buttons
          * users information will update in database given inputs
          * */
@@ -282,7 +287,30 @@ public class Account extends AppCompatActivity {
             }
         });
     }
-
+    /**
+     * Called when an activity you launched exits, giving you the requestCode
+     * you started it with, the resultCode it returned, and any additional
+     * data from it.  The <var>resultCode</var> will be
+     * {@link #RESULT_CANCELED} if the activity explicitly returned that,
+     * didn't return any result, or crashed during its operation.
+     *
+     * this will return data from selecting an image from the camera or gallery into the class
+     *
+     * <p>You will receive this call immediately before onResume() when your
+     * activity is re-starting.
+     *
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     * @see #startActivityForResult
+     * @see #createPendingResult
+     * @see #setResult(int)
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
