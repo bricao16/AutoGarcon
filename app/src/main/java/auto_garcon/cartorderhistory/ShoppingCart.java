@@ -165,7 +165,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                     if(pref.getShoppingCart().getStartingHour() > time || pref.getShoppingCart().getEndingHour() < time){
                         Toast.makeText(ShoppingCart.this,"The restaurant is currently closed.",Toast.LENGTH_LONG).show();
                     }
-                    if(Calendar.getInstance().getTimeInMillis()-pref.getTimeStamp().getTimeInMillis()>5000){
+                    if(Calendar.getInstance().getTimeInMillis()-pref.getTimeStamp().getTimeInMillis()>60000){
                         Toast.makeText(ShoppingCart.this,"QR code has timed out please Scan the QR code Again",Toast.LENGTH_LONG).show();
                     }
                    /** else if(pref.getUser().getRestaurantID() != shoppingCart.getRestaurantID()){
@@ -221,14 +221,14 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                                         item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
                                         item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
-                                        item.put("customization", "FFF");
+                                        item.put("customization", shoppingCart.getCart().get(i).getCustomization());
 
                                         order.put(Integer.toString(i), item);
                                     }
 
                                     obj.put("restaurant_id", Integer.toString(shoppingCart.getRestaurantID()));
                                     obj.put("customer_id", pref.getUser().getUsername());
-                                    obj.put("table_num", 6);
+                                    obj.put("table_num", pref.getUser().getTableID());
                                     obj.put("order", order);
                                 } catch (JSONException e) {
                                     //TODO figure out how to handle this other than stack trace

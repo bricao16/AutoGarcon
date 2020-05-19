@@ -27,6 +27,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -143,6 +144,9 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
                 if(pref.getUser().getRestaurantID() == -1|| pref.getUser().getTableID() == -1) {
                     Toast.makeText(Services.this, "Please scan QR code",Toast.LENGTH_LONG).show();
                 }
+                else if(Calendar.getInstance().getTimeInMillis()-pref.getTimeStamp().getTimeInMillis()>60000){
+                    Toast.makeText(Services.this,"QR code has timed out please Scan the QR code Again",Toast.LENGTH_LONG).show();
+                }
                 else {
                     StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
                         @Override
@@ -174,6 +178,9 @@ public class Services extends AppCompatActivity  implements NavigationView.OnNav
             public void onClick(View v) {
                 if(pref.getUser().getRestaurantID() == -1|| pref.getUser().getTableID() == -1) {
                     Toast.makeText(Services.this, "Please scan QR code",Toast.LENGTH_LONG).show();
+                }
+                else if(Calendar.getInstance().getTimeInMillis()-pref.getTimeStamp().getTimeInMillis()>60000){
+                    Toast.makeText(Services.this,"QR code has timed out please Scan the QR code Again",Toast.LENGTH_LONG).show();
                 }
                 else {
                     StringRequest updateStringRequest = new StringRequest(Request.Method.POST, "https://50.19.176.137:8001/services/update", new Response.Listener<String>() {
