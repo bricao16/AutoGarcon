@@ -219,7 +219,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
 
                                     obj.put("restaurant_id", Integer.toString(shoppingCart.getRestaurantID()));
                                     obj.put("customer_id", pref.getUser().getUsername());
-                                    obj.put("table_num", 6);
+                                    obj.put("table_num", pref.getUser().getTableID());
                                     obj.put("order", order);
                                 } catch (JSONException e) {
                                     //TODO figure out how to handle this other than stack trace
