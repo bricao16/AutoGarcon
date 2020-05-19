@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
     minWidth: '160px'
   },
   cardHeader: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.secondary.main,
     color: theme.palette.text.primary,
     borderBottom: 'none',
   },
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     textTransform: 'initial',
-    background: theme.primary,
+    // background: theme.primary,
     color: theme.palette.text.primary
   }
 }));
@@ -61,7 +61,7 @@ function ServiceCard(props) {
           <p className={'m-0 p-0'}>{getStatus()}</p>
         </div>
         <div className={'p-2 ' + classes.container + ' ' + classes.border}>
-          <Button variant="contained" color="primary" className={'m-0 ' + classes.button} onClick={() => onClick("Good", table)}>
+          <Button variant="contained" color="secondary" className={'m-0 ' + classes.button} onClick={() => onClick("Good", table)}>
             Request Fulfilled
           </Button>
         </div>

@@ -5,7 +5,8 @@ import { ThemeProvider, createMuiTheme, withStyles, useTheme} from "@material-ui
 
 const StyledTabs = withStyles({
   indicator: {
-    height: '5px'
+    height: '5px',
+    background: 'white'
   }
 })(props => <Tabs {...props} />);
 

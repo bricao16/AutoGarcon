@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   cardHeader: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.secondary.main,
     color: theme.palette.text.primary,
     borderBottom: 'none'
   },
@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   cardFooter: {
     color: theme.palette.text.primary,
     justifyContent: 'space-between',
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.secondary.main,
   },
   selected: {
     background: '#00000070'
