@@ -162,17 +162,10 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                         time = Integer.parseInt(Integer.toString(time) + Calendar.getInstance(TimeZone.getTimeZone("America/Chicago")).get(Calendar.MINUTE));
                     }
 
-
-                    Log.d("asdfa", time+"");
-                    Log.d("asdfa", pref.getShoppingCart().getStartingHour()+"");
-                    Log.d("asdfa", pref.getShoppingCart().getEndingHour()+"");
-
-
                     if(pref.getShoppingCart().getStartingHour() > time || pref.getShoppingCart().getEndingHour() < time){
                         Toast.makeText(ShoppingCart.this,"The restaurant is currently closed.",Toast.LENGTH_LONG).show();
                     }
-
-                    else if(pref.getUser().getRestaurantID() != shoppingCart.getRestaurantID()){
+                   /** else if(pref.getUser().getRestaurantID() != shoppingCart.getRestaurantID()){
                         goToQRScannerPopup = new Dialog(ShoppingCart.this);
                         goToQRScannerPopup.setContentView(R.layout.confirm_popup);
                         goToQRScannerPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -201,7 +194,7 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                 goToQRScannerPopup.dismiss();
                             }
                         });
-                    }
+                    }*/
                     else {
                         confirmPopup = new Dialog(ShoppingCart.this);
                         confirmPopup.setContentView(R.layout.confirm_popup);
@@ -216,29 +209,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                             @Override
                             public void onClick(View v) {
                                 /** Where the put request starts to get created. */
-                                obj = new JSONObject();
-
-                                /** Creates and builds the JSON object that will eventually be sent to the database. */
-                                try {
-                                    JSONObject order = new JSONObject();
-                                    for (int i = 0; i < shoppingCart.getCart().size(); i++) {
-                                        JSONObject item = new JSONObject();
-
-                                        item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
-                                        item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
-                                        item.put("customization", shoppingCart.getCart().get(i).getCustomization());
-                                        order.put(Integer.toString(i), item);
-                                    }
-
-                                    obj.put("restaurant_id", Integer.toString(shoppingCart.getRestaurantID()));
-                                    obj.put("customer_id", pref.getUser().getUsername());
-                                    obj.put("table_num", pref.getUser().getTableID());
-                                    obj.put("order", order);
-                                } catch (JSONException e) {
-                                    //TODO figure out how to handle this other than stack trace
-                                    e.printStackTrace();
-                                    Toast.makeText(ShoppingCart.this, "Error occured", Toast.LENGTH_LONG).show();
-                                }
 
                                 /**
                                  * Builds the StringRequest that will be sent to the database. As well as
@@ -260,6 +230,36 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                         }
                                 ) {
                                     @Override
+                                    protected Map<String, String> getParams() {// inserting parameters for the put request
+                                        Map<String, String> params = new HashMap<>();
+                                        
+                                        /** Creates and builds the JSON object that will eventually be sent to the database. */
+                                        JSONObject order = new JSONObject();
+
+                                        try {
+                                            for (int i = 0; i < shoppingCart.getCart().size(); i++) {
+                                                JSONObject item = new JSONObject();
+
+                                                item.put("item", Integer.toString(shoppingCart.getCart().get(i).getItemID()));
+                                                item.put("quantity", Integer.toString(shoppingCart.getCart().get(i).getQuantity()));
+                                                item.put("customization", shoppingCart.getCart().get(i).getCustomization());
+                                                order.put(Integer.toString(i), item);
+                                            }
+                                        } catch (JSONException e) {
+                                            //TODO figure out how to handle this other than stack trace
+                                            e.printStackTrace();
+                                            Toast.makeText(ShoppingCart.this, "Error occured", Toast.LENGTH_LONG).show();
+                                        }
+
+                                        params.put("restaurant_id", "124");
+                                        params.put("customer_id", "AutomaticBoy");
+                                        params.put("table_num", "3");
+                                        params.put("order", order.toString());
+
+                                        return params;
+                                    }
+
+                                    @Override
                                     public Map<String, String> getHeaders() throws AuthFailureError {//adds header to request
                                         HashMap<String, String> headers = new HashMap<>();
                                         headers.put("Authorization","Bearer " + pref.getAuth());
@@ -269,8 +269,6 @@ public class ShoppingCart extends AppCompatActivity implements NavigationView.On
                                 };
 
                                 VolleySingleton.getInstance(ShoppingCart.this).addToRequestQueue(putRequest);
-
-                                Toast.makeText(ShoppingCart.this, "Your order has been placed",Toast.LENGTH_LONG).show();
 
                                 //Clear the order
                                 shoppingCart = new ShoppingCartSingleton();
