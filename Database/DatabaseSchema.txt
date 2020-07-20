@@ -84,7 +84,7 @@ staff
   last_name                         VARCHAR(50)
   contact_num                       BIGINT
   email                             VARCHAR(50)
-  position                          VARCHAR(50) // Cook, Manager
+  position                          VARCHAR(50) //Cook, Manager
   salt                              VARCHAR(128)
   password                          VARCHAR(128)
   temp_password                     TINYINT
