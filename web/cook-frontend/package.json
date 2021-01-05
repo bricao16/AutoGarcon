@@ -20,7 +20,7 @@
     "@remotelock/react-week-scheduler": "^3.5.8",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "image-size": "^0.8.3",
     "jqeury": "0.0.1-security",
